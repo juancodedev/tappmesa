@@ -1,6 +1,10 @@
+import React from 'react'
+import { Routes, Route } from 'react-router-dom'
 import { TenantProvider, useTenant } from './context/TenantContext'
 import { CartProvider } from './context/CartContext'
 import MenuLayout from './components/layout/MenuLayout'
+import TableApp from './components/TableApp'
+import AdminApp from './components/AdminApp'
 
 // Componente para debugging
 const SubdomainDebug = () => {
@@ -49,21 +53,9 @@ const LandingPage = () => (
 )
 
 // Admin App Component
-const AdminApp = () => (
-  <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-    <div className="text-center px-4">
-      <h1 className="text-3xl font-bold text-gray-900 mb-4">
-        🔧 Admin Panel
-      </h1>
-      <p className="text-gray-600 mb-8">
-        Panel de administración de Tappmesa
-      </p>
-      <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
-        <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-          Iniciar Sesión
-        </button>
-      </div>
-    </div>
+const AdminAppWrapper = () => (
+  <div className="min-h-screen bg-gray-100">
+    <AdminApp />
   </div>
 )
 
@@ -136,9 +128,11 @@ const AppContent = () => {
 
   switch (appType) {
     case 'admin':
-      return <AdminApp />
+      return <AdminAppWrapper />
+    case 'table':
+      return <TableApp />
     case 'tenant':
-      return <TenantApp />
+      return <CartProvider><MenuLayout /></CartProvider>
     case 'landing':
     default:
       return <LandingPage />
@@ -148,7 +142,10 @@ const AppContent = () => {
 function App() {
   return (
     <TenantProvider>
-      <AppContent />
+      <Routes>
+        <Route path="/admin/*" element={<AdminAppWrapper />} />
+        <Route path="/*" element={<AppContent />} />
+      </Routes>
       {/* Debug info - remover en producción */}
       {import.meta.env.DEV && <SubdomainDebug />}
     </TenantProvider>
