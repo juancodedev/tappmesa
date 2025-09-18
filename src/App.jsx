@@ -103,37 +103,7 @@ const TenantApp = () => {
     )
   }
 
-  return (
-    <MenuLayout>
-      {/* Contenido temporal del menú */}
-      <div className="space-y-4">
-        <div className="text-center py-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            ¡Bienvenido a {tenant.name}!
-          </h2>
-          <p className="text-gray-600">
-            {tenant.description}
-          </p>
-        </div>
-        
-        {/* Placeholder para productos */}
-        <div className="grid gap-4">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="bg-white rounded-lg shadow-sm p-4 animate-pulse">
-              <div className="flex space-x-4">
-                <div className="w-16 h-16 bg-gray-200 rounded-lg"></div>
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-3 bg-gray-200 rounded w-full"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </MenuLayout>
-  )
+  return <MenuLayout />
 }
 
 // Error Boundary Component
@@ -175,9 +145,6 @@ const AppContent = () => {
 }
 
 function App() {
-  const testStyles = () => {
-    console.log('Testing Tailwind styles...')
-  }
   return (
     <TenantProvider>
       <AppContent />

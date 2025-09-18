@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "./Header";
 import SearchBar from "../menu/SearchBar";
 import CategoryTabs from "../menu/CategoryTabs";
+import MenuGrid from "../menu/MenuGrid";
 
 const MenuLayout = ({ children }) => {
   const [showSearch, setShowSearch] = useState(false);
@@ -53,7 +54,12 @@ const MenuLayout = ({ children }) => {
 
       {/* Contenido principal */}
       <main className={`px-4 pb-20 ${showSearch ? "pt-32" : "pt-28"}`}>
-        {children}
+        {children ? children : (
+          <MenuGrid
+          activeCategory={activeCategory}
+          searchTerm={searchTerm}
+          />
+        )}
       </main>
 
       {/* Menu lateral (placeholder) */}
