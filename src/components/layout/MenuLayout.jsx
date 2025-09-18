@@ -1,38 +1,38 @@
-import { useState } from "react";
-import Header from "./Header";
-import SearchBar from "../menu/SearchBar";
-import CategoryTabs from "../menu/CategoryTabs";
-import MenuGrid from "../menu/MenuGrid";
+import { useState } from 'react'
+import Header from './Header'
+import SearchBar from '../menu/SearchBar'
+import CategoryTabs from '../menu/CategoryTabs'
+import MenuGrid from '../menu/MenuGrid'
+import Cart from '../cart/Cart'
+import FloatingCartButton from '../cart/FloatingCartButton'
 
 const MenuLayout = ({ children }) => {
-  const [showSearch, setShowSearch] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
-  const [activeCategory, setActiveCategory] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [showSearch, setShowSearch] = useState(false)
+  const [showMenu, setShowMenu] = useState(false)
+  const [activeCategory, setActiveCategory] = useState('all')
+  const [searchTerm, setSearchTerm] = useState('')
 
   const handleSearchToggle = () => {
-    setShowSearch(!showSearch);
+    setShowSearch(!showSearch)
     if (showSearch) {
-      setSearchTerm("");
+      setSearchTerm('')
     }
-  };
+  }
 
   const handleSearch = (term) => {
-    setSearchTerm(term);
-    // TODO: Implementar filtro de búsqueda
-    console.log("Searching for:", term);
-  };
+    setSearchTerm(term)
+  }
 
   const handleCategoryChange = (categorySlug) => {
-    setActiveCategory(categorySlug);
-    // TODO: Implementar filtro por categoría
-    console.log("Category changed to:", categorySlug);
-  };
+    setActiveCategory(categorySlug)
+    // Limpiar búsqueda al cambiar categoría
+    setSearchTerm('')
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header fijo */}
-      <Header
+      <Header 
         onMenuToggle={() => setShowMenu(!showMenu)}
         onSearchToggle={handleSearchToggle}
       />
@@ -53,11 +53,11 @@ const MenuLayout = ({ children }) => {
       )}
 
       {/* Contenido principal */}
-      <main className={`px-4 pb-20 ${showSearch ? "pt-32" : "pt-28"}`}>
+      <main className={`px-4 pb-20 ${showSearch ? 'pt-32' : 'pt-28'}`}>
         {children ? children : (
-          <MenuGrid
-          activeCategory={activeCategory}
-          searchTerm={searchTerm}
+          <MenuGrid 
+            activeCategory={activeCategory}
+            searchTerm={searchTerm}
           />
         )}
       </main>
@@ -73,24 +73,21 @@ const MenuLayout = ({ children }) => {
               ✕ Cerrar
             </button>
             <div className="space-y-4">
-              <a href="#" className="block text-gray-700 hover:text-gray-900">
-                Inicio
-              </a>
-              <a href="#" className="block text-gray-700 hover:text-gray-900">
-                Carrito
-              </a>
-              <a href="#" className="block text-gray-700 hover:text-gray-900">
-                Reservas
-              </a>
-              <a href="#" className="block text-gray-700 hover:text-gray-900">
-                Contacto
-              </a>
+              <a href="#" className="block text-gray-700 hover:text-gray-900">Inicio</a>
+              <a href="#" className="block text-gray-700 hover:text-gray-900">Carrito</a>
+              <a href="#" className="block text-gray-700 hover:text-gray-900">Reservas</a>
+              <a href="#" className="block text-gray-700 hover:text-gray-900">Contacto</a>
             </div>
           </div>
         </div>
       )}
-    </div>
-  );
-};
+      {/* Botón flotante del carrito */}
+      <FloatingCartButton />
 
-export default MenuLayout;
+      {/* Modal del carrito */}
+      <Cart />
+    </div>
+  )
+}
+
+export default MenuLayout

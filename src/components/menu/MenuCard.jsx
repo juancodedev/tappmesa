@@ -1,63 +1,61 @@
-import { useState } from "react";
-import { Plus, Minus, Clock, Thermometer } from "lucide-react";
-import { useTenant } from "../../context/TenantContext";
+import { useState, useEffect } from 'react'
+import { Plus, Minus, Clock, Thermometer } from 'lucide-react'
+import { useTenant } from '../../context/TenantContext'
+import { useCart } from '../../context/CartContext'
 
-const MenuCard = ({ product, onAddToCart }) => {
-  const { tenant } = useTenant();
-  const [quantity, setQuantity] = useState(0);
-  const [selectedTemp, setSelectedTemp] = useState(
-    product.temperature_options?.[0] || "hot"
-  );
+const MenuCard = ({ product }) => {
+  const { tenant } = useTenant()
+  const { addItem, items } = useCart()
+  const [quantity, setQuantity] = useState(0)
+  const [selectedTemp, setSelectedTemp] = useState(product.temperature_options?.[0] || 'hot')
+
+  // Sincronizar cantidad con el carrito
+  useEffect(() => {
+    const cartItem = items.find(item => 
+      item.product.id === product.id && 
+      item.temperature === selectedTemp
+    )
+    setQuantity(cartItem ? cartItem.quantity : 0)
+  }, [items, product.id, selectedTemp])
 
   const handleAdd = () => {
-    const newQuantity = quantity + 1;
-    setQuantity(newQuantity);
-    onAddToCart(product, newQuantity, selectedTemp);
-  };
+    const newQuantity = quantity + 1
+    addItem(product, newQuantity, selectedTemp)
+  }
 
   const handleRemove = () => {
     if (quantity > 0) {
-      const newQuantity = quantity - 1;
-      setQuantity(newQuantity);
-      onAddToCart(product, newQuantity, selectedTemp);
+      const newQuantity = quantity - 1
+      addItem(product, newQuantity, selectedTemp)
     }
-  };
+  }
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat("es-CL", {
-      style: "currency",
-      currency: "CLP",
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
+    return new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+      minimumFractionDigits: 0
+    }).format(price)
+  }
 
   const getTemperatureIcon = (temp) => {
     switch (temp) {
-      case "hot":
-        return "🔥";
-      case "cold":
-        return "🧊";
-      case "iced":
-        return "❄️";
-      default:
-        return "🔥";
+      case 'hot': return '🔥'
+      case 'cold': return '🧊'
+      case 'iced': return '❄️'
+      default: return '🔥'
     }
-  };
+  }
 
   const getBeverageTypeIcon = (type) => {
     switch (type) {
-      case "coffee":
-        return "☕";
-      case "tea":
-        return "🍃";
-      case "cold":
-        return "🥤";
-      case "food":
-        return "🍽️";
-      default:
-        return "☕";
+      case 'coffee': return '☕'
+      case 'tea': return '🍃'
+      case 'cold': return '🥤'
+      case 'food': return '🍽️'
+      default: return '☕'
     }
-  };
+  }
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200">
@@ -76,7 +74,7 @@ const MenuCard = ({ product, onAddToCart }) => {
             </span>
           </div>
         )}
-
+        
         {/* Badge de destacado */}
         {product.is_featured && (
           <div className="absolute top-3 left-3">
@@ -123,52 +121,38 @@ const MenuCard = ({ product, onAddToCart }) => {
               <span>{product.preparation_time} min</span>
             </div>
           )}
-
-          {product.temperature_options &&
-            product.temperature_options.length > 1 && (
-              <div className="flex items-center space-x-1">
-                <Thermometer className="w-3 h-3" />
-                <span>Múltiples temperaturas</span>
-              </div>
-            )}
+          
+          {product.temperature_options && product.temperature_options.length > 1 && (
+            <div className="flex items-center space-x-1">
+              <Thermometer className="w-3 h-3" />
+              <span>Múltiples temperaturas</span>
+            </div>
+          )}
         </div>
 
         {/* Opciones de temperatura */}
-        {product.temperature_options &&
-          product.temperature_options.length > 1 && (
-            <div className="mb-3">
-              <p className="text-xs font-medium text-gray-700 mb-2">
-                Temperatura:
-              </p>
-              <div className="flex space-x-2">
-                {product.temperature_options.map((temp) => (
-                  <button
-                    key={temp}
-                    onClick={() => setSelectedTemp(temp)}
-                    className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                      selectedTemp === temp
-                        ? "text-white"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                    style={
-                      selectedTemp === temp
-                        ? { backgroundColor: tenant?.primary_color }
-                        : {}
-                    }
-                  >
-                    <span>{getTemperatureIcon(temp)}</span>
-                    <span className="capitalize">
-                      {temp === "hot"
-                        ? "Caliente"
-                        : temp === "cold"
-                        ? "Frío"
-                        : "Helado"}
-                    </span>
-                  </button>
-                ))}
-              </div>
+        {product.temperature_options && product.temperature_options.length > 1 && (
+          <div className="mb-3">
+            <p className="text-xs font-medium text-gray-700 mb-2">Temperatura:</p>
+            <div className="flex space-x-2">
+              {product.temperature_options.map((temp) => (
+                <button
+                  key={temp}
+                  onClick={() => setSelectedTemp(temp)}
+                  className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                    selectedTemp === temp
+                      ? 'text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                  style={selectedTemp === temp ? { backgroundColor: tenant?.primary_color } : {}}
+                >
+                  <span>{getTemperatureIcon(temp)}</span>
+                  <span className="capitalize">{temp === 'hot' ? 'Caliente' : temp === 'cold' ? 'Frío' : 'Helado'}</span>
+                </button>
+              ))}
             </div>
-          )}
+          </div>
+        )}
 
         {/* Precio y botones */}
         <div className="flex items-center justify-between">
@@ -188,17 +172,17 @@ const MenuCard = ({ product, onAddToCart }) => {
                   <Minus className="w-4 h-4 text-gray-600" />
                 </button>
               )}
-
+              
               {quantity > 0 && (
                 <span className="w-8 text-center font-semibold text-gray-900">
                   {quantity}
                 </span>
               )}
-
+              
               <button
                 onClick={handleAdd}
                 className="px-4 py-2 rounded-lg font-semibold text-white transition-all duration-200 touch-target hover:shadow-md"
-                style={{ backgroundColor: tenant?.primary_color || "#dc2626" }}
+                style={{ backgroundColor: tenant?.primary_color || '#dc2626' }}
               >
                 {quantity === 0 ? (
                   <div className="flex items-center space-x-1">
@@ -218,7 +202,7 @@ const MenuCard = ({ product, onAddToCart }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MenuCard;
+export default MenuCard

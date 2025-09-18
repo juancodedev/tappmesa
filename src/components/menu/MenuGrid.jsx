@@ -1,98 +1,93 @@
-import { useState, useEffect } from "react";
-import { useTenant } from "../../context/TenantContext";
-import { supabase } from "../../lib/supabase";
-import MenuCard from "./MenuCard";
-import { Coffee, Search } from "lucide-react";
+import { useState, useEffect } from 'react'
+import { useTenant } from '../../context/TenantContext'
+import { supabase } from '../../lib/supabase'
+import MenuCard from './MenuCard'
+import { Coffee, Search } from 'lucide-react'
 
 const MenuGrid = ({ activeCategory, searchTerm }) => {
-  const { tenant } = useTenant();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { tenant } = useTenant()
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    if (!tenant) return;
+    if (!tenant) return
 
     const loadProducts = async () => {
       try {
-        setLoading(true);
-        setError(null);
+        setLoading(true)
+        setError(null)
 
         let query = supabase
-          .from("products")
-          .select(
-            `
+          .from('products')
+          .select(`
             *,
             categories (
               id,
               name,
               slug
             )
-          `
-          )
-          .eq("tenant_id", tenant.id)
-          .order("display_order", { ascending: true });
+          `)
+          .eq('tenant_id', tenant.id)
+          .order('display_order', { ascending: true })
 
         // Filtrar por categoría si no es "all"
-        if (activeCategory && activeCategory !== "all") {
+        if (activeCategory && activeCategory !== 'all') {
           const { data: categoryData } = await supabase
-            .from("categories")
-            .select("id")
-            .eq("tenant_id", tenant.id)
-            .eq("slug", activeCategory)
-            .single();
+            .from('categories')
+            .select('id')
+            .eq('tenant_id', tenant.id)
+            .eq('slug', activeCategory)
+            .single()
 
           if (categoryData) {
-            query = query.eq("category_id", categoryData.id);
+            query = query.eq('category_id', categoryData.id)
           }
         }
 
-        const { data, error } = await query;
+        const { data, error } = await query
 
-        if (error) throw error;
+        if (error) throw error
 
-        setProducts(data || []);
+        setProducts(data || [])
       } catch (error) {
-        console.error("Error loading products:", error);
-        setError(error.message);
+        console.error('Error loading products:', error)
+        setError(error.message)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    loadProducts();
-  }, [tenant, activeCategory]);
+    loadProducts()
+  }, [tenant, activeCategory])
 
   // Filtrar productos por búsqueda
-  const filteredProducts = products.filter((product) => {
-    if (!searchTerm) return true;
-
-    const searchLower = searchTerm.toLowerCase();
+  const filteredProducts = products.filter(product => {
+    if (!searchTerm) return true
+    
+    const searchLower = searchTerm.toLowerCase()
     return (
       product.name.toLowerCase().includes(searchLower) ||
       product.description?.toLowerCase().includes(searchLower) ||
       product.categories?.name.toLowerCase().includes(searchLower)
-    );
-  });
+    )
+  })
 
   const handleAddToCart = (product, quantity, temperature) => {
-    // TODO: Implementar carrito
-    console.log("Add to cart:", {
+    // Ya no es necesario - MenuCard maneja esto directamente
+    console.log('Add to cart:', {
       product: product.name,
       quantity,
       temperature,
-      total: product.price * quantity,
-    });
-  };
+      total: product.price * quantity
+    })
+  }
 
   if (loading) {
     return (
       <div className="space-y-4">
         {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-pulse"
-          >
+          <div key={i} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
             <div className="h-48 bg-gray-200"></div>
             <div className="p-4 space-y-3">
               <div className="h-4 bg-gray-200 rounded w-3/4"></div>
@@ -106,19 +101,17 @@ const MenuGrid = ({ activeCategory, searchTerm }) => {
           </div>
         ))}
       </div>
-    );
+    )
   }
 
   if (error) {
     return (
       <div className="text-center py-12">
         <div className="text-red-500 text-lg mb-2">⚠️</div>
-        <h3 className="text-gray-900 font-medium mb-1">
-          Error cargando el menú
-        </h3>
+        <h3 className="text-gray-900 font-medium mb-1">Error cargando el menú</h3>
         <p className="text-gray-600 text-sm">{error}</p>
       </div>
-    );
+    )
   }
 
   if (filteredProducts.length === 0) {
@@ -127,9 +120,7 @@ const MenuGrid = ({ activeCategory, searchTerm }) => {
         {searchTerm ? (
           <>
             <Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-gray-900 font-medium mb-1">
-              No se encontraron resultados
-            </h3>
+            <h3 className="text-gray-900 font-medium mb-1">No se encontraron resultados</h3>
             <p className="text-gray-600 text-sm">
               No hay productos que coincidan con "{searchTerm}"
             </p>
@@ -144,7 +135,7 @@ const MenuGrid = ({ activeCategory, searchTerm }) => {
           </>
         )}
       </div>
-    );
+    )
   }
 
   return (
@@ -152,8 +143,7 @@ const MenuGrid = ({ activeCategory, searchTerm }) => {
       {/* Contador de resultados */}
       {searchTerm && (
         <div className="text-sm text-gray-600 mb-4">
-          {filteredProducts.length} resultado
-          {filteredProducts.length !== 1 ? "s" : ""} para "{searchTerm}"
+          {filteredProducts.length} resultado{filteredProducts.length !== 1 ? 's' : ''} para "{searchTerm}"
         </div>
       )}
 
@@ -163,12 +153,11 @@ const MenuGrid = ({ activeCategory, searchTerm }) => {
           <MenuCard
             key={product.id}
             product={product}
-            onAddToCart={handleAddToCart}
           />
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MenuGrid;
+export default MenuGrid

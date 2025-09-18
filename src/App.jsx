@@ -1,4 +1,5 @@
 import { TenantProvider, useTenant } from './context/TenantContext'
+import { CartProvider } from './context/CartContext'
 import MenuLayout from './components/layout/MenuLayout'
 
 // Componente para debugging
@@ -103,7 +104,7 @@ const TenantApp = () => {
     )
   }
 
-  return <MenuLayout />
+  return <CartProvider><MenuLayout /></CartProvider>
 }
 
 // Error Boundary Component
