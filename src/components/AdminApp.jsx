@@ -12,7 +12,8 @@ import {
   X,
   LogOut,
   ShoppingBag,
-  Calendar
+  Calendar,
+  Tag
 } from 'lucide-react'
 
 // Importar componentes reales
@@ -25,6 +26,10 @@ import StockManagerComponent from './admin/StockManager'
 import SettingsComponent from './admin/Settings'
 import OrdersManagerComponent from './admin/OrdersManager'
 import ReservationsManager from './admin/ReservationsManager';
+import CustomersManager from './admin/CustomersManager'
+import CategoriesManager from './admin/CategoriesManager'
+import ProductsManager from './admin/ProductsManager'
+import TenantTester from './TenantTester'
 
 // Importar supabase para obtener tenant ID
 import { supabase } from '../lib/supabase'
@@ -84,6 +89,10 @@ const AdminApp = () => {
     { name: 'Estadísticas', href: '/admin/analytics', icon: BarChart3, current: false },
     { name: 'Stock', href: '/admin/stock', icon: Package, current: false },
     { name: 'Configuración', href: '/admin/settings', icon: Settings, current: false },
+    { name: 'Multi-Tenant', href: '/admin/tenant-test', icon: Coffee, current: false },
+    { name: 'Clientes', href: '/admin/customers', icon: Users, current: false },
+    { name: 'Categorías', href: '/admin/categories', icon: Tag, current: false },
+    { name: 'Productos', href: '/admin/products', icon: Package, current: false },
   ]
 
   return (
@@ -146,6 +155,10 @@ const AdminApp = () => {
             <Route path="/analytics" element={<AnalyticsComponent />} />
             <Route path="/stock" element={<StockManagerComponent />} />
             <Route path="/settings" element={<SettingsComponent />} />
+            <Route path="/tenant-test" element={<TenantTester />} />
+            <Route path="/customers" element={<CustomersManager />} />
+            <Route path="/categories" element={<CategoriesManager />} />
+            <Route path="/products" element={<ProductsManager />} />
           </Routes>
         </main>
       </div>
