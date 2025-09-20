@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useCart } from '../../context/CartContext'
 import { useTenant } from '../../context/TenantContext'
-import { X, Plus, Minus, ShoppingCart, Trash2, MessageSquare } from 'lucide-react'
+import { X, Plus, Minus, ShoppingCart, Trash2, MessageSquare, CheckCircle, Clock } from 'lucide-react'
 
 const CartItem = ({ item }) => {
   const { updateQuantity, removeItem, updateNotes, formatPrice, getItemTotal } = useCart()
@@ -149,7 +149,7 @@ const CartItem = ({ item }) => {
 }
 
 const Cart = () => {
-  const { tenant } = useTenant()
+  const { tenant, table, tableSession } = useTenant()
   const { 
     items, 
     isOpen, 
@@ -160,33 +160,107 @@ const Cart = () => {
     getTotal, 
     getTotalItems,
     formatPrice,
-    isEmpty 
+    isEmpty,
+    placeOrder,
+    placingOrder
   } = useCart()
 
   const [customerInfo, setCustomerInfo] = useState({
     name: '',
     phone: '',
-    tableNumber: '',
+    tableNumber: table?.number || '',
     notes: ''
   })
 
-  const handlePlaceOrder = () => {
+  const [orderResult, setOrderResult] = useState(null)
+
+  const handlePlaceOrder = async () => {
     if (isEmpty) return
 
-    // TODO: Enviar pedido a Supabase
-    const orderData = {
-      tenant_id: tenant.id,
-      items: items,
-      customer: customerInfo,
-      totals: {
-        subtotal: getSubtotal(),
-        tax: getTax(),
-        total: getTotal()
-      }
+    // Validaciones
+    if (!customerInfo.name.trim()) {
+      alert('Por favor ingresa tu nombre')
+      return
     }
 
-    console.log('Placing order:', orderData)
-    alert('¡Pedido enviado! (En desarrollo)')
+    if (!customerInfo.phone.trim()) {
+      alert('Por favor ingresa tu teléfono')
+      return
+    }
+
+    // Realizar pedido
+    const result = await placeOrder(customerInfo)
+    
+    if (result.success) {
+      setOrderResult(result)
+      // Limpiar formulario
+      setCustomerInfo({
+        name: '',
+        phone: '',
+        tableNumber: table?.number || '',
+        notes: ''
+      })
+    } else {
+      alert(result.error || 'Error al procesar el pedido')
+    }
+  }
+
+  // Si hay un resultado exitoso, mostrar confirmación
+  if (orderResult && orderResult.success) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end sm:items-center sm:justify-center">
+        <div className="bg-white w-full h-auto sm:w-96 sm:rounded-lg overflow-hidden">
+          {/* Success Header */}
+          <div className="bg-green-50 p-6 text-center border-b border-green-200">
+            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+            <h2 className="text-xl font-bold text-green-900 mb-2">
+              ¡Pedido Enviado!
+            </h2>
+            <p className="text-green-700">
+              Número de orden: <span className="font-mono font-bold">{orderResult.order.order_number}</span>
+            </p>
+          </div>
+
+          {/* Order Details */}
+          <div className="p-6 space-y-4">
+            <div className="flex items-center justify-center space-x-2 text-gray-600">
+              <Clock className="w-5 h-5" />
+              <span>Tiempo estimado: <strong>{orderResult.order.estimated_time} minutos</strong></span>
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h3 className="font-semibold text-blue-900 mb-2">Información del pedido:</h3>
+              <div className="space-y-1 text-sm text-blue-800">
+                <p><strong>Cliente:</strong> {orderResult.order.customer_name}</p>
+                <p><strong>Teléfono:</strong> {orderResult.order.customer_phone}</p>
+                {orderResult.order.table_number && (
+                  <p><strong>Mesa:</strong> {orderResult.order.table_number}</p>
+                )}
+                <p><strong>Total:</strong> {formatPrice(orderResult.order.total)}</p>
+              </div>
+            </div>
+
+            <div className="text-center text-sm text-gray-600">
+              <p>Te notificaremos cuando tu pedido esté listo.</p>
+              <p>¡Gracias por tu compra!</p>
+            </div>
+          </div>
+
+          {/* Close Button */}
+          <div className="p-6 border-t border-gray-200">
+            <button
+              onClick={() => {
+                setOrderResult(null)
+                closeCart()
+              }}
+              className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors"
+            >
+              Continuar
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (!isOpen) return null
@@ -296,10 +370,17 @@ const Cart = () => {
               </button>
               <button
                 onClick={handlePlaceOrder}
-                disabled={!customerInfo.name || !customerInfo.phone}
-                className="flex-2 bg-primary text-white py-3 rounded-lg font-medium hover:bg-red-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                disabled={!customerInfo.name || !customerInfo.phone || placingOrder}
+                className="flex-2 bg-primary text-white py-3 rounded-lg font-medium hover:bg-red-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
-                Enviar Pedido
+                {placingOrder ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>Enviando...</span>
+                  </>
+                ) : (
+                  <span>Enviar Pedido</span>
+                )}
               </button>
             </div>
           </div>

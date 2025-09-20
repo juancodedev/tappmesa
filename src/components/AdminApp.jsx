@@ -10,7 +10,8 @@ import {
   Settings,
   Menu,
   X,
-  LogOut
+  LogOut,
+  ShoppingBag
 } from 'lucide-react'
 
 // Importar componentes reales
@@ -21,6 +22,7 @@ import UsersManagerComponent from './admin/UsersManager'
 import AnalyticsComponent from './admin/Analytics'
 import StockManagerComponent from './admin/StockManager'
 import SettingsComponent from './admin/Settings'
+import OrdersManagerComponent from './admin/OrdersManager'
 
 // Importar supabase para obtener tenant ID
 import { supabase } from '../lib/supabase'
@@ -72,6 +74,7 @@ const AdminApp = () => {
 
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard, current: true },
+    { name: 'Pedidos', href: '/admin/orders', icon: ShoppingBag, current: false },
     { name: 'Mesas', href: '/admin/tables', icon: Coffee, current: false },
     { name: 'Códigos QR', href: '/admin/qr', icon: QrCode, current: false },
     { name: 'Usuarios', href: '/admin/users', icon: Users, current: false },
@@ -132,6 +135,7 @@ const AdminApp = () => {
         <main className="min-h-screen">
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/orders" element={<OrdersManagerComponent />} />
             <Route path="/tables" element={<TablesManagerComponent />} />
             <Route path="/qr" element={<QRGeneratorWrapper />} />
             <Route path="/users" element={<UsersManagerComponent />} />

@@ -165,7 +165,8 @@ export const CartProvider = ({ children }) => {
 
   // Función para realizar el pedido
   const placeOrder = async (customerInfo) => {
-    if (isEmpty || !tenant) return { success: false, error: 'Carrito vacío o sin cafetería' }
+    // if (isEmpty || !tenant) return { success: false, error: 'Carrito vacío o sin cafetería' }
+    if (items.length === 0 || !tenant) return { success: false, error: 'Carrito vacío o sin cafetería' }
 
     try {
       setPlacingOrder(true)
