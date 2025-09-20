@@ -30,6 +30,7 @@ import CustomersManager from './admin/CustomersManager'
 import CategoriesManager from './admin/CategoriesManager'
 import ProductsManager from './admin/ProductsManager'
 import TenantTester from './TenantTester'
+import CompleteStockManager from './admin/CompleteStockManager'
 
 // Importar supabase para obtener tenant ID
 import { supabase } from '../lib/supabase'
@@ -153,7 +154,8 @@ const AdminApp = () => {
             <Route path="/qr" element={<QRGeneratorWrapper />} />
             <Route path="/users" element={<UsersManagerComponent />} />
             <Route path="/analytics" element={<AnalyticsComponent />} />
-            <Route path="/stock" element={<StockManagerComponent />} />
+            {/* <Route path="/stock" element={<StockManagerComponent />} /> */}
+            <Route path="/stock" element={<CompleteStockManager />} />
             <Route path="/settings" element={<SettingsComponent />} />
             <Route path="/tenant-test" element={<TenantTester />} />
             <Route path="/customers" element={<CustomersManager />} />
