@@ -1,302 +1,203 @@
-import { createContext, useContext, useState, useEffect } from 'react'
-import { supabase } from '../lib/supabase'
+// src/context/AuthContext.jsx
+import { createContext, useContext, useReducer, useEffect } from 'react';
 
-const AuthContext = createContext()
+const AuthContext = createContext();
 
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider')
+const initialState = {
+  user: null,
+  isAuthenticated: false,
+  loading: true,
+  error: null,
+  registrationStep: 1,
+  trialInfo: null
+};
+
+const authActions = {
+  SET_USER: 'SET_USER',
+  SET_LOADING: 'SET_LOADING',
+  SET_ERROR: 'SET_ERROR',
+  LOGOUT: 'LOGOUT',
+  SET_REGISTRATION_STEP: 'SET_REGISTRATION_STEP',
+  SET_TRIAL_INFO: 'SET_TRIAL_INFO'
+};
+
+function authReducer(state, action) {
+  switch (action.type) {
+    case authActions.SET_USER:
+      return {
+        ...state,
+        user: action.payload,
+        isAuthenticated: !!action.payload,
+        loading: false,
+        error: null
+      };
+    case authActions.SET_LOADING:
+      return { ...state, loading: action.payload };
+    case authActions.SET_ERROR:
+      return { ...state, error: action.payload, loading: false };
+    case authActions.LOGOUT:
+      return {
+        ...state,
+        user: null,
+        isAuthenticated: false,
+        trialInfo: null,
+        loading: false
+      };
+    case authActions.SET_REGISTRATION_STEP:
+      return { ...state, registrationStep: action.payload };
+    case authActions.SET_TRIAL_INFO:
+      return { ...state, trialInfo: action.payload };
+    default:
+      return state;
   }
-  return context
 }
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [permissions, setPermissions] = useState([])
+export function AuthProvider({ children }) {
+  const [state, dispatch] = useReducer(authReducer, initialState);
 
+  // Verificar autenticación al cargar
   useEffect(() => {
-    checkAuthStatus()
-    
-    // Limpiar sesiones expiradas cada 5 minutos
-    const cleanupInterval = setInterval(cleanupExpiredSessions, 5 * 60 * 1000)
-    return () => clearInterval(cleanupInterval)
-  }, [])
+    checkAuthStatus();
+  }, []);
 
   const checkAuthStatus = async () => {
     try {
-      setLoading(true)
-      const token = localStorage.getItem('admin_token')
-      
+      const token = localStorage.getItem('tappmesa-token');
       if (!token) {
-        setUser(null)
-        setPermissions([])
-        return
+        dispatch({ type: authActions.SET_LOADING, payload: false });
+        return;
       }
 
-      // Verificar sesión en base de datos
-      const { data: sessionData, error: sessionError } = await supabase
-        .from('admin_sessions')
-        .select(`
-          *,
-          admin_users (
-            *,
-            tenants (
-              id,
-              name,
-              slug
-            )
-          )
-        `)
-        .eq('session_token', token)
-        .gt('expires_at', new Date().toISOString())
-        .single()
+      const response = await fetch('/api/auth/verify', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-      if (sessionError || !sessionData) {
-        console.log('Sesión inválida o expirada')
-        await logout()
-        return
+      if (response.ok) {
+        const userData = await response.json();
+        dispatch({ type: authActions.SET_USER, payload: userData });
+        
+        // Verificar estado del trial
+        if (userData.plan === 'trial') {
+          await checkTrialStatus(userData.id);
+        }
+      } else {
+        localStorage.removeItem('tappmesa-token');
+        dispatch({ type: authActions.SET_LOADING, payload: false });
       }
-
-      const userData = sessionData.admin_users
-      setUser({
-        id: userData.id,
-        email: userData.email,
-        full_name: userData.full_name,
-        role: userData.role,
-        tenant_id: userData.tenant_id,
-        tenant: userData.tenants,
-        last_login: userData.last_login,
-        session_id: sessionData.id
-      })
-
-      // Cargar permisos
-      await loadPermissions(userData.role)
-
-      // Actualizar último acceso
-      await supabase
-        .from('admin_users')
-        .update({ last_login: new Date().toISOString() })
-        .eq('id', userData.id)
-
-      console.log('✅ Usuario autenticado:', userData.full_name, '- Rol:', userData.role)
-
     } catch (error) {
-      console.error('Error checking auth status:', error)
-      await logout()
-    } finally {
-      setLoading(false)
+      console.error('Error checking auth status:', error);
+      dispatch({ type: authActions.SET_LOADING, payload: false });
     }
-  }
+  };
 
-  const loadPermissions = async (role) => {
+  const checkTrialStatus = async (userId) => {
     try {
-      const { data, error } = await supabase
-        .from('role_permissions')
-        .select('resource, action')
-        .eq('role', role)
-
-      if (error) throw error
-
-      setPermissions(data || [])
+      const response = await fetch(`/api/trial/status/${userId}`);
+      if (response.ok) {
+        const trialData = await response.json();
+        dispatch({ type: authActions.SET_TRIAL_INFO, payload: trialData });
+      }
     } catch (error) {
-      console.error('Error loading permissions:', error)
-      setPermissions([])
+      console.error('Error checking trial status:', error);
     }
-  }
+  };
+
+  const register = async (registrationData) => {
+    dispatch({ type: authActions.SET_LOADING, payload: true });
+    dispatch({ type: authActions.SET_ERROR, payload: null });
+
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...registrationData,
+          plan: 'trial',
+          trialDuration: 60 // 2 meses en días
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('tappmesa-token', data.token);
+        dispatch({ type: authActions.SET_USER, payload: data.user });
+        dispatch({ type: authActions.SET_TRIAL_INFO, payload: data.trialInfo });
+        return { success: true, user: data.user };
+      } else {
+        dispatch({ type: authActions.SET_ERROR, payload: data.message });
+        return { success: false, error: data.message };
+      }
+    } catch (error) {
+      const errorMessage = 'Error al registrar. Intenta nuevamente.';
+      dispatch({ type: authActions.SET_ERROR, payload: errorMessage });
+      return { success: false, error: errorMessage };
+    }
+  };
 
   const login = async (email, password) => {
-    try {
-      // En producción, esto debería ser una llamada a tu API de autenticación
-      // Por ahora, simulamos la verificación directa en la base de datos
-      
-      const { data: userData, error } = await supabase
-        .from('admin_users')
-        .select(`
-          *,
-          tenants (
-            id,
-            name,
-            slug
-          )
-        `)
-        .eq('email', email.toLowerCase())
-        .eq('is_active', true)
-        .single()
+    dispatch({ type: authActions.SET_LOADING, payload: true });
+    dispatch({ type: authActions.SET_ERROR, payload: null });
 
-      if (error || !userData) {
-        throw new Error('Credenciales inválidas')
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('tappmesa-token', data.token);
+        dispatch({ type: authActions.SET_USER, payload: data.user });
+        
+        if (data.user.plan === 'trial') {
+          await checkTrialStatus(data.user.id);
+        }
+        
+        return { success: true, user: data.user };
+      } else {
+        dispatch({ type: authActions.SET_ERROR, payload: data.message });
+        return { success: false, error: data.message };
       }
-
-      // En producción, verificar password_hash con bcrypt
-      // Por ahora, aceptamos cualquier password para demo
-      // const isValidPassword = await bcrypt.compare(password, userData.password_hash)
-      // if (!isValidPassword) {
-      //   throw new Error('Credenciales inválidas')
-      // }
-
-      // Crear nueva sesión
-      const sessionToken = generateSessionToken()
-      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 horas
-
-      const { data: sessionData, error: sessionError } = await supabase
-        .from('admin_sessions')
-        .insert({
-          user_id: userData.id,
-          session_token: sessionToken,
-          expires_at: expiresAt.toISOString(),
-          ip_address: await getClientIP(),
-          user_agent: navigator.userAgent
-        })
-        .select()
-        .single()
-
-      if (sessionError) throw sessionError
-
-      // Guardar token en localStorage
-      localStorage.setItem('admin_token', sessionToken)
-
-      // Establecer usuario
-      setUser({
-        id: userData.id,
-        email: userData.email,
-        full_name: userData.full_name,
-        role: userData.role,
-        tenant_id: userData.tenant_id,
-        tenant: userData.tenants,
-        session_id: sessionData.id
-      })
-
-      // Cargar permisos
-      await loadPermissions(userData.role)
-
-      // Log de auditoría
-      await logAction('login', 'admin_session', sessionData.id)
-
-      console.log('✅ Login exitoso:', userData.full_name)
-      return { success: true }
-
     } catch (error) {
-      console.error('Error en login:', error)
-      return { 
-        success: false, 
-        error: error.message || 'Error de autenticación' 
-      }
+      const errorMessage = 'Error al iniciar sesión. Intenta nuevamente.';
+      dispatch({ type: authActions.SET_ERROR, payload: errorMessage });
+      return { success: false, error: errorMessage };
     }
-  }
+  };
 
-  const logout = async () => {
-    try {
-      const token = localStorage.getItem('admin_token')
-      
-      if (token && user) {
-        // Eliminar sesión de base de datos
-        await supabase
-          .from('admin_sessions')
-          .delete()
-          .eq('session_token', token)
+  const logout = () => {
+    localStorage.removeItem('tappmesa-token');
+    dispatch({ type: authActions.LOGOUT });
+  };
 
-        // Log de auditoría
-        await logAction('logout', 'admin_session', user.session_id)
-      }
-
-      // Limpiar estado local
-      localStorage.removeItem('admin_token')
-      setUser(null)
-      setPermissions([])
-
-      console.log('✅ Logout exitoso')
-
-    } catch (error) {
-      console.error('Error en logout:', error)
-      // Limpiar estado local aunque falle la base de datos
-      localStorage.removeItem('admin_token')
-      setUser(null)
-      setPermissions([])
-    }
-  }
-
-  const hasPermission = (resource, action) => {
-    if (!user) return false
-    
-    // Super admin tiene todos los permisos
-    if (user.role === 'super_admin') return true
-    
-    // Verificar permisos específicos
-    return permissions.some(p => p.resource === resource && p.action === action)
-  }
-
-  const canAccessTenant = (tenantId) => {
-    if (!user) return false
-    
-    // Super admin puede acceder a todos los tenants
-    if (user.role === 'super_admin') return true
-    
-    // Otros roles solo pueden acceder a su tenant
-    return user.tenant_id === tenantId
-  }
-
-  const logAction = async (action, resource, resourceId = null, oldValues = null, newValues = null) => {
-    if (!user) return
-
-    try {
-      await supabase.rpc('log_admin_action', {
-        p_user_id: user.id,
-        p_action: action,
-        p_resource: resource,
-        p_resource_id: resourceId,
-        p_old_values: oldValues,
-        p_new_values: newValues
-      })
-    } catch (error) {
-      console.error('Error logging action:', error)
-    }
-  }
-
-  const cleanupExpiredSessions = async () => {
-    try {
-      await supabase.rpc('cleanup_expired_sessions')
-    } catch (error) {
-      console.error('Error cleaning up sessions:', error)
-    }
-  }
-
-  const generateSessionToken = () => {
-    return Array.from(crypto.getRandomValues(new Uint8Array(32)))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('')
-  }
-
-  const getClientIP = async () => {
-    try {
-      // En producción, esto debería venir del servidor
-      return '127.0.0.1'
-    } catch {
-      return null
-    }
-  }
+  const setRegistrationStep = (step) => {
+    dispatch({ type: authActions.SET_REGISTRATION_STEP, payload: step });
+  };
 
   const value = {
-    user,
-    loading,
-    permissions,
+    ...state,
+    register,
     login,
     logout,
-    hasPermission,
-    canAccessTenant,
-    logAction,
-    isAuthenticated: !!user,
-    isSuperAdmin: user?.role === 'super_admin',
-    isTenantAdmin: user?.role === 'tenant_admin',
-    isStaff: user?.role === 'staff'
-  }
+    setRegistrationStep,
+    checkTrialStatus
+  };
 
   return (
     <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
-  )
+  );
 }
 
-export default AuthProvider
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth debe ser usado dentro de un AuthProvider');
+  }
+  return context;
+}
+
