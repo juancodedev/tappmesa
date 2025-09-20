@@ -28,10 +28,12 @@ const TableApp = () => {
             El código de mesa no es válido o la mesa no está disponible.
           </p>
           <button
-            onClick={() => (window.location.href = "/")}
+            onClick={() =>
+              (window.location.href = "http://cafe-central.tappmesa.local:5173")
+            }
             className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
           >
-            Volver al inicio
+            Volver al menú principal
           </button>
         </div>
       </div>
@@ -42,7 +44,7 @@ const TableApp = () => {
     <CartProvider>
       <div className="min-h-screen bg-gray-50">
         {/* Header específico de mesa */}
-        <div className="bg-white border-b border-gray-200 px-4 py-3">
+        <div className="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-50">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-lg font-semibold text-gray-900">
@@ -55,19 +57,19 @@ const TableApp = () => {
             <div className="text-right">
               <p className="text-xs text-gray-500">Sesión</p>
               <p className="text-sm font-mono text-gray-700">
-                {tableSession?.session_code}
+                {tableSession?.session_code || "Cargando..."}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Menú normal */}
-        <div className="pt-0">
+        {/* Menú normal pero con padding top para el header fijo */}
+        <div style={{ paddingTop: "0px" }}>
           <MenuLayout />
         </div>
 
         {/* Información de la mesa fija en la parte inferior */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 z-30">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 z-30 safe-area-bottom">
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center space-x-3">
               <span className="text-gray-600">Mesa:</span>
