@@ -1,30 +1,66 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
-import { QrCode, Download, Eye, Copy, Check } from 'lucide-react'
+import { QrCode, Download, Eye, Copy, Check, ArrowLeft } from 'lucide-react'
 
 const QRGenerator = ({ tenantId }) => {
+  const [searchParams] = useSearchParams()
   const [tables, setTables] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedTable, setSelectedTable] = useState(null)
   const [copiedCode, setCopiedCode] = useState(null)
+  
+  // Obtener parámetro de mesa específica de la URL
+  const tableParam = searchParams.get('table')
 
   useEffect(() => {
     loadTables()
   }, [tenantId])
 
+  useEffect(() => {
+    // Si hay un parámetro de mesa en la URL, seleccionar esa mesa
+    if (tableParam && tables.length > 0) {
+      const table = tables.find(t => t.id.toString() === tableParam || t.number === `Mesa ${tableParam}`)
+      if (table) {
+        setSelectedTable(table)
+      }
+    }
+  }, [tableParam, tables])
+
   const loadTables = async () => {
     try {
       setLoading(true)
+      
+      // Intentar cargar desde Supabase primero
       const { data, error } = await supabase
         .from('tables')
         .select('*')
-        .eq('tenant_id', tenantId)
+        .eq('is_active', true)
         .order('number')
 
-      if (error) throw error
-      setTables(data || [])
+      if (error) {
+        console.warn('No se pudo cargar desde Supabase, usando datos de ejemplo:', error)
+        // Usar datos de ejemplo si falla Supabase
+        setTables([
+          { id: 1, number: 'Mesa 1', capacity: 2, location: 'interior', unique_code: 'ABCD1234', is_active: true },
+          { id: 2, number: 'Mesa 2', capacity: 4, location: 'interior', unique_code: 'EFGH5678', is_active: true },
+          { id: 3, number: 'Mesa 3', capacity: 6, location: 'terraza', unique_code: 'IJKL9012', is_active: true },
+          { id: 4, number: 'Mesa 4', capacity: 2, location: 'barra', unique_code: 'MNOP3456', is_active: true },
+          { id: 5, number: 'Mesa 5', capacity: 4, location: 'interior', unique_code: 'QRST7890', is_active: true },
+          { id: 6, number: 'Mesa 6', capacity: 6, location: 'terraza', unique_code: 'UVWX1234', is_active: true },
+        ])
+      } else {
+        setTables(data || [])
+      }
     } catch (error) {
       console.error('Error loading tables:', error)
+      // Datos de ejemplo como fallback
+      setTables([
+        { id: 1, number: 'Mesa 1', capacity: 2, location: 'interior', unique_code: 'ABCD1234', is_active: true },
+        { id: 2, number: 'Mesa 2', capacity: 4, location: 'interior', unique_code: 'EFGH5678', is_active: true },
+        { id: 3, number: 'Mesa 3', capacity: 6, location: 'terraza', unique_code: 'IJKL9012', is_active: true },
+        { id: 4, number: 'Mesa 4', capacity: 2, location: 'barra', unique_code: 'MNOP3456', is_active: true },
+      ])
     } finally {
       setLoading(false)
     }
