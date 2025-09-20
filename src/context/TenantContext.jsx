@@ -140,11 +140,11 @@ export const TenantProvider = ({ children }) => {
         throw new Error('No se pudo identificar el local')
       }
       
-      // Buscar cafetería por subdominio
+      // Buscar cafetería por slug (no subdomain)
       const { data: tenantData, error: tenantError } = await supabase
         .from('tenants')
         .select('*')
-        .eq('subdomain', subdomain)
+        .eq('slug', subdomain)  // ✅ Cambiado de 'subdomain' a 'slug'
         .eq('is_active', true)
         .single()
 
@@ -180,8 +180,12 @@ export const TenantProvider = ({ children }) => {
       
       // Aplicar branding dinámico
       document.title = `${tenantData.name} - Tappmesa`
-      document.documentElement.style.setProperty('--primary-color', tenantData.primary_color)
-      document.documentElement.style.setProperty('--secondary-color', tenantData.secondary_color)
+      if (tenantData.primary_color) {
+        document.documentElement.style.setProperty('--primary-color', tenantData.primary_color)
+      }
+      if (tenantData.secondary_color) {
+        document.documentElement.style.setProperty('--secondary-color', tenantData.secondary_color)
+      }
       
     } catch (error) {
       console.error('❌ Error loading tenant:', error)
@@ -273,16 +277,16 @@ export const useTenantUrl = () => {
   
   if (!tenant) return null
   
-  // Generar URL base del tenant
+  // Generar URL base del tenant usando el slug
   const hostname = window.location.hostname
   
   if (hostname.endsWith('.local')) {
-    return `http://${tenant.subdomain}.tappmesa.local:5173`
+    return `http://${tenant.slug}.tappmesa.local:5173`  // ✅ Usando slug
   }
   
   if (hostname.includes('localhost')) {
-    return `http://localhost:5173?cafe=${tenant.subdomain}`
+    return `http://localhost:5173?cafe=${tenant.slug}`  // ✅ Usando slug
   }
   
-  return `https://${tenant.subdomain}.tappmesa.com`
+  return `https://${tenant.slug}.tappmesa.com`  // ✅ Usando slug
 }
