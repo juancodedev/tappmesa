@@ -19,6 +19,7 @@ const OrdersManager = () => {
   const [statusFilter, setStatusFilter] = useState('all')
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [currentTenant, setCurrentTenant] = useState(null)
+  const [updating, setUpdating] = useState(false)
 
   useEffect(() => {
     loadTenant()
@@ -35,32 +36,46 @@ const OrdersManager = () => {
 
   const loadTenant = async () => {
     try {
-      const { data, error } = await supabase
+      // Primero intentar cargar cualquier tenant disponible
+      const { data: tenants, error } = await supabase
         .from('tenants')
         .select('*')
-        .eq('slug', 'cafe-central')
-        .single()
+        .limit(1)
 
-      if (error) {
-        console.warn('No se pudo cargar tenant:', error)
-        setCurrentTenant({ 
-          id: 'mock-tenant-id', 
-          name: 'Café Central (Demo)' 
-        })
+      if (error || !tenants || tenants.length === 0) {
+        console.warn('No se encontraron tenants en la base de datos')
+        // Crear un tenant de ejemplo si no existe ninguno
+        const { data: newTenant, error: createError } = await supabase
+          .from('tenants')
+          .insert({
+            name: 'Café Central',
+            slug: 'cafe-central',
+            is_active: true
+          })
+          .select()
+          .single()
+
+        if (createError) {
+          console.error('Error creando tenant:', createError)
+          alert('Error: No se pudo configurar el tenant. Revisa la configuración de Supabase.')
+          return
+        }
+        
+        setCurrentTenant(newTenant)
+        console.log('✅ Tenant creado:', newTenant.name)
       } else {
-        setCurrentTenant(data)
-        console.log('✅ Tenant cargado:', data.name)
+        setCurrentTenant(tenants[0])
+        console.log('✅ Tenant cargado:', tenants[0].name)
       }
     } catch (error) {
       console.error('Error loading tenant:', error)
-      setCurrentTenant({ 
-        id: 'mock-tenant-id', 
-        name: 'Café Central (Demo)' 
-      })
+      alert('Error conectando con la base de datos. Verifica tu configuración de Supabase.')
     }
   }
 
   const loadOrders = async () => {
+    if (!currentTenant) return
+
     try {
       setLoading(true)
       
@@ -87,68 +102,67 @@ const OrdersManager = () => {
       const { data, error } = await query
 
       if (error) {
-        console.warn('No se pudo cargar pedidos desde Supabase:', error)
-        // Datos de ejemplo si falla
-        setOrders([
-          {
-            id: '1',
-            order_number: '241219-001',
-            customer_name: 'Juan Pérez',
-            customer_phone: '+56912345678',
-            table_number: 'Mesa 3',
-            status: 'preparing',
-            total: 12500,
-            estimated_time: 15,
-            created_at: new Date().toISOString(),
-            order_items: [
-              { quantity: 2, products: { name: 'Latte', price: 3500 }, total_price: 7000 },
-              { quantity: 1, products: { name: 'Croissant', price: 2500 }, total_price: 2500 }
-            ]
-          },
-          {
-            id: '2',
-            order_number: '241219-002',
-            customer_name: 'María González',
-            customer_phone: '+56987654321',
-            table_number: 'Mesa 1',
-            status: 'pending',
-            total: 8900,
-            estimated_time: 12,
-            created_at: new Date(Date.now() - 5 * 60000).toISOString(),
-            order_items: [
-              { quantity: 1, products: { name: 'Cappuccino', price: 3200 }, total_price: 3200 },
-              { quantity: 2, products: { name: 'Espresso', price: 2500 }, total_price: 5000 }
-            ]
-          }
-        ])
-      } else {
-        setOrders(data || [])
-        console.log('✅ Pedidos cargados:', data?.length || 0)
+        console.error('Error cargando pedidos:', error)
+        setOrders([])
+        return
       }
+
+      setOrders(data || [])
+      console.log('✅ Pedidos cargados:', data?.length || 0)
+      
     } catch (error) {
       console.error('Error loading orders:', error)
+      setOrders([])
     } finally {
       setLoading(false)
     }
   }
 
   const updateOrderStatus = async (orderId, newStatus) => {
+    if (!orderId || updating) return
+
     try {
-      const { error } = await supabase
+      setUpdating(true)
+      console.log(`Actualizando pedido ${orderId} a estado: ${newStatus}`)
+
+      const { data, error } = await supabase
         .from('orders')
         .update({ 
           status: newStatus,
           updated_at: new Date().toISOString()
         })
         .eq('id', orderId)
+        .eq('tenant_id', currentTenant.id) // Asegurar que pertenece al tenant actual
+        .select()
 
-      if (error) throw error
+      if (error) {
+        console.error('Error de Supabase:', error)
+        throw error
+      }
+
+      if (!data || data.length === 0) {
+        throw new Error('No se encontró el pedido o no tienes permisos para actualizarlo')
+      }
       
-      console.log('✅ Estado del pedido actualizado')
-      await loadOrders()
+      console.log('✅ Estado del pedido actualizado:', data[0])
+      
+      // Actualizar el estado local inmediatamente
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.id === orderId 
+            ? { ...order, status: newStatus, updated_at: new Date().toISOString() }
+            : order
+        )
+      )
+
+      // Recargar después de un momento para sincronizar
+      setTimeout(loadOrders, 1000)
+      
     } catch (error) {
       console.error('Error updating order status:', error)
-      alert('Error al actualizar el estado del pedido')
+      alert(`Error al actualizar el pedido: ${error.message}`)
+    } finally {
+      setUpdating(false)
     }
   }
 
@@ -219,6 +233,17 @@ const OrdersManager = () => {
     return order.status === statusFilter
   })
 
+  if (loading && !currentTenant) {
+    return (
+      <div className="p-6">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Configurando sistema...</p>
+        </div>
+      </div>
+    )
+  }
+
   if (loading) {
     return (
       <div className="p-6">
@@ -246,9 +271,10 @@ const OrdersManager = () => {
         </div>
         <button
           onClick={loadOrders}
-          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+          disabled={loading}
+          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
         >
-          <RefreshCw className="w-4 h-4" />
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           <span>Actualizar</span>
         </button>
       </div>
@@ -384,15 +410,17 @@ const OrdersManager = () => {
                     <>
                       <button
                         onClick={() => updateOrderStatus(order.id, 'preparing')}
-                        className="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                        disabled={updating}
+                        className="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
                       >
-                        Preparar
+                        {updating ? 'Actualizando...' : 'Preparar'}
                       </button>
                       <button
                         onClick={() => updateOrderStatus(order.id, 'cancelled')}
-                        className="bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
+                        disabled={updating}
+                        className="bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
                       >
-                        Cancelar
+                        {updating ? 'Actualizando...' : 'Cancelar'}
                       </button>
                     </>
                   )}
@@ -401,15 +429,17 @@ const OrdersManager = () => {
                     <>
                       <button
                         onClick={() => updateOrderStatus(order.id, 'ready')}
-                        className="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
+                        disabled={updating}
+                        className="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
                       >
-                        Marcar Listo
+                        {updating ? 'Actualizando...' : 'Marcar Listo'}
                       </button>
                       <button
                         onClick={() => updateOrderStatus(order.id, 'cancelled')}
-                        className="bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
+                        disabled={updating}
+                        className="bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
                       >
-                        Cancelar
+                        {updating ? 'Actualizando...' : 'Cancelar'}
                       </button>
                     </>
                   )}
@@ -417,9 +447,10 @@ const OrdersManager = () => {
                   {order.status === 'ready' && (
                     <button
                       onClick={() => updateOrderStatus(order.id, 'delivered')}
-                      className="col-span-2 bg-gray-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors"
+                      disabled={updating}
+                      className="col-span-2 bg-gray-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors disabled:opacity-50"
                     >
-                      Marcar Entregado
+                      {updating ? 'Actualizando...' : 'Marcar Entregado'}
                     </button>
                   )}
 
