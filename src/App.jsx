@@ -6,7 +6,10 @@ import MenuLayout from "./components/layout/MenuLayout";
 import TableApp from "./components/TableApp";
 import AdminApp from "./components/AdminApp";
 import ReservationsPage from "./components/ReservationsPage";
-import ReservationForm from "./components/ReservationForm";
+import SecureAdminApp from './components/SecureAdminApp'
+import LoginPage from './components/LoginPage'
+import ProtectedRoute from './components/ProtectedRoute'
+import { AuthProvider } from './context/AuthContext'
 
 // Componente para debugging
 const SubdomainDebug = () => {
@@ -153,32 +156,40 @@ const AppContent = () => {
 
 function App() {
   return (
-    <TenantProvider>
-      <Routes>
-        {/* Rutas más específicas primero */}
-        <Route path="/admin/*" element={<AdminAppWrapper />} />
+    <AuthProvider>
+      <TenantProvider>
+        <Routes>
+          {/* Ruta de login para admin */}
+          <Route path="/admin/login" element={<LoginPage />} />
+          {/* Rutas más específicas primero */}
+          <Route path="/admin/*" element={
+            <ProtectedRoute>
+              <SecureAdminApp />
+            </ProtectedRoute>
+          } />
 
-        {/* Ruta específica para reservas */}
-        <Route
-          path="/reservas"
-          element={
-            <TenantProvider>
-              <ReservationsPage />
-            </TenantProvider>
-          }
-        />
+          {/* Ruta específica para reservas */}
+          <Route
+            path="/reservas"
+            element={
+              <TenantProvider>
+                <ReservationsPage />
+              </TenantProvider>
+            }
+          />
 
-        {/* Ruta para mesas específicas */}
-        <Route path="/:slug/:table" element={<TableApp />} />
+          {/* Ruta para mesas específicas */}
+          <Route path="/:slug/:table" element={<TableApp />} />
 
-        {/* Ruta de inicio exacta */}
-        <Route path="/" element={<LandingPage />} />
+          {/* Ruta de inicio exacta */}
+          <Route path="/" element={<LandingPage />} />
 
-        {/* Ruta catch-all al final */}
-        <Route path="/*" element={<AppContent />} />
-      </Routes>
-      {import.meta.env.DEV && <SubdomainDebug />}
-    </TenantProvider>
+          {/* Ruta catch-all al final */}
+          <Route path="/*" element={<AppContent />} />
+        </Routes>
+        {import.meta.env.DEV && <SubdomainDebug />}
+      </TenantProvider>
+    </AuthProvider>
   );
 }
 

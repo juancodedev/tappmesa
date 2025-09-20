@@ -451,45 +451,45 @@ const ProductsManager = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProducts.map((product) => (
             <div key={product.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                <>
-                  {product.image_url ? (
-                    <img
-                      src={product.image_url}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <ImageIcon className="w-12 h-12 text-gray-400" />
-                    </div>
-                  )}
-                  
-                  {/* Badges */}
-                  <div className="absolute top-2 left-2 flex flex-col space-y-1">
-                    {product.is_featured && (
-                      <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded-full flex items-center">
-                        <Star className="w-3 h-3 mr-1" />
-                        Destacado
-                      </span>
-                    )}
-                    {!product.is_available && (
-                      <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full">
-                        No disponible
-                      </span>
-                    )}
+              {/* Imagen */}
+              <div className="relative h-48">
+                {product.image_url ? (
+                  <img
+                    src={product.image_url}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                    <ImageIcon className="w-12 h-12 text-gray-400" />
                   </div>
-
-                  {/* Precio */}
-                  <div className="absolute bottom-2 right-2">
-                    <span className="bg-white bg-opacity-90 text-gray-900 text-sm font-bold px-2 py-1 rounded">
-                      {formatCurrency(product.price)}
+                )}
+                
+                {/* Badges */}
+                <div className="absolute top-2 left-2 flex flex-col space-y-1">
+                  {product.is_featured && (
+                    <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded-full flex items-center">
+                      <Star className="w-3 h-3 mr-1" />
+                      Destacado
                     </span>
-                  </div>
-                </>
+                  )}
+                  {!product.is_available && (
+                    <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full">
+                      No disponible
+                    </span>
+                  )}
+                </div>
+
+                {/* Precio */}
+                <div className="absolute bottom-2 right-2">
+                  <span className="bg-white bg-opacity-90 text-gray-900 text-sm font-bold px-2 py-1 rounded">
+                    {formatCurrency(product.price)}
+                  </span>
+                </div>
               </div>
 
+              {/* Contenido */}
               <div className="p-4">
-                {/* Contenido */}
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="text-lg font-semibold text-gray-900 truncate">
                     {product.name}
