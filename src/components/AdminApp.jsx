@@ -24,7 +24,7 @@ import AnalyticsComponent from './admin/Analytics'
 import StockManagerComponent from './admin/StockManager'
 import SettingsComponent from './admin/Settings'
 import OrdersManagerComponent from './admin/OrdersManager'
-import ReservationsManager from './admin/ReservationsManager'
+import ReservationsManager from './admin/ReservationsManager';
 
 // Importar supabase para obtener tenant ID
 import { supabase } from '../lib/supabase'

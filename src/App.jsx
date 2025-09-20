@@ -2,11 +2,11 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { TenantProvider, useTenant } from "./context/TenantContext";
 import { CartProvider } from "./context/CartContext";
-import { ReservationsProvider } from "./context/ReservationsContext";
 import MenuLayout from "./components/layout/MenuLayout";
 import TableApp from "./components/TableApp";
 import AdminApp from "./components/AdminApp";
 import ReservationsPage from "./components/ReservationsPage";
+import ReservationForm from "./components/ReservationForm";
 
 // Componente para debugging
 const SubdomainDebug = () => {
@@ -99,11 +99,6 @@ const TenantApp = () => {
       </div>
     );
   }
-  const currentPath = window.location.pathname;
-
-  if (currentPath === "/reservas") {
-    return <ReservationsPage />;
-  }
 
   return (
     <CartProvider>
@@ -159,13 +154,30 @@ const AppContent = () => {
 function App() {
   return (
     <TenantProvider>
-      <ReservationsProvider>
-        <Routes>
-          <Route path="/admin/*" element={<AdminAppWrapper />} />
-          <Route path="/*" element={<AppContent />} />
-        </Routes>
-        {import.meta.env.DEV && <SubdomainDebug />}
-      </ReservationsProvider>
+      <Routes>
+        {/* Rutas más específicas primero */}
+        <Route path="/admin/*" element={<AdminAppWrapper />} />
+
+        {/* Ruta específica para reservas */}
+        <Route
+          path="/reservas"
+          element={
+            <TenantProvider>
+              <ReservationsPage />
+            </TenantProvider>
+          }
+        />
+
+        {/* Ruta para mesas específicas */}
+        <Route path="/:slug/:table" element={<TableApp />} />
+
+        {/* Ruta de inicio exacta */}
+        <Route path="/" element={<LandingPage />} />
+
+        {/* Ruta catch-all al final */}
+        <Route path="/*" element={<AppContent />} />
+      </Routes>
+      {import.meta.env.DEV && <SubdomainDebug />}
     </TenantProvider>
   );
 }
