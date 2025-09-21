@@ -1,230 +1,249 @@
-// src/components/Landing/PricingSection.jsx
-import { useState } from "react";
-import { useInView } from "../../hooks/useInView";
+// src/pages/landing/components/PricingSection.jsx
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Card from '../../../components/ui/Card';
+import Button from '../../../components/ui/Button';
 
-export default function PricingSection({ onOpenRegister }) {
-  const { ref, isInView } = useInView({ threshold: 0.2 });
-  const [billingCycle, setBillingCycle] = useState("monthly");
-  const [selectedPlan, setSelectedPlan] = useState("professional");
-
-  const discount = billingCycle === "annual" ? 0.2 : 0; // 20% descuento anual
+const PricingSection = () => {
+  const [billingCycle, setBillingCycle] = useState('monthly');
+  const navigate = useNavigate();
 
   const plans = [
     {
-      id: "basic",
-      name: "Básico",
-      subtitle: "Perfecto para empezar",
-      icon: "🥉",
-      monthlyPrice: 29000,
+      id: 'starter',
+      name: 'Starter',
+      subtitle: 'Perfecto para empezar',
+      icon: '🚀',
+      popular: false,
+      pricing: {
+        monthly: 29900,
+        annually: 299000
+      },
+      description: 'Ideal para cafeterías y restaurantes pequeños',
       features: [
-        "Menú digital QR",
-        "Sistema de pedidos básico",
-        "Hasta 5 mesas",
-        "Soporte por email",
-        "Reportes básicos",
-        "Integración con POS básica",
+        'Hasta 10 mesas',
+        'Menú digital ilimitado',
+        'Carrito de compras',
+        'Comandas básicas',
+        'Panel de administración',
+        'Soporte por email',
+        'Códigos QR personalizados',
+        'Estadísticas básicas'
       ],
       limitations: [
-        "Sin sistema de reservas",
-        "Sin pagos integrados",
-        "Sin analytics avanzados",
+        'Sin sistema de reservas',
+        'Sin personalización avanzada',
+        'Sin integraciones externas'
       ],
-      highlight: false,
-      cta: "Comenzar gratis",
-      bestFor: "Cafeterías pequeñas y food trucks",
+      cta: 'Comenzar Gratis',
+      trialDays: 14
     },
     {
-      id: "professional",
-      name: "Profesional",
-      subtitle: "Más popular para restaurantes",
-      icon: "🥈",
-      monthlyPrice: 49000,
+      id: 'professional',
+      name: 'Professional',
+      subtitle: 'El más popular',
+      icon: '⭐',
+      popular: true,
+      pricing: {
+        monthly: 59900,
+        annually: 599000
+      },
+      description: 'Para restaurantes en crecimiento',
       features: [
-        "Todo lo del plan Básico",
-        "Sistema de reservas completo",
-        "Comandas digitales avanzadas",
-        "Hasta 20 mesas",
-        "Pagos integrados",
-        "Soporte telefónico",
-        "Analytics avanzados",
-        "Personalización de marca",
-        "Notificaciones SMS",
-        "Programa de lealtad básico",
+        'Hasta 50 mesas',
+        'Todo de Starter',
+        'Sistema de reservas completo',
+        'Personalización avanzada',
+        'Múltiples métodos de pago',
+        'Reportes detallados',
+        'Soporte prioritario',
+        'Integraciones básicas',
+        'Gestión de inventario',
+        'Promociones y descuentos'
       ],
-      limitations: ["Límite de 20 mesas", "API con limitaciones"],
-      highlight: true,
-      cta: "Prueba gratis 14 días",
-      bestFor: "Restaurantes medianos y cadenas pequeñas",
-      badge: "Más Popular",
+      limitations: [
+        'Sin marca blanca',
+        'Integraciones limitadas'
+      ],
+      cta: 'Probar Professional',
+      trialDays: 14
     },
     {
-      id: "enterprise",
-      name: "Enterprise",
-      subtitle: "Para operaciones grandes",
-      icon: "🥇",
-      monthlyPrice: 99000,
+      id: 'enterprise',
+      name: 'Enterprise',
+      subtitle: 'Solución completa',
+      icon: '🏢',
+      popular: false,
+      pricing: {
+        monthly: 149900,
+        annually: 1499000
+      },
+      description: 'Para cadenas y restaurantes grandes',
       features: [
-        "Todo lo del plan Profesional",
-        "Mesas ilimitadas",
-        "Personalización completa",
-        "API completa y webhooks",
-        "Integración POS avanzada",
-        "Soporte 24/7 prioritario",
-        "Manager dedicado",
-        "Capacitación presencial",
-        "Reportes personalizados",
-        "Multi-ubicación",
-        "White-label disponible",
+        'Mesas ilimitadas',
+        'Todo de Professional',
+        'Marca blanca completa',
+        'API personalizada',
+        'Integraciones ilimitadas',
+        'Soporte 24/7',
+        'Gerente de cuenta dedicado',
+        'Análisis avanzado con IA',
+        'Multi-sucursal',
+        'Configuración personalizada',
+        'SLA garantizado',
+        'Capacitación presencial'
       ],
       limitations: [],
-      highlight: false,
-      cta: "Contactar ventas",
-      bestFor: "Cadenas de restaurantes y franquicias",
-    },
+      cta: 'Contactar Ventas',
+      trialDays: 30
+    }
   ];
 
-  const calculatePrice = (monthlyPrice) => {
-    const price =
-      billingCycle === "annual" ? monthlyPrice * (1 - discount) : monthlyPrice;
-    return Math.round(price);
-  };
+  const addOns = [
+    {
+      name: 'Delivery Integration',
+      description: 'Integración con apps de delivery',
+      price: 19900,
+      icon: '🛵'
+    },
+    {
+      name: 'Advanced Analytics',
+      description: 'Reportes e insights avanzados',
+      price: 29900,
+      icon: '📊'
+    },
+    {
+      name: 'Multi-language',
+      description: 'Soporte para múltiples idiomas',
+      price: 15900,
+      icon: '🌍'
+    },
+    {
+      name: 'Custom Integrations',
+      description: 'Integraciones personalizadas',
+      price: 79900,
+      icon: '🔗'
+    }
+  ];
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat("es-CL", {
-      style: "currency",
-      currency: "CLP",
-      minimumFractionDigits: 0,
+    return new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP'
     }).format(price);
   };
 
+  const getDiscountedPrice = (monthlyPrice) => {
+    return monthlyPrice * 10; // 2 meses gratis en plan anual
+  };
+
+  const getSavings = (monthlyPrice) => {
+    const yearlyTotal = monthlyPrice * 12;
+    const discountedYearly = getDiscountedPrice(monthlyPrice);
+    return yearlyTotal - discountedYearly;
+  };
+
   const handleSelectPlan = (planId) => {
-    setSelectedPlan(planId);
-    if (planId === "enterprise") {
-      // Scroll to contact section
-      document
-        .getElementById("contact")
-        ?.scrollIntoView({ behavior: "smooth" });
-    } else {
-      onOpenRegister();
-    }
+    navigate(`/register?plan=${planId}&billing=${billingCycle}`);
+  };
+
+  const handleContactSales = () => {
+    // Aquí puedes integrar con un sistema de contacto o calendario
+    window.open('mailto:ventas@tappmesa.com?subject=Consulta Plan Enterprise', '_blank');
   };
 
   return (
-    <section id="pricing" className="pricing-section" ref={ref}>
+    <section className="pricing-section">
       <div className="container">
         <div className="section-header">
-          <div className="section-badge">
-            <span className="badge-icon">💰</span>
-            <span>Precios</span>
-          </div>
-
-          <h2 className="section-title">
-            Planes que se adaptan a{" "}
-            <span className="highlight">tu restaurante</span>
-          </h2>
-
+          <h2 className="section-title">Planes que se adaptan a tu negocio</h2>
           <p className="section-description">
-            Elige el plan perfecto para el tamaño de tu negocio. Sin costos
-            ocultos, sin compromisos a largo plazo.
+            Desde cafeterías pequeñas hasta grandes cadenas de restaurantes
           </p>
         </div>
 
         {/* Billing Toggle */}
         <div className="billing-toggle">
-          <span className={billingCycle === "monthly" ? "active" : ""}>
-            Mensual
-          </span>
-          <button
-            className={`toggle-switch ${
-              billingCycle === "annual" ? "annual" : ""
-            }`}
-            onClick={() =>
-              setBillingCycle(billingCycle === "monthly" ? "annual" : "monthly")
-            }
-          >
-            <span className="toggle-slider"></span>
-          </button>
-          <span className={billingCycle === "annual" ? "active" : ""}>
-            Anual
-            <span className="discount-badge">-20%</span>
-          </span>
-        </div>
-
-        {/* Trial Banner */}
-        <div className="trial-banner">
-          <div className="trial-content">
-            <span className="trial-icon">🎉</span>
-            <div className="trial-text">
-              <strong>¡Prueba gratuita de 2 meses!</strong>
-              <span>
-                En todos los planes. Sin tarjeta de crédito requerida.
-              </span>
-            </div>
+          <div className="toggle-container">
+            <button
+              className={`toggle-option ${billingCycle === 'monthly' ? 'active' : ''}`}
+              onClick={() => setBillingCycle('monthly')}
+            >
+              Mensual
+            </button>
+            <button
+              className={`toggle-option ${billingCycle === 'annually' ? 'active' : ''}`}
+              onClick={() => setBillingCycle('annually')}
+            >
+              Anual
+              <span className="savings-badge">Ahorra 2 meses</span>
+            </button>
           </div>
         </div>
 
-        {/* Pricing Cards */}
-        <div className="pricing-grid">
-          {plans.map((plan, index) => (
-            <div
-              key={plan.id}
-              className={`pricing-card ${plan.highlight ? "featured" : ""} ${
-                selectedPlan === plan.id ? "selected" : ""
-              } ${isInView ? "animate-in" : ""}`}
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              {plan.badge && <div className="plan-badge">{plan.badge}</div>}
-
+        {/* Plans Grid */}
+        <div className="plans-grid">
+          {plans.map((plan) => (
+            <Card key={plan.id} className={`plan-card ${plan.popular ? 'popular' : ''}`}>
+              {plan.popular && (
+                <div className="popular-badge">
+                  <span>Más Popular</span>
+                </div>
+              )}
+              
               <div className="plan-header">
                 <div className="plan-icon">{plan.icon}</div>
-                <div className="plan-info">
-                  <h3 className="plan-name">{plan.name}</h3>
-                  <p className="plan-subtitle">{plan.subtitle}</p>
-                </div>
+                <h3 className="plan-name">{plan.name}</h3>
+                <p className="plan-subtitle">{plan.subtitle}</p>
               </div>
 
               <div className="plan-pricing">
-                <div className="price-container">
-                  <span className="price-amount">
-                    {formatPrice(calculatePrice(plan.monthlyPrice))}
+                <div className="price-display">
+                  <span className="currency">$</span>
+                  <span className="amount">
+                    {billingCycle === 'monthly' 
+                      ? (plan.pricing.monthly / 1000).toFixed(0)
+                      : (plan.pricing.annually / 1000).toFixed(0)
+                    }
                   </span>
-                  <span className="price-period">
-                    /{billingCycle === "monthly" ? "mes" : "mes"}
+                  <span className="period">
+                    {billingCycle === 'monthly' ? '.900/mes' : '.000/año'}
                   </span>
                 </div>
-
-                {billingCycle === "annual" && (
-                  <div className="price-savings">
-                    Ahorras {formatPrice(plan.monthlyPrice * 12 * discount)} al
-                    año
+                
+                {billingCycle === 'annually' && (
+                  <div className="savings-info">
+                    <span className="original-price">
+                      {formatPrice(plan.pricing.monthly * 12)}
+                    </span>
+                    <span className="savings">
+                      Ahorras {formatPrice(getSavings(plan.pricing.monthly))}
+                    </span>
                   </div>
                 )}
-
-                <div className="price-note">
-                  Por mesa • Facturación{" "}
-                  {billingCycle === "monthly" ? "mensual" : "anual"}
-                </div>
+                
+                <p className="plan-description">{plan.description}</p>
               </div>
 
               <div className="plan-features">
-                <h4 className="features-title">Todo incluido:</h4>
+                <h4>Incluye:</h4>
                 <ul className="features-list">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="feature-item">
+                  {plan.features.map((feature, index) => (
+                    <li key={index} className="feature-item">
                       <span className="feature-check">✓</span>
-                      <span className="feature-text">{feature}</span>
+                      {feature}
                     </li>
                   ))}
                 </ul>
-
+                
                 {plan.limitations.length > 0 && (
-                  <div className="plan-limitations">
-                    <h4 className="limitations-title">Limitaciones:</h4>
+                  <div className="limitations">
+                    <h5>No incluye:</h5>
                     <ul className="limitations-list">
-                      {plan.limitations.map((limitation, i) => (
-                        <li key={i} className="limitation-item">
-                          <span className="limitation-icon">⚠️</span>
-                          <span className="limitation-text">{limitation}</span>
+                      {plan.limitations.map((limitation, index) => (
+                        <li key={index} className="limitation-item">
+                          <span className="limitation-cross">✗</span>
+                          {limitation}
                         </li>
                       ))}
                     </ul>
@@ -232,179 +251,129 @@ export default function PricingSection({ onOpenRegister }) {
                 )}
               </div>
 
-              <div className="plan-footer">
-                <div className="best-for">
-                  <strong>Ideal para:</strong> {plan.bestFor}
-                </div>
-
-                <button
-                  className={`plan-cta ${
-                    plan.highlight ? "primary" : "secondary"
-                  }`}
-                  onClick={() => handleSelectPlan(plan.id)}
-                >
-                  {plan.cta}
-                  <span className="cta-arrow">→</span>
-                </button>
+              <div className="plan-cta">
+                {plan.id === 'enterprise' ? (
+                  <Button
+                    onClick={handleContactSales}
+                    className="btn-outline btn-block"
+                  >
+                    {plan.cta}
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => handleSelectPlan(plan.id)}
+                    className={`btn-block ${plan.popular ? 'btn-primary' : 'btn-outline'}`}
+                  >
+                    {plan.cta}
+                  </Button>
+                )}
+                
+                <p className="trial-info">
+                  Prueba gratis por {plan.trialDays} días
+                </p>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
 
-        {/* Features Comparison */}
-        <div className="features-comparison">
-          <h3 className="comparison-title">Comparación detallada</h3>
-
-          <div className="comparison-table">
-            <div className="table-header">
-              <div className="feature-column">Funcionalidad</div>
-              <div className="plan-column">Básico</div>
-              <div className="plan-column">Profesional</div>
-              <div className="plan-column">Enterprise</div>
-            </div>
-
-            {[
-              {
-                feature: "Menú digital QR",
-                basic: true,
-                pro: true,
-                enterprise: true,
-              },
-              {
-                feature: "Sistema de pedidos",
-                basic: true,
-                pro: true,
-                enterprise: true,
-              },
-              {
-                feature: "Máximo de mesas",
-                basic: "5",
-                pro: "20",
-                enterprise: "Ilimitadas",
-              },
-              {
-                feature: "Sistema de reservas",
-                basic: false,
-                pro: true,
-                enterprise: true,
-              },
-              {
-                feature: "Pagos integrados",
-                basic: false,
-                pro: true,
-                enterprise: true,
-              },
-              {
-                feature: "Analytics avanzados",
-                basic: false,
-                pro: true,
-                enterprise: true,
-              },
-              {
-                feature: "API completa",
-                basic: false,
-                pro: "Limitada",
-                enterprise: true,
-              },
-              {
-                feature: "Soporte",
-                basic: "Email",
-                pro: "Teléfono",
-                enterprise: "24/7",
-              },
-              {
-                feature: "Multi-ubicación",
-                basic: false,
-                pro: false,
-                enterprise: true,
-              },
-            ].map((row, index) => (
-              <div key={index} className="table-row">
-                <div className="feature-cell">{row.feature}</div>
-                <div className="plan-cell">
-                  {typeof row.basic === "boolean"
-                    ? row.basic
-                      ? "✓"
-                      : "✗"
-                    : row.basic}
+        {/* Add-ons Section */}
+        <div className="addons-section">
+          <h3>Complementos Disponibles</h3>
+          <p>Potencia tu plan con funcionalidades adicionales</p>
+          
+          <div className="addons-grid">
+            {addOns.map((addon, index) => (
+              <Card key={index} className="addon-card">
+                <div className="addon-icon">{addon.icon}</div>
+                <h4 className="addon-name">{addon.name}</h4>
+                <p className="addon-description">{addon.description}</p>
+                <div className="addon-price">
+                  {formatPrice(addon.price)}/mes
                 </div>
-                <div className="plan-cell">
-                  {typeof row.pro === "boolean"
-                    ? row.pro
-                      ? "✓"
-                      : "✗"
-                    : row.pro}
-                </div>
-                <div className="plan-cell">
-                  {typeof row.enterprise === "boolean"
-                    ? row.enterprise
-                      ? "✓"
-                      : "✗"
-                    : row.enterprise}
-                </div>
-              </div>
+              </Card>
             ))}
           </div>
         </div>
 
         {/* FAQ Section */}
         <div className="pricing-faq">
-          <h3 className="faq-title">Preguntas frecuentes sobre precios</h3>
-
+          <h3>Preguntas Frecuentes</h3>
           <div className="faq-grid">
             <div className="faq-item">
-              <h4 className="faq-question">
-                ¿Puedo cambiar de plan en cualquier momento?
-              </h4>
-              <p className="faq-answer">
-                Sí, puedes actualizar o reducir tu plan cuando quieras. Los
-                cambios se reflejan en tu próxima facturación.
-              </p>
+              <h4>¿Puedo cambiar de plan en cualquier momento?</h4>
+              <p>Sí, puedes actualizar o cambiar tu plan cuando quieras. Los cambios se aplican inmediatamente.</p>
             </div>
-
             <div className="faq-item">
-              <h4 className="faq-question">¿Qué incluye la prueba gratuita?</h4>
-              <p className="faq-answer">
-                Acceso completo a todas las funcionalidades del plan Profesional
-                por 2 meses, sin limitaciones ni tarjeta de crédito requerida.
-              </p>
+              <h4>¿Hay costos de configuración?</h4>
+              <p>No cobramos costos de configuración. Te ayudamos a configurar tu restaurante completamente gratis.</p>
             </div>
-
             <div className="faq-item">
-              <h4 className="faq-question">
-                ¿Hay costos de setup o instalación?
-              </h4>
-              <p className="faq-answer">
-                No, el setup es completamente gratuito e incluye configuración
-                personalizada y capacitación de tu equipo.
-              </p>
+              <h4>¿Qué incluye el período de prueba?</h4>
+              <p>Acceso completo a todas las funcionalidades del plan seleccionado, sin restricciones.</p>
             </div>
-
             <div className="faq-item">
-              <h4 className="faq-question">
-                ¿Qué pasa si tengo más mesas que el límite?
-              </h4>
-              <p className="faq-answer">
-                Puedes actualizar automáticamente al siguiente plan o
-                contactarnos para una solución personalizada.
-              </p>
+              <h4>¿Ofrecen descuentos para múltiples sucursales?</h4>
+              <p>Sí, tenemos descuentos especiales para cadenas. Contáctanos para una cotización personalizada.</p>
             </div>
           </div>
         </div>
 
-        {/* Money Back Guarantee */}
-        <div className="guarantee-banner">
-          <div className="guarantee-content">
-            <div className="guarantee-icon">🛡️</div>
-            <div className="guarantee-text">
-              <h4>Garantía de satisfacción 30 días</h4>
-              <p>
-                Si no estás completamente satisfecho, te devolvemos tu dinero.
-              </p>
+        {/* Trust Indicators */}
+        <div className="trust-indicators">
+          <div className="indicator">
+            <span className="indicator-icon">🔒</span>
+            <div>
+              <h4>Pagos Seguros</h4>
+              <p>Encriptación SSL y PCI compliance</p>
             </div>
+          </div>
+          <div className="indicator">
+            <span className="indicator-icon">📞</span>
+            <div>
+              <h4>Soporte Local</h4>
+              <p>Equipo en Chile, en tu zona horaria</p>
+            </div>
+          </div>
+          <div className="indicator">
+            <span className="indicator-icon">💾</span>
+            <div>
+              <h4>Respaldo de Datos</h4>
+              <p>Backups automáticos diarios</p>
+            </div>
+          </div>
+          <div className="indicator">
+            <span className="indicator-icon">📱</span>
+            <div>
+              <h4>App Nativa</h4>
+              <p>Próximamente en App Store y Google Play</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Final CTA */}
+        <div className="pricing-final-cta">
+          <h3>¿Necesitas algo personalizado?</h3>
+          <p>
+            Trabajamos contigo para crear una solución que se adapte perfectamente a tu negocio
+          </p>
+          <div className="cta-buttons">
+            <Button 
+              onClick={() => navigate('/register')}
+              className="btn-primary"
+            >
+              Comenzar Prueba Gratuita
+            </Button>
+            <Button 
+              onClick={handleContactSales}
+              variant="outline"
+            >
+              Hablar con Ventas
+            </Button>
           </div>
         </div>
       </div>
     </section>
   );
-}
+};
+
+export default PricingSection;
