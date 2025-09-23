@@ -1,648 +1,705 @@
-// src/pages/auth/RegisterPage.jsx - Versión con Tailwind
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useState } from 'react';
+import { 
+  Coffee, 
+  User, 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Store, 
+  Users, 
+  Clock,
+  CheckCircle,
+  ArrowRight,
+  Star,
+  Zap,
+  Shield,
+  Smartphone,
+  ArrowLeft
+} from 'lucide-react';
 
 const RegisterPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    // Datos del usuario
-    firstName: '',
-    lastName: '',
+    // Paso 1: Información personal
+    ownerName: '',
     email: '',
     phone: '',
-    password: '',
-    confirmPassword: '',
     
-    // Datos del negocio
-    businessName: '',
-    businessType: '',
+    // Paso 2: Información de la cafetería
+    cafeName: '',
     address: '',
     city: '',
-    region: '',
-    description: '',
-    website: '',
+    cafeType: '',
+    seatingCapacity: '',
     
-    // Plan seleccionado
-    selectedPlan: 'professional',
-    billingCycle: 'monthly',
+    // Paso 3: Configuración inicial
+    menuSize: '',
+    currentSystem: '',
+    priority: '',
     
-    // Términos y condiciones
-    acceptTerms: false,
-    acceptMarketing: false
+    // Paso 4: Plan seleccionado
+    selectedPlan: 'premium'
   });
-  
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
 
-  useEffect(() => {
-    // Pre-llenar datos desde URL params si existen
-    const email = searchParams.get('email');
-    const plan = searchParams.get('plan');
-    const billing = searchParams.get('billing');
-    
-    if (email || plan || billing) {
-      setFormData(prev => ({
-        ...prev,
-        ...(email && { email }),
-        ...(plan && { selectedPlan: plan }),
-        ...(billing && { billingCycle: billing })
-      }));
-    }
-  }, [searchParams]);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const steps = [
+    { number: 1, title: 'Tu Información', icon: User, desc: 'Datos del propietario' },
+    { number: 2, title: 'Tu Cafetería', icon: Store, desc: 'Información del negocio' },
+    { number: 3, title: 'Configuración', icon: Zap, desc: 'Personalización inicial' },
+    { number: 4, title: 'Plan & Listo', icon: CheckCircle, desc: 'Selección final' }
+  ];
+
+  const cafeTypes = [
+    { id: 'traditional', name: 'Cafetería Tradicional', desc: 'Ambiente clásico y acogedor', icon: '☕' },
+    { id: 'specialty', name: 'Café de Especialidad', desc: 'Enfoque en calidad y origen', icon: '🌟' },
+    { id: 'coworking', name: 'Café + Coworking', desc: 'Espacio de trabajo', icon: '💻' },
+    { id: 'bakery', name: 'Café + Panadería', desc: 'Con productos horneados', icon: '🥐' },
+    { id: 'chain', name: 'Cadena/Franquicia', desc: 'Múltiples ubicaciones', icon: '🏢' },
+    { id: 'other', name: 'Otro Concepto', desc: 'Modelo personalizado', icon: '🎯' }
+  ];
+
+  const plans = [
     {
-      id: 1,
-      title: 'Datos Personales',
-      description: 'Información básica de contacto'
+      id: 'express',
+      name: 'Café Express',
+      price: '$29.990',
+      period: '/mes',
+      recommended: false,
+      features: ['Hasta 50 productos', '1 cafetería', 'Menú digital básico', 'Soporte email'],
+      color: 'border-gray-300',
+      textColor: 'text-gray-700'
     },
     {
-      id: 2,
-      title: 'Información del Negocio',
-      description: 'Detalles de tu restaurante'
+      id: 'premium',
+      name: 'Café Premium',
+      price: '$49.990',
+      period: '/mes',
+      recommended: true,
+      features: ['Productos ilimitados', 'Hasta 3 sucursales', 'Analytics avanzados', 'Soporte 24/7'],
+      color: 'border-primary-500 bg-primary-50',
+      textColor: 'text-primary-700'
     },
     {
-      id: 3,
-      title: 'Selecciona tu Plan',
-      description: 'Elige el plan que mejor se adapte'
+      id: 'enterprise',
+      name: 'Café Enterprise',
+      price: '$89.990',
+      period: '/mes',
+      recommended: false,
+      features: ['Todo ilimitado', 'Multi-administrador', 'API personalizada', 'Soporte dedicado'],
+      color: 'border-coffee-400',
+      textColor: 'text-coffee-700'
     }
   ];
 
-  const updateFormData = (newData) => {
-    setFormData(prev => ({
-      ...prev,
-      ...newData
-    }));
-    setErrors({});
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const validateStep = (step) => {
-    const newErrors = {};
-
-    switch (step) {
-      case 1:
-        if (!formData.firstName.trim()) {
-          newErrors.firstName = 'El nombre es requerido';
-        }
-        if (!formData.lastName.trim()) {
-          newErrors.lastName = 'El apellido es requerido';
-        }
-        if (!formData.email.trim()) {
-          newErrors.email = 'El email es requerido';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-          newErrors.email = 'El email no es válido';
-        }
-        if (!formData.phone.trim()) {
-          newErrors.phone = 'El teléfono es requerido';
-        }
-        if (!formData.password) {
-          newErrors.password = 'La contraseña es requerida';
-        } else if (formData.password.length < 8) {
-          newErrors.password = 'La contraseña debe tener al menos 8 caracteres';
-        }
-        if (formData.password !== formData.confirmPassword) {
-          newErrors.confirmPassword = 'Las contraseñas no coinciden';
-        }
-        if (!formData.acceptTerms) {
-          newErrors.acceptTerms = 'Debes aceptar los términos y condiciones';
-        }
-        break;
-
-      case 2:
-        if (!formData.businessName.trim()) {
-          newErrors.businessName = 'El nombre del negocio es requerido';
-        }
-        if (!formData.businessType) {
-          newErrors.businessType = 'Selecciona el tipo de negocio';
-        }
-        if (!formData.address.trim()) {
-          newErrors.address = 'La dirección es requerida';
-        }
-        if (!formData.city.trim()) {
-          newErrors.city = 'La ciudad es requerida';
-        }
-        break;
-
-      case 3:
-        if (!formData.selectedPlan) {
-          newErrors.selectedPlan = 'Selecciona un plan';
-        }
-        break;
-
-      default:
-        break;
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleNext = () => {
-    if (validateStep(currentStep)) {
-      if (currentStep < steps.length) {
-        setCurrentStep(prev => prev + 1);
-      } else {
-        handleSubmit();
-      }
+  const nextStep = () => {
+    if (currentStep < 4) {
+      setCurrentStep(currentStep + 1);
     }
   };
 
-  const handlePrev = () => {
+  const prevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(prev => prev - 1);
+      setCurrentStep(currentStep - 1);
     }
   };
 
   const handleSubmit = async () => {
-    setIsSubmitting(true);
-    
-    try {
-      // Simular registro en el backend
-      const registrationData = {
-        user: {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          password: formData.password
-        },
-        business: {
-          name: formData.businessName,
-          type: formData.businessType,
-          address: formData.address,
-          city: formData.city,
-          description: formData.description,
-          website: formData.website
-        },
-        subscription: {
-          plan: formData.selectedPlan,
-          billingCycle: formData.billingCycle
-        },
-        preferences: {
-          marketing: formData.acceptMarketing
-        }
-      };
-
-      console.log('Datos de registro:', registrationData);
-      
-      // Simular delay de red
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Redirigir al dashboard o mostrar éxito
-      navigate('/dashboard');
-      
-    } catch (error) {
-      console.error('Error en el registro:', error);
-      setErrors({ submit: 'Hubo un error al crear tu cuenta. Inténtalo nuevamente.' });
-    } finally {
-      setIsSubmitting(false);
-    }
+    setLoading(true);
+    // Simular registro
+    setTimeout(() => {
+      setLoading(false);
+      setSuccess(true);
+    }, 2000);
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
-        <div className="flex justify-between items-center py-6">
-          <Link to="/" className="text-gray-600 hover:text-primary-500 transition-colors">
-            ← Volver al inicio
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center text-white text-xl">
-              🍽️
+  const goToLogin = () => {
+    // Navegar a login (implementar según tu router)
+    window.location.href = '/login';
+  };
+
+  const StepIndicator = () => (
+    <div className="flex items-center justify-between mb-8">
+      {steps.map((step, index) => (
+        <div key={step.number} className="flex items-center">
+          <div className={`flex flex-col items-center ${index < steps.length - 1 ? 'flex-1' : ''}`}>
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+              currentStep >= step.number
+                ? 'bg-primary-500 border-primary-500 text-white'
+                : 'border-gray-300 text-gray-400'
+            }`}>
+              {currentStep > step.number ? (
+                <CheckCircle className="h-6 w-6" />
+              ) : (
+                <step.icon className="h-6 w-6" />
+              )}
             </div>
-            <span className="text-xl font-bold text-gray-900">TappMesa</span>
+            <div className="mt-2 text-center">
+              <div className={`text-sm font-semibold ${
+                currentStep >= step.number ? 'text-primary-600' : 'text-gray-400'
+              }`}>
+                {step.title}
+              </div>
+              <div className="text-xs text-gray-500">{step.desc}</div>
+            </div>
           </div>
+          {index < steps.length - 1 && (
+            <div className={`flex-1 h-0.5 mx-4 ${
+              currentStep > step.number ? 'bg-primary-500' : 'bg-gray-300'
+            }`}></div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
+  const Step1 = () => (
+    <div className="space-y-6">
+      <div className="text-center mb-8">
+        <h3 className="text-2xl font-bold text-coffee-900 mb-2">¡Hola! Cuéntanos sobre ti</h3>
+        <p className="text-coffee-600">Información básica para configurar tu cuenta</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+            <User className="inline h-4 w-4 mr-2" />
+            Nombre Completo *
+          </label>
+          <input
+            type="text"
+            value={formData.ownerName}
+            onChange={(e) => handleInputChange('ownerName', e.target.value)}
+            placeholder="Tu nombre y apellido"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
+          />
         </div>
 
-        {/* Progress Steps */}
-        <div className="flex justify-center mb-8">
-          <div className="flex items-center space-x-4">
-            {steps.map((step, index) => (
-              <React.Fragment key={step.id}>
-                <div className="flex items-center space-x-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors ${
-                    currentStep >= step.id 
-                      ? 'bg-primary-500 text-white' 
-                      : 'bg-gray-200 text-gray-500'
-                  }`}>
-                    {currentStep > step.id ? '✓' : step.id}
-                  </div>
-                  <div className="hidden sm:block text-center">
-                    <div className="font-semibold text-gray-900">{step.title}</div>
-                    <div className="text-sm text-gray-600">{step.description}</div>
-                  </div>
-                </div>
-                {index < steps.length - 1 && (
-                  <div className={`w-12 h-0.5 transition-colors ${
-                    currentStep > step.id ? 'bg-primary-500' : 'bg-gray-200'
-                  }`}></div>
-                )}
-              </React.Fragment>
+        <div>
+          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+            <Mail className="inline h-4 w-4 mr-2" />
+            Email *
+          </label>
+          <input
+            type="email"
+            value={formData.email}
+            onChange={(e) => handleInputChange('email', e.target.value)}
+            placeholder="tu@email.com"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+            <Phone className="inline h-4 w-4 mr-2" />
+            Teléfono *
+          </label>
+          <input
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => handleInputChange('phone', e.target.value)}
+            placeholder="+56 9 xxxx xxxx"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
+          />
+        </div>
+      </div>
+
+      <div className="bg-primary-50 p-4 rounded-lg border border-primary-200">
+        <div className="flex items-start gap-3">
+          <Shield className="h-5 w-5 text-primary-500 mt-0.5" />
+          <div>
+            <h4 className="font-semibold text-primary-700 mb-1">Tu privacidad es importante</h4>
+            <p className="text-primary-600 text-sm">
+              Nunca compartiremos tu información personal. Usamos datos encriptados y cumplimos con la Ley de Protección de Datos de Chile.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const Step2 = () => (
+    <div className="space-y-6">
+      <div className="text-center mb-8">
+        <h3 className="text-2xl font-bold text-coffee-900 mb-2">Cuéntanos sobre tu cafetería</h3>
+        <p className="text-coffee-600">Información para personalizar tu experiencia</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="md:col-span-2">
+          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+            <Store className="inline h-4 w-4 mr-2" />
+            Nombre de la Cafetería *
+          </label>
+          <input
+            type="text"
+            value={formData.cafeName}
+            onChange={(e) => handleInputChange('cafeName', e.target.value)}
+            placeholder="Ej: Café Central, Granos & Más, etc."
+            className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+            <MapPin className="inline h-4 w-4 mr-2" />
+            Dirección *
+          </label>
+          <input
+            type="text"
+            value={formData.address}
+            onChange={(e) => handleInputChange('address', e.target.value)}
+            placeholder="Dirección completa"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+            Ciudad *
+          </label>
+          <select
+            value={formData.city}
+            onChange={(e) => handleInputChange('city', e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
+          >
+            <option value="">Selecciona tu ciudad</option>
+            <option value="santiago">Santiago</option>
+            <option value="valparaiso">Valparaíso</option>
+            <option value="concepcion">Concepción</option>
+            <option value="la-serena">La Serena</option>
+            <option value="antofagasta">Antofagasta</option>
+            <option value="temuco">Temuco</option>
+            <option value="rancagua">Rancagua</option>
+            <option value="other">Otra ciudad</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+            <Users className="inline h-4 w-4 mr-2" />
+            Capacidad de Asientos
+          </label>
+          <select
+            value={formData.seatingCapacity}
+            onChange={(e) => handleInputChange('seatingCapacity', e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
+          >
+            <option value="">Selecciona capacidad</option>
+            <option value="1-20">1-20 personas</option>
+            <option value="21-50">21-50 personas</option>
+            <option value="51-100">51-100 personas</option>
+            <option value="100+">Más de 100 personas</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-semibold text-coffee-900 mb-4">
+          Tipo de Cafetería *
+        </label>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {cafeTypes.map((type) => (
+            <div
+              key={type.id}
+              onClick={() => handleInputChange('cafeType', type.id)}
+              className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover:shadow-md hover-coffee ${
+                formData.cafeType === type.id
+                  ? 'border-primary-500 bg-primary-50'
+                  : 'border-gray-200 hover:border-primary-300'
+              }`}
+            >
+              <div className="text-center">
+                <div className="text-3xl mb-2">{type.icon}</div>
+                <h4 className="font-semibold text-coffee-900 text-sm mb-1">{type.name}</h4>
+                <p className="text-coffee-600 text-xs">{type.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const Step3 = () => (
+    <div className="space-y-6">
+      <div className="text-center mb-8">
+        <h3 className="text-2xl font-bold text-coffee-900 mb-2">Configuración inicial</h3>
+        <p className="text-coffee-600">Esto nos ayuda a preparar TappMesa perfectamente para ti</p>
+      </div>
+
+      <div className="space-y-6">
+        <div>
+          <label className="block text-sm font-semibold text-coffee-900 mb-4">
+            ¿Cuántos productos tienes aproximadamente en tu menú?
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { value: '1-25', label: '1-25 productos', desc: 'Menú básico' },
+              { value: '26-50', label: '26-50 productos', desc: 'Menú mediano' },
+              { value: '51-100', label: '51-100 productos', desc: 'Menú amplio' },
+              { value: '100+', label: '100+ productos', desc: 'Menú extenso' }
+            ].map((option) => (
+              <div
+                key={option.value}
+                onClick={() => handleInputChange('menuSize', option.value)}
+                className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 text-center hover-coffee ${
+                  formData.menuSize === option.value
+                    ? 'border-primary-500 bg-primary-50'
+                    : 'border-gray-200 hover:border-primary-300'
+                }`}
+              >
+                <div className="font-semibold text-coffee-900 text-sm mb-1">{option.label}</div>
+                <div className="text-coffee-600 text-xs">{option.desc}</div>
+              </div>
             ))}
           </div>
         </div>
 
-        {/* Form Content */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-xl p-8">
-              <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                  {steps[currentStep - 1].title}
-                </h1>
-                <p className="text-gray-600">
-                  {steps[currentStep - 1].description}
-                </p>
+        <div>
+          <label className="block text-sm font-semibold text-coffee-900 mb-4">
+            ¿Qué sistema usas actualmente para tomar pedidos?
+          </label>
+          <div className="grid md:grid-cols-2 gap-3">
+            {[
+              { value: 'paper', label: '📝 Papel y lápiz', desc: 'Método tradicional' },
+              { value: 'pos', label: '💻 Sistema POS', desc: 'Terminal punto de venta' },
+              { value: 'app', label: '📱 App básica', desc: 'Aplicación simple' },
+              { value: 'none', label: '🆕 Nada específico', desc: 'Primera digitalización' }
+            ].map((option) => (
+              <div
+                key={option.value}
+                onClick={() => handleInputChange('currentSystem', option.value)}
+                className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover-coffee ${
+                  formData.currentSystem === option.value
+                    ? 'border-primary-500 bg-primary-50'
+                    : 'border-gray-200 hover:border-primary-300'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="font-semibold text-coffee-900">{option.label}</div>
+                </div>
+                <div className="text-coffee-600 text-sm mt-1">{option.desc}</div>
               </div>
-
-              {/* Step 1: Datos Personales */}
-              {currentStep === 1 && (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Nombre *
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.firstName}
-                        onChange={(e) => updateFormData({ firstName: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                        placeholder="Ej: Juan"
-                      />
-                      {errors.firstName && (
-                        <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Apellido *
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.lastName}
-                        onChange={(e) => updateFormData({ lastName: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                        placeholder="Ej: Pérez"
-                      />
-                      {errors.lastName && (
-                        <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => updateFormData({ email: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="tu@restaurante.com"
-                    />
-                    {errors.email && (
-                      <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Teléfono *
-                    </label>
-                    <input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => updateFormData({ phone: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="+56 9 1234 5678"
-                    />
-                    {errors.phone && (
-                      <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Contraseña *
-                    </label>
-                    <input
-                      type="password"
-                      value={formData.password}
-                      onChange={(e) => updateFormData({ password: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="Mínimo 8 caracteres"
-                    />
-                    {errors.password && (
-                      <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Confirmar Contraseña *
-                    </label>
-                    <input
-                      type="password"
-                      value={formData.confirmPassword}
-                      onChange={(e) => updateFormData({ confirmPassword: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="Repite tu contraseña"
-                    />
-                    {errors.confirmPassword && (
-                      <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
-                    )}
-                  </div>
-
-                  <div className="space-y-3">
-                    <label className="flex items-start space-x-3">
-                      <input
-                        type="checkbox"
-                        checked={formData.acceptTerms}
-                        onChange={(e) => updateFormData({ acceptTerms: e.target.checked })}
-                        className="mt-1 h-4 w-4 text-primary-500 focus:ring-primary-500 border-gray-300 rounded"
-                      />
-                      <span className="text-sm text-gray-700">
-                        Acepto los <a href="/terms" className="text-primary-500 hover:underline">Términos de Servicio</a> y 
-                        la <a href="/privacy" className="text-primary-500 hover:underline">Política de Privacidad</a> *
-                      </span>
-                    </label>
-                    {errors.acceptTerms && (
-                      <p className="text-red-500 text-sm">{errors.acceptTerms}</p>
-                    )}
-
-                    <label className="flex items-start space-x-3">
-                      <input
-                        type="checkbox"
-                        checked={formData.acceptMarketing}
-                        onChange={(e) => updateFormData({ acceptMarketing: e.target.checked })}
-                        className="mt-1 h-4 w-4 text-primary-500 focus:ring-primary-500 border-gray-300 rounded"
-                      />
-                      <span className="text-sm text-gray-700">
-                        Acepto recibir emails sobre novedades y consejos de TappMesa
-                      </span>
-                    </label>
-                  </div>
-                </div>
-              )}
-
-              {/* Step 2: Información del Negocio */}
-              {currentStep === 2 && (
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Nombre del Negocio *
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.businessName}
-                      onChange={(e) => updateFormData({ businessName: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="Ej: Café Central"
-                    />
-                    {errors.businessName && (
-                      <p className="text-red-500 text-sm mt-1">{errors.businessName}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Tipo de Negocio *
-                    </label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      {[
-                        { value: 'restaurant', label: 'Restaurante', icon: '🍽️' },
-                        { value: 'cafe', label: 'Café', icon: '☕' },
-                        { value: 'bar', label: 'Bar', icon: '🍺' },
-                        { value: 'bakery', label: 'Panadería', icon: '🥖' },
-                        { value: 'pizzeria', label: 'Pizzería', icon: '🍕' },
-                        { value: 'other', label: 'Otro', icon: '🏪' }
-                      ].map((type) => (
-                        <label
-                          key={type.value}
-                          className={`relative flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                            formData.businessType === type.value
-                              ? 'border-primary-500 bg-primary-50'
-                              : 'border-gray-200 hover:border-primary-300'
-                          }`}
-                        >
-                          <input
-                            type="radio"
-                            name="businessType"
-                            value={type.value}
-                            checked={formData.businessType === type.value}
-                            onChange={(e) => updateFormData({ businessType: e.target.value })}
-                            className="sr-only"
-                          />
-                          <span className="text-2xl mb-2">{type.icon}</span>
-                          <span className="text-sm font-medium text-center">{type.label}</span>
-                        </label>
-                      ))}
-                    </div>
-                    {errors.businessType && (
-                      <p className="text-red-500 text-sm mt-1">{errors.businessType}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Dirección *
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.address}
-                      onChange={(e) => updateFormData({ address: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="Ej: Av. Providencia 1234"
-                    />
-                    {errors.address && (
-                      <p className="text-red-500 text-sm mt-1">{errors.address}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Ciudad *
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.city}
-                      onChange={(e) => updateFormData({ city: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="Ej: Santiago"
-                    />
-                    {errors.city && (
-                      <p className="text-red-500 text-sm mt-1">{errors.city}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Descripción del Negocio
-                    </label>
-                    <textarea
-                      value={formData.description}
-                      onChange={(e) => updateFormData({ description: e.target.value })}
-                      rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="Cuéntanos sobre tu negocio, especialidades, ambiente, etc."
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Step 3: Selección de Plan */}
-              {currentStep === 3 && (
-                <div className="space-y-6">
-                  <div className="grid md:grid-cols-3 gap-6">
-                    {[
-                      {
-                        id: 'starter',
-                        name: 'Starter',
-                        price: '$29.900',
-                        features: ['Hasta 10 mesas', 'Menú digital', 'Comandas básicas']
-                      },
-                      {
-                        id: 'professional',
-                        name: 'Professional',
-                        price: '$59.900',
-                        features: ['Hasta 50 mesas', 'Reservas', 'Reportes avanzados'],
-                        popular: true
-                      },
-                      {
-                        id: 'enterprise',
-                        name: 'Enterprise',
-                        price: '$149.900',
-                        features: ['Mesas ilimitadas', 'API personalizada', 'Soporte 24/7']
-                      }
-                    ].map((plan) => (
-                      <div
-                        key={plan.id}
-                        className={`relative border-2 rounded-xl p-6 cursor-pointer transition-all ${
-                          formData.selectedPlan === plan.id
-                            ? 'border-primary-500 bg-primary-50'
-                            : 'border-gray-200 hover:border-primary-300'
-                        }`}
-                        onClick={() => updateFormData({ selectedPlan: plan.id })}
-                      >
-                        {plan.popular && (
-                          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                            <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                              Más Popular
-                            </span>
-                          </div>
-                        )}
-                        <div className="text-center">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{plan.name}</h3>
-                          <div className="text-2xl font-bold text-primary-500 mb-4">{plan.price}</div>
-                          <ul className="space-y-2 text-sm text-gray-600">
-                            {plan.features.map((feature, index) => (
-                              <li key={index} className="flex items-center">
-                                <span className="text-green-500 mr-2">✓</span>
-                                {feature}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  {errors.selectedPlan && (
-                    <p className="text-red-500 text-sm">{errors.selectedPlan}</p>
-                  )}
-                </div>
-              )}
-
-              {/* Error Display */}
-              {errors.submit && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                  <div className="flex">
-                    <span className="text-red-500 mr-2">⚠️</span>
-                    <span className="text-red-700">{errors.submit}</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Form Actions */}
-              <div className="flex justify-between items-center pt-6">
-                <button
-                  type="button"
-                  onClick={handlePrev}
-                  disabled={currentStep === 1}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-colors touch-target ${
-                    currentStep === 1
-                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  ← Anterior
-                </button>
-                
-                <div className="text-sm text-gray-500">
-                  Paso {currentStep} de {steps.length}
-                </div>
-                
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  disabled={isSubmitting}
-                  className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 touch-target"
-                >
-                  {isSubmitting ? 'Creando cuenta...' : currentStep === steps.length ? 'Crear Cuenta' : 'Continuar →'}
-                </button>
-              </div>
-            </div>
+            ))}
           </div>
+        </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-xl p-6 sticky top-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                ¿Por qué elegir TappMesa?
-              </h3>
-              <div className="space-y-4">
-                {[
-                  { icon: '⚡', title: 'Configuración rápida', desc: 'Tu restaurante digital en 10 minutos' },
-                  { icon: '📈', title: 'Aumenta ventas', desc: '35% de incremento promedio' },
-                  { icon: '🎯', title: 'Soporte personalizado', desc: 'Te acompañamos en cada paso' },
-                  { icon: '🔒', title: 'Datos seguros', desc: 'Encriptación y respaldos automáticos' }
-                ].map((benefit, index) => (
-                  <div key={index} className="flex gap-3">
-                    <span className="text-xl">{benefit.icon}</span>
-                    <div>
-                      <div className="font-medium text-gray-900">{benefit.title}</div>
-                      <div className="text-sm text-gray-600">{benefit.desc}</div>
-                    </div>
+        <div>
+          <label className="block text-sm font-semibold text-coffee-900 mb-4">
+            ¿Cuál es tu prioridad principal?
+          </label>
+          <div className="grid md:grid-cols-2 gap-3">
+            {[
+              { value: 'efficiency', label: '⚡ Eficiencia en pedidos', desc: 'Reducir tiempos de espera' },
+              { value: 'sales', label: '📈 Aumentar ventas', desc: 'Crecer ingresos' },
+              { value: 'customer', label: '😊 Experiencia del cliente', desc: 'Mejorar satisfacción' },
+              { value: 'analytics', label: '📊 Insights de negocio', desc: 'Datos para decisiones' }
+            ].map((option) => (
+              <div
+                key={option.value}
+                onClick={() => handleInputChange('priority', option.value)}
+                className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover-coffee ${
+                  formData.priority === option.value
+                    ? 'border-primary-500 bg-primary-50'
+                    : 'border-gray-200 hover:border-primary-300'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="font-semibold text-coffee-900">{option.label}</div>
+                </div>
+                <div className="text-coffee-600 text-sm mt-1">{option.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const Step4 = () => (
+    <div className="space-y-6">
+      <div className="text-center mb-8">
+        <h3 className="text-2xl font-bold text-coffee-900 mb-2">Selecciona tu plan</h3>
+        <p className="text-coffee-600">Puedes cambiar o cancelar en cualquier momento</p>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-6">
+        {plans.map((plan) => (
+          <div
+            key={plan.id}
+            onClick={() => handleInputChange('selectedPlan', plan.id)}
+            className={`p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 relative hover-lift ${
+              formData.selectedPlan === plan.id ? plan.color : 'border-gray-200 hover:border-primary-300'
+            }`}
+          >
+            {plan.recommended && (
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
+                  <Star className="h-3 w-3 fill-current" />
+                  Recomendado
+                </span>
+              </div>
+            )}
+
+            <div className="text-center">
+              <h4 className={`text-xl font-bold mb-2 ${plan.textColor}`}>{plan.name}</h4>
+              <div className="mb-4">
+                <span className={`text-3xl font-bold ${plan.textColor}`}>{plan.price}</span>
+                <span className="text-coffee-600">{plan.period}</span>
+              </div>
+              
+              <div className="space-y-2 mb-6">
+                {plan.features.map((feature, index) => (
+                  <div key={index} className="flex items-center gap-2 text-sm">
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    <span className="text-coffee-700">{feature}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <h4 className="font-semibold text-green-900 mb-2">Prueba gratuita de 14 días</h4>
-                <ul className="space-y-1 text-sm text-green-700">
-                  <li>✓ Sin tarjeta de crédito</li>
-                  <li>✓ Acceso completo</li>
-                  <li>✓ Soporte incluido</li>
-                  <li>✓ Sin compromiso</li>
-                </ul>
-              </div>
+              {formData.selectedPlan === plan.id && (
+                <div className="bg-primary-100 p-3 rounded-lg">
+                  <CheckCircle className="h-6 w-6 text-primary-500 mx-auto mb-2" />
+                  <span className="text-primary-700 font-medium">Plan Seleccionado</span>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-cream-100 p-6 rounded-lg border border-cream-200">
+        <h4 className="font-bold text-coffee-900 mb-3 flex items-center gap-2">
+          <Clock className="h-5 w-5 text-primary-500" />
+          ¿Qué pasa después del registro?
+        </h4>
+        <div className="grid md:grid-cols-3 gap-4 text-sm">
+          <div className="flex items-start gap-2">
+            <div className="w-6 h-6 bg-primary-500 text-white rounded-full flex items-center justify-center text-xs font-bold">1</div>
+            <div>
+              <div className="font-semibold text-coffee-900">Configuración Automática</div>
+              <div className="text-coffee-600">TappMesa se configura según tus respuestas (5 min)</div>
+            </div>
+          </div>
+          <div className="flex items-start gap-2">
+            <div className="w-6 h-6 bg-primary-500 text-white rounded-full flex items-center justify-center text-xs font-bold">2</div>
+            <div>
+              <div className="font-semibold text-coffee-900">Llamada de Bienvenida</div>
+              <div className="text-coffee-600">Un especialista te ayuda a optimizar todo (15 min)</div>
+            </div>
+          </div>
+          <div className="flex items-start gap-2">
+            <div className="w-6 h-6 bg-primary-500 text-white rounded-full flex items-center justify-center text-xs font-bold">3</div>
+            <div>
+              <div className="font-semibold text-coffee-900">¡Listo para Servir!</div>
+              <div className="text-coffee-600">Tu cafetería digital funcionando perfectamente</div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
 
-        {/* Footer */}
-        <div className="text-center py-8">
-          <p className="text-gray-600">
-            ¿Ya tienes una cuenta?{' '}
-            <Link to="/login" className="text-primary-500 hover:underline font-medium">
-              Inicia sesión aquí
-            </Link>
+  if (success) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-cream-200 via-white to-cream-100 flex items-center justify-center p-6">
+        <div className="bg-white rounded-2xl p-8 shadow-2xl border text-center max-w-2xl w-full">
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="h-12 w-12 text-green-500" />
+          </div>
+          <h3 className="text-3xl font-bold text-coffee-900 mb-4">
+            ¡Bienvenido a TappMesa! ☕
+          </h3>
+          <p className="text-coffee-600 mb-6 text-lg">
+            <strong>{formData.cafeName}</strong> está siendo configurado con amor. 
+            Recibirás un email con los próximos pasos en menos de 5 minutos.
           </p>
+          
+          <div className="bg-primary-50 p-4 rounded-lg mb-6 border border-primary-200">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Smartphone className="h-5 w-5 text-primary-500" />
+              <span className="font-semibold text-primary-700">Tu cafetería digital:</span>
+            </div>
+            <div className="text-primary-600">
+              <strong>{formData.cafeName.toLowerCase().replace(/\s+/g, '')}.tappmesa.cl</strong>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button className="bg-primary-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors cta-button">
+              Ir al Dashboard
+            </button>
+            <button className="border-2 border-coffee-300 text-coffee-700 px-6 py-3 rounded-lg font-semibold hover:border-primary-500 hover:text-primary-500 transition-colors">
+              Descargar App Móvil
+            </button>
+          </div>
+
+          <p className="text-coffee-500 text-sm mt-4">
+            Un especialista de TappMesa te contactará en las próximas 2 horas para ayudarte con la configuración inicial.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-cream-200 via-white to-cream-100 relative overflow-hidden">
+      {/* Background Decorations */}
+      <div className="absolute top-20 left-10 text-6xl opacity-10 animate-float">☕</div>
+      <div className="absolute bottom-40 right-20 text-4xl opacity-10 animate-float-delay">🚀</div>
+      <div className="absolute top-60 right-10 text-5xl opacity-10 animate-float">⭐</div>
+      
+      <div className="container mx-auto px-6 py-12 relative z-10">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <button 
+              onClick={goToLogin}
+              className="flex items-center gap-2 text-coffee-600 hover:text-primary-500 transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Volver al Inicio
+            </button>
+            
+            <div className="flex items-center gap-2">
+              <Coffee className="text-primary-500 h-8 w-8" />
+              <span className="text-2xl font-bold text-coffee-900">TappMesa</span>
+            </div>
+          </div>
+          
+          <h1 className="text-4xl md:text-5xl font-bold text-coffee-900 mb-6">
+            Registra tu <span className="text-primary-500">Cafetería</span>
+          </h1>
+          <p className="text-xl text-coffee-600 max-w-3xl mx-auto leading-relaxed">
+            Configuración personalizada en 4 pasos simples. Sin tarjeta de crédito, 
+            soporte en español, listo en 15 minutos.
+          </p>
+        </div>
+
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-2xl border border-cream-200 overflow-hidden">
+            <div className="p-8">
+              <StepIndicator />
+              
+              {currentStep === 1 && <Step1 />}
+              {currentStep === 2 && <Step2 />}
+              {currentStep === 3 && <Step3 />}
+              {currentStep === 4 && <Step4 />}
+              
+              {/* Navigation Buttons */}
+              <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+                <button
+                  onClick={prevStep}
+                  disabled={currentStep === 1}
+                  className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
+                    currentStep === 1
+                      ? 'text-gray-400 cursor-not-allowed'
+                      : 'text-coffee-600 hover:text-primary-500 hover:bg-primary-50'
+                  }`}
+                >
+                  ← Anterior
+                </button>
+
+                <div className="text-center">
+                  <div className="text-sm text-coffee-600 mb-1">
+                    Paso {currentStep} de {steps.length}
+                  </div>
+                  <div className="w-48 bg-gray-200 rounded-full h-2">
+                    <div
+                      className="bg-primary-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${(currentStep / steps.length) * 100}%` }}
+                    ></div>
+                  </div>
+                </div>
+
+                {currentStep < 4 ? (
+                  <button
+                    onClick={nextStep}
+                    disabled={
+                      (currentStep === 1 && (!formData.ownerName || !formData.email || !formData.phone)) ||
+                      (currentStep === 2 && (!formData.cafeName || !formData.address || !formData.city || !formData.cafeType)) ||
+                      (currentStep === 3 && (!formData.menuSize || !formData.currentSystem || !formData.priority))
+                    }
+                    className={`px-8 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2 cta-button ${
+                      ((currentStep === 1 && (!formData.ownerName || !formData.email || !formData.phone)) ||
+                       (currentStep === 2 && (!formData.cafeName || !formData.address || !formData.city || !formData.cafeType)) ||
+                       (currentStep === 3 && (!formData.menuSize || !formData.currentSystem || !formData.priority)))
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-primary-500 text-white hover:bg-primary-600'
+                    }`}
+                  >
+                    Continuar <ArrowRight className="h-4 w-4" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSubmit}
+                    disabled={loading}
+                    className={`px-8 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2 cta-button ${
+                      loading
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-green-500 text-white hover:bg-green-600'
+                    }`}
+                  >
+                    {loading ? (
+                      <>
+                        <div className="loading-spinner"></div>
+                        Configurando...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="h-4 w-4" />
+                        Crear Mi Cafetería Digital
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div className="bg-white p-4 rounded-lg shadow-md border border-cream-200 hover-lift">
+              <div className="text-2xl font-bold text-primary-500 mb-1">15 min</div>
+              <div className="text-coffee-600 text-sm">Configuración Total</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-md border border-cream-200 hover-lift">
+              <div className="text-2xl font-bold text-primary-500 mb-1">250+</div>
+              <div className="text-coffee-600 text-sm">Cafeterías Activas</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-md border border-cream-200 hover-lift">
+              <div className="text-2xl font-bold text-primary-500 mb-1">4.9★</div>
+              <div className="text-coffee-600 text-sm">Satisfacción</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-md border border-cream-200 hover-lift">
+              <div className="text-2xl font-bold text-primary-500 mb-1">24/7</div>
+              <div className="text-coffee-600 text-sm">Soporte Técnico</div>
+            </div>
+          </div>
+
+          {/* Security & Trust */}
+          <div className="mt-8 text-center">
+            <div className="flex justify-center items-center gap-6 text-sm text-coffee-500">
+              <div className="flex items-center gap-2">
+                <Shield className="h-4 w-4 text-green-500" />
+                <span>Datos Encriptados SSL</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+                <span>Cumple Ley Protección Datos</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Zap className="h-4 w-4 text-green-500" />
+                <span>Cancela Cuando Quieras</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

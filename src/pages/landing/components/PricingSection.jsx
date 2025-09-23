@@ -1,347 +1,204 @@
-// src/pages/landing/components/PricingSection.jsx - Versión con Tailwind
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Check, Coffee, Star, Zap } from 'lucide-react';
 
 const PricingSection = () => {
-  const [billingCycle, setBillingCycle] = useState('monthly');
-  const navigate = useNavigate();
-
   const plans = [
     {
-      id: 'starter',
-      name: 'Starter',
-      subtitle: 'Perfecto para empezar',
-      icon: '🚀',
-      popular: false,
-      pricing: {
-        monthly: 29900,
-        annually: 299000
-      },
-      description: 'Ideal para cafeterías y restaurantes pequeños',
+      name: "Café Express",
+      price: "$29.990",
+      period: "/mes",
+      description: "Perfecto para cafeterías pequeñas y acogedoras",
       features: [
-        'Hasta 10 mesas',
-        'Menú digital ilimitado',
-        'Carrito de compras',
-        'Comandas básicas',
-        'Panel de administración',
-        'Soporte por email',
-        'Códigos QR personalizados',
-        'Estadísticas básicas'
+        "Hasta 50 productos en menú",
+        "1 cafetería registrada",
+        "Menú digital básico",
+        "Órdenes directas al barista",
+        "Soporte por email",
+        "Estadísticas básicas de ventas",
+        "Personalización de bebidas",
+        "Dashboard básico"
       ],
-      limitations: [
-        'Sin sistema de reservas',
-        'Sin personalización avanzada',
-        'Sin integraciones externas'
-      ]
+      popular: false,
+      icon: Coffee,
+      gradient: "bg-cream-200",
+      textColor: "text-coffee-900"
     },
     {
-      id: 'professional',
-      name: 'Professional',
-      subtitle: 'El más popular',
-      icon: '⭐',
+      name: "Café Premium",
+      price: "$49.990",
+      period: "/mes",
+      description: "Ideal para cafeterías en crecimiento y cadenas pequeñas",
+      features: [
+        "Productos ilimitados",
+        "Hasta 3 sucursales",
+        "Menú digital avanzado",
+        "Sistema de reservas de mesa",
+        "Soporte prioritario 24/7",
+        "Analytics detallados de cafetería",
+        "Programa de lealtad para clientes",
+        "Integración con delivery",
+        "Personalización de marca",
+        "Reportes semanales automáticos"
+      ],
       popular: true,
-      pricing: {
-        monthly: 59900,
-        annually: 599000
-      },
-      description: 'Para restaurantes en crecimiento',
-      features: [
-        'Hasta 50 mesas',
-        'Todo de Starter',
-        'Sistema de reservas completo',
-        'Personalización avanzada',
-        'Múltiples métodos de pago',
-        'Reportes detallados',
-        'Soporte prioritario',
-        'Integraciones básicas',
-        'Gestión de inventario',
-        'Promociones y descuentos'
-      ],
-      limitations: [
-        'Sin marca blanca',
-        'Integraciones limitadas'
-      ]
+      icon: Star,
+      gradient: "bg-primary-500",
+      textColor: "text-white"
     },
     {
-      id: 'enterprise',
-      name: 'Enterprise',
-      subtitle: 'Solución completa',
-      icon: '🏢',
-      popular: false,
-      pricing: {
-        monthly: 149900,
-        annually: 1499000
-      },
-      description: 'Para cadenas y restaurantes grandes',
+      name: "Café Enterprise",
+      price: "$89.990",
+      period: "/mes",
+      description: "Para cadenas de cafeterías y operaciones grandes",
       features: [
-        'Mesas ilimitadas',
-        'Todo de Professional',
-        'Marca blanca completa',
-        'API personalizada',
-        'Integraciones ilimitadas',
-        'Soporte 24/7',
-        'Gerente de cuenta dedicado',
-        'Análisis avanzado con IA',
-        'Multi-sucursal',
-        'Configuración personalizada',
-        'SLA garantizado',
-        'Capacitación presencial'
+        "Todo de Café Premium",
+        "Sucursales ilimitadas",
+        "Multi-administrador",
+        "API personalizada",
+        "Soporte dedicado",
+        "Insights avanzados de mercado",
+        "Integración con sistemas POS",
+        "Dashboard ejecutivo",
+        "Análisis predictivo de demanda",
+        "Gestión de inventario automática",
+        "Reportes personalizados",
+        "Capacitación para equipo"
       ],
-      limitations: []
+      popular: false,
+      icon: Zap,
+      gradient: "bg-coffee-dark",
+      textColor: "text-white"
     }
   ];
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP'
-    }).format(price);
-  };
-
-  const getDiscountedPrice = (monthlyPrice) => {
-    return monthlyPrice * 10; // 2 meses gratis en plan anual
-  };
-
-  const getSavings = (monthlyPrice) => {
-    const yearlyTotal = monthlyPrice * 12;
-    const discountedYearly = getDiscountedPrice(monthlyPrice);
-    return yearlyTotal - discountedYearly;
-  };
-
-  const handleSelectPlan = (planId) => {
-    navigate(`/register?plan=${planId}&billing=${billingCycle}`);
-  };
-
-  const handleContactSales = () => {
-    window.open('mailto:ventas@tappmesa.com?subject=Consulta Plan Enterprise', '_blank');
-  };
-
   return (
-    <section id="pricing" className="py-16 lg:py-24 bg-gradient-to-br from-orange-50 to-red-50">
-      <div className="max-w-7xl mx-auto px-4">
+    <section id="pricing" className="py-20 bg-gradient-to-br from-cream-200 via-white to-cream-100">
+      <div className="container mx-auto px-6">
+        {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            Planes que se adaptan a tu negocio
+          <div className="flex justify-center items-center gap-2 mb-4">
+            <Coffee className="text-primary-500 h-8 w-8" />
+            <span className="text-coffee-600 font-medium">Planes Diseñados para Cafeterías</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-coffee-900 mb-6">
+            Precios <span className="text-primary-500">Transparentes</span>
           </h2>
-          <p className="text-xl text-gray-600">
-            Desde cafeterías pequeñas hasta grandes cadenas de restaurantes
+          <p className="text-xl text-coffee-600 max-w-3xl mx-auto leading-relaxed">
+            Planes flexibles que crecen contigo, desde tu primera taza hasta tu cadena de cafeterías. 
+            Sin costos ocultos, sin sorpresas. Solo café digital perfecto.
           </p>
         </div>
 
-        {/* Billing Toggle */}
-        <div className="flex justify-center mb-12">
-          <div className="bg-white rounded-xl p-2 shadow-lg border border-gray-200">
-            <div className="flex">
-              <button
-                className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
-                  billingCycle === 'monthly' 
-                    ? 'bg-primary-500 text-white shadow-md' 
-                    : 'text-gray-600 hover:text-primary-500'
-                }`}
-                onClick={() => setBillingCycle('monthly')}
-              >
-                Mensual
-              </button>
-              <button
-                className={`relative px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
-                  billingCycle === 'annually' 
-                    ? 'bg-primary-500 text-white shadow-md' 
-                    : 'text-gray-600 hover:text-primary-500'
-                }`}
-                onClick={() => setBillingCycle('annually')}
-              >
-                Anual
-                <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold">
-                  Ahorra 2 meses
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Plans Grid */}
-        <div className="grid lg:grid-cols-3 gap-8 mb-16">
-          {plans.map((plan) => (
+        {/* Pricing Cards */}
+        <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          {plans.map((plan, index) => (
             <div
-              key={plan.id}
-              className={`relative bg-white rounded-3xl shadow-xl border-2 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 ${
-                plan.popular ? 'border-primary-500' : 'border-gray-200'
+              key={index}
+              className={`relative rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 ${
+                plan.popular 
+                  ? 'shadow-2xl shadow-primary-500/20 border-2 border-primary-500' 
+                  : 'shadow-lg hover:shadow-xl bg-white border border-cream-200'
               }`}
             >
+              {/* Popular Badge */}
               {plan.popular && (
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <span className="bg-primary-500 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 z-10">
+                  <div className="bg-primary-500 text-white px-4 py-1 rounded-full text-sm font-medium flex items-center gap-1">
+                    <Star className="h-4 w-4 fill-current" />
                     Más Popular
-                  </span>
+                  </div>
                 </div>
               )}
-              
-              <div className="p-8">
-                <div className="text-center mb-8">
-                  <div className="text-4xl mb-4">{plan.icon}</div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                  <p className="text-gray-600 mb-6">{plan.subtitle}</p>
-                </div>
 
-                <div className="text-center mb-8">
-                  <div className="flex items-baseline justify-center">
-                    <span className="text-sm text-gray-600">$</span>
-                    <span className="text-4xl font-bold text-gray-900">
-                      {billingCycle === 'monthly' 
-                        ? (plan.pricing.monthly / 1000).toFixed(0)
-                        : (plan.pricing.annually / 1000).toFixed(0)
-                      }
-                    </span>
-                    <span className="text-sm text-gray-600 ml-1">
-                      {billingCycle === 'monthly' ? '.900/mes' : '.000/año'}
-                    </span>
+              {/* Card Content */}
+              <div className={`p-8 ${plan.popular ? plan.gradient : ''}`}>
+                {/* Icon & Title */}
+                <div className="text-center mb-6">
+                  <div className={`inline-flex p-3 rounded-full mb-4 ${
+                    plan.popular ? 'bg-white/20' : 'bg-primary-500/10'
+                  }`}>
+                    <plan.icon className={`h-8 w-8 ${plan.popular ? 'text-white' : 'text-primary-500'}`} />
                   </div>
-                  
-                  {billingCycle === 'annually' && (
-                    <div className="mt-2">
-                      <span className="text-sm text-gray-500 line-through">
-                        {formatPrice(plan.pricing.monthly * 12)}
-                      </span>
-                      <div className="text-sm text-green-600 font-semibold">
-                        Ahorras {formatPrice(getSavings(plan.pricing.monthly))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  <p className="text-gray-600 mt-4">{plan.description}</p>
-                </div>
-
-                <div className="mb-8">
-                  <h4 className="font-semibold text-gray-900 mb-4">Incluye:</h4>
-                  <ul className="space-y-3">
-                    {plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-center gap-3">
-                        <span className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs font-bold">
-                          ✓
-                        </span>
-                        <span className="text-gray-700 text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  {plan.limitations.length > 0 && (
-                    <div className="mt-6">
-                      <h5 className="font-semibold text-gray-900 mb-3">No incluye:</h5>
-                      <ul className="space-y-2">
-                        {plan.limitations.map((limitation, index) => (
-                          <li key={index} className="flex items-center gap-3">
-                            <span className="w-5 h-5 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xs font-bold">
-                              ✗
-                            </span>
-                            <span className="text-gray-500 text-sm">{limitation}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-4">
-                  {plan.id === 'enterprise' ? (
-                    <button
-                      onClick={handleContactSales}
-                      className="w-full border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white py-4 rounded-lg font-semibold transition-all duration-300 touch-target"
-                    >
-                      Contactar Ventas
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleSelectPlan(plan.id)}
-                      className={`w-full py-4 rounded-lg font-semibold transition-all duration-300 touch-target ${
-                        plan.popular
-                          ? 'bg-primary-500 hover:bg-primary-600 text-white shadow-lg'
-                          : 'border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white'
-                      }`}
-                    >
-                      Comenzar Gratis
-                    </button>
-                  )}
-                  
-                  <p className="text-center text-sm text-gray-500">
-                    Prueba gratis por 14 días
+                  <h3 className={`text-2xl font-bold mb-2 ${plan.popular ? plan.textColor : 'text-coffee-900'}`}>
+                    {plan.name}
+                  </h3>
+                  <p className={`text-sm ${plan.popular ? 'text-white/80' : 'text-coffee-600'}`}>
+                    {plan.description}
                   </p>
                 </div>
+
+                {/* Price */}
+                <div className="text-center mb-8">
+                  <div className="flex items-baseline justify-center">
+                    <span className={`text-4xl font-bold ${plan.popular ? plan.textColor : 'text-coffee-900'}`}>
+                      {plan.price}
+                    </span>
+                    <span className={`text-lg ml-1 ${plan.popular ? 'text-white/80' : 'text-coffee-600'}`}>
+                      {plan.period}
+                    </span>
+                  </div>
+                  <p className={`text-sm mt-2 ${plan.popular ? 'text-white/70' : 'text-coffee-600'}`}>
+                    + IVA • Sin compromiso • Cancela cuando quieras
+                  </p>
+                </div>
+
+                {/* Features */}
+                <div className="space-y-3 mb-8">
+                  {plan.features.map((feature, featureIndex) => (
+                    <div key={featureIndex} className="flex items-start gap-3">
+                      <Check className={`h-5 w-5 mt-0.5 flex-shrink-0 ${
+                        plan.popular ? 'text-white' : 'text-primary-500'
+                      }`} />
+                      <span className={`text-sm ${plan.popular ? 'text-white/90' : 'text-coffee-700'}`}>
+                        {feature}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* CTA Button */}
+                <button className={`w-full py-3 px-6 rounded-lg font-semibold text-center transition-all duration-300 ${
+                  plan.popular
+                    ? 'bg-white text-primary-500 hover:bg-cream-100 shadow-lg hover:shadow-xl'
+                    : 'bg-primary-500 text-white hover:bg-primary-600 shadow-md hover:shadow-lg'
+                }`}>
+                  {plan.popular ? 'Comenzar Ahora - Más Popular' : 'Comenzar Prueba Gratuita'}
+                </button>
+
+                {plan.popular && (
+                  <p className="text-center text-white/70 text-xs mt-3">
+                    ⭐ Elegido por el 73% de nuestras cafeterías
+                  </p>
+                )}
               </div>
             </div>
           ))}
         </div>
 
-        {/* FAQ Section */}
-        <div className="max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold text-gray-900 text-center mb-12">Preguntas Frecuentes</h3>
-          <div className="grid md:grid-cols-2 gap-8">
-            {[
-              {
-                question: '¿Puedo cambiar de plan en cualquier momento?',
-                answer: 'Sí, puedes actualizar o cambiar tu plan cuando quieras. Los cambios se aplican inmediatamente.'
-              },
-              {
-                question: '¿Hay costos de configuración?',
-                answer: 'No cobramos costos de configuración. Te ayudamos a configurar tu restaurante completamente gratis.'
-              },
-              {
-                question: '¿Qué incluye el período de prueba?',
-                answer: 'Acceso completo a todas las funcionalidades del plan seleccionado, sin restricciones.'
-              },
-              {
-                question: '¿Ofrecen descuentos para múltiples sucursales?',
-                answer: 'Sí, tenemos descuentos especiales para cadenas. Contáctanos para una cotización personalizada.'
-              }
-            ].map((faq, index) => (
-              <div key={index} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
-                <h4 className="font-semibold text-gray-900 mb-3">{faq.question}</h4>
-                <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Trust Indicators */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-          {[
-            { icon: '🔒', title: 'Pagos Seguros', desc: 'Encriptación SSL y PCI compliance' },
-            { icon: '📞', title: 'Soporte Local', desc: 'Equipo en Chile, en tu zona horaria' },
-            { icon: '💾', title: 'Respaldo de Datos', desc: 'Backups automáticos diarios' },
-            { icon: '📱', title: 'App Nativa', desc: 'Próximamente en App Store y Google Play' }
-          ].map((indicator, index) => (
-            <div key={index} className="bg-white rounded-2xl p-6 text-center shadow-lg border border-gray-200">
-              <div className="text-3xl mb-3">{indicator.icon}</div>
-              <h4 className="font-semibold text-gray-900 mb-2">{indicator.title}</h4>
-              <p className="text-sm text-gray-600">{indicator.desc}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Final CTA */}
+        {/* Bottom CTA */}
         <div className="text-center mt-16">
-          <div className="bg-white rounded-3xl p-8 lg:p-12 shadow-xl border border-gray-200 max-w-2xl mx-auto">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              ¿Necesitas algo personalizado?
+          <div className="bg-white rounded-2xl p-8 shadow-lg max-w-4xl mx-auto border border-cream-200">
+            <h3 className="text-2xl font-bold text-coffee-900 mb-4">
+              ¿Necesitas un plan personalizado? ☕
             </h3>
-            <p className="text-gray-600 mb-8">
-              Trabajamos contigo para crear una solución que se adapte perfectamente a tu negocio
+            <p className="text-coffee-600 mb-6 max-w-2xl mx-auto">
+              Si tienes más de 10 sucursales o necesidades específicas, 
+              hablemos para crear el plan perfecto para tu imperio cafetero.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                onClick={() => navigate('/register')}
-                className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 touch-target"
-              >
-                Comenzar Prueba Gratuita
+              <button className="bg-primary-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors">
+                Contactar Ventas
               </button>
-              <button 
-                onClick={handleContactSales}
-                className="border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 touch-target"
-              >
-                Hablar con Ventas
+              <button className="border-2 border-coffee-300 text-coffee-700 px-6 py-3 rounded-lg font-semibold hover:border-primary-500 hover:text-primary-500 transition-colors">
+                Agendar Demo Personalizada
               </button>
             </div>
           </div>
         </div>
+
+        {/* Decorative Elements */}
+        <div className="absolute top-20 left-10 text-6xl opacity-10 animate-float">☕</div>
+        <div className="absolute bottom-40 right-20 text-4xl opacity-10 animate-float-delay">🥐</div>
+        <div className="absolute top-60 right-10 text-5xl opacity-10 animate-float">🍰</div>
       </div>
     </section>
   );

@@ -1,217 +1,321 @@
-// src/pages/landing/components/CTASection.jsx - Versión con Tailwind
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { 
+  Coffee, 
+  ArrowRight, 
+  Star, 
+  Users, 
+  TrendingUp, 
+  Clock,
+  CheckCircle,
+  Smartphone,
+  BarChart3,
+  Zap,
+  Heart,
+  Gift
+} from 'lucide-react';
 
 const CTASection = () => {
-  const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
+  const [timeLeft, setTimeLeft] = useState({
+    hours: 23,
+    minutes: 45,
+    seconds: 30
+  });
 
-  const handleQuickStart = () => {
-    navigate('/register');
-  };
+  const [stats, setStats] = useState({
+    cafesActive: 250,
+    ordersToday: 1247,
+    revenue: 4850000
+  });
 
-  const handleEmailSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simular envío de email
-    setTimeout(() => {
-      setIsSubmitting(false);
-      navigate(`/register?email=${encodeURIComponent(email)}`);
+  // Countdown timer
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev.seconds > 0) {
+          return { ...prev, seconds: prev.seconds - 1 };
+        } else if (prev.minutes > 0) {
+          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
+        } else if (prev.hours > 0) {
+          return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
+        } else {
+          return { hours: 23, minutes: 59, seconds: 59 };
+        }
+      });
     }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Real-time stats simulation
+  useEffect(() => {
+    const statsTimer = setInterval(() => {
+      setStats(prev => ({
+        cafesActive: prev.cafesActive + (Math.random() > 0.8 ? 1 : 0),
+        ordersToday: prev.ordersToday + Math.floor(Math.random() * 3),
+        revenue: prev.revenue + Math.floor(Math.random() * 15000)
+      }));
+    }, 4000);
+
+    return () => clearInterval(statsTimer);
+  }, []);
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+      minimumFractionDigits: 0
+    }).format(price);
   };
 
   const benefits = [
     {
-      icon: '⚡',
-      title: 'Configuración en 10 minutos',
-      description: 'Tu restaurante digital listo en menos de 10 minutos'
+      icon: TrendingUp,
+      title: 'Aumenta tus Ventas 40%',
+      desc: 'Promedio de crecimiento en 3 meses',
+      color: 'text-green-500'
     },
     {
-      icon: '🎯',
-      title: 'Soporte personalizado',
-      description: 'Te acompañamos en cada paso de la configuración'
+      icon: Clock,
+      title: 'Ahorra 15 Horas/Semana',
+      desc: 'Automatización de procesos',
+      color: 'text-blue-500'
     },
     {
-      icon: '📈',
-      title: 'Resultados inmediatos',
-      description: 'Comienza a ver mejoras desde el primer día'
+      icon: Users,
+      title: 'Clientes Más Felices',
+      desc: '4.9★ satisfacción promedio',
+      color: 'text-yellow-500'
     },
     {
-      icon: '🔄',
-      title: 'Sin compromiso',
-      description: 'Cancela cuando quieras, sin penalizaciones'
+      icon: BarChart3,
+      title: 'Decisiones Inteligentes',
+      desc: 'Analytics en tiempo real',
+      color: 'text-purple-500'
     }
   ];
 
-  const urgencyFactors = [
-    'Únete a 500+ restaurantes que ya digitalizaron su operación',
-    'Más de 50,000 órdenes procesadas exitosamente',
-    'Promedio de 35% de aumento en ventas reportado',
-    '98% de clientes satisfechos con el servicio'
-  ];
-
   return (
-    <section className="py-16 lg:py-24 bg-gradient-to-br from-primary-500 to-primary-600">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Main CTA */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-          <div className="text-white">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-6">
-              ¿Listo para revolucionar tu restaurante?
-            </h2>
-            <p className="text-xl text-primary-100 mb-8">
-              Únete a cientos de restaurantes que ya transformaron su negocio con TappMesa. 
-              Comienza tu prueba gratuita hoy mismo.
-            </p>
+    <section className="py-20 bg-gradient-to-br from-coffee-900 via-coffee-800 to-primary-900 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-gradient-to-r from-coffee-900/90 via-primary-500/20 to-coffee-900/90"></div>
+      <div className="absolute top-0 left-0 w-full h-full">
+        <div className="absolute top-20 left-10 text-8xl opacity-5 text-white animate-float">☕</div>
+        <div className="absolute bottom-20 right-20 text-6xl opacity-5 text-white animate-float-delay">🚀</div>
+        <div className="absolute top-40 right-10 text-5xl opacity-5 text-white animate-float">⭐</div>
+        <div className="absolute bottom-40 left-20 text-7xl opacity-5 text-white animate-float-delay">📱</div>
+      </div>
 
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              {benefits.map((benefit, index) => (
-                <div key={index} className="flex gap-3">
-                  <div className="text-2xl">{benefit.icon}</div>
-                  <div>
-                    <h4 className="font-semibold text-white mb-1">{benefit.title}</h4>
-                    <p className="text-primary-100 text-sm">{benefit.description}</p>
-                  </div>
-                </div>
-              ))}
+      <div className="container mx-auto px-6 relative z-10">
+        {/* Live Stats Banner */}
+        <div className="text-center mb-12">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 max-w-4xl mx-auto">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-white/80 font-medium">Estadísticas en Vivo</span>
             </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <button 
-                onClick={handleQuickStart}
-                className="bg-white text-primary-500 hover:bg-gray-100 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg touch-target"
-              >
-                Comenzar Prueba Gratuita
-              </button>
-              
-              <form onSubmit={handleEmailSubmit} className="flex gap-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tu@restaurante.com"
-                  className="flex-1 px-4 py-4 rounded-lg border border-primary-300 focus:ring-2 focus:ring-white focus:border-transparent"
-                  required
-                />
-                <button 
-                  type="submit" 
-                  disabled={isSubmitting}
-                  className="bg-primary-700 hover:bg-primary-800 text-white px-6 py-4 rounded-lg font-semibold transition-colors disabled:opacity-50 touch-target"
-                >
-                  {isSubmitting ? 'Enviando...' : 'Recibir Info'}
-                </button>
-              </form>
-            </div>
-
-            <p className="text-primary-100 text-sm">
-              ✓ 14 días gratis • ✓ Sin tarjeta de crédito • ✓ Configuración incluida
-            </p>
-          </div>
-
-          <div className="text-center">
-            <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
-              <div className="flex items-center justify-center mb-6">
-                <div className="text-6xl">🏪</div>
-                <div className="text-4xl mx-4">→</div>
-                <div className="text-center">
-                  <div className="text-4xl mb-2">📱</div>
-                  <div className="space-y-2">
-                    <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
-                      📈 +35% ventas
-                    </div>
-                    <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">
-                      ⚡ +40% eficiencia
-                    </div>
-                    <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-semibold">
-                      😊 98% satisfacción
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Social Proof / Urgency */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 mb-16">
-          <h3 className="text-xl font-bold text-white text-center mb-6">¿Por qué elegir TappMesa ahora?</h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            {urgencyFactors.map((factor, index) => (
-              <div key={index} className="flex items-center gap-3 text-white">
-                <span className="text-green-400 font-bold">✓</span>
-                <span>{factor}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Final CTA */}
-        <div className="text-center">
-          <div className="bg-white rounded-3xl p-8 lg:p-12 shadow-2xl max-w-2xl mx-auto">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              No te quedes atrás de la competencia
-            </h3>
-            <p className="text-gray-600 mb-8">
-              Cada día que esperas es una oportunidad perdida de mejorar la experiencia 
-              de tus clientes y aumentar tus ventas.
-            </p>
             
-            <div className="bg-gradient-to-r from-orange-100 to-red-100 rounded-2xl p-6 mb-8">
-              <div className="flex items-center justify-center gap-3 mb-2">
-                <span className="text-2xl">🎯</span>
-                <div>
-                  <span className="font-bold text-gray-900">Oferta Especial</span>
-                  <div className="text-sm text-gray-600">Configuración gratuita por tiempo limitado</div>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-1">{stats.cafesActive}</div>
+                <div className="text-white/70 text-sm">Cafeterías Activas Ahora</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-1">{stats.ordersToday.toLocaleString()}</div>
+                <div className="text-white/70 text-sm">Órdenes Procesadas Hoy</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-1">{formatPrice(stats.revenue)}</div>
+                <div className="text-white/70 text-sm">Ingresos Generados Hoy</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main CTA */}
+        <div className="text-center mb-16">
+          <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+            Tu Cafetería Digital
+            <br />
+            <span className="text-primary-300">Comienza Hoy</span>
+          </h2>
+          
+          <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed mb-8">
+            Únete a las cafeterías más exitosas de Chile. Configuración en 15 minutos, 
+            soporte en español, sin compromisos a largo plazo.
+          </p>
+
+          {/* Limited Time Offer */}
+          <div className="bg-gradient-to-r from-primary-500 to-primary-400 rounded-2xl p-6 max-w-2xl mx-auto mb-8 border border-primary-300">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <Gift className="h-6 w-6 text-white" />
+              <span className="text-white font-bold text-lg">Oferta de Lanzamiento</span>
+            </div>
+            
+            <div className="text-white mb-4">
+              <div className="text-3xl font-bold mb-1">50% OFF</div>
+              <div className="text-primary-100">Primer mes de cualquier plan</div>
+            </div>
+
+            {/* Countdown */}
+            <div className="flex justify-center gap-4 mb-4">
+              <div className="bg-white/20 rounded-lg p-3 min-w-[60px]">
+                <div className="text-2xl font-bold text-white">{timeLeft.hours.toString().padStart(2, '0')}</div>
+                <div className="text-primary-100 text-xs">Horas</div>
+              </div>
+              <div className="bg-white/20 rounded-lg p-3 min-w-[60px]">
+                <div className="text-2xl font-bold text-white">{timeLeft.minutes.toString().padStart(2, '0')}</div>
+                <div className="text-primary-100 text-xs">Minutos</div>
+              </div>
+              <div className="bg-white/20 rounded-lg p-3 min-w-[60px]">
+                <div className="text-2xl font-bold text-white">{timeLeft.seconds.toString().padStart(2, '0')}</div>
+                <div className="text-primary-100 text-xs">Segundos</div>
               </div>
             </div>
 
-            <button 
-              onClick={handleQuickStart}
-              className="w-full bg-primary-500 hover:bg-primary-600 text-white py-4 rounded-lg font-semibold text-lg mb-6 transition-all duration-300 transform hover:scale-105 touch-target"
-            >
-              Sí, quiero digitalizar mi restaurante
+            <div className="text-primary-100 text-sm">
+              ⏰ Válido solo para las primeras 100 cafeterías que se registren
+            </div>
+          </div>
+
+          {/* Primary CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
+            <button className="bg-white text-coffee-900 px-10 py-5 rounded-2xl text-xl font-bold hover:bg-cream-100 transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:scale-105 flex items-center justify-center gap-3">
+              <Coffee className="h-6 w-6" />
+              Registrar Mi Cafetería GRATIS
+              <ArrowRight className="h-6 w-6" />
             </button>
             
-            <div className="text-center text-gray-600">
-              <p className="mb-2">¿Prefieres hablar con alguien?</p>
-              <a href="tel:+56912345678" className="text-primary-500 hover:text-primary-600 font-semibold">
-                📞 +56 9 1234 5678
-              </a>
-              <div className="text-sm text-gray-500 mt-1">Lun-Vie 9:00-18:00</div>
-            </div>
+            <button className="border-3 border-white/50 text-white px-10 py-5 rounded-2xl text-xl font-bold hover:border-white hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-3">
+              <Smartphone className="h-6 w-6" />
+              Ver Demo Interactiva
+            </button>
+          </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-              {[
-                { icon: '🔒', text: 'Datos Seguros' },
-                { icon: '🇨🇱', text: 'Empresa Chilena' },
-                { icon: '💳', text: 'Sin Tarjeta' },
-                { icon: '📞', text: 'Soporte 24/7' }
-              ].map((badge, index) => (
-                <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
-                  <span>{badge.icon}</span>
-                  <span>{badge.text}</span>
-                </div>
-              ))}
+          {/* Trust Indicators */}
+          <div className="flex flex-wrap justify-center items-center gap-8 text-white/70 text-sm mb-12">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4 text-green-400" />
+              <span>Sin Tarjeta de Crédito</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4 text-green-400" />
+              <span>Configuración en 15 Minutos</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4 text-green-400" />
+              <span>Soporte 24/7 en Español</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4 text-green-400" />
+              <span>Cancela Cuando Quieras</span>
             </div>
           </div>
         </div>
 
-        {/* Risk Reversal */}
-        <div className="text-center mt-12">
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 max-w-xl mx-auto">
-            <h4 className="text-lg font-bold text-white mb-3">Garantía de satisfacción 100%</h4>
-            <p className="text-primary-100 mb-4">
-              Si en los primeros 30 días no estás completamente satisfecho, 
-              te devolvemos tu dinero sin preguntas.
+        {/* Benefits Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {benefits.map((benefit, index) => (
+            <div key={index} className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 text-center hover:bg-white/15 transition-all duration-300">
+              <div className={`inline-flex p-3 rounded-full bg-white/20 mb-4`}>
+                <benefit.icon className={`h-8 w-8 ${benefit.color}`} />
+              </div>
+              <h3 className="text-white font-bold text-lg mb-2">{benefit.title}</h3>
+              <p className="text-white/70 text-sm">{benefit.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Social Proof */}
+        <div className="text-center mb-16">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 max-w-4xl mx-auto">
+            <div className="flex items-center justify-center gap-2 mb-6">
+              <Heart className="h-6 w-6 text-red-400" />
+              <span className="text-white font-semibold text-lg">Amado por Dueños de Cafeterías</span>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <div className="flex justify-center mb-3">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <blockquote className="text-white/90 italic mb-3">
+                  "TappMesa transformó mi cafetería. Mis clientes están encantados y mis ventas subieron 35%."
+                </blockquote>
+                <cite className="text-white/70 text-sm">- María González, Café Central</cite>
+              </div>
+
+              <div className="text-center">
+                <div className="flex justify-center mb-3">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <blockquote className="text-white/90 italic mb-3">
+                  "Gestionar 5 sucursales ahora es súper fácil. Los reportes automáticos son oro puro."
+                </blockquote>
+                <cite className="text-white/70 text-sm">- Carlos Mendoza, Granos & Más</cite>
+              </div>
+
+              <div className="text-center">
+                <div className="flex justify-center mb-3">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <blockquote className="text-white/90 italic mb-3">
+                  "La configuración fue súper rápida. En 20 minutos ya estaba sirviendo órdenes digitales."
+                </blockquote>
+                <cite className="text-white/70 text-sm">- Andrea Silva, Rincón del Café</cite>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Final Push */}
+        <div className="text-center">
+          <div className="bg-gradient-to-r from-primary-600 to-primary-500 rounded-3xl p-8 border border-primary-400 max-w-3xl mx-auto shadow-2xl">
+            <h3 className="text-3xl font-bold text-white mb-4">
+              ¿Qué Esperas para Digitalizar tu Cafetería?
+            </h3>
+            
+            <p className="text-primary-100 text-lg mb-6 leading-relaxed">
+              Cada día que pasa sin TappMesa es dinero que dejas de ganar. 
+              Tus competidores ya están digitalizados. <strong>Es tu momento.</strong>
             </p>
-            <div className="grid grid-cols-2 gap-4 text-sm text-primary-100">
-              <span>✓ Soporte técnico incluido</span>
-              <span>✓ Capacitación personalizada</span>
-              <span>✓ Migración de datos gratuita</span>
-              <span>✓ Sin costos ocultos</span>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+              <button className="bg-white text-primary-600 px-8 py-4 rounded-xl text-lg font-bold hover:bg-cream-100 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-3">
+                <Zap className="h-5 w-5" />
+                Empezar Ahora - 50% OFF
+              </button>
+              
+              <button className="border-2 border-white/50 text-white px-8 py-4 rounded-xl text-lg font-bold hover:border-white hover:bg-white/10 transition-all duration-300">
+                Hablar con un Especialista
+              </button>
+            </div>
+
+            <div className="text-primary-200 text-sm">
+              💡 <strong>Tip:</strong> Las cafeterías que se digitalizan primero en su zona capturan más mercado
+            </div>
+          </div>
+
+          {/* Contact Info */}
+          <div className="mt-12 text-center">
+            <div className="text-white/60 text-sm mb-4">
+              ¿Preguntas? Estamos aquí para ayudarte
+            </div>
+            <div className="flex flex-wrap justify-center gap-6 text-white/80">
+              <a href="mailto:hola@tappmesa.cl" className="hover:text-primary-300 transition-colors">
+                📧 hola@tappmesa.cl
+              </a>
+              <a href="tel:+56900000000" className="hover:text-primary-300 transition-colors">
+                📞 +56 9 0000 0000
+              </a>
+              <a href="#" className="hover:text-primary-300 transition-colors">
+                💬 Chat en Vivo
+              </a>
             </div>
           </div>
         </div>

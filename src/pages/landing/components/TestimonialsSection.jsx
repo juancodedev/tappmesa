@@ -1,258 +1,250 @@
-// src/pages/landing/components/TestimonialsSection.jsx - Versión con Tailwind
-import React, { useState, useEffect } from 'react';
+import { Star, Quote, Coffee, MapPin, TrendingUp } from 'lucide-react';
 
 const TestimonialsSection = () => {
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  
   const testimonials = [
     {
-      id: 1,
-      name: 'Carlos Mendoza',
-      business: 'Café Central',
-      location: 'Santiago, Chile',
-      avatar: '👨‍💼',
+      name: "María González",
+      role: "Dueña de Café Central",
+      location: "Las Condes, Santiago",
+      image: "/api/placeholder/80/80",
       rating: 5,
-      text: 'TappMesa revolucionó nuestro café. Los clientes aman poder ordenar desde su mesa sin esperar al mesero. Nuestras ventas aumentaron 35% en el primer mes.',
-      results: {
-        sales: '+35%',
-        satisfaction: '98%',
-        efficiency: '+40%'
-      }
+      quote: "TappMesa transformó completamente nuestra cafetería. Ahora nuestros clientes pueden personalizar sus bebidas desde la mesa y el flujo es mucho más eficiente. ¡Las ventas subieron un 35%!",
+      metrics: {
+        sales: "+35%",
+        efficiency: "60% más rápido",
+        satisfaction: "4.9/5.0"
+      },
+      badge: "Cafetería del Mes",
+      specialty: "Especialidad en Latte Art"
     },
     {
-      id: 2,
-      name: 'Ana Sofía Ruiz',
-      business: 'Restaurante Marisquería del Puerto',
-      location: 'Valparaíso, Chile',
-      avatar: '👩‍🍳',
+      name: "Carlos Mendoza",
+      role: "Gerente General",
+      location: "Cadena 'Granos & Más' (5 sucursales)",
+      image: "/api/placeholder/80/80",
       rating: 5,
-      text: 'Como chef, lo que más me gusta es que las órdenes llegan directamente a la cocina sin errores. Ya no tenemos problemas de comunicación con el servicio.',
-      results: {
-        errors: '-90%',
-        speed: '+25%',
-        quality: '99%'
-      }
+      quote: "Gestionar 5 cafeterías era un caos hasta que llegó TappMesa. El sistema multitenant nos permite monitorear todas las sucursales desde un solo lugar. Los reportes automáticos son oro puro.",
+      metrics: {
+        branches: "5 Sucursales",
+        orders: "2.5k mensuales",
+        time: "70% menos admin"
+      },
+      badge: "Cliente Enterprise",
+      specialty: "Cadena Exitosa"
     },
     {
-      id: 3,
-      name: 'Miguel Torres',
-      business: 'Pizzería Don Miguel',
-      location: 'Concepción, Chile',
-      avatar: '👨‍🍳',
+      name: "Andrea Silva",
+      role: "Propietaria de Rincón del Café",
+      location: "Valparaíso",
+      image: "/api/placeholder/80/80",
       rating: 5,
-      text: 'El sistema de reservas nos ayudó a optimizar el uso de nuestras mesas. Ahora podemos planificar mejor y nuestros clientes siempre tienen mesa disponible.',
-      results: {
-        occupancy: '+50%',
-        planning: '100%',
-        customer: '95%'
-      }
+      quote: "Soy una cafetería pequeña y familiar. TappMesa se adaptó perfecto a nosotros. Mis clientes aman poder reservar 'su mesa favorita junto a la ventana'. Es como tener un asistente digital 24/7.",
+      metrics: {
+        reservations: "+80%",
+        reviews: "5.0★ Google",
+        loyalty: "40% clientes recurrentes"
+      },
+      badge: "Favorita Local",
+      specialty: "Ambiente Acogedor"
+    },
+    {
+      name: "Roberto Fuentes",
+      role: "Dueño de Coffee Hub",
+      location: "Providencia, Santiago",
+      image: "/api/placeholder/80/80",
+      rating: 5,
+      quote: "El sistema de órdenes directas al barista es genial. Los clientes piden desde la mesa y nosotros preparamos sin errores. Además, el análisis de horarios pico nos ayudó a optimizar el personal.",
+      metrics: {
+        errors: "90% menos errores",
+        peak: "Horarios optimizados",
+        staff: "30% más productivo"
+      },
+      badge: "Barista Pro",
+      specialty: "Café de Especialidad"
+    },
+    {
+      name: "Javiera López",
+      role: "Emprendedora Digital",
+      location: "Startup Café Co-working",
+      image: "/api/placeholder/80/80",
+      rating: 5,
+      quote: "Abrimos nuestra cafetería-coworking hace 6 meses y TappMesa fue clave desde el día 1. La integración con nuestro concepto digital es perfecta. ¡Los nómadas digitales lo aman!",
+      metrics: {
+        growth: "200% crecimiento",
+        digital: "95% órdenes digitales",
+        retention: "85% retención"
+      },
+      badge: "Innovadora del Año",
+      specialty: "Café + Coworking"
+    },
+    {
+      name: "Diego Ramírez",
+      role: "Franquiciado Café Express",
+      location: "Múltiples ubicaciones",
+      image: "/api/placeholder/80/80",
+      rating: 5,
+      quote: "Como franquicia, la consistencia es todo. TappMesa nos da los mismos estándares en todas las ubicaciones, y el programa de lealtad funciona entre todas las sucursales. ¡Brillante!",
+      metrics: {
+        locations: "12 Ubicaciones",
+        consistency: "100% estándares",
+        loyalty: "500+ miembros activos"
+      },
+      badge: "Franquicia Exitosa",
+      specialty: "Modelo Escalable"
     }
   ];
-
-  const stats = [
-    {
-      number: '500+',
-      label: 'Restaurantes Activos',
-      description: 'Confiando en TappMesa'
-    },
-    {
-      number: '50,000+',
-      label: 'Órdenes Mensuales',
-      description: 'Procesadas exitosamente'
-    },
-    {
-      number: '98%',
-      label: 'Satisfacción',
-      description: 'De clientes satisfechos'
-    },
-    {
-      number: '35%',
-      label: 'Aumento Promedio',
-      description: 'En ventas reportado'
-    }
-  ];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTestimonial((prev) => 
-        prev === testimonials.length - 1 ? 0 : prev + 1
-      );
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [testimonials.length]);
-
-  const nextTestimonial = () => {
-    setCurrentTestimonial(
-      currentTestimonial === testimonials.length - 1 ? 0 : currentTestimonial + 1
-    );
-  };
-
-  const prevTestimonial = () => {
-    setCurrentTestimonial(
-      currentTestimonial === 0 ? testimonials.length - 1 : currentTestimonial - 1
-    );
-  };
-
-  const renderStars = (rating) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <span key={i} className={`text-lg ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`}>⭐</span>
-    ));
-  };
 
   return (
-    <section id="testimonials" className="py-16 lg:py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="py-20 bg-gradient-to-br from-white via-cream-100 to-cream-200">
+      <div className="container mx-auto px-6">
+        {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            Lo que dicen nuestros clientes
+          <div className="flex justify-center items-center gap-2 mb-4">
+            <Quote className="text-primary-500 h-8 w-8" />
+            <span className="text-coffee-600 font-medium">Historias de Éxito Reales</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-coffee-900 mb-6">
+            Cafeterías que <span className="text-primary-500">Brillan</span> con TappMesa
           </h2>
-          <p className="text-xl text-gray-600">
-            Historias reales de restaurantes que transformaron su negocio con TappMesa
+          <p className="text-xl text-coffee-600 max-w-3xl mx-auto leading-relaxed">
+            Desde pequeñas cafeterías familiares hasta cadenas exitosas, 
+            descubre cómo TappMesa está transformando el mundo del café en Chile.
           </p>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-          {stats.map((stat, index) => (
-            <div key={index} className="text-center">
-              <div className="text-3xl lg:text-4xl font-bold text-primary-500 mb-2">{stat.number}</div>
-              <div className="font-semibold text-gray-900 mb-1">{stat.label}</div>
-              <div className="text-sm text-gray-600">{stat.description}</div>
+        {/* Stats Banner */}
+        <div className="bg-white rounded-2xl p-8 mb-16 shadow-lg border border-cream-200">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <div className="text-3xl font-bold text-primary-500 mb-2">250+</div>
+              <div className="text-coffee-600">Cafeterías Activas</div>
             </div>
-          ))}
-        </div>
-
-        {/* Main Testimonial Carousel */}
-        <div className="relative max-w-4xl mx-auto">
-          <button 
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-primary-500 transition-colors z-10"
-            onClick={prevTestimonial}
-          >
-            ‹
-          </button>
-          
-          <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-3xl p-8 lg:p-12">
-            <div className="text-center mb-8">
-              <div className="text-6xl mb-4">"</div>
-              <p className="text-xl lg:text-2xl text-gray-700 leading-relaxed mb-8">
-                {testimonials[currentTestimonial].text}
-              </p>
-              <div className="text-6xl mb-4">"</div>
+            <div>
+              <div className="text-3xl font-bold text-primary-500 mb-2">45k+</div>
+              <div className="text-coffee-600">Cafés Servidos/Mes</div>
             </div>
-            
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <h4 className="md:col-span-3 text-lg font-semibold text-gray-900 text-center mb-4">Resultados obtenidos:</h4>
-              {Object.entries(testimonials[currentTestimonial].results).map(([key, value]) => (
-                <div key={key} className="text-center bg-white rounded-2xl p-6 shadow-lg">
-                  <div className="text-2xl font-bold text-primary-500 mb-2">{value}</div>
-                  <div className="text-sm text-gray-600">
-                    {key === 'sales' && 'Ventas'}
-                    {key === 'satisfaction' && 'Satisfacción'}
-                    {key === 'efficiency' && 'Eficiencia'}
-                    {key === 'errors' && 'Menos Errores'}
-                    {key === 'speed' && 'Más Rápido'}
-                    {key === 'quality' && 'Calidad'}
-                    {key === 'occupancy' && 'Ocupación'}
-                    {key === 'planning' && 'Planificación'}
-                    {key === 'customer' && 'Satisfacción'}
-                  </div>
-                </div>
-              ))}
+            <div>
+              <div className="text-3xl font-bold text-primary-500 mb-2">4.9★</div>
+              <div className="text-coffee-600">Satisfacción Promedio</div>
             </div>
-            
-            <div className="flex items-center justify-center gap-4">
-              <div className="text-4xl">{testimonials[currentTestimonial].avatar}</div>
-              <div className="text-center">
-                <div className="font-bold text-gray-900 text-lg">
-                  {testimonials[currentTestimonial].name}
-                </div>
-                <div className="text-gray-600">
-                  {testimonials[currentTestimonial].business}
-                </div>
-                <div className="text-sm text-gray-500 mb-2">
-                  📍 {testimonials[currentTestimonial].location}
-                </div>
-                <div className="flex justify-center">
-                  {renderStars(testimonials[currentTestimonial].rating)}
-                </div>
-              </div>
+            <div>
+              <div className="text-3xl font-bold text-primary-500 mb-2">+40%</div>
+              <div className="text-coffee-600">Aumento Ventas Promedio</div>
             </div>
           </div>
-          
-          <button 
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-primary-500 transition-colors z-10"
-            onClick={nextTestimonial}
-          >
-            ›
-          </button>
         </div>
 
-        {/* Carousel Indicators */}
-        <div className="flex justify-center mt-8 gap-2">
-          {testimonials.map((_, index) => (
-            <button
+        {/* Testimonials Grid */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-16">
+          {testimonials.map((testimonial, index) => (
+            <div
               key={index}
-              className={`w-3 h-3 rounded-full transition-colors ${
-                index === currentTestimonial ? 'bg-primary-500' : 'bg-gray-300'
-              }`}
-              onClick={() => setCurrentTestimonial(index)}
-            />
-          ))}
-        </div>
+              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-cream-200 relative overflow-hidden"
+            >
+              {/* Background Decoration */}
+              <div className="absolute top-4 right-4 text-6xl opacity-5">☕</div>
+              
+              {/* Badge */}
+              <div className="absolute top-4 left-4">
+                <span className="bg-primary-500/10 text-primary-600 px-3 py-1 rounded-full text-xs font-medium">
+                  {testimonial.badge}
+                </span>
+              </div>
 
-        {/* All Testimonials Grid */}
-        <div className="mt-16">
-          <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">Más testimonios de nuestros clientes</h3>
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div 
-                key={testimonial.id} 
-                className={`bg-white rounded-2xl p-6 shadow-lg border transition-all duration-300 cursor-pointer ${
-                  index === currentTestimonial ? 'border-primary-500 shadow-xl' : 'border-gray-200 hover:shadow-xl'
-                }`}
-                onClick={() => setCurrentTestimonial(index)}
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="text-2xl">{testimonial.avatar}</div>
-                  <div>
-                    <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                    <div className="text-sm text-gray-600">{testimonial.business}</div>
-                    <div className="flex">
-                      {renderStars(testimonial.rating)}
+              <div className="pt-8">
+                {/* Quote */}
+                <div className="mb-6">
+                  <Quote className="text-primary-500 h-8 w-8 mb-4 opacity-50" />
+                  <p className="text-coffee-700 leading-relaxed text-lg">
+                    "{testimonial.quote}"
+                  </p>
+                </div>
+
+                {/* Metrics */}
+                <div className="grid grid-cols-3 gap-4 mb-6 p-4 bg-cream-100 rounded-lg">
+                  {Object.entries(testimonial.metrics).map(([key, value], metricIndex) => (
+                    <div key={metricIndex} className="text-center">
+                      <div className="font-bold text-primary-500 text-sm">{value}</div>
+                      <div className="text-coffee-600 text-xs capitalize">{key.replace(/([A-Z])/g, ' $1')}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Author */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={testimonial.image}
+                      alt={testimonial.name}
+                      className="w-12 h-12 rounded-full border-2 border-primary-500/20"
+                    />
+                    <div>
+                      <h4 className="font-semibold text-coffee-900">{testimonial.name}</h4>
+                      <p className="text-coffee-600 text-sm">{testimonial.role}</p>
+                      <div className="flex items-center gap-1 text-coffee-500 text-xs">
+                        <MapPin className="h-3 w-3" />
+                        {testimonial.location}
+                      </div>
                     </div>
                   </div>
+
+                  <div className="text-center">
+                    <div className="flex items-center gap-1 mb-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-4 w-4 ${
+                            i < testimonial.rating
+                              ? 'text-yellow-400 fill-current'
+                              : 'text-gray-300'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <div className="text-coffee-600 text-xs">{testimonial.specialty}</div>
+                  </div>
                 </div>
-                <p className="text-gray-700 text-sm leading-relaxed">
-                  {testimonial.text.substring(0, 120)}...
-                </p>
-                <button className="text-primary-500 hover:text-primary-600 text-sm font-medium mt-3 transition-colors">
-                  Leer más
-                </button>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
 
-        {/* Social Proof */}
-        <div className="text-center mt-16">
-          <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-3xl p-8 lg:p-12">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Únete a la revolución digital gastronómica
+        {/* Success Story Highlight */}
+        <div className="bg-coffee-dark rounded-2xl p-8 text-center text-white relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-coffee-900 via-primary-500/20 to-coffee-900 opacity-50"></div>
+          <div className="relative z-10">
+            <div className="flex justify-center items-center gap-2 mb-4">
+              <TrendingUp className="h-8 w-8 text-primary-300" />
+              <span className="text-primary-300 font-medium">Historia de Éxito Destacada</span>
+            </div>
+            <h3 className="text-3xl font-bold mb-4">
+              "De 1 a 12 cafeterías en 18 meses"
             </h3>
-            <p className="text-gray-600 mb-8">
-              Cientos de restaurantes ya están ofreciendo una mejor experiencia a sus clientes
+            <p className="text-white/90 max-w-3xl mx-auto text-lg leading-relaxed mb-6">
+              Diego Ramírez comenzó con una sola cafetería en 2023. Con TappMesa logró 
+              estandarizar procesos, optimizar operaciones y escalar a 12 ubicaciones exitosas. 
+              Su historia demuestra el poder de la digitalización inteligente.
             </p>
-            <div className="flex justify-center gap-4 text-4xl">
-              <span>🏪</span>
-              <span>🍕</span>
-              <span>☕</span>
-              <span>🍔</span>
-              <span>🥗</span>
-              <span>🍰</span>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="bg-primary-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors">
+                Leer Historia Completa
+              </button>
+              <button className="border-2 border-white/30 text-white px-6 py-3 rounded-lg font-semibold hover:border-primary-300 hover:text-primary-300 transition-colors">
+                Comenzar Mi Historia
+              </button>
             </div>
           </div>
+
+          {/* Decorative Elements */}
+          <div className="absolute top-4 left-8 text-4xl opacity-20">☕</div>
+          <div className="absolute bottom-4 right-8 text-3xl opacity-20">🏆</div>
+          <div className="absolute top-1/2 left-4 text-2xl opacity-20">⭐</div>
         </div>
+
+        {/* Floating Decorations */}
+        <div className="absolute top-40 left-10 text-5xl opacity-10 animate-float">☕</div>
+        <div className="absolute bottom-60 right-20 text-4xl opacity-10 animate-float-delay">🥐</div>
+        <div className="absolute top-80 right-10 text-3xl opacity-10 animate-float">⭐</div>
       </div>
     </section>
   );
