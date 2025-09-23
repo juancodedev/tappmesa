@@ -20,10 +20,12 @@ import {
 const RegisterPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    // Paso 1: Información personal
+    // Paso 1: Información personal + credenciales
     ownerName: '',
     email: '',
     phone: '',
+    password: '',
+    confirmPassword: '',
     
     // Paso 2: Información de la cafetería
     cafeName: '',
@@ -182,20 +184,6 @@ const RegisterPage = () => {
 
         <div>
           <label className="block text-sm font-semibold text-coffee-900 mb-2">
-            <Mail className="inline h-4 w-4 mr-2" />
-            Email *
-          </label>
-          <input
-            type="email"
-            value={formData.email}
-            onChange={(e) => handleInputChange('email', e.target.value)}
-            placeholder="tu@email.com"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
-          />
-        </div>
-
-        <div className="md:col-span-2">
-          <label className="block text-sm font-semibold text-coffee-900 mb-2">
             <Phone className="inline h-4 w-4 mr-2" />
             Teléfono *
           </label>
@@ -207,15 +195,69 @@ const RegisterPage = () => {
             className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
           />
         </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+            <Mail className="inline h-4 w-4 mr-2" />
+            Email *
+          </label>
+          <input
+            type="email"
+            value={formData.email}
+            onChange={(e) => handleInputChange('email', e.target.value)}
+            placeholder="tu@email.com"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
+          />
+          <p className="text-xs text-coffee-500 mt-1">
+            Este será tu usuario para acceder a TappMesa
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+            🔒 Contraseña *
+          </label>
+          <input
+            type="password"
+            value={formData.password}
+            onChange={(e) => handleInputChange('password', e.target.value)}
+            placeholder="Mínimo 8 caracteres"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
+          />
+          <div className="text-xs text-coffee-500 mt-1">
+            Debe contener al menos 8 caracteres, una mayúscula y un número
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+            🔒 Confirmar Contraseña *
+          </label>
+          <input
+            type="password"
+            value={formData.confirmPassword}
+            onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+            placeholder="Repite tu contraseña"
+            className={`w-full p-3 border rounded-lg focus:ring-2 transition-colors form-input-enhanced ${
+              formData.confirmPassword && formData.password !== formData.confirmPassword
+                ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                : 'border-gray-300 focus:border-primary-500 focus:ring-primary-200'
+            }`}
+          />
+          {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+            <p className="text-xs text-red-500 mt-1">Las contraseñas no coinciden</p>
+          )}
+        </div>
       </div>
 
       <div className="bg-primary-50 p-4 rounded-lg border border-primary-200">
         <div className="flex items-start gap-3">
           <Shield className="h-5 w-5 text-primary-500 mt-0.5" />
           <div>
-            <h4 className="font-semibold text-primary-700 mb-1">Tu privacidad es importante</h4>
+            <h4 className="font-semibold text-primary-700 mb-1">Tu seguridad es importante</h4>
             <p className="text-primary-600 text-sm">
-              Nunca compartiremos tu información personal. Usamos datos encriptados y cumplimos con la Ley de Protección de Datos de Chile.
+              Usamos cifrado de grado bancario. Tu contraseña se almacena de forma segura con Supabase Auth. 
+              Nunca compartiremos tu información personal.
             </p>
           </div>
         </div>
@@ -622,12 +664,12 @@ const RegisterPage = () => {
                   <button
                     onClick={nextStep}
                     disabled={
-                      (currentStep === 1 && (!formData.ownerName || !formData.email || !formData.phone)) ||
+                      (currentStep === 1 && (!formData.ownerName || !formData.email || !formData.phone || !formData.password || !formData.confirmPassword || formData.password !== formData.confirmPassword)) ||
                       (currentStep === 2 && (!formData.cafeName || !formData.address || !formData.city || !formData.cafeType)) ||
                       (currentStep === 3 && (!formData.menuSize || !formData.currentSystem || !formData.priority))
                     }
                     className={`px-8 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2 cta-button ${
-                      ((currentStep === 1 && (!formData.ownerName || !formData.email || !formData.phone)) ||
+                      ((currentStep === 1 && (!formData.ownerName || !formData.email || !formData.phone || !formData.password || !formData.confirmPassword || formData.password !== formData.confirmPassword)) ||
                        (currentStep === 2 && (!formData.cafeName || !formData.address || !formData.city || !formData.cafeType)) ||
                        (currentStep === 3 && (!formData.menuSize || !formData.currentSystem || !formData.priority)))
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
