@@ -9,11 +9,10 @@ import PricingSection from "./components/PricingSection";
 import TestimonialsSection from "./components/TestimonialsSection";
 import DemoSection from "./components/DemoSection";
 import CTASection from "./components/CTASection";
-import "./styles/landing.css";
 
 const LandingPage = () => {
   return (
-    <div className="landing-page">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
       <Header />
       <main>
         <HeroSection />

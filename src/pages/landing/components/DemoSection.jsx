@@ -1,6 +1,5 @@
-// src/pages/landing/components/DemoSection.jsx
+// src/pages/landing/components/DemoSection.jsx - Versión con Tailwind
 import React, { useState } from 'react';
-import Card from '../../../components/ui/Card';
 
 const DemoSection = () => {
   const [activeDemo, setActiveDemo] = useState('menu');
@@ -27,7 +26,7 @@ const DemoSection = () => {
         name: 'Pizza Margherita',
         description: 'Base de tomate, mozzarella fresca, albahaca y aceite de oliva',
         price: 18900,
-        image: '/images/demo/pizza-margherita.jpg',
+        image: '🍕',
         category: 'principales'
       },
       {
@@ -35,7 +34,7 @@ const DemoSection = () => {
         name: 'Hamburguesa Clásica',
         description: 'Carne de res, lechuga, tomate, cebolla, queso cheddar',
         price: 15500,
-        image: '/images/demo/hamburguesa.jpg',
+        image: '🍔',
         category: 'principales'
       },
       {
@@ -43,7 +42,7 @@ const DemoSection = () => {
         name: 'Ensalada César',
         description: 'Lechuga romana, crutones, parmesano, aderezo césar',
         price: 12900,
-        image: '/images/demo/ensalada-cesar.jpg',
+        image: '🥗',
         category: 'principales'
       }
     ],
@@ -53,7 +52,7 @@ const DemoSection = () => {
         name: 'Café Americano',
         description: 'Café espresso con agua caliente',
         price: 3500,
-        image: '/images/demo/cafe-americano.jpg',
+        image: '☕',
         category: 'bebidas'
       },
       {
@@ -61,7 +60,7 @@ const DemoSection = () => {
         name: 'Jugo Natural',
         description: 'Naranja, manzana o piña',
         price: 4200,
-        image: '/images/demo/jugo-natural.jpg',
+        image: '🧃',
         category: 'bebidas'
       }
     ],
@@ -71,7 +70,7 @@ const DemoSection = () => {
         name: 'Tiramisu',
         description: 'Postre italiano con café, mascarpone y cacao',
         price: 8500,
-        image: '/images/demo/tiramisu.jpg',
+        image: '🍰',
         category: 'postres'
       }
     ]
@@ -84,7 +83,8 @@ const DemoSection = () => {
       items: ['Pizza Margherita', 'Café Americano'],
       status: 'preparando',
       time: '5 min',
-      total: 22400
+      total: 22400,
+      statusColor: 'bg-yellow-100 text-yellow-800'
     },
     {
       id: 'ORD-002',
@@ -92,7 +92,8 @@ const DemoSection = () => {
       items: ['Hamburguesa Clásica', 'Jugo Natural'],
       status: 'listo',
       time: '12 min',
-      total: 19700
+      total: 19700,
+      statusColor: 'bg-green-100 text-green-800'
     },
     {
       id: 'ORD-003',
@@ -100,7 +101,8 @@ const DemoSection = () => {
       items: ['Ensalada César', 'Tiramisu'],
       status: 'nuevo',
       time: '0 min',
-      total: 21400
+      total: 21400,
+      statusColor: 'bg-red-100 text-red-800'
     }
   ];
 
@@ -112,7 +114,8 @@ const DemoSection = () => {
       time: '20:00',
       guests: 4,
       table: 'Mesa 12',
-      status: 'confirmada'
+      status: 'confirmada',
+      statusColor: 'bg-green-100 text-green-800'
     },
     {
       id: 'RES-002',
@@ -121,7 +124,8 @@ const DemoSection = () => {
       time: '21:30',
       guests: 2,
       table: 'Mesa 6',
-      status: 'pendiente'
+      status: 'pendiente',
+      statusColor: 'bg-yellow-100 text-yellow-800'
     }
   ];
 
@@ -163,28 +167,22 @@ const DemoSection = () => {
     return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'nuevo': return '#ff6b35';
-      case 'preparando': return '#ffa500';
-      case 'listo': return '#28a745';
-      case 'entregado': return '#6c757d';
-      default: return '#333';
-    }
-  };
-
   const renderMenuDemo = () => (
-    <div className="demo-content menu-demo">
-      <div className="demo-header">
-        <h3>Restaurante Demo</h3>
-        <p>Mesa #5 - Bienvenido</p>
+    <div className="p-6">
+      <div className="text-center mb-6 pb-4 border-b border-gray-200">
+        <h3 className="text-xl font-bold text-gray-900">Restaurante Demo</h3>
+        <p className="text-gray-600">Mesa #5 - Bienvenido</p>
       </div>
       
-      <div className="menu-categories">
+      <div className="flex gap-2 mb-6 overflow-x-auto scrollbar-hide">
         {menuCategories.map(category => (
           <button
             key={category.id}
-            className={`category-btn ${selectedCategory === category.id ? 'active' : ''}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
+              selectedCategory === category.id
+                ? 'bg-primary-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-primary-100'
+            }`}
             onClick={() => setSelectedCategory(category.id)}
           >
             <span>{category.icon}</span>
@@ -193,65 +191,78 @@ const DemoSection = () => {
         ))}
       </div>
 
-      <div className="menu-items">
+      <div className="space-y-4">
         {menuItems[selectedCategory]?.map(item => (
-          <Card key={item.id} className="menu-item-card">
-            <div className="item-image">
-              <div className="image-placeholder">🍽️</div>
-            </div>
-            <div className="item-info">
-              <h4>{item.name}</h4>
-              <p>{item.description}</p>
-              <div className="item-footer">
-                <span className="price">{formatPrice(item.price)}</span>
-                <button 
-                  className="add-btn"
-                  onClick={() => addToCart(item)}
-                >
-                  Agregar +
-                </button>
+          <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
+            <div className="flex gap-4">
+              <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-2xl">
+                {item.image}
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-gray-900 mb-1">{item.name}</h4>
+                <p className="text-sm text-gray-600 mb-3">{item.description}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-bold text-primary-500">{formatPrice(item.price)}</span>
+                  <button 
+                    className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg font-medium transition-colors touch-target"
+                    onClick={() => addToCart(item)}
+                  >
+                    Agregar +
+                  </button>
+                </div>
               </div>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
     </div>
   );
 
   const renderCartDemo = () => (
-    <div className="demo-content cart-demo">
-      <div className="demo-header">
-        <h3>Tu Pedido</h3>
-        <p>Mesa #5</p>
+    <div className="p-6">
+      <div className="text-center mb-6 pb-4 border-b border-gray-200">
+        <h3 className="text-xl font-bold text-gray-900">Tu Pedido</h3>
+        <p className="text-gray-600">Mesa #5</p>
       </div>
 
       {cartItems.length === 0 ? (
-        <div className="empty-cart">
-          <span className="empty-icon">🛒</span>
-          <p>Tu carrito está vacío</p>
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">🛒</div>
+          <p className="text-gray-600 mb-6">Tu carrito está vacío</p>
           <button 
             onClick={() => setActiveDemo('menu')}
-            className="btn btn-primary"
+            className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors touch-target"
           >
             Ver Menú
           </button>
         </div>
       ) : (
         <>
-          <div className="cart-items">
+          <div className="space-y-4 mb-6">
             {cartItems.map(item => (
-              <div key={item.id} className="cart-item">
-                <div className="item-info">
-                  <h4>{item.name}</h4>
-                  <p className="item-price">{formatPrice(item.price)}</p>
+              <div key={item.id} className="flex items-center gap-4 bg-white border border-gray-200 rounded-xl p-4">
+                <div className="text-2xl">{item.image}</div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-gray-900">{item.name}</h4>
+                  <p className="text-primary-500 font-medium">{formatPrice(item.price)}</p>
                 </div>
-                <div className="quantity-controls">
-                  <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                  <span>{item.quantity}</span>
-                  <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+                  >
+                    -
+                  </button>
+                  <span className="font-semibold w-8 text-center">{item.quantity}</span>
+                  <button 
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+                  >
+                    +
+                  </button>
                 </div>
                 <button 
-                  className="remove-btn"
+                  className="text-red-500 hover:text-red-700 p-2 transition-colors"
                   onClick={() => removeFromCart(item.id)}
                 >
                   🗑️
@@ -260,11 +271,12 @@ const DemoSection = () => {
             ))}
           </div>
           
-          <div className="cart-summary">
-            <div className="total">
-              <strong>Total: {formatPrice(getCartTotal())}</strong>
+          <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6">
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-lg font-semibold text-gray-900">Total:</span>
+              <span className="text-2xl font-bold text-primary-500">{formatPrice(getCartTotal())}</span>
             </div>
-            <button className="btn btn-primary btn-block">
+            <button className="w-full bg-primary-500 hover:bg-primary-600 text-white py-4 rounded-lg font-semibold text-lg transition-colors touch-target">
               Enviar a Cocina
             </button>
           </div>
@@ -274,95 +286,125 @@ const DemoSection = () => {
   );
 
   const renderOrdersDemo = () => (
-    <div className="demo-content orders-demo">
-      <div className="demo-header">
-        <h3>Panel de Cocina</h3>
-        <p>Órdenes en tiempo real</p>
+    <div className="p-6">
+      <div className="text-center mb-6 pb-4 border-b border-gray-200">
+        <h3 className="text-xl font-bold text-gray-900">Panel de Cocina</h3>
+        <p className="text-gray-600">Órdenes en tiempo real</p>
       </div>
       
-      <div className="orders-list">
+      <div className="space-y-4">
         {orders.map(order => (
-          <Card key={order.id} className="order-card">
-            <div className="order-header">
-              <span className="order-id">{order.id}</span>
-              <span className="table-number">Mesa {order.table}</span>
-              <span 
-                className="order-status"
-                style={{ backgroundColor: getStatusColor(order.status) }}
-              >
+          <div key={order.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
+            <div className="flex justify-between items-start mb-4">
+              <div className="flex gap-4">
+                <span className="font-bold text-gray-900">{order.id}</span>
+                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                  Mesa {order.table}
+                </span>
+              </div>
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${order.statusColor}`}>
                 {order.status}
               </span>
             </div>
-            <div className="order-items">
+            <div className="mb-4">
               {order.items.map((item, idx) => (
-                <span key={idx} className="order-item">{item}</span>
+                <span key={idx} className="inline-block bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm mr-2 mb-2">
+                  {item}
+                </span>
               ))}
             </div>
-            <div className="order-footer">
-              <span className="order-time">Tiempo: {order.time}</span>
-              <span className="order-total">{formatPrice(order.total)}</span>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600">Tiempo: {order.time}</span>
+              <span className="font-bold text-primary-500">{formatPrice(order.total)}</span>
             </div>
-            <div className="order-actions">
+            <div className="mt-4 flex gap-2">
               {order.status === 'nuevo' && (
-                <button className="btn btn-primary btn-sm">Aceptar</button>
+                <button className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                  Aceptar
+                </button>
               )}
               {order.status === 'preparando' && (
-                <button className="btn btn-success btn-sm">Marcar Listo</button>
+                <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                  Marcar Listo
+                </button>
               )}
               {order.status === 'listo' && (
-                <button className="btn btn-outline btn-sm">Entregar</button>
+                <button className="border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                  Entregar
+                </button>
               )}
             </div>
-          </Card>
+          </div>
         ))}
       </div>
     </div>
   );
 
   const renderReservationsDemo = () => (
-    <div className="demo-content reservations-demo">
-      <div className="demo-header">
-        <h3>Gestión de Reservas</h3>
-        <p>Hoy - 20 de Septiembre</p>
+    <div className="p-6">
+      <div className="text-center mb-6 pb-4 border-b border-gray-200">
+        <h3 className="text-xl font-bold text-gray-900">Gestión de Reservas</h3>
+        <p className="text-gray-600">Hoy - 20 de Septiembre</p>
       </div>
       
-      <div className="reservations-list">
+      <div className="space-y-4 mb-8">
         {reservations.map(reservation => (
-          <Card key={reservation.id} className="reservation-card">
-            <div className="reservation-info">
-              <h4>{reservation.customerName}</h4>
-              <div className="reservation-details">
-                <span>📅 {reservation.date}</span>
-                <span>🕐 {reservation.time}</span>
-                <span>👥 {reservation.guests} personas</span>
-                <span>🪑 {reservation.table}</span>
+          <div key={reservation.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h4 className="font-bold text-gray-900 text-lg">{reservation.customerName}</h4>
+                <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-600">
+                  <span className="flex items-center gap-1">
+                    📅 {reservation.date}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    🕐 {reservation.time}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    👥 {reservation.guests} personas
+                  </span>
+                  <span className="flex items-center gap-1">
+                    🪑 {reservation.table}
+                  </span>
+                </div>
               </div>
-            </div>
-            <div className="reservation-status">
-              <span className={`status ${reservation.status}`}>
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${reservation.statusColor}`}>
                 {reservation.status}
               </span>
             </div>
-            <div className="reservation-actions">
+            <div className="flex gap-2">
               {reservation.status === 'pendiente' && (
                 <>
-                  <button className="btn btn-success btn-sm">Confirmar</button>
-                  <button className="btn btn-danger btn-sm">Rechazar</button>
+                  <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    Confirmar
+                  </button>
+                  <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    Rechazar
+                  </button>
                 </>
               )}
               {reservation.status === 'confirmada' && (
-                <button className="btn btn-outline btn-sm">Check-in</button>
+                <button className="border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                  Check-in
+                </button>
               )}
             </div>
-          </Card>
+          </div>
         ))}
       </div>
       
-      <div className="reservation-calendar">
-        <h4>Disponibilidad del Día</h4>
-        <div className="time-slots">
+      <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6">
+        <h4 className="font-bold text-gray-900 mb-4">Disponibilidad del Día</h4>
+        <div className="grid grid-cols-4 gap-2">
           {['18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'].map(time => (
-            <div key={time} className={`time-slot ${time === '20:00' || time === '21:30' ? 'reserved' : 'available'}`}>
+            <div 
+              key={time} 
+              className={`p-3 text-center rounded-lg text-sm font-medium ${
+                time === '20:00' || time === '21:30' 
+                  ? 'bg-red-100 text-red-800' 
+                  : 'bg-green-100 text-green-800'
+              }`}
+            >
               {time}
             </div>
           ))}
@@ -382,43 +424,62 @@ const DemoSection = () => {
   };
 
   return (
-    <section id="demo-section" className="demo-section">
-      <div className="container">
-        <div className="section-header">
-          <h2 className="section-title">Prueba TappMesa en Vivo</h2>
-          <p className="section-description">
+    <section id="demo-section" className="py-16 lg:py-24 bg-white">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+            Prueba TappMesa en Vivo
+          </h2>
+          <p className="text-xl text-gray-600">
             Explora todas las funcionalidades en nuestra demostración interactiva
           </p>
         </div>
 
-        <div className="demo-container">
-          <div className="demo-tabs">
-            {demoTabs.map(tab => (
-              <button
-                key={tab.id}
-                className={`demo-tab ${activeDemo === tab.id ? 'active' : ''}`}
-                onClick={() => setActiveDemo(tab.id)}
-              >
-                <span className="tab-icon">{tab.icon}</span>
-                <span className="tab-label">{tab.label}</span>
-                {tab.id === 'cart' && cartItems.length > 0 && (
-                  <span className="cart-badge">{cartItems.length}</span>
-                )}
-              </button>
-            ))}
+        <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden">
+          {/* Demo Tabs */}
+          <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 border-b border-gray-200">
+            <div className="flex flex-wrap justify-center gap-2">
+              {demoTabs.map(tab => (
+                <button
+                  key={tab.id}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 relative ${
+                    activeDemo === tab.id 
+                      ? 'bg-primary-500 text-white shadow-lg' 
+                      : 'bg-white text-gray-600 hover:text-primary-500 hover:bg-primary-50 border border-gray-200'
+                  }`}
+                  onClick={() => setActiveDemo(tab.id)}
+                >
+                  <span className="text-lg">{tab.icon}</span>
+                  <span>{tab.label}</span>
+                  {tab.id === 'cart' && cartItems.length > 0 && (
+                    <span className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                      {cartItems.length}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="demo-window">
+          {/* Demo Content */}
+          <div className="min-h-[600px] bg-gradient-to-br from-orange-50 to-red-50">
             {renderDemo()}
           </div>
         </div>
 
-        <div className="demo-cta">
-          <h3>¿Impresionado con lo que viste?</h3>
-          <p>Configura tu restaurante en menos de 10 minutos</p>
-          <button className="btn btn-primary btn-large">
-            Crear Mi Restaurante Gratis
-          </button>
+        {/* CTA */}
+        <div className="text-center mt-16">
+          <div className="bg-white rounded-3xl p-8 lg:p-12 shadow-xl border border-gray-200 max-w-2xl mx-auto">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              ¿Impresionado con lo que viste?
+            </h3>
+            <p className="text-gray-600 mb-8">
+              Configura tu restaurante en menos de 10 minutos
+            </p>
+            <button className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl touch-target">
+              Crear Mi Restaurante Gratis
+            </button>
+          </div>
         </div>
       </div>
     </section>

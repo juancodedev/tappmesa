@@ -1,6 +1,5 @@
-// src/pages/landing/components/FeaturesSection.jsx
+// src/pages/landing/components/FeaturesSection.jsx - Versión con Tailwind
 import React from 'react';
-import Card from '../../../components/ui/Card';
 
 const FeaturesSection = () => {
   const features = [
@@ -43,48 +42,57 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section className="features-section">
-      <div className="container">
-        <div className="section-header">
-          <h2 className="section-title">
+    <section id="features" className="py-16 lg:py-24 bg-white">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
             Todo lo que necesitas para modernizar tu restaurante
           </h2>
-          <p className="section-description">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Una plataforma completa que se adapta a cualquier tipo de establecimiento gastronómico
           </p>
         </div>
         
-        <div className="features-grid">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {features.map((feature, index) => (
-            <Card key={index} className="feature-card">
-              <div className="feature-header">
-                <div className="feature-icon-container">
-                  <span className="feature-icon">{feature.icon}</span>
+            <div
+              key={index}
+              className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-xl hover:border-primary-300 transition-all duration-300 group h-full"
+            >
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
+                  {feature.icon}
                 </div>
-                <h3 className="feature-title">{feature.title}</h3>
+                <h3 className="text-xl font-bold text-gray-900">{feature.title}</h3>
               </div>
               
-              <p className="feature-description">
+              <p className="text-gray-600 mb-6 leading-relaxed">
                 {feature.description}
               </p>
               
-              <ul className="feature-benefits">
+              <ul className="space-y-3">
                 {feature.benefits.map((benefit, idx) => (
-                  <li key={idx} className="benefit-item">
-                    <span className="benefit-check">✓</span>
+                  <li key={idx} className="flex items-center gap-3 text-sm text-gray-700">
+                    <span className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs font-bold">
+                      ✓
+                    </span>
                     {benefit}
                   </li>
                 ))}
               </ul>
-            </Card>
+            </div>
           ))}
         </div>
 
-        <div className="features-cta">
-          <div className="cta-content">
-            <h3>¿Listo para transformar tu negocio?</h3>
-            <p>Únete a cientos de restaurantes que ya digitalizaron su operación</p>
-            <button className="btn btn-primary">
+        <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-3xl p-8 lg:p-12 text-center">
+          <div className="max-w-2xl mx-auto">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              ¿Listo para transformar tu negocio?
+            </h3>
+            <p className="text-gray-600 mb-8">
+              Únete a cientos de restaurantes que ya digitalizaron su operación
+            </p>
+            <button className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl touch-target">
               Comenzar Prueba Gratuita
             </button>
           </div>

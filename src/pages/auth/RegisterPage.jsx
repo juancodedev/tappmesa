@@ -1,13 +1,6 @@
-// src/pages/auth/RegisterPage.jsx
+// src/pages/auth/RegisterPage.jsx - Versión con Tailwind
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import Logo from '../../components/common/Logo';
-import RegisterForm from './components/RegisterForm';
-import BusinessInfoForm from './components/BusinessInfoForm';
-import PlanSelectionForm from './components/PlanSelectionForm';
-import SuccessMessage from './components/SuccessMessage';
-import './styles/auth.css';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 
 const RegisterPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -63,26 +56,17 @@ const RegisterPage = () => {
     {
       id: 1,
       title: 'Datos Personales',
-      description: 'Información básica de contacto',
-      component: RegisterForm
+      description: 'Información básica de contacto'
     },
     {
       id: 2,
       title: 'Información del Negocio',
-      description: 'Detalles de tu restaurante',
-      component: BusinessInfoForm
+      description: 'Detalles de tu restaurante'
     },
     {
       id: 3,
       title: 'Selecciona tu Plan',
-      description: 'Elige el plan que mejor se adapte',
-      component: PlanSelectionForm
-    },
-    {
-      id: 4,
-      title: '¡Bienvenido!',
-      description: 'Tu cuenta ha sido creada exitosamente',
-      component: SuccessMessage
+      description: 'Elige el plan que mejor se adapte'
     }
   ];
 
@@ -139,9 +123,6 @@ const RegisterPage = () => {
         if (!formData.city.trim()) {
           newErrors.city = 'La ciudad es requerida';
         }
-        if (!formData.region) {
-          newErrors.region = 'Selecciona la región';
-        }
         break;
 
       case 3:
@@ -160,7 +141,7 @@ const RegisterPage = () => {
 
   const handleNext = () => {
     if (validateStep(currentStep)) {
-      if (currentStep < steps.length - 1) {
+      if (currentStep < steps.length) {
         setCurrentStep(prev => prev + 1);
       } else {
         handleSubmit();
@@ -192,7 +173,6 @@ const RegisterPage = () => {
           type: formData.businessType,
           address: formData.address,
           city: formData.city,
-          region: formData.region,
           description: formData.description,
           website: formData.website
         },
@@ -205,14 +185,13 @@ const RegisterPage = () => {
         }
       };
 
-      // Aquí harías la llamada real a tu API
       console.log('Datos de registro:', registrationData);
       
       // Simular delay de red
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Mover al paso de éxito
-      setCurrentStep(4);
+      // Redirigir al dashboard o mostrar éxito
+      navigate('/dashboard');
       
     } catch (error) {
       console.error('Error en el registro:', error);
@@ -222,159 +201,448 @@ const RegisterPage = () => {
     }
   };
 
-  const CurrentStepComponent = steps[currentStep - 1].component;
-  const currentStepData = steps[currentStep - 1];
-
   return (
-    <div className="register-page">
-      <div className="register-container">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+      <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
-        <div className="register-header">
-          <Link to="/" className="back-to-home">
+        <div className="flex justify-between items-center py-6">
+          <Link to="/" className="text-gray-600 hover:text-primary-500 transition-colors">
             ← Volver al inicio
           </Link>
-          <Logo />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center text-white text-xl">
+              🍽️
+            </div>
+            <span className="text-xl font-bold text-gray-900">TappMesa</span>
+          </div>
         </div>
 
         {/* Progress Steps */}
-        {currentStep < 4 && (
-          <div className="progress-steps">
-            <div className="steps-container">
-              {steps.slice(0, 3).map((step) => (
-                <div 
-                  key={step.id}
-                  className={`step ${currentStep >= step.id ? 'active' : ''} ${currentStep > step.id ? 'completed' : ''}`}
-                >
-                  <div className="step-circle">
-                    {currentStep > step.id ? (
-                      <span className="check">✓</span>
-                    ) : (
-                      <span className="step-number">{step.id}</span>
-                    )}
+        <div className="flex justify-center mb-8">
+          <div className="flex items-center space-x-4">
+            {steps.map((step, index) => (
+              <React.Fragment key={step.id}>
+                <div className="flex items-center space-x-3">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors ${
+                    currentStep >= step.id 
+                      ? 'bg-primary-500 text-white' 
+                      : 'bg-gray-200 text-gray-500'
+                  }`}>
+                    {currentStep > step.id ? '✓' : step.id}
                   </div>
-                  <div className="step-info">
-                    <div className="step-title">{step.title}</div>
-                    <div className="step-description">{step.description}</div>
+                  <div className="hidden sm:block text-center">
+                    <div className="font-semibold text-gray-900">{step.title}</div>
+                    <div className="text-sm text-gray-600">{step.description}</div>
                   </div>
-                  {step.id < 3 && <div className="step-connector"></div>}
                 </div>
-              ))}
-            </div>
+                {index < steps.length - 1 && (
+                  <div className={`w-12 h-0.5 transition-colors ${
+                    currentStep > step.id ? 'bg-primary-500' : 'bg-gray-200'
+                  }`}></div>
+                )}
+              </React.Fragment>
+            ))}
           </div>
-        )}
+        </div>
 
         {/* Form Content */}
-        <div className="register-content">
-          <div className="form-container">
-            {currentStep < 4 && (
-              <div className="form-header">
-                <h1>{currentStepData.title}</h1>
-                <p>{currentStepData.description}</p>
-              </div>
-            )}
-
-            <CurrentStepComponent
-              formData={formData}
-              updateFormData={updateFormData}
-              errors={errors}
-              onNext={handleNext}
-              onPrev={handlePrev}
-              isSubmitting={isSubmitting}
-              currentStep={currentStep}
-              totalSteps={3}
-            />
-
-            {/* Global Error */}
-            {errors.submit && (
-              <div className="error-message global">
-                <span className="error-icon">⚠️</span>
-                {errors.submit}
-              </div>
-            )}
-          </div>
-
-          {/* Sidebar with benefits */}
-          {currentStep < 4 && (
-            <div className="register-sidebar">
-              <div className="benefits-card">
-                <h3>¿Por qué elegir TappMesa?</h3>
-                <div className="benefits-list">
-                  <div className="benefit-item">
-                    <span className="benefit-icon">⚡</span>
-                    <div>
-                      <strong>Configuración rápida</strong>
-                      <p>Tu restaurante digital en menos de 10 minutos</p>
-                    </div>
-                  </div>
-                  <div className="benefit-item">
-                    <span className="benefit-icon">📈</span>
-                    <div>
-                      <strong>Aumenta tus ventas</strong>
-                      <p>Promedio de 35% de incremento reportado</p>
-                    </div>
-                  </div>
-                  <div className="benefit-item">
-                    <span className="benefit-icon">🎯</span>
-                    <div>
-                      <strong>Soporte personalizado</strong>
-                      <p>Te acompañamos en cada paso</p>
-                    </div>
-                  </div>
-                  <div className="benefit-item">
-                    <span className="benefit-icon">🔒</span>
-                    <div>
-                      <strong>Datos seguros</strong>
-                      <p>Encriptación SSL y respaldos automáticos</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="trial-info">
-                  <h4>Prueba gratuita de 14 días</h4>
-                  <ul>
-                    <li>✓ Sin tarjeta de crédito</li>
-                    <li>✓ Acceso completo</li>
-                    <li>✓ Soporte incluido</li>
-                    <li>✓ Sin compromiso</li>
-                  </ul>
-                </div>
+        <div className="grid lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-2xl shadow-xl p-8">
+              <div className="mb-8">
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                  {steps[currentStep - 1].title}
+                </h1>
+                <p className="text-gray-600">
+                  {steps[currentStep - 1].description}
+                </p>
               </div>
 
-              <div className="help-card">
-                <h4>¿Necesitas ayuda?</h4>
-                <p>Nuestro equipo está listo para ayudarte</p>
-                <div className="contact-options">
-                  <a href="tel:+56912345678" className="contact-option">
-                    <span>📞</span>
+              {/* Step 1: Datos Personales */}
+              {currentStep === 1 && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <strong>Llámanos</strong>
-                      <span>+56 9 1234 5678</span>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Nombre *
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.firstName}
+                        onChange={(e) => updateFormData({ firstName: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder="Ej: Juan"
+                      />
+                      {errors.firstName && (
+                        <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+                      )}
                     </div>
-                  </a>
-                  <a href="mailto:soporte@tappmesa.com" className="contact-option">
-                    <span>✉️</span>
+
                     <div>
-                      <strong>Escríbenos</strong>
-                      <span>soporte@tappmesa.com</span>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Apellido *
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.lastName}
+                        onChange={(e) => updateFormData({ lastName: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder="Ej: Pérez"
+                      />
+                      {errors.lastName && (
+                        <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+                      )}
                     </div>
-                  </a>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => updateFormData({ email: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="tu@restaurante.com"
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Teléfono *
+                    </label>
+                    <input
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => updateFormData({ phone: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="+56 9 1234 5678"
+                    />
+                    {errors.phone && (
+                      <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Contraseña *
+                    </label>
+                    <input
+                      type="password"
+                      value={formData.password}
+                      onChange={(e) => updateFormData({ password: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Mínimo 8 caracteres"
+                    />
+                    {errors.password && (
+                      <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Confirmar Contraseña *
+                    </label>
+                    <input
+                      type="password"
+                      value={formData.confirmPassword}
+                      onChange={(e) => updateFormData({ confirmPassword: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Repite tu contraseña"
+                    />
+                    {errors.confirmPassword && (
+                      <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="flex items-start space-x-3">
+                      <input
+                        type="checkbox"
+                        checked={formData.acceptTerms}
+                        onChange={(e) => updateFormData({ acceptTerms: e.target.checked })}
+                        className="mt-1 h-4 w-4 text-primary-500 focus:ring-primary-500 border-gray-300 rounded"
+                      />
+                      <span className="text-sm text-gray-700">
+                        Acepto los <a href="/terms" className="text-primary-500 hover:underline">Términos de Servicio</a> y 
+                        la <a href="/privacy" className="text-primary-500 hover:underline">Política de Privacidad</a> *
+                      </span>
+                    </label>
+                    {errors.acceptTerms && (
+                      <p className="text-red-500 text-sm">{errors.acceptTerms}</p>
+                    )}
+
+                    <label className="flex items-start space-x-3">
+                      <input
+                        type="checkbox"
+                        checked={formData.acceptMarketing}
+                        onChange={(e) => updateFormData({ acceptMarketing: e.target.checked })}
+                        className="mt-1 h-4 w-4 text-primary-500 focus:ring-primary-500 border-gray-300 rounded"
+                      />
+                      <span className="text-sm text-gray-700">
+                        Acepto recibir emails sobre novedades y consejos de TappMesa
+                      </span>
+                    </label>
+                  </div>
                 </div>
+              )}
+
+              {/* Step 2: Información del Negocio */}
+              {currentStep === 2 && (
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Nombre del Negocio *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.businessName}
+                      onChange={(e) => updateFormData({ businessName: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Ej: Café Central"
+                    />
+                    {errors.businessName && (
+                      <p className="text-red-500 text-sm mt-1">{errors.businessName}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Tipo de Negocio *
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {[
+                        { value: 'restaurant', label: 'Restaurante', icon: '🍽️' },
+                        { value: 'cafe', label: 'Café', icon: '☕' },
+                        { value: 'bar', label: 'Bar', icon: '🍺' },
+                        { value: 'bakery', label: 'Panadería', icon: '🥖' },
+                        { value: 'pizzeria', label: 'Pizzería', icon: '🍕' },
+                        { value: 'other', label: 'Otro', icon: '🏪' }
+                      ].map((type) => (
+                        <label
+                          key={type.value}
+                          className={`relative flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                            formData.businessType === type.value
+                              ? 'border-primary-500 bg-primary-50'
+                              : 'border-gray-200 hover:border-primary-300'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="businessType"
+                            value={type.value}
+                            checked={formData.businessType === type.value}
+                            onChange={(e) => updateFormData({ businessType: e.target.value })}
+                            className="sr-only"
+                          />
+                          <span className="text-2xl mb-2">{type.icon}</span>
+                          <span className="text-sm font-medium text-center">{type.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                    {errors.businessType && (
+                      <p className="text-red-500 text-sm mt-1">{errors.businessType}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Dirección *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.address}
+                      onChange={(e) => updateFormData({ address: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Ej: Av. Providencia 1234"
+                    />
+                    {errors.address && (
+                      <p className="text-red-500 text-sm mt-1">{errors.address}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Ciudad *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.city}
+                      onChange={(e) => updateFormData({ city: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Ej: Santiago"
+                    />
+                    {errors.city && (
+                      <p className="text-red-500 text-sm mt-1">{errors.city}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Descripción del Negocio
+                    </label>
+                    <textarea
+                      value={formData.description}
+                      onChange={(e) => updateFormData({ description: e.target.value })}
+                      rows={4}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Cuéntanos sobre tu negocio, especialidades, ambiente, etc."
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Step 3: Selección de Plan */}
+              {currentStep === 3 && (
+                <div className="space-y-6">
+                  <div className="grid md:grid-cols-3 gap-6">
+                    {[
+                      {
+                        id: 'starter',
+                        name: 'Starter',
+                        price: '$29.900',
+                        features: ['Hasta 10 mesas', 'Menú digital', 'Comandas básicas']
+                      },
+                      {
+                        id: 'professional',
+                        name: 'Professional',
+                        price: '$59.900',
+                        features: ['Hasta 50 mesas', 'Reservas', 'Reportes avanzados'],
+                        popular: true
+                      },
+                      {
+                        id: 'enterprise',
+                        name: 'Enterprise',
+                        price: '$149.900',
+                        features: ['Mesas ilimitadas', 'API personalizada', 'Soporte 24/7']
+                      }
+                    ].map((plan) => (
+                      <div
+                        key={plan.id}
+                        className={`relative border-2 rounded-xl p-6 cursor-pointer transition-all ${
+                          formData.selectedPlan === plan.id
+                            ? 'border-primary-500 bg-primary-50'
+                            : 'border-gray-200 hover:border-primary-300'
+                        }`}
+                        onClick={() => updateFormData({ selectedPlan: plan.id })}
+                      >
+                        {plan.popular && (
+                          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                            <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                              Más Popular
+                            </span>
+                          </div>
+                        )}
+                        <div className="text-center">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{plan.name}</h3>
+                          <div className="text-2xl font-bold text-primary-500 mb-4">{plan.price}</div>
+                          <ul className="space-y-2 text-sm text-gray-600">
+                            {plan.features.map((feature, index) => (
+                              <li key={index} className="flex items-center">
+                                <span className="text-green-500 mr-2">✓</span>
+                                {feature}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {errors.selectedPlan && (
+                    <p className="text-red-500 text-sm">{errors.selectedPlan}</p>
+                  )}
+                </div>
+              )}
+
+              {/* Error Display */}
+              {errors.submit && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                  <div className="flex">
+                    <span className="text-red-500 mr-2">⚠️</span>
+                    <span className="text-red-700">{errors.submit}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Form Actions */}
+              <div className="flex justify-between items-center pt-6">
+                <button
+                  type="button"
+                  onClick={handlePrev}
+                  disabled={currentStep === 1}
+                  className={`px-6 py-3 rounded-lg font-semibold transition-colors touch-target ${
+                    currentStep === 1
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  ← Anterior
+                </button>
+                
+                <div className="text-sm text-gray-500">
+                  Paso {currentStep} de {steps.length}
+                </div>
+                
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  disabled={isSubmitting}
+                  className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 touch-target"
+                >
+                  {isSubmitting ? 'Creando cuenta...' : currentStep === steps.length ? 'Crear Cuenta' : 'Continuar →'}
+                </button>
               </div>
             </div>
-          )}
+          </div>
+
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-2xl shadow-xl p-6 sticky top-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                ¿Por qué elegir TappMesa?
+              </h3>
+              <div className="space-y-4">
+                {[
+                  { icon: '⚡', title: 'Configuración rápida', desc: 'Tu restaurante digital en 10 minutos' },
+                  { icon: '📈', title: 'Aumenta ventas', desc: '35% de incremento promedio' },
+                  { icon: '🎯', title: 'Soporte personalizado', desc: 'Te acompañamos en cada paso' },
+                  { icon: '🔒', title: 'Datos seguros', desc: 'Encriptación y respaldos automáticos' }
+                ].map((benefit, index) => (
+                  <div key={index} className="flex gap-3">
+                    <span className="text-xl">{benefit.icon}</span>
+                    <div>
+                      <div className="font-medium text-gray-900">{benefit.title}</div>
+                      <div className="text-sm text-gray-600">{benefit.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <h4 className="font-semibold text-green-900 mb-2">Prueba gratuita de 14 días</h4>
+                <ul className="space-y-1 text-sm text-green-700">
+                  <li>✓ Sin tarjeta de crédito</li>
+                  <li>✓ Acceso completo</li>
+                  <li>✓ Soporte incluido</li>
+                  <li>✓ Sin compromiso</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Footer */}
-        <div className="register-footer">
-          <p>
-            ¿Ya tienes una cuenta? 
-            <Link to="/login" className="login-link"> Inicia sesión aquí</Link>
+        <div className="text-center py-8">
+          <p className="text-gray-600">
+            ¿Ya tienes una cuenta?{' '}
+            <Link to="/login" className="text-primary-500 hover:underline font-medium">
+              Inicia sesión aquí
+            </Link>
           </p>
-          <div className="footer-links">
-            <Link to="/privacy">Política de Privacidad</Link>
-            <Link to="/terms">Términos de Servicio</Link>
-            <Link to="/help">Centro de Ayuda</Link>
-          </div>
         </div>
       </div>
     </div>

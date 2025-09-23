@@ -1,7 +1,6 @@
-// src/pages/landing/components/HeroSection.jsx
+// src/pages/landing/components/HeroSection.jsx - Versión con Tailwind
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '../../../components/ui/Button';
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -17,94 +16,97 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="hero-section">
-      <div className="hero-container">
-        <div className="hero-content">
-          <div className="hero-text">
-            <h1 className="hero-title">
-              Digitaliza tu <span className="text-primary">Restaurante</span>
+    <section className="relative pt-20 pb-16 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Contenido principal */}
+          <div className="text-center lg:text-left">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
+              Digitaliza tu{' '}
+              <span className="text-primary-500">Restaurante</span>
               <br />
               con TappMesa
             </h1>
-            <p className="hero-description">
+            
+            <p className="text-xl text-gray-600 mb-8 max-w-2xl">
               La plataforma completa para restaurantes y cafeterías. 
               Permite a tus clientes ordenar desde su mesa, hacer reservas 
               y mejorar su experiencia gastronómica.
             </p>
-            <div className="hero-features">
-              <div className="feature-item">
-                <span className="feature-icon">📱</span>
-                <span>Menú Digital</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">🛒</span>
-                <span>Carrito de Compras</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">📋</span>
-                <span>Comandas Digitales</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">🗓️</span>
-                <span>Sistema de Reservas</span>
-              </div>
+
+            {/* Características principales */}
+            <div className="grid grid-cols-2 gap-4 mb-8">
+              {[
+                { icon: '📱', text: 'Menú Digital' },
+                { icon: '🛒', text: 'Carrito de Compras' },
+                { icon: '📋', text: 'Comandas Digitales' },
+                { icon: '🗓️', text: 'Sistema de Reservas' }
+              ].map((feature, index) => (
+                <div key={index} className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm">
+                  <span className="text-2xl">{feature.icon}</span>
+                  <span className="font-medium text-gray-700">{feature.text}</span>
+                </div>
+              ))}
             </div>
-            <div className="hero-actions">
-              <Button 
+
+            {/* Botones de acción */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <button 
                 onClick={handleGetStarted}
-                className="btn-primary btn-large"
+                className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl touch-target"
               >
                 Comenzar Gratis
-              </Button>
-              <Button 
+              </button>
+              <button 
                 onClick={handleDemo}
-                variant="outline"
-                className="btn-large"
+                className="border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 touch-target"
               >
                 Ver Demo
-              </Button>
+              </button>
             </div>
-            <div className="hero-stats">
-              <div className="stat">
-                <span className="stat-number">500+</span>
-                <span className="stat-label">Restaurantes</span>
-              </div>
-              <div className="stat">
-                <span className="stat-number">50k+</span>
-                <span className="stat-label">Órdenes</span>
-              </div>
-              <div className="stat">
-                <span className="stat-number">98%</span>
-                <span className="stat-label">Satisfacción</span>
-              </div>
+
+            {/* Estadísticas */}
+            <div className="flex justify-center lg:justify-start gap-8 text-center">
+              {[
+                { number: '500+', label: 'Restaurantes' },
+                { number: '50k+', label: 'Órdenes' },
+                { number: '98%', label: 'Satisfacción' }
+              ].map((stat, index) => (
+                <div key={index}>
+                  <div className="text-2xl font-bold text-primary-500">{stat.number}</div>
+                  <div className="text-sm text-gray-600">{stat.label}</div>
+                </div>
+              ))}
             </div>
           </div>
-          <div className="hero-visual">
-            <div className="hero-image-container">
-              <img 
-                src="/images/demo/app-screenshot-1.png" 
-                alt="TappMesa App Demo"
-                className="hero-image"
-              />
-              <div className="floating-card order-card">
-                <div className="card-header">
-                  <span className="card-icon">🍕</span>
-                  <span className="card-title">Nueva Orden</span>
-                </div>
-                <div className="card-content">
-                  <p>Mesa #5 - Pizza Margherita</p>
-                  <span className="card-price">$18.900</span>
+
+          {/* Visual */}
+          <div className="relative">
+            <div className="relative mx-auto max-w-md lg:max-w-lg">
+              {/* Placeholder para imagen principal */}
+              <div className="bg-white rounded-2xl shadow-2xl p-6 aspect-[3/4]">
+                <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center">
+                  <span className="text-6xl">📱</span>
                 </div>
               </div>
-              <div className="floating-card reservation-card">
-                <div className="card-header">
-                  <span className="card-icon">📅</span>
-                  <span className="card-title">Reserva Confirmada</span>
+
+              {/* Tarjetas flotantes */}
+              <div className="absolute -top-4 -right-4 bg-white rounded-lg shadow-lg p-4 animate-pulse-slow">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-lg">🍕</span>
+                  <span className="font-semibold text-sm">Nueva Orden</span>
                 </div>
-                <div className="card-content">
-                  <p>Mesa para 4 - 20:00</p>
-                  <span className="card-status">Confirmada</span>
+                <p className="text-xs text-gray-600">Mesa #5 - Pizza Margherita</p>
+                <span className="text-primary-500 font-bold">$18.900</span>
+              </div>
+
+              <div className="absolute -bottom-4 -left-4 bg-white rounded-lg shadow-lg p-4 animate-pulse-slow" style={{ animationDelay: '1s' }}>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-lg">📅</span>
+                  <span className="font-semibold text-sm">Reserva Confirmada</span>
                 </div>
+                <p className="text-xs text-gray-600">Mesa para 4 - 20:00</p>
+                <span className="text-secondary-500 font-bold">Confirmada</span>
               </div>
             </div>
           </div>

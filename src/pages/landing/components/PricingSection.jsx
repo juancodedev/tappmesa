@@ -1,132 +1,100 @@
-// src/pages/landing/components/PricingSection.jsx
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Card from "../../../components/ui/Card";
-import Button from "../../../components/ui/Button";
+// src/pages/landing/components/PricingSection.jsx - Versión con Tailwind
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const PricingSection = () => {
-  const [billingCycle, setBillingCycle] = useState("monthly");
+  const [billingCycle, setBillingCycle] = useState('monthly');
   const navigate = useNavigate();
 
   const plans = [
     {
-      id: "starter",
-      name: "Starter",
-      subtitle: "Perfecto para empezar",
-      icon: "🚀",
+      id: 'starter',
+      name: 'Starter',
+      subtitle: 'Perfecto para empezar',
+      icon: '🚀',
       popular: false,
       pricing: {
         monthly: 29900,
-        annually: 299000,
+        annually: 299000
       },
-      description: "Ideal para cafeterías y restaurantes pequeños",
+      description: 'Ideal para cafeterías y restaurantes pequeños',
       features: [
-        "Hasta 10 mesas",
-        "Menú digital ilimitado",
-        "Carrito de compras",
-        "Comandas básicas",
-        "Panel de administración",
-        "Soporte por email",
-        "Códigos QR personalizados",
-        "Estadísticas básicas",
+        'Hasta 10 mesas',
+        'Menú digital ilimitado',
+        'Carrito de compras',
+        'Comandas básicas',
+        'Panel de administración',
+        'Soporte por email',
+        'Códigos QR personalizados',
+        'Estadísticas básicas'
       ],
       limitations: [
-        "Sin sistema de reservas",
-        "Sin personalización avanzada",
-        "Sin integraciones externas",
-      ],
-      cta: "Comenzar Gratis",
-      trialDays: 14,
+        'Sin sistema de reservas',
+        'Sin personalización avanzada',
+        'Sin integraciones externas'
+      ]
     },
     {
-      id: "professional",
-      name: "Professional",
-      subtitle: "El más popular",
-      icon: "⭐",
+      id: 'professional',
+      name: 'Professional',
+      subtitle: 'El más popular',
+      icon: '⭐',
       popular: true,
       pricing: {
         monthly: 59900,
-        annually: 599000,
+        annually: 599000
       },
-      description: "Para restaurantes en crecimiento",
+      description: 'Para restaurantes en crecimiento',
       features: [
-        "Hasta 50 mesas",
-        "Todo de Starter",
-        "Sistema de reservas completo",
-        "Personalización avanzada",
-        "Múltiples métodos de pago",
-        "Reportes detallados",
-        "Soporte prioritario",
-        "Integraciones básicas",
-        "Gestión de inventario",
-        "Promociones y descuentos",
+        'Hasta 50 mesas',
+        'Todo de Starter',
+        'Sistema de reservas completo',
+        'Personalización avanzada',
+        'Múltiples métodos de pago',
+        'Reportes detallados',
+        'Soporte prioritario',
+        'Integraciones básicas',
+        'Gestión de inventario',
+        'Promociones y descuentos'
       ],
-      limitations: ["Sin marca blanca", "Integraciones limitadas"],
-      cta: "Probar Professional",
-      trialDays: 14,
+      limitations: [
+        'Sin marca blanca',
+        'Integraciones limitadas'
+      ]
     },
     {
-      id: "enterprise",
-      name: "Enterprise",
-      subtitle: "Solución completa",
-      icon: "🏢",
+      id: 'enterprise',
+      name: 'Enterprise',
+      subtitle: 'Solución completa',
+      icon: '🏢',
       popular: false,
       pricing: {
         monthly: 149900,
-        annually: 1499000,
+        annually: 1499000
       },
-      description: "Para cadenas y restaurantes grandes",
+      description: 'Para cadenas y restaurantes grandes',
       features: [
-        "Mesas ilimitadas",
-        "Todo de Professional",
-        "Marca blanca completa",
-        "API personalizada",
-        "Integraciones ilimitadas",
-        "Soporte 24/7",
-        "Gerente de cuenta dedicado",
-        "Análisis avanzado con IA",
-        "Multi-sucursal",
-        "Configuración personalizada",
-        "SLA garantizado",
-        "Capacitación presencial",
+        'Mesas ilimitadas',
+        'Todo de Professional',
+        'Marca blanca completa',
+        'API personalizada',
+        'Integraciones ilimitadas',
+        'Soporte 24/7',
+        'Gerente de cuenta dedicado',
+        'Análisis avanzado con IA',
+        'Multi-sucursal',
+        'Configuración personalizada',
+        'SLA garantizado',
+        'Capacitación presencial'
       ],
-      limitations: [],
-      cta: "Contactar Ventas",
-      trialDays: 30,
-    },
-  ];
-
-  const addOns = [
-    {
-      name: "Delivery Integration",
-      description: "Integración con apps de delivery",
-      price: 19900,
-      icon: "🛵",
-    },
-    {
-      name: "Advanced Analytics",
-      description: "Reportes e insights avanzados",
-      price: 29900,
-      icon: "📊",
-    },
-    {
-      name: "Multi-language",
-      description: "Soporte para múltiples idiomas",
-      price: 15900,
-      icon: "🌍",
-    },
-    {
-      name: "Custom Integrations",
-      description: "Integraciones personalizadas",
-      price: 79900,
-      icon: "🔗",
-    },
+      limitations: []
+    }
   ];
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat("es-CL", {
-      style: "currency",
-      currency: "CLP",
+    return new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP'
     }).format(price);
   };
 
@@ -145,248 +113,233 @@ const PricingSection = () => {
   };
 
   const handleContactSales = () => {
-    // Aquí puedes integrar con un sistema de contacto o calendario
-    window.open(
-      "mailto:ventas@tappmesa.com?subject=Consulta Plan Enterprise",
-      "_blank"
-    );
+    window.open('mailto:ventas@tappmesa.com?subject=Consulta Plan Enterprise', '_blank');
   };
 
   return (
-    <section className="pricing-section">
-      <div className="container">
-        <div className="section-header">
-          <h2 className="section-title">Planes que se adaptan a tu negocio</h2>
-          <p className="section-description">
+    <section id="pricing" className="py-16 lg:py-24 bg-gradient-to-br from-orange-50 to-red-50">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+            Planes que se adaptan a tu negocio
+          </h2>
+          <p className="text-xl text-gray-600">
             Desde cafeterías pequeñas hasta grandes cadenas de restaurantes
           </p>
         </div>
 
         {/* Billing Toggle */}
-        <div className="billing-toggle">
-          <div className="toggle-container">
-            <button
-              className={`toggle-option ${
-                billingCycle === "monthly" ? "active" : ""
-              }`}
-              onClick={() => setBillingCycle("monthly")}
-            >
-              Mensual
-            </button>
-            <button
-              className={`toggle-option ${
-                billingCycle === "annually" ? "active" : ""
-              }`}
-              onClick={() => setBillingCycle("annually")}
-            >
-              Anual
-              <span className="savings-badge">Ahorra 2 meses</span>
-            </button>
+        <div className="flex justify-center mb-12">
+          <div className="bg-white rounded-xl p-2 shadow-lg border border-gray-200">
+            <div className="flex">
+              <button
+                className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+                  billingCycle === 'monthly' 
+                    ? 'bg-primary-500 text-white shadow-md' 
+                    : 'text-gray-600 hover:text-primary-500'
+                }`}
+                onClick={() => setBillingCycle('monthly')}
+              >
+                Mensual
+              </button>
+              <button
+                className={`relative px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+                  billingCycle === 'annually' 
+                    ? 'bg-primary-500 text-white shadow-md' 
+                    : 'text-gray-600 hover:text-primary-500'
+                }`}
+                onClick={() => setBillingCycle('annually')}
+              >
+                Anual
+                <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                  Ahorra 2 meses
+                </span>
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Plans Grid */}
-        <div className="plans-grid">
+        <div className="grid lg:grid-cols-3 gap-8 mb-16">
           {plans.map((plan) => (
-            <Card
+            <div
               key={plan.id}
-              className={`plan-card ${plan.popular ? "popular" : ""}`}
+              className={`relative bg-white rounded-3xl shadow-xl border-2 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 ${
+                plan.popular ? 'border-primary-500' : 'border-gray-200'
+              }`}
             >
               {plan.popular && (
-                <div className="popular-badge">
-                  <span>Más Popular</span>
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <span className="bg-primary-500 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                    Más Popular
+                  </span>
                 </div>
               )}
-
-              <div className="plan-header">
-                <div className="plan-icon">{plan.icon}</div>
-                <h3 className="plan-name">{plan.name}</h3>
-                <p className="plan-subtitle">{plan.subtitle}</p>
-              </div>
-
-              <div className="plan-pricing">
-                <div className="price-display">
-                  <span className="currency">$</span>
-                  <span className="amount">
-                    {billingCycle === "monthly"
-                      ? (plan.pricing.monthly / 1000).toFixed(0)
-                      : (plan.pricing.annually / 1000).toFixed(0)}
-                  </span>
-                  <span className="period">
-                    {billingCycle === "monthly" ? ".900/mes" : ".000/año"}
-                  </span>
+              
+              <div className="p-8">
+                <div className="text-center mb-8">
+                  <div className="text-4xl mb-4">{plan.icon}</div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                  <p className="text-gray-600 mb-6">{plan.subtitle}</p>
                 </div>
 
-                {billingCycle === "annually" && (
-                  <div className="savings-info">
-                    <span className="original-price">
-                      {formatPrice(plan.pricing.monthly * 12)}
+                <div className="text-center mb-8">
+                  <div className="flex items-baseline justify-center">
+                    <span className="text-sm text-gray-600">$</span>
+                    <span className="text-4xl font-bold text-gray-900">
+                      {billingCycle === 'monthly' 
+                        ? (plan.pricing.monthly / 1000).toFixed(0)
+                        : (plan.pricing.annually / 1000).toFixed(0)
+                      }
                     </span>
-                    <span className="savings">
-                      Ahorras {formatPrice(getSavings(plan.pricing.monthly))}
+                    <span className="text-sm text-gray-600 ml-1">
+                      {billingCycle === 'monthly' ? '.900/mes' : '.000/año'}
                     </span>
                   </div>
-                )}
+                  
+                  {billingCycle === 'annually' && (
+                    <div className="mt-2">
+                      <span className="text-sm text-gray-500 line-through">
+                        {formatPrice(plan.pricing.monthly * 12)}
+                      </span>
+                      <div className="text-sm text-green-600 font-semibold">
+                        Ahorras {formatPrice(getSavings(plan.pricing.monthly))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <p className="text-gray-600 mt-4">{plan.description}</p>
+                </div>
 
-                <p className="plan-description">{plan.description}</p>
+                <div className="mb-8">
+                  <h4 className="font-semibold text-gray-900 mb-4">Incluye:</h4>
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, index) => (
+                      <li key={index} className="flex items-center gap-3">
+                        <span className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs font-bold">
+                          ✓
+                        </span>
+                        <span className="text-gray-700 text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  {plan.limitations.length > 0 && (
+                    <div className="mt-6">
+                      <h5 className="font-semibold text-gray-900 mb-3">No incluye:</h5>
+                      <ul className="space-y-2">
+                        {plan.limitations.map((limitation, index) => (
+                          <li key={index} className="flex items-center gap-3">
+                            <span className="w-5 h-5 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xs font-bold">
+                              ✗
+                            </span>
+                            <span className="text-gray-500 text-sm">{limitation}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-4">
+                  {plan.id === 'enterprise' ? (
+                    <button
+                      onClick={handleContactSales}
+                      className="w-full border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white py-4 rounded-lg font-semibold transition-all duration-300 touch-target"
+                    >
+                      Contactar Ventas
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleSelectPlan(plan.id)}
+                      className={`w-full py-4 rounded-lg font-semibold transition-all duration-300 touch-target ${
+                        plan.popular
+                          ? 'bg-primary-500 hover:bg-primary-600 text-white shadow-lg'
+                          : 'border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white'
+                      }`}
+                    >
+                      Comenzar Gratis
+                    </button>
+                  )}
+                  
+                  <p className="text-center text-sm text-gray-500">
+                    Prueba gratis por 14 días
+                  </p>
+                </div>
               </div>
-
-              <div className="plan-features">
-                <h4>Incluye:</h4>
-                <ul className="features-list">
-                  {plan.features.map((feature, index) => (
-                    <li key={index} className="feature-item">
-                      <span className="feature-check">✓</span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-
-                {plan.limitations.length > 0 && (
-                  <div className="limitations">
-                    <h5>No incluye:</h5>
-                    <ul className="limitations-list">
-                      {plan.limitations.map((limitation, index) => (
-                        <li key={index} className="limitation-item">
-                          <span className="limitation-cross">✗</span>
-                          {limitation}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-
-              <div className="plan-cta">
-                {plan.id === "enterprise" ? (
-                  <Button
-                    onClick={handleContactSales}
-                    className="btn-outline btn-block"
-                  >
-                    {plan.cta}
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => handleSelectPlan(plan.id)}
-                    className={`btn-block ${
-                      plan.popular ? "btn-primary" : "btn-outline"
-                    }`}
-                  >
-                    {plan.cta}
-                  </Button>
-                )}
-
-                <p className="trial-info">
-                  Prueba gratis por {plan.trialDays} días
-                </p>
-              </div>
-            </Card>
+            </div>
           ))}
         </div>
 
-        {/* Add-ons Section */}
-        <div className="addons-section">
-          <h3>Complementos Disponibles</h3>
-          <p>Potencia tu plan con funcionalidades adicionales</p>
-
-          <div className="addons-grid">
-            {addOns.map((addon, index) => (
-              <Card key={index} className="addon-card">
-                <div className="addon-icon">{addon.icon}</div>
-                <h4 className="addon-name">{addon.name}</h4>
-                <p className="addon-description">{addon.description}</p>
-                <div className="addon-price">
-                  {formatPrice(addon.price)}/mes
-                </div>
-              </Card>
+        {/* FAQ Section */}
+        <div className="max-w-4xl mx-auto">
+          <h3 className="text-2xl font-bold text-gray-900 text-center mb-12">Preguntas Frecuentes</h3>
+          <div className="grid md:grid-cols-2 gap-8">
+            {[
+              {
+                question: '¿Puedo cambiar de plan en cualquier momento?',
+                answer: 'Sí, puedes actualizar o cambiar tu plan cuando quieras. Los cambios se aplican inmediatamente.'
+              },
+              {
+                question: '¿Hay costos de configuración?',
+                answer: 'No cobramos costos de configuración. Te ayudamos a configurar tu restaurante completamente gratis.'
+              },
+              {
+                question: '¿Qué incluye el período de prueba?',
+                answer: 'Acceso completo a todas las funcionalidades del plan seleccionado, sin restricciones.'
+              },
+              {
+                question: '¿Ofrecen descuentos para múltiples sucursales?',
+                answer: 'Sí, tenemos descuentos especiales para cadenas. Contáctanos para una cotización personalizada.'
+              }
+            ].map((faq, index) => (
+              <div key={index} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
+                <h4 className="font-semibold text-gray-900 mb-3">{faq.question}</h4>
+                <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+              </div>
             ))}
           </div>
         </div>
 
-        {/* FAQ Section */}
-        <div className="pricing-faq">
-          <h3>Preguntas Frecuentes</h3>
-          <div className="faq-grid">
-            <div className="faq-item">
-              <h4>¿Puedo cambiar de plan en cualquier momento?</h4>
-              <p>
-                Sí, puedes actualizar o cambiar tu plan cuando quieras. Los
-                cambios se aplican inmediatamente.
-              </p>
-            </div>
-            <div className="faq-item">
-              <h4>¿Hay costos de configuración?</h4>
-              <p>
-                No cobramos costos de configuración. Te ayudamos a configurar tu
-                restaurante completamente gratis.
-              </p>
-            </div>
-            <div className="faq-item">
-              <h4>¿Qué incluye el período de prueba?</h4>
-              <p>
-                Acceso completo a todas las funcionalidades del plan
-                seleccionado, sin restricciones.
-              </p>
-            </div>
-            <div className="faq-item">
-              <h4>¿Ofrecen descuentos para múltiples sucursales?</h4>
-              <p>
-                Sí, tenemos descuentos especiales para cadenas. Contáctanos para
-                una cotización personalizada.
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* Trust Indicators */}
-        <div className="trust-indicators">
-          <div className="indicator">
-            <span className="indicator-icon">🔒</span>
-            <div>
-              <h4>Pagos Seguros</h4>
-              <p>Encriptación SSL y PCI compliance</p>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+          {[
+            { icon: '🔒', title: 'Pagos Seguros', desc: 'Encriptación SSL y PCI compliance' },
+            { icon: '📞', title: 'Soporte Local', desc: 'Equipo en Chile, en tu zona horaria' },
+            { icon: '💾', title: 'Respaldo de Datos', desc: 'Backups automáticos diarios' },
+            { icon: '📱', title: 'App Nativa', desc: 'Próximamente en App Store y Google Play' }
+          ].map((indicator, index) => (
+            <div key={index} className="bg-white rounded-2xl p-6 text-center shadow-lg border border-gray-200">
+              <div className="text-3xl mb-3">{indicator.icon}</div>
+              <h4 className="font-semibold text-gray-900 mb-2">{indicator.title}</h4>
+              <p className="text-sm text-gray-600">{indicator.desc}</p>
             </div>
-          </div>
-          <div className="indicator">
-            <span className="indicator-icon">📞</span>
-            <div>
-              <h4>Soporte Local</h4>
-              <p>Equipo en Chile, en tu zona horaria</p>
-            </div>
-          </div>
-          <div className="indicator">
-            <span className="indicator-icon">💾</span>
-            <div>
-              <h4>Respaldo de Datos</h4>
-              <p>Backups automáticos diarios</p>
-            </div>
-          </div>
-          <div className="indicator">
-            <span className="indicator-icon">📱</span>
-            <div>
-              <h4>App Nativa</h4>
-              <p>Próximamente en App Store y Google Play</p>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Final CTA */}
-        <div className="pricing-final-cta">
-          <h3>¿Necesitas algo personalizado?</h3>
-          <p>
-            Trabajamos contigo para crear una solución que se adapte
-            perfectamente a tu negocio
-          </p>
-          <div className="cta-buttons">
-            <Button
-              onClick={() => navigate("/register")}
-              className="btn-primary"
-            >
-              Comenzar Prueba Gratuita
-            </Button>
-            <Button onClick={handleContactSales} variant="outline">
-              Hablar con Ventas
-            </Button>
+        <div className="text-center mt-16">
+          <div className="bg-white rounded-3xl p-8 lg:p-12 shadow-xl border border-gray-200 max-w-2xl mx-auto">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              ¿Necesitas algo personalizado?
+            </h3>
+            <p className="text-gray-600 mb-8">
+              Trabajamos contigo para crear una solución que se adapte perfectamente a tu negocio
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button 
+                onClick={() => navigate('/register')}
+                className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 touch-target"
+              >
+                Comenzar Prueba Gratuita
+              </button>
+              <button 
+                onClick={handleContactSales}
+                className="border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 touch-target"
+              >
+                Hablar con Ventas
+              </button>
+            </div>
           </div>
         </div>
       </div>
