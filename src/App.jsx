@@ -1,4 +1,5 @@
 import React from "react";
+import { Analytics } from "@vercel/analytics/next"
 import { Routes, Route } from "react-router-dom";
 import { TenantProvider, useTenant } from "./context/TenantContext";
 import { CartProvider } from "./context/CartContext";
@@ -220,6 +221,7 @@ function App() {
         </Routes>
         {import.meta.env.DEV && <SubdomainDebug />}
       </TenantProvider>
+      <Analytics />
     </AuthProvider>
   );
 }
