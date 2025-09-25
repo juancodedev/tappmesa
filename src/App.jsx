@@ -1,23 +1,25 @@
 import React from "react";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
 import { Routes, Route } from "react-router-dom";
 import { TenantProvider, useTenant } from "./context/TenantContext";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from './context/AuthContext';
 
-// Componentes existentes
-import MenuLayout from "./components/layout/MenuLayout";
-import TableApp from "./components/TableApp";
-import AdminApp from "./components/AdminApp";
-import ReservationsPage from "./components/ReservationsPage";
-import SecureAdminApp from './components/SecureAdminApp';
-import LoginPage from './components/LoginPage';
-import ProtectedRoute from './components/ProtectedRoute';
+// Lazy-loaded components for better code splitting
+import {
+  AdminApp,
+  SecureAdminApp,
+  TableApp,
+  ReservationsPage,
+  LoginPage,
+  LandingPage,
+  RegisterPage,
+  BusinessLoginPage,
+  MenuLayout
+} from './components/LazyComponents';
 
-// Nuevos componentes de Landing y Registro
-import LandingPage from './pages/landing/LandingPage';
-import RegisterPage from './pages/auth/RegisterPage';
-import BusinessLoginPage from './pages/auth/LoginPage'; // Para distinguir del LoginPage existente
+// Keep ProtectedRoute as regular import since it's lightweight
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Componente para debugging
 const SubdomainDebug = () => {

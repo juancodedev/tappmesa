@@ -1,0 +1,53 @@
+import { lazy, Suspense } from 'react';
+
+// Loading component for better UX during chunk loading
+const LoadingSpinner = ({ message = "Cargando..." }) => (
+  <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+      <p className="text-gray-600">{message}</p>
+    </div>
+  </div>
+);
+
+// Lazy load major components
+const LazyAdminApp = lazy(() => import('./AdminApp'));
+const LazySecureAdminApp = lazy(() => import('./SecureAdminApp'));
+const LazyTableApp = lazy(() => import('./TableApp'));
+const LazyReservationsPage = lazy(() => import('./ReservationsPage'));
+const LazyLoginPage = lazy(() => import('./LoginPage'));
+
+// Lazy load page components
+const LazyLandingPage = lazy(() => import('../pages/landing/LandingPage'));
+const LazyRegisterPage = lazy(() => import('../pages/auth/RegisterPage'));
+const LazyBusinessLoginPage = lazy(() => import('../pages/auth/LoginPage'));
+
+// Lazy load layout components
+const LazyMenuLayout = lazy(() => import('./layout/MenuLayout'));
+
+// HOC to wrap components with Suspense and custom loading
+const withSuspense = (Component, loadingMessage) => {
+  return function SuspenseWrapper(props) {
+    return (
+      <Suspense fallback={<LoadingSpinner message={loadingMessage} />}>
+        <Component {...props} />
+      </Suspense>
+    );
+  };
+};
+
+// Export wrapped components
+export const AdminApp = withSuspense(LazyAdminApp, "Cargando panel de administración...");
+export const SecureAdminApp = withSuspense(LazySecureAdminApp, "Cargando administrador seguro...");
+export const TableApp = withSuspense(LazyTableApp, "Cargando mesa...");
+export const ReservationsPage = withSuspense(LazyReservationsPage, "Cargando reservas...");
+export const LoginPage = withSuspense(LazyLoginPage, "Cargando inicio de sesión...");
+
+export const LandingPage = withSuspense(LazyLandingPage, "Cargando página principal...");
+export const RegisterPage = withSuspense(LazyRegisterPage, "Cargando registro...");
+export const BusinessLoginPage = withSuspense(LazyBusinessLoginPage, "Cargando inicio de sesión...");
+
+export const MenuLayout = withSuspense(LazyMenuLayout, "Cargando menú...");
+
+// Also export the LoadingSpinner for direct use
+export { LoadingSpinner };
