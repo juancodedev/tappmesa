@@ -10,258 +10,45 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// Funciones de autenticación adaptadas al esquema existente
+// ⚠️ DEPRECATED: Autenticación insegura - usar secureAuthService en su lugar
+// Importar el nuevo servicio seguro
+import { secureAuthService } from './authService.js';
+
+// Delegación al servicio seguro para compatibilidad hacia atrás
 export const authService = {
-  // Registro de nuevo tenant/restaurante
   async signUp(userData) {
-    try {
-      // 1. Crear tenant (restaurante)
-      const tenantSlug = userData.restaurantName.toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)+/g, '');
-      
-      const subdomain = tenantSlug + '-' + Math.random().toString(36).substr(2, 6);
-
-      const { data: tenantData, error: tenantError } = await supabase
-        .from('tenants')
-        .insert([
-          {
-            name: userData.restaurantName,
-            slug: tenantSlug,
-            subdomain: subdomain,
-            business_type: userData.restaurantType || 'cafe',
-            phone: userData.phone,
-            email: userData.email,
-            address: userData.address,
-            description: `Restaurante ${userData.restaurantName} ubicado en ${userData.city}`,
-            is_active: true
-          }
-        ])
-        .select()
-        .single()
-
-      if (tenantError) throw tenantError
-
-      // 2. Crear usuario administrador del tenant
-      const trialEndDate = new Date()
-      trialEndDate.setDate(trialEndDate.getDate() + 60) // 2 meses
-
-      const { data: adminData, error: adminError } = await supabase
-        .from('admin_users')
-        .insert([
-          {
-            email: userData.email,
-            password_hash: await this.hashPassword(userData.password),
-            full_name: userData.ownerName,
-            role: 'tenant_admin',
-            tenant_id: tenantData.id,
-            is_active: true
-          }
-        ])
-        .select()
-        .single()
-
-      if (adminError) throw adminError
-
-      // 3. Crear configuraciones del tenant
-      await supabase
-        .from('tenant_settings')
-        .insert([
-          {
-            tenant_id: tenantData.id,
-            table_service_enabled: true,
-            takeaway_enabled: true,
-            delivery_enabled: false
-          }
-        ])
-
-      // 4. Crear mesas basadas en numberOfTables
-      const tables = []
-      for (let i = 1; i <= userData.numberOfTables; i++) {
-        tables.push({
-          tenant_id: tenantData.id,
-          number: i.toString(),
-          capacity: 4, // capacidad por defecto
-          unique_code: `${tenantData.slug}-mesa-${i}`,
-          status: 'available'
-        })
-      }
-
-      await supabase
-        .from('tables')
-        .insert(tables)
-
-      // 5. Crear categorías por defecto
-      const defaultCategories = [
-        { name: 'Bebidas Calientes', icon: '☕', display_order: 1 },
-        { name: 'Bebidas Frías', icon: '🥤', display_order: 2 },
-        { name: 'Comida', icon: '🍽️', display_order: 3 },
-        { name: 'Postres', icon: '🍰', display_order: 4 }
-      ]
-
-      const categoriesWithTenant = defaultCategories.map(cat => ({
-        ...cat,
-        tenant_id: tenantData.id,
-        slug: cat.name.toLowerCase().replace(/\s+/g, '-')
-      }))
-
-      await supabase
-        .from('categories')
-        .insert(categoriesWithTenant)
-
-      return {
-        success: true,
-        tenant: tenantData,
-        admin: adminData,
-        trialInfo: {
-          endDate: trialEndDate,
-          daysLeft: 60
-        }
-      }
-    } catch (error) {
-      console.error('Signup error:', error)
-      return {
-        success: false,
-        error: error.message || 'Error al crear la cuenta'
-      }
-    }
+    console.warn('⚠️  authService.signUp is deprecated. Use secureAuthService instead.');
+    return await secureAuthService.signUp(userData);
   },
 
-  // SECURITY WARNING: This is a demo implementation only!
-  // In production, password hashing should be done server-side with bcrypt
-  async hashPassword(password) {
-    // TODO: Replace with proper server-side bcrypt hashing
-    // This Base64 encoding is NOT secure and only for development
-    console.warn('WARNING: Using insecure password hashing. Implement proper bcrypt on server-side.')
-    return btoa(password) // Base64 temporal - NOT SECURE!
-  },
-
-  // Inicio de sesión
   async signIn(email, password) {
-    try {
-      const hashedPassword = await this.hashPassword(password)
-      
-      const { data: admin, error: adminError } = await supabase
-        .from('admin_users')
-        .select(`
-          *,
-          tenant:tenants(*)
-        `)
-        .eq('email', email)
-        .eq('password_hash', hashedPassword)
-        .eq('is_active', true)
-        .single()
-
-      if (adminError) throw new Error('Email o contraseña incorrectos')
-
-      // Actualizar último login
-      await supabase
-        .from('admin_users')
-        .update({ last_login: new Date().toISOString() })
-        .eq('id', admin.id)
-
-      // Crear sesión
-      const sessionToken = this.generateSessionToken()
-      const expiresAt = new Date()
-      expiresAt.setDate(expiresAt.getDate() + 30) // 30 días
-
-      await supabase
-        .from('admin_sessions')
-        .insert([
-          {
-            user_id: admin.id,
-            session_token: sessionToken,
-            expires_at: expiresAt.toISOString()
-          }
-        ])
-
-      // Guardar token en localStorage
-      localStorage.setItem('tappmesa-session', sessionToken)
-
-      return {
-        success: true,
-        admin,
-        tenant: admin.tenant,
-        sessionToken
-      }
-    } catch (error) {
-      console.error('Signin error:', error)
-      return {
-        success: false,
-        error: error.message || 'Error al iniciar sesión'
-      }
-    }
+    console.warn('⚠️  authService.signIn is deprecated. Use secureAuthService instead.');
+    return await secureAuthService.signIn(email, password);
   },
 
-  // Generar token de sesión
-  generateSessionToken() {
-    return Array.from(crypto.getRandomValues(new Uint8Array(32)))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('')
-  },
-
-  // Cerrar sesión
   async signOut() {
-    try {
-      const sessionToken = localStorage.getItem('tappmesa-session')
-      
-      if (sessionToken) {
-        // Invalidar sesión en la base de datos
-        await supabase
-          .from('admin_sessions')
-          .delete()
-          .eq('session_token', sessionToken)
-      }
-
-      localStorage.removeItem('tappmesa-session')
-      return { success: true }
-    } catch (error) {
-      console.error('Signout error:', error)
-      return { success: false, error: error.message }
-    }
+    console.warn('⚠️  authService.signOut is deprecated. Use secureAuthService instead.');
+    return await secureAuthService.signOut();
   },
 
-  // Obtener sesión actual
   async getCurrentSession() {
-    try {
-      const sessionToken = localStorage.getItem('tappmesa-session')
-      if (!sessionToken) return null
-
-      const { data: session, error } = await supabase
-        .from('admin_sessions')
-        .select(`
-          *,
-          admin_user:admin_users(
-            *,
-            tenant:tenants(*)
-          )
-        `)
-        .eq('session_token', sessionToken)
-        .gt('expires_at', new Date().toISOString())
-        .single()
-
-      if (error || !session) {
-        localStorage.removeItem('tappmesa-session')
-        return null
-      }
-
-      return {
-        admin: session.admin_user,
-        tenant: session.admin_user.tenant,
-        sessionToken
-      }
-    } catch (error) {
-      console.error('Session error:', error)
-      localStorage.removeItem('tappmesa-session')
-      return null
-    }
+    console.warn('⚠️  authService.getCurrentSession is deprecated. Use secureAuthService instead.');
+    return await secureAuthService.getCurrentSession();
   },
 
-  // Verificar estado del trial (para tenants en trial)
+  // Métodos legacy deprecados
+  async hashPassword(password) {
+    console.warn('⚠️  Client-side password hashing is deprecated and insecure. Server-side bcrypt is now used.');
+    return password;
+  },
+
+  generateSessionToken() {
+    console.warn('⚠️  Client-side session token generation is deprecated. Server-side generation is now used.');
+    return null;
+  },
+
   async getTrialStatus(tenantId) {
     try {
-      // En este esquema, el trial se maneja a nivel de tenant
-      // Puedes agregar campos de trial a la tabla tenants si es necesario
       const { data: tenant, error } = await supabase
         .from('tenants')
         .select('created_at, is_active')
@@ -270,7 +57,6 @@ export const authService = {
 
       if (error) throw error
 
-      // Calcular trial basado en fecha de creación (2 meses)
       const createdAt = new Date(tenant.created_at)
       const trialEndDate = new Date(createdAt)
       trialEndDate.setDate(trialEndDate.getDate() + 60)
