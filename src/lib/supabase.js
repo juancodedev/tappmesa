@@ -10,30 +10,28 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// ⚠️ DEPRECATED: Autenticación insegura - usar secureAuthService en su lugar
-// Importar el nuevo servicio seguro
-import { secureAuthService } from './authService.js';
+// Servicio de autenticación actualizado - usando cliente directo mientras se soluciona Vercel
+import { directAuthService } from './secureAuthDirect.js';
 
-// Delegación al servicio seguro para compatibilidad hacia atrás
+// Uso del servicio directo (temporal hasta que Vercel API funcione)
 export const authService = {
   async signUp(userData) {
-    console.warn('⚠️  authService.signUp is deprecated. Use secureAuthService instead.');
-    return await secureAuthService.signUp(userData);
+    console.log('🔄 Usando servicio directo de autenticación (temporal)');
+    return await directAuthService.signUp(userData);
   },
 
   async signIn(email, password) {
-    console.warn('⚠️  authService.signIn is deprecated. Use secureAuthService instead.');
-    return await secureAuthService.signIn(email, password);
+    console.log('🔄 Usando servicio directo de autenticación (temporal)');
+    return await directAuthService.signIn(email, password);
   },
 
   async signOut() {
-    console.warn('⚠️  authService.signOut is deprecated. Use secureAuthService instead.');
-    return await secureAuthService.signOut();
+    console.log('🔄 Usando servicio directo de autenticación (temporal)');
+    return await directAuthService.signOut();
   },
 
   async getCurrentSession() {
-    console.warn('⚠️  authService.getCurrentSession is deprecated. Use secureAuthService instead.');
-    return await secureAuthService.getCurrentSession();
+    return await directAuthService.getCurrentSession();
   },
 
   // Métodos legacy deprecados

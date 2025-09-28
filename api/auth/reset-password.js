@@ -1,13 +1,13 @@
 // API Route: /api/auth/reset-password.js
-import bcrypt from 'bcryptjs';
-import { createClient } from '@supabase/supabase-js';
+const bcrypt = require('bcryptjs');
+const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method === 'POST' && req.url.includes('/request')) {
     return handleResetRequest(req, res);
   }

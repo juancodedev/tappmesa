@@ -1,13 +1,13 @@
 // API Route: /api/auth/signup.js
-import bcrypt from 'bcryptjs';
-import { createClient } from '@supabase/supabase-js';
+const bcrypt = require('bcryptjs');
+const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY // Usar service role key para operaciones privilegiadas
 );
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Solo permitir POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });

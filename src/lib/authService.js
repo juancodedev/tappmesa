@@ -1,7 +1,11 @@
 // Nuevo servicio de autenticación seguro
+// Nota: Mientras Vercel tenga protección habilitada, usaremos el cliente de Supabase directamente
+import { supabase } from './supabase.js';
+import bcrypt from 'bcryptjs';
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (
   import.meta.env.PROD
-    ? 'https://tappmesa-8yotnoqfw-cljmunoz-gmailcoms-projects.vercel.app'
+    ? 'https://tappmesa-kwi6a23hg-cljmunoz-gmailcoms-projects.vercel.app'
     : 'http://localhost:5173'
 );
 
