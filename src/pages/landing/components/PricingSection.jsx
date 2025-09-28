@@ -42,7 +42,7 @@ const PricingSection = () => {
       popular: true,
       icon: Star,
       gradient: "bg-primary-500",
-      textColor: "text-white"
+      textColor: "text-coffee-900"
     },
     {
       name: "Café Enterprise",
@@ -66,7 +66,7 @@ const PricingSection = () => {
       popular: false,
       icon: Zap,
       gradient: "bg-coffee-dark",
-      textColor: "text-white"
+      textColor: "text-coffee-900"
     }
   ];
 
@@ -102,7 +102,7 @@ const PricingSection = () => {
               {/* Popular Badge */}
               {plan.popular && (
                 <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 z-10">
-                  <div className="bg-primary-500 text-white px-4 py-1 rounded-full text-sm font-medium flex items-center gap-1">
+                  <div className="bg-coffee-900 text-coffee-900 px-4 py-1 rounded-full text-sm font-medium flex items-center gap-1">
                     <Star className="h-4 w-4 fill-current" />
                     Más Popular
                   </div>
@@ -116,12 +116,12 @@ const PricingSection = () => {
                   <div className={`inline-flex p-3 rounded-full mb-4 ${
                     plan.popular ? 'bg-white/20' : 'bg-primary-500/10'
                   }`}>
-                    <plan.icon className={`h-8 w-8 ${plan.popular ? 'text-white' : 'text-primary-500'}`} />
+                    <plan.icon className={`h-8 w-8 ${plan.popular ? 'text-coffee-900' : 'text-primary-500'}`} />
                   </div>
                   <h3 className={`text-2xl font-bold mb-2 ${plan.popular ? plan.textColor : 'text-coffee-900'}`}>
                     {plan.name}
                   </h3>
-                  <p className={`text-sm ${plan.popular ? 'text-white/80' : 'text-coffee-600'}`}>
+                  <p className={`text-sm ${plan.popular ? 'text-coffee-900' : 'text-coffee-600'}`}>
                     {plan.description}
                   </p>
                 </div>
@@ -132,11 +132,11 @@ const PricingSection = () => {
                     <span className={`text-4xl font-bold ${plan.popular ? plan.textColor : 'text-coffee-900'}`}>
                       {plan.price}
                     </span>
-                    <span className={`text-lg ml-1 ${plan.popular ? 'text-white/80' : 'text-coffee-600'}`}>
+                    <span className={`text-lg ml-1 ${plan.popular ? 'text-coffee-900' : 'text-coffee-600'}`}>
                       {plan.period}
                     </span>
                   </div>
-                  <p className={`text-sm mt-2 ${plan.popular ? 'text-white/70' : 'text-coffee-600'}`}>
+                  <p className={`text-sm mt-2 ${plan.popular ? 'text-coffee-900' : 'text-coffee-600'}`}>
                     + IVA • Sin compromiso • Cancela cuando quieras
                   </p>
                 </div>
@@ -146,9 +146,9 @@ const PricingSection = () => {
                   {plan.features.map((feature, featureIndex) => (
                     <div key={featureIndex} className="flex items-start gap-3">
                       <Check className={`h-5 w-5 mt-0.5 flex-shrink-0 ${
-                        plan.popular ? 'text-white' : 'text-primary-500'
+                        plan.popular ? 'text-coffee-900' : 'text-primary-500'
                       }`} />
-                      <span className={`text-sm ${plan.popular ? 'text-white/90' : 'text-coffee-700'}`}>
+                      <span className={`text-sm ${plan.popular ? 'text-coffee-900' : 'text-coffee-700'}`}>
                         {feature}
                       </span>
                     </div>
@@ -159,13 +159,13 @@ const PricingSection = () => {
                 <button className={`w-full py-3 px-6 rounded-lg font-semibold text-center transition-all duration-300 ${
                   plan.popular
                     ? 'bg-white text-primary-500 hover:bg-cream-100 shadow-lg hover:shadow-xl'
-                    : 'bg-primary-500 text-white hover:bg-primary-600 shadow-md hover:shadow-lg'
+                    : 'bg-primary-500 text-coffee-900 hover:bg-primary-600 shadow-md hover:shadow-lg'
                 }`}>
                   {plan.popular ? 'Comenzar Ahora - Más Popular' : 'Comenzar Prueba Gratuita'}
                 </button>
 
                 {plan.popular && (
-                  <p className="text-center text-white/70 text-xs mt-3">
+                  <p className="text-center text-gray-900 text-xs mt-3">
                     ⭐ Elegido por el 73% de nuestras cafeterías
                   </p>
                 )}
@@ -185,7 +185,7 @@ const PricingSection = () => {
               hablemos para crear el plan perfecto para tu imperio cafetero.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-primary-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors">
+              <button className="bg-primary-500 text-coffee-900 px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors">
                 Contactar Ventas
               </button>
               <button className="border-2 border-coffee-300 text-coffee-700 px-6 py-3 rounded-lg font-semibold hover:border-primary-500 hover:text-primary-500 transition-colors">

@@ -129,14 +129,14 @@ const DemoSection = () => {
   const CustomerView = () => (
     <div className="bg-white rounded-2xl overflow-hidden shadow-2xl max-w-md mx-auto border">
       {/* Phone Header */}
-      <div className="bg-coffee-900 text-white p-4 text-center relative">
+      <div className="bg-coffee-900 text-coffee-900 p-4 text-center relative">
         <div className="absolute top-2 left-4 w-4 h-1 bg-white/30 rounded-full"></div>
         <div className="absolute top-2 right-4 flex gap-1">
           <div className="w-1 h-1 bg-white/50 rounded-full"></div>
           <div className="w-4 h-1 bg-white/30 rounded-full"></div>
         </div>
         <h3 className="font-bold text-lg mt-2">☕ Café Central</h3>
-        <p className="text-white/70 text-sm">Mesa #7 - Junto a ventana</p>
+        <p className="text-coffee-900/70 text-sm">Mesa #7 - Junto a ventana</p>
       </div>
 
       {/* Menu */}
@@ -154,7 +154,7 @@ const DemoSection = () => {
               className="border rounded-lg p-3 cursor-pointer hover:border-primary-500 hover:shadow-md transition-all relative"
             >
               {item.popular && (
-                <span className="absolute -top-2 -right-2 bg-primary-500 text-white text-xs px-2 py-1 rounded-full">
+                <span className="absolute -top-2 -right-2 bg-primary-500 text-coffee-900 text-xs px-2 py-1 rounded-full">
                   Popular ⭐
                 </span>
               )}
@@ -194,7 +194,7 @@ const DemoSection = () => {
                 {formatPrice(cart.reduce((sum, item) => sum + item.totalPrice, 0))}
               </span>
             </div>
-            <button className="w-full mt-2 bg-primary-500 text-white py-2 rounded-lg font-semibold hover:bg-primary-600 transition-colors">
+            <button className="w-full mt-2 bg-primary-500 text-coffee-900 py-2 rounded-lg font-semibold hover:bg-primary-600 transition-colors">
               Enviar Pedido al Barista
             </button>
           </div>
@@ -227,7 +227,7 @@ const DemoSection = () => {
                       onClick={() => setCustomizations({...customizations, size})}
                       className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${
                         customizations.size === size
-                          ? 'bg-primary-500 text-white'
+                          ? 'bg-primary-500 text-coffee-900'
                           : 'bg-gray-100 text-coffee-600 hover:bg-gray-200'
                       }`}
                     >
@@ -252,7 +252,7 @@ const DemoSection = () => {
                       onClick={() => setCustomizations({...customizations, milk: milk.key})}
                       className={`py-2 px-3 rounded-lg text-sm font-medium ${
                         customizations.milk === milk.key
-                          ? 'bg-primary-500 text-white'
+                          ? 'bg-primary-500 text-coffee-900'
                           : 'bg-gray-100 text-coffee-600 hover:bg-gray-200'
                       }`}
                     >
@@ -298,7 +298,7 @@ const DemoSection = () => {
                       onClick={() => setCustomizations({...customizations, temp: temp.key})}
                       className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${
                         customizations.temp === temp.key
-                          ? 'bg-primary-500 text-white'
+                          ? 'bg-primary-500 text-coffee-900'
                           : 'bg-gray-100 text-coffee-600 hover:bg-gray-200'
                       }`}
                     >
@@ -349,7 +349,7 @@ const DemoSection = () => {
                 </button>
                 <button
                   onClick={addToCart}
-                  className="flex-2 py-3 bg-primary-500 text-white rounded-lg font-semibold hover:bg-primary-600 flex items-center justify-center gap-2"
+                  className="flex-2 py-3 bg-primary-500 text-coffee-900 rounded-lg font-semibold hover:bg-primary-600 flex items-center justify-center gap-2"
                 >
                   <ShoppingCart className="h-4 w-4" />
                   Agregar al Pedido
@@ -362,7 +362,7 @@ const DemoSection = () => {
 
       {/* Success Toast */}
       {showSuccess && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 z-50">
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-coffee-900 px-4 py-2 rounded-lg flex items-center gap-2 z-50">
           <CheckCircle className="h-4 w-4" />
           ¡Agregado al pedido!
         </div>
@@ -391,7 +391,7 @@ const DemoSection = () => {
               <p className="text-2xl font-bold text-primary-600">{analyticsData.todayOrders}</p>
             </div>
             <div className="bg-primary-500 p-2 rounded-lg">
-              <ShoppingCart className="h-5 w-5 text-white" />
+              <ShoppingCart className="h-5 w-5 text-coffee-900" />
             </div>
           </div>
           <div className="flex items-center gap-1 mt-2 text-sm">
@@ -407,7 +407,7 @@ const DemoSection = () => {
               <p className="text-2xl font-bold text-green-600">{formatPrice(analyticsData.revenue)}</p>
             </div>
             <div className="bg-green-500 p-2 rounded-lg">
-              <BarChart3 className="h-5 w-5 text-white" />
+              <BarChart3 className="h-5 w-5 text-coffee-900" />
             </div>
           </div>
           <div className="flex items-center gap-1 mt-2 text-sm">
@@ -423,7 +423,7 @@ const DemoSection = () => {
               <p className="text-lg font-bold text-yellow-600">{analyticsData.topItem}</p>
             </div>
             <div className="bg-yellow-500 p-2 rounded-lg">
-              <Star className="h-5 w-5 text-white" />
+              <Star className="h-5 w-5 text-coffee-900" />
             </div>
           </div>
           <div className="text-sm text-coffee-600 mt-2">
@@ -438,7 +438,7 @@ const DemoSection = () => {
               <p className="text-lg font-bold text-blue-600">{analyticsData.peakHour}</p>
             </div>
             <div className="bg-blue-500 p-2 rounded-lg">
-              <Clock className="h-5 w-5 text-white" />
+              <Clock className="h-5 w-5 text-coffee-900" />
             </div>
           </div>
           <div className="text-sm text-coffee-600 mt-2">
@@ -635,19 +635,19 @@ const DemoSection = () => {
                 </div>
                 
                 {order.status === 'preparing' && (
-                  <button className="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                  <button className="bg-blue-500 text-coffee-900 px-4 py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors">
                     Marcar Listo
                   </button>
                 )}
                 
                 {order.status === 'pending' && (
-                  <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-yellow-600 transition-colors">
+                  <button className="bg-yellow-500 text-coffee-900 px-4 py-2 rounded-lg font-medium hover:bg-yellow-600 transition-colors">
                     Comenzar
                   </button>
                 )}
                 
                 {order.status === 'ready' && (
-                  <button className="bg-green-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors">
+                  <button className="bg-green-500 text-coffee-900 px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors">
                     Entregar
                   </button>
                 )}
@@ -683,7 +683,7 @@ const DemoSection = () => {
       {/* Quick Actions */}
       <div className="mt-6 pt-4 border-t">
         <div className="flex gap-3">
-          <button className="flex-1 bg-primary-500 text-white py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors flex items-center justify-center gap-2">
+          <button className="flex-1 bg-primary-500 text-coffee-900 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors flex items-center justify-center gap-2">
             <Zap className="h-4 w-4" />
             Pausa Pedidos (5 min)
           </button>
@@ -721,7 +721,7 @@ const DemoSection = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 ${
                     activeTab === tab.id
-                      ? 'bg-primary-500 text-white shadow-md'
+                      ? 'bg-primary-500 text-coffee-900 shadow-md'
                       : 'text-coffee-600 hover:text-primary-500 hover:bg-primary-50'
                   }`}
                 >
@@ -745,26 +745,26 @@ const DemoSection = () => {
 
         {/* CTA */}
         <div className="text-center mt-16">
-          <div className="bg-coffee-dark rounded-2xl p-8 text-white relative overflow-hidden">
+          <div className="bg-coffee-dark rounded-2xl p-8 text-coffee-900 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-coffee-900 via-primary-500/20 to-coffee-900 opacity-50"></div>
             <div className="relative z-10">
               <h3 className="text-3xl font-bold mb-4">
                 ¿Listo para digitalizar tu cafetería? ☕
               </h3>
-              <p className="text-white/90 max-w-2xl mx-auto text-lg leading-relaxed mb-6">
+              <p className="text-coffee-900/90 max-w-2xl mx-auto text-lg leading-relaxed mb-6">
                 Únete a las 250+ cafeterías que ya transformaron su negocio con TappMesa. 
                 Registro gratuito, configuración en minutos.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="bg-primary-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-primary-600 transition-colors flex items-center justify-center gap-2">
+                <button className="bg-primary-500 text-coffee-900 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-primary-600 transition-colors flex items-center justify-center gap-2">
                   <Coffee className="h-5 w-5" />
                   Registrar Mi Cafetería Gratis
                 </button>
-                <button className="border-2 border-white/30 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:border-primary-300 hover:text-primary-300 transition-colors">
+                <button className="border-2 border-white/30 text-coffee-900 px-8 py-4 rounded-lg text-lg font-semibold hover:border-primary-300 hover:text-primary-300 transition-colors">
                   Agendar Demo Personalizada
                 </button>
               </div>
-              <p className="text-white/60 text-sm mt-4">
+              <p className="text-coffee-900/60 text-sm mt-4">
                 🚀 Configuración en 15 minutos • ✅ Sin tarjeta de crédito • 📞 Soporte en español
               </p>
             </div>

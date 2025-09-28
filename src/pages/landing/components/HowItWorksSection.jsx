@@ -100,7 +100,7 @@ const HowItWorksSection = () => {
             <button 
               className={`flex items-center gap-3 px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
                 activeTab === 'customer' 
-                  ? 'bg-primary-500 text-white shadow-md' 
+                  ? 'bg-primary-500 text-coffee-900 shadow-md' 
                   : 'text-gray-600 hover:text-primary-500'
               }`}
               onClick={() => setActiveTab('customer')}
@@ -111,7 +111,7 @@ const HowItWorksSection = () => {
             <button 
               className={`flex items-center gap-3 px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
                 activeTab === 'restaurant' 
-                  ? 'bg-primary-500 text-white shadow-md' 
+                  ? 'bg-primary-500 text-coffee-900 shadow-md' 
                   : 'text-gray-600 hover:text-primary-500'
               }`}
               onClick={() => setActiveTab('restaurant')}
@@ -129,7 +129,7 @@ const HowItWorksSection = () => {
               <div key={step.step} className="relative">
                 <div className="flex flex-col lg:flex-row gap-6 items-start">
                   <div className="flex-shrink-0 flex flex-col items-center">
-                    <div className="w-16 h-16 bg-primary-500 text-white rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
+                    <div className="w-16 h-16 bg-primary-500 text-coffee-900 rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
                       {step.step}
                     </div>
                     {index < currentSteps.length - 1 && (
@@ -157,7 +157,7 @@ const HowItWorksSection = () => {
             <h3 className="text-2xl font-bold text-gray-900 mb-4">Ve TappMesa en acción</h3>
             <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mb-6">
               <div className="text-center">
-                <div className="w-20 h-20 bg-primary-500 rounded-full flex items-center justify-center text-white text-3xl mb-4 mx-auto hover:scale-110 transition-transform duration-300 cursor-pointer">
+                <div className="w-20 h-20 bg-primary-500 rounded-full flex items-center justify-center text-coffee-900 text-3xl mb-4 mx-auto hover:scale-110 transition-transform duration-300 cursor-pointer">
                   ▶️
                 </div>
                 <p className="text-gray-600 font-medium">Video demo interactivo</p>

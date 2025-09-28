@@ -99,10 +99,10 @@ const CTASection = () => {
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-r from-coffee-900/90 via-primary-500/20 to-coffee-900/90"></div>
       <div className="absolute top-0 left-0 w-full h-full">
-        <div className="absolute top-20 left-10 text-8xl opacity-5 text-white animate-float">☕</div>
-        <div className="absolute bottom-20 right-20 text-6xl opacity-5 text-white animate-float-delay">🚀</div>
-        <div className="absolute top-40 right-10 text-5xl opacity-5 text-white animate-float">⭐</div>
-        <div className="absolute bottom-40 left-20 text-7xl opacity-5 text-white animate-float-delay">📱</div>
+        <div className="absolute top-20 left-10 text-8xl opacity-5 text-coffee-900 animate-float">☕</div>
+        <div className="absolute bottom-20 right-20 text-6xl opacity-5 text-coffee-900 animate-float-delay">🚀</div>
+        <div className="absolute top-40 right-10 text-5xl opacity-5 text-coffee-900 animate-float">⭐</div>
+        <div className="absolute bottom-40 left-20 text-7xl opacity-5 text-coffee-900 animate-float-delay">📱</div>
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
@@ -111,21 +111,21 @@ const CTASection = () => {
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 max-w-4xl mx-auto">
             <div className="flex items-center justify-center gap-2 mb-4">
               <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-white/80 font-medium">Estadísticas en Vivo</span>
+              <span className="text-coffee-900/80 font-medium">Estadísticas en Vivo</span>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">{stats.cafesActive}</div>
-                <div className="text-white/70 text-sm">Cafeterías Activas Ahora</div>
+                <div className="text-3xl font-bold text-coffee-900 mb-1">{stats.cafesActive}</div>
+                <div className="text-coffee-900/70 text-sm">Cafeterías Activas Ahora</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">{stats.ordersToday.toLocaleString()}</div>
-                <div className="text-white/70 text-sm">Órdenes Procesadas Hoy</div>
+                <div className="text-3xl font-bold text-coffee-900 mb-1">{stats.ordersToday.toLocaleString()}</div>
+                <div className="text-coffee-900/70 text-sm">Órdenes Procesadas Hoy</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">{formatPrice(stats.revenue)}</div>
-                <div className="text-white/70 text-sm">Ingresos Generados Hoy</div>
+                <div className="text-3xl font-bold text-coffee-900 mb-1">{formatPrice(stats.revenue)}</div>
+                <div className="text-coffee-900/70 text-sm">Ingresos Generados Hoy</div>
               </div>
             </div>
           </div>
@@ -133,13 +133,13 @@ const CTASection = () => {
 
         {/* Main CTA */}
         <div className="text-center mb-16">
-          <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+          <h2 className="text-5xl md:text-6xl font-bold text-coffee-900 mb-6 leading-tight">
             Tu Cafetería Digital
             <br />
             <span className="text-primary-300">Comienza Hoy</span>
           </h2>
           
-          <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed mb-8">
+          <p className="text-xl text-coffee-900/90 max-w-3xl mx-auto leading-relaxed mb-8">
             Únete a las cafeterías más exitosas de Chile. Configuración en 15 minutos, 
             soporte en español, sin compromisos a largo plazo.
           </p>
@@ -147,11 +147,11 @@ const CTASection = () => {
           {/* Limited Time Offer */}
           <div className="bg-gradient-to-r from-primary-500 to-primary-400 rounded-2xl p-6 max-w-2xl mx-auto mb-8 border border-primary-300">
             <div className="flex items-center justify-center gap-2 mb-3">
-              <Gift className="h-6 w-6 text-white" />
-              <span className="text-white font-bold text-lg">Oferta de Lanzamiento</span>
+              <Gift className="h-6 w-6 text-coffee-900" />
+              <span className="text-coffee-900 font-bold text-lg">Oferta de Lanzamiento</span>
             </div>
             
-            <div className="text-white mb-4">
+            <div className="text-coffee-900 mb-4">
               <div className="text-3xl font-bold mb-1">50% OFF</div>
               <div className="text-primary-100">Primer mes de cualquier plan</div>
             </div>
@@ -159,15 +159,15 @@ const CTASection = () => {
             {/* Countdown */}
             <div className="flex justify-center gap-4 mb-4">
               <div className="bg-white/20 rounded-lg p-3 min-w-[60px]">
-                <div className="text-2xl font-bold text-white">{timeLeft.hours.toString().padStart(2, '0')}</div>
+                <div className="text-2xl font-bold text-coffee-900">{timeLeft.hours.toString().padStart(2, '0')}</div>
                 <div className="text-primary-100 text-xs">Horas</div>
               </div>
               <div className="bg-white/20 rounded-lg p-3 min-w-[60px]">
-                <div className="text-2xl font-bold text-white">{timeLeft.minutes.toString().padStart(2, '0')}</div>
+                <div className="text-2xl font-bold text-coffee-900">{timeLeft.minutes.toString().padStart(2, '0')}</div>
                 <div className="text-primary-100 text-xs">Minutos</div>
               </div>
               <div className="bg-white/20 rounded-lg p-3 min-w-[60px]">
-                <div className="text-2xl font-bold text-white">{timeLeft.seconds.toString().padStart(2, '0')}</div>
+                <div className="text-2xl font-bold text-coffee-900">{timeLeft.seconds.toString().padStart(2, '0')}</div>
                 <div className="text-primary-100 text-xs">Segundos</div>
               </div>
             </div>
@@ -185,14 +185,14 @@ const CTASection = () => {
               <ArrowRight className="h-6 w-6" />
             </button>
             
-            <button className="border-3 border-white/50 text-white px-10 py-5 rounded-2xl text-xl font-bold hover:border-white hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-3">
+            <button className="border-3 border-white/50 text-coffee-900 px-10 py-5 rounded-2xl text-xl font-bold hover:border-white hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-3">
               <Smartphone className="h-6 w-6" />
               Ver Demo Interactiva
             </button>
           </div>
 
           {/* Trust Indicators */}
-          <div className="flex flex-wrap justify-center items-center gap-8 text-white/70 text-sm mb-12">
+          <div className="flex flex-wrap justify-center items-center gap-8 text-coffee-900/70 text-sm mb-12">
             <div className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-green-400" />
               <span>Sin Tarjeta de Crédito</span>
@@ -219,8 +219,8 @@ const CTASection = () => {
               <div className={`inline-flex p-3 rounded-full bg-white/20 mb-4`}>
                 <benefit.icon className={`h-8 w-8 ${benefit.color}`} />
               </div>
-              <h3 className="text-white font-bold text-lg mb-2">{benefit.title}</h3>
-              <p className="text-white/70 text-sm">{benefit.desc}</p>
+              <h3 className="text-coffee-900 font-bold text-lg mb-2">{benefit.title}</h3>
+              <p className="text-coffee-900/70 text-sm">{benefit.desc}</p>
             </div>
           ))}
         </div>
@@ -230,7 +230,7 @@ const CTASection = () => {
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 max-w-4xl mx-auto">
             <div className="flex items-center justify-center gap-2 mb-6">
               <Heart className="h-6 w-6 text-red-400" />
-              <span className="text-white font-semibold text-lg">Amado por Dueños de Cafeterías</span>
+              <span className="text-coffee-900 font-semibold text-lg">Amado por Dueños de Cafeterías</span>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
@@ -240,10 +240,10 @@ const CTASection = () => {
                     <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
                   ))}
                 </div>
-                <blockquote className="text-white/90 italic mb-3">
+                <blockquote className="text-coffee-900/90 italic mb-3">
                   "TappMesa transformó mi cafetería. Mis clientes están encantados y mis ventas subieron 35%."
                 </blockquote>
-                <cite className="text-white/70 text-sm">- María González, Café Central</cite>
+                <cite className="text-coffee-900/70 text-sm">- María González, Café Central</cite>
               </div>
 
               <div className="text-center">
@@ -252,10 +252,10 @@ const CTASection = () => {
                     <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
                   ))}
                 </div>
-                <blockquote className="text-white/90 italic mb-3">
+                <blockquote className="text-coffee-900/90 italic mb-3">
                   "Gestionar 5 sucursales ahora es súper fácil. Los reportes automáticos son oro puro."
                 </blockquote>
-                <cite className="text-white/70 text-sm">- Carlos Mendoza, Granos & Más</cite>
+                <cite className="text-coffee-900/70 text-sm">- Carlos Mendoza, Granos & Más</cite>
               </div>
 
               <div className="text-center">
@@ -264,10 +264,10 @@ const CTASection = () => {
                     <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
                   ))}
                 </div>
-                <blockquote className="text-white/90 italic mb-3">
+                <blockquote className="text-coffee-900/90 italic mb-3">
                   "La configuración fue súper rápida. En 20 minutos ya estaba sirviendo órdenes digitales."
                 </blockquote>
-                <cite className="text-white/70 text-sm">- Andrea Silva, Rincón del Café</cite>
+                <cite className="text-coffee-900/70 text-sm">- Andrea Silva, Rincón del Café</cite>
               </div>
             </div>
           </div>
@@ -276,7 +276,7 @@ const CTASection = () => {
         {/* Final Push */}
         <div className="text-center">
           <div className="bg-gradient-to-r from-primary-600 to-primary-500 rounded-3xl p-8 border border-primary-400 max-w-3xl mx-auto shadow-2xl">
-            <h3 className="text-3xl font-bold text-white mb-4">
+            <h3 className="text-3xl font-bold text-coffee-900 mb-4">
               ¿Qué Esperas para Digitalizar tu Cafetería?
             </h3>
             
@@ -291,7 +291,7 @@ const CTASection = () => {
                 Empezar Ahora - 50% OFF
               </button>
               
-              <button className="border-2 border-white/50 text-white px-8 py-4 rounded-xl text-lg font-bold hover:border-white hover:bg-white/10 transition-all duration-300">
+              <button className="border-2 border-white/50 text-coffee-900 px-8 py-4 rounded-xl text-lg font-bold hover:border-white hover:bg-white/10 transition-all duration-300">
                 Hablar con un Especialista
               </button>
             </div>
@@ -303,10 +303,10 @@ const CTASection = () => {
 
           {/* Contact Info */}
           <div className="mt-12 text-center">
-            <div className="text-white/60 text-sm mb-4">
+            <div className="text-coffee-900/60 text-sm mb-4">
               ¿Preguntas? Estamos aquí para ayudarte
             </div>
-            <div className="flex flex-wrap justify-center gap-6 text-white/80">
+            <div className="flex flex-wrap justify-center gap-6 text-coffee-900/80">
               <a href="mailto:hola@tappmesa.cl" className="hover:text-primary-300 transition-colors">
                 📧 hola@tappmesa.cl
               </a>

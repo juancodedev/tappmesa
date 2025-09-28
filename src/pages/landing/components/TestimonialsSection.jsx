@@ -210,7 +210,7 @@ const TestimonialsSection = () => {
         </div>
 
         {/* Success Story Highlight */}
-        <div className="bg-coffee-dark rounded-2xl p-8 text-center text-white relative overflow-hidden">
+        <div className="bg-coffee-dark rounded-2xl p-8 text-center text-coffee-900 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-coffee-900 via-primary-500/20 to-coffee-900 opacity-50"></div>
           <div className="relative z-10">
             <div className="flex justify-center items-center gap-2 mb-4">
@@ -220,16 +220,16 @@ const TestimonialsSection = () => {
             <h3 className="text-3xl font-bold mb-4">
               "De 1 a 12 cafeterías en 18 meses"
             </h3>
-            <p className="text-white/90 max-w-3xl mx-auto text-lg leading-relaxed mb-6">
+            <p className="text-coffee-900/90 max-w-3xl mx-auto text-lg leading-relaxed mb-6">
               Diego Ramírez comenzó con una sola cafetería en 2023. Con TappMesa logró 
               estandarizar procesos, optimizar operaciones y escalar a 12 ubicaciones exitosas. 
               Su historia demuestra el poder de la digitalización inteligente.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-primary-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors">
+              <button className="bg-primary-500 text-coffee-900 px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors">
                 Leer Historia Completa
               </button>
-              <button className="border-2 border-white/30 text-white px-6 py-3 rounded-lg font-semibold hover:border-primary-300 hover:text-primary-300 transition-colors">
+              <button className="border-2 border-white/30 text-coffee-900 px-6 py-3 rounded-lg font-semibold hover:border-primary-300 hover:text-primary-300 transition-colors">
                 Comenzar Mi Historia
               </button>
             </div>

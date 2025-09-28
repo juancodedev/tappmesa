@@ -2,12 +2,17 @@ import { useState, useEffect } from 'react'
 import { Plus, Minus, Clock, Thermometer } from 'lucide-react'
 import { useTenant } from '../../context/TenantContext'
 import { useCart } from '../../context/CartContext'
+import { getOptimalTextClass } from '../../utils/helpers'
 
 const MenuCard = ({ product }) => {
   const { tenant } = useTenant()
   const { addItem, items } = useCart()
   const [quantity, setQuantity] = useState(0)
   const [selectedTemp, setSelectedTemp] = useState(product.temperature_options?.[0] || 'hot')
+
+  // Calcular color de texto óptimo basado en el color principal del tenant
+  const primaryColor = tenant?.primary_color || '#dc2626'
+  const textClass = getOptimalTextClass(primaryColor)
 
   // Sincronizar cantidad con el carrito
   useEffect(() => {
@@ -141,10 +146,10 @@ const MenuCard = ({ product }) => {
                   onClick={() => setSelectedTemp(temp)}
                   className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                     selectedTemp === temp
-                      ? 'text-white'
+                      ? textClass
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
-                  style={selectedTemp === temp ? { backgroundColor: tenant?.primary_color } : {}}
+                  style={selectedTemp === temp ? { backgroundColor: primaryColor } : {}}
                 >
                   <span>{getTemperatureIcon(temp)}</span>
                   <span className="capitalize">{temp === 'hot' ? 'Caliente' : temp === 'cold' ? 'Frío' : 'Helado'}</span>
@@ -181,8 +186,8 @@ const MenuCard = ({ product }) => {
               
               <button
                 onClick={handleAdd}
-                className="px-4 py-2 rounded-lg font-semibold text-white transition-all duration-200 touch-target hover:shadow-md"
-                style={{ backgroundColor: tenant?.primary_color || '#dc2626' }}
+                className={`px-4 py-2 rounded-lg font-semibold ${textClass} transition-all duration-200 touch-target hover:shadow-md`}
+                style={{ backgroundColor: primaryColor }}
               >
                 {quantity === 0 ? (
                   <div className="flex items-center space-x-1">

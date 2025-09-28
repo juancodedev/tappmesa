@@ -97,7 +97,7 @@ const FeaturesSection = () => {
             <p className="text-coffee-600 mb-8">
               Únete a cientos de cafeterías que ya crearon experiencias inolvidables para sus clientes
             </p>
-            <button className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl touch-target">
+            <button className="bg-primary-500 hover:bg-primary-600 text-coffee-600 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl touch-target">
               Comenzar Prueba Gratuita
             </button>
           </div>
