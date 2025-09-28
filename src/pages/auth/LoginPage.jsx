@@ -42,15 +42,26 @@ const LoginPage = () => {
       return `${baseUrl}/admin`
     }
 
-    // En desarrollo con localhost
-    if (hostname === 'localhost' || hostname.match(/^\d/)) {
-      const baseUrl = `${protocol}//${hostname}${port ? ':' + port : ''}/admin?cafe=${tenant.slug}`
-      return baseUrl
+    // En desarrollo local con .localhost
+    if (hostname.endsWith('.localhost')) {
+      const baseUrl = `${protocol}//${tenant.slug}.localhost${port ? ':' + port : ''}`
+      return `${baseUrl}/admin`
     }
 
-    // En producción con dominio personalizado
+    // En desarrollo con localhost - redirigir al subdominio correcto
+    if (hostname === 'localhost' || hostname.match(/^\d/)) {
+      const baseUrl = `${protocol}//${tenant.slug}.localhost${port ? ':' + port : ''}`
+      return `${baseUrl}/admin`
+    }
+
+    // En producción con tappmesa.com
     if (hostname.includes('tappmesa.com')) {
       return `https://${tenant.slug}.tappmesa.com/admin`
+    }
+
+    // En producción con Vercel (tappmesa.vercel.app)
+    if (hostname.includes('vercel.app')) {
+      return `https://${tenant.slug}.tappmesa.vercel.app/admin`
     }
 
     // Otros dominios personalizados

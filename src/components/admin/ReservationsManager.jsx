@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
+import { useTenant } from '../../context/TenantContext'
 import { 
   Calendar, 
   Clock, 
@@ -17,17 +18,13 @@ import {
 } from 'lucide-react'
 
 const ReservationsManager = () => {
+  const { tenant: currentTenant } = useTenant()
   const [reservations, setReservations] = useState([])
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState('all')
   const [dateFilter, setDateFilter] = useState('today')
   const [selectedReservation, setSelectedReservation] = useState(null)
-  const [currentTenant, setCurrentTenant] = useState(null)
   const [updating, setUpdating] = useState(false)
-
-  useEffect(() => {
-    loadTenant()
-  }, [])
 
   useEffect(() => {
     if (currentTenant) {
@@ -37,25 +34,6 @@ const ReservationsManager = () => {
       return () => clearInterval(interval)
     }
   }, [currentTenant, statusFilter, dateFilter])
-
-  const loadTenant = async () => {
-    try {
-      const { data: tenants, error } = await supabase
-        .from('tenants')
-        .select('*')
-        .limit(1)
-
-      if (error || !tenants || tenants.length === 0) {
-        console.warn('No se encontraron tenants')
-        return
-      }
-      
-      setCurrentTenant(tenants[0])
-      console.log('✅ Tenant cargado:', tenants[0].name)
-    } catch (error) {
-      console.error('Error loading tenant:', error)
-    }
-  }
 
   const loadReservations = async () => {
     if (!currentTenant) return
@@ -264,12 +242,17 @@ const ReservationsManager = () => {
 
   const stats = getReservationStats()
 
-  if (loading && !currentTenant) {
+  if (!currentTenant) {
     return (
       <div className="p-6">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Cargando sistema de reservas...</p>
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">🏪</div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No hay tenant disponible
+          </h3>
+          <p className="text-gray-600 mb-4">
+            No se pudo cargar la información del local. Verifica que estés en el dominio correcto.
+          </p>
         </div>
       </div>
     )

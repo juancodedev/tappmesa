@@ -119,15 +119,27 @@ const TenantTester = () => {
       return page ? `${baseUrl}/${page}` : baseUrl;
     }
 
-    // En desarrollo con localhost
-    if (hostname === 'localhost' || hostname.match(/^\d/)) {
-      const baseUrl = `${protocol}//${hostname}${port ? ':' + port : ''}?cafe=${slug}`;
-      return page ? `${baseUrl}&page=${page}` : baseUrl;
+    // En desarrollo local con .localhost
+    if (hostname.endsWith('.localhost')) {
+      const baseUrl = `${protocol}//${slug}.localhost${port ? ':' + port : ''}`;
+      return page ? `${baseUrl}/${page}` : baseUrl;
     }
 
-    // En producción con dominio personalizado
+    // En desarrollo con localhost - redirigir al subdominio correcto
+    if (hostname === 'localhost' || hostname.match(/^\d/)) {
+      const baseUrl = `${protocol}//${slug}.localhost${port ? ':' + port : ''}`;
+      return page ? `${baseUrl}/${page}` : baseUrl;
+    }
+
+    // En producción con tappmesa.com
     if (hostname.includes('tappmesa.com')) {
       const baseUrl = `https://${slug}.tappmesa.com`;
+      return page ? `${baseUrl}/${page}` : baseUrl;
+    }
+
+    // En producción con Vercel (tappmesa.vercel.app)
+    if (hostname.includes('vercel.app')) {
+      const baseUrl = `https://${slug}.tappmesa.vercel.app`;
       return page ? `${baseUrl}/${page}` : baseUrl;
     }
 

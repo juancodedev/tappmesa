@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
+import { useTenant } from '../../context/TenantContext'
 import { 
   Clock, 
   CheckCircle, 
@@ -14,16 +15,12 @@ import {
 } from 'lucide-react'
 
 const OrdersManager = () => {
+  const { tenant: currentTenant } = useTenant()
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState('all')
   const [selectedOrder, setSelectedOrder] = useState(null)
-  const [currentTenant, setCurrentTenant] = useState(null)
   const [updating, setUpdating] = useState(false)
-
-  useEffect(() => {
-    loadTenant()
-  }, [])
 
   useEffect(() => {
     if (currentTenant) {
@@ -33,45 +30,6 @@ const OrdersManager = () => {
       return () => clearInterval(interval)
     }
   }, [currentTenant, statusFilter])
-
-  const loadTenant = async () => {
-    try {
-      // Primero intentar cargar cualquier tenant disponible
-      const { data: tenants, error } = await supabase
-        .from('tenants')
-        .select('*')
-        .limit(1)
-
-      if (error || !tenants || tenants.length === 0) {
-        console.warn('No se encontraron tenants en la base de datos')
-        // Crear un tenant de ejemplo si no existe ninguno
-        const { data: newTenant, error: createError } = await supabase
-          .from('tenants')
-          .insert({
-            name: 'Café Central',
-            slug: 'cafe-central',
-            is_active: true
-          })
-          .select()
-          .single()
-
-        if (createError) {
-          console.error('Error creando tenant:', createError)
-          alert('Error: No se pudo configurar el tenant. Revisa la configuración de Supabase.')
-          return
-        }
-        
-        setCurrentTenant(newTenant)
-        console.log('✅ Tenant creado:', newTenant.name)
-      } else {
-        setCurrentTenant(tenants[0])
-        console.log('✅ Tenant cargado:', tenants[0].name)
-      }
-    } catch (error) {
-      console.error('Error loading tenant:', error)
-      alert('Error conectando con la base de datos. Verifica tu configuración de Supabase.')
-    }
-  }
 
   const loadOrders = async () => {
     if (!currentTenant) return
@@ -233,12 +191,17 @@ const OrdersManager = () => {
     return order.status === statusFilter
   })
 
-  if (loading && !currentTenant) {
+  if (!currentTenant) {
     return (
       <div className="p-6">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Configurando sistema...</p>
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">🏪</div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No hay tenant disponible
+          </h3>
+          <p className="text-gray-600 mb-4">
+            No se pudo cargar la información del local. Verifica que estés en el dominio correcto.
+          </p>
         </div>
       </div>
     )

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
+import { useTenant } from '../../context/TenantContext'
 import { 
   Package, 
   Plus, 
@@ -18,12 +19,12 @@ import {
 } from 'lucide-react'
 
 const ProductsManager = () => {
+  const { tenant: currentTenant } = useTenant()
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
-  const [currentTenant, setCurrentTenant] = useState(null)
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [imageUploading, setImageUploading] = useState(false)
@@ -43,33 +44,11 @@ const ProductsManager = () => {
   })
 
   useEffect(() => {
-    loadTenant()
-  }, [])
-
-  useEffect(() => {
     if (currentTenant) {
       loadCategories()
       loadProducts()
     }
   }, [currentTenant, categoryFilter])
-
-  const loadTenant = async () => {
-    try {
-      const { data: tenants, error } = await supabase
-        .from('tenants')
-        .select('*')
-        .limit(1)
-
-      if (error || !tenants || tenants.length === 0) {
-        console.warn('No se encontraron tenants')
-        return
-      }
-      
-      setCurrentTenant(tenants[0])
-    } catch (error) {
-      console.error('Error loading tenant:', error)
-    }
-  }
 
   const loadCategories = async () => {
     if (!currentTenant) return
@@ -366,6 +345,22 @@ const ProductsManager = () => {
     return product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
            product.description?.toLowerCase().includes(searchTerm.toLowerCase())
   })
+
+  if (!currentTenant) {
+    return (
+      <div className="p-6">
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">🏪</div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No hay tenant disponible
+          </h3>
+          <p className="text-gray-600 mb-4">
+            No se pudo cargar la información del local. Verifica que estés en el dominio correcto.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   if (loading) {
     return (

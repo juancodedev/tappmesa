@@ -18,12 +18,13 @@ const getSubdomain = () => {
   
   console.log('🌐 Hostname:', hostname, 'Parts:', parts)
   
-  // Desarrollo local con .local
-  if (hostname.endsWith('.local')) {
+  // Desarrollo local con .local o .localhost
+  if (hostname.endsWith('.local') || hostname.endsWith('.localhost')) {
     // cafe-central.tappmesa.local → cafe-central
-    if (parts.length >= 3) {
+    // cafe-central.localhost → cafe-central
+    if (parts.length >= 2) {
       const subdomain = parts[0]
-      if (subdomain !== 'tappmesa' && subdomain !== 'www') {
+      if (subdomain !== 'tappmesa' && subdomain !== 'www' && subdomain !== 'localhost') {
         console.log('🏠 Local subdomain detected:', subdomain)
         return subdomain
       }
@@ -48,6 +49,18 @@ const getSubdomain = () => {
       const subdomain = parts[0]
       if (subdomain !== 'www' && subdomain !== 'admin') {
         console.log('🌍 Production subdomain detected:', subdomain)
+        return subdomain
+      }
+    }
+    return null
+  }
+
+  // Producción con Vercel: teteria-luna.tappmesa.vercel.app
+  if (hostname.includes('tappmesa.vercel.app')) {
+    if (parts.length >= 4) {
+      const subdomain = parts[0]
+      if (subdomain !== 'www' && subdomain !== 'admin') {
+        console.log('🚀 Vercel subdomain detected:', subdomain)
         return subdomain
       }
     }
@@ -287,10 +300,22 @@ export const useTenantUrl = () => {
   if (hostname.endsWith('.local')) {
     return `http://${tenant.slug}.tappmesa.local:5173`  // ✅ Usando slug
   }
-  
-  if (hostname.includes('localhost')) {
-    return `http://localhost:5173?cafe=${tenant.slug}`  // ✅ Usando slug
+
+  if (hostname.endsWith('.localhost')) {
+    return `http://${tenant.slug}.localhost:5173`  // ✅ Usando slug con localhost
   }
-  
-  return `https://${tenant.slug}.tappmesa.com`  // ✅ Usando slug
+
+  if (hostname.includes('localhost')) {
+    return `http://${tenant.slug}.localhost:5173`  // ✅ Usando slug con subdominio localhost
+  }
+
+  if (hostname.includes('tappmesa.com')) {
+    return `https://${tenant.slug}.tappmesa.com`  // ✅ Usando slug
+  }
+
+  if (hostname.includes('vercel.app')) {
+    return `https://${tenant.slug}.tappmesa.vercel.app`  // ✅ Usando slug
+  }
+
+  return `https://${tenant.slug}.tappmesa.com`  // ✅ Fallback
 }

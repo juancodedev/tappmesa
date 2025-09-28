@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
+import { useTenant } from "../../context/TenantContext";
 import {
   Package,
   AlertTriangle,
@@ -22,12 +23,12 @@ import {
 } from "lucide-react";
 
 const CompleteStockManager = () => {
+  const { tenant: currentTenant } = useTenant();
   const [inventory, setInventory] = useState([]);
   const [movements, setMovements] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentTenant, setCurrentTenant] = useState(null);
 
   // Filtros y búsqueda
   const [searchTerm, setSearchTerm] = useState("");
@@ -64,32 +65,10 @@ const CompleteStockManager = () => {
   });
 
   useEffect(() => {
-    loadTenant();
-  }, []);
-
-  useEffect(() => {
     if (currentTenant) {
       loadAllData();
     }
   }, [currentTenant]);
-
-  const loadTenant = async () => {
-    try {
-      const { data: tenants, error } = await supabase
-        .from("tenants")
-        .select("*")
-        .limit(1);
-
-      if (error || !tenants || tenants.length === 0) {
-        console.warn("No se encontraron tenants");
-        return;
-      }
-
-      setCurrentTenant(tenants[0]);
-    } catch (error) {
-      console.error("Error loading tenant:", error);
-    }
-  };
 
   const loadAllData = async () => {
     setLoading(true);
@@ -416,6 +395,22 @@ const CompleteStockManager = () => {
     ),
     alertsCount: alerts.length,
   };
+
+  if (!currentTenant) {
+    return (
+      <div className="p-6">
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">🏪</div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No hay tenant disponible
+          </h3>
+          <p className="text-gray-600 mb-4">
+            No se pudo cargar la información del local. Verifica que estés en el dominio correcto.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

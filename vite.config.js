@@ -95,6 +95,9 @@ export default defineConfig({
       "cafe-central.tappmesa.local",
       "admin.tappmesa.local",
       ".tappmesa.local", // Wildcard para cualquier subdominio
+      ".localhost", // Wildcard para subdominios .localhost
+      "cafe-central.localhost",
+      "admin.localhost",
     ],
     // Configuración para subdominios locales
     hmr: {
@@ -104,6 +107,6 @@ export default defineConfig({
   preview: {
     host: "0.0.0.0",
     port: 4173,
-    allowedHosts: ["tappmesa.local", ".tappmesa.local"],
+    allowedHosts: ["tappmesa.local", ".tappmesa.local", ".localhost"],
   },
 });
