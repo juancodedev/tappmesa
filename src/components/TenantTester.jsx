@@ -108,10 +108,36 @@ const TenantTester = () => {
     }
   };
 
+  const generateTenantUrl = (slug, page = "") => {
+    const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
+    const port = window.location.port;
+
+    // En desarrollo local con .local
+    if (hostname.endsWith('.local')) {
+      const baseUrl = `${protocol}//${slug}.tappmesa.local${port ? ':' + port : ''}`;
+      return page ? `${baseUrl}/${page}` : baseUrl;
+    }
+
+    // En desarrollo con localhost
+    if (hostname === 'localhost' || hostname.match(/^\d/)) {
+      const baseUrl = `${protocol}//${hostname}${port ? ':' + port : ''}?cafe=${slug}`;
+      return page ? `${baseUrl}&page=${page}` : baseUrl;
+    }
+
+    // En producción con dominio personalizado
+    if (hostname.includes('tappmesa.com')) {
+      const baseUrl = `https://${slug}.tappmesa.com`;
+      return page ? `${baseUrl}/${page}` : baseUrl;
+    }
+
+    // Otros dominios personalizados
+    const baseUrl = `${protocol}//${slug}.${hostname}`;
+    return page ? `${baseUrl}/${page}` : baseUrl;
+  };
+
   const openTenantUrl = (slug, page = "") => {
-    const baseUrl =
-      window.location.protocol + "//" + slug + ".tappmesa.local:5173";
-    const url = page ? `${baseUrl}/${page}` : baseUrl;
+    const url = generateTenantUrl(slug, page);
     window.open(url, "_blank");
   };
 
@@ -247,7 +273,7 @@ const TenantTester = () => {
                 </div>
 
                 <div className="mt-3 text-xs text-gray-500 space-y-1">
-                  <p>URL: {tenant.slug}.tappmesa.local:5173</p>
+                  <p>URL: {generateTenantUrl(tenant.slug).replace(/^https?:\/\//, '')}</p>
                   <p>
                     Creado:{" "}
                     {new Date(tenant.created_at).toLocaleDateString("es-CL")}
@@ -291,19 +317,19 @@ const TenantTester = () => {
                   className="text-blue-600 cursor-pointer hover:underline"
                   onClick={() => openTenantUrl(tenant.slug)}
                 >
-                  {tenant.slug}.tappmesa.local:5173
+                  {generateTenantUrl(tenant.slug).replace(/^https?:\/\//, '')}
                 </p>
                 <p
                   className="text-blue-600 cursor-pointer hover:underline"
                   onClick={() => openTenantUrl(tenant.slug, "reservas")}
                 >
-                  {tenant.slug}.tappmesa.local:5173/reservas
+                  {generateTenantUrl(tenant.slug, "reservas").replace(/^https?:\/\//, '')}
                 </p>
                 <p
                   className="text-blue-600 cursor-pointer hover:underline"
                   onClick={() => openTenantUrl(tenant.slug, "mesa-1")}
                 >
-                  {tenant.slug}.tappmesa.local:5173/mesa-1
+                  {generateTenantUrl(tenant.slug, "mesa-1").replace(/^https?:\/\//, '')}
                 </p>
               </div>
             </div>

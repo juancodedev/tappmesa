@@ -1,9 +1,10 @@
-import { useTenant } from "../context/TenantContext";
+import { useTenant, useTenantUrl } from "../context/TenantContext";
 import { CartProvider } from "../context/CartContext";
 import MenuLayout from "./layout/MenuLayout";
 
 const TableApp = () => {
   const { tenant, table, tableSession, loading } = useTenant();
+  const tenantUrl = useTenantUrl();
 
   if (loading) {
     return (
@@ -29,7 +30,7 @@ const TableApp = () => {
           </p>
           <button
             onClick={() =>
-              (window.location.href = "http://cafe-central.tappmesa.local:5173")
+              (window.location.href = tenantUrl || "/")
             }
             className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
           >

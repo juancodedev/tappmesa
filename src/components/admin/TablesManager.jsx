@@ -52,24 +52,17 @@ const TablesManager = () => {
         .single()
 
       if (error) {
-        console.warn('No se pudo cargar tenant desde Supabase:', error)
-        // Usar datos mock si no funciona Supabase
-        setCurrentTenant({ 
-          id: 'mock-tenant-id', 
-          name: 'Café Central (Demo)',
-          slug: 'cafe-central' 
-        })
+        console.error('No se pudo cargar tenant desde Supabase:', error)
+        alert('Error: No se pudo conectar a la base de datos. Por favor, verifica la conexión.')
+        return
       } else {
         setCurrentTenant(data)
         console.log('✅ Tenant cargado:', data.name)
       }
     } catch (error) {
       console.error('Error loading tenant:', error)
-      setCurrentTenant({ 
-        id: 'mock-tenant-id', 
-        name: 'Café Central (Demo)',
-        slug: 'cafe-central' 
-      })
+      alert('Error: No se pudo conectar a la base de datos. Por favor, verifica la conexión.')
+      return
     }
   }
 

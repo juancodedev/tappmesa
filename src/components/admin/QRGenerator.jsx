@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
+import { useTenant } from '../../context/TenantContext'
 import { QrCode, Download, Eye, Copy, Check, ArrowLeft } from 'lucide-react'
 
 const QRGenerator = ({ tenantId }) => {
   const [searchParams] = useSearchParams()
+  const { tenant } = useTenant()
   const [tables, setTables] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedTable, setSelectedTable] = useState(null)
@@ -67,14 +69,31 @@ const QRGenerator = ({ tenantId }) => {
   }
 
   const generateQRUrl = (table) => {
-    // En desarrollo local
+    if (!tenant) return '#'
+
     const hostname = window.location.hostname
-    if (hostname.includes('local') || hostname === 'localhost') {
-      return `http://cafe-central.tappmesa.local:5173/${table.unique_code}/`
+    const protocol = window.location.protocol
+    const port = window.location.port
+
+    // En desarrollo local con .local
+    if (hostname.endsWith('.local')) {
+      const baseUrl = `http://${tenant.slug}.tappmesa.local${port ? ':' + port : ''}`
+      return `${baseUrl}/${table.unique_code}/`
     }
-    
-    // En producción
-    return `https://cafe-central.tappmesa.com/${table.unique_code}/`
+
+    // En desarrollo con localhost
+    if (hostname === 'localhost' || hostname.match(/^\d/)) {
+      const baseUrl = `${protocol}//${hostname}${port ? ':' + port : ''}?cafe=${tenant.slug}`
+      return `${baseUrl}&table=${table.unique_code}`
+    }
+
+    // En producción con dominio personalizado
+    if (hostname.includes('tappmesa.com')) {
+      return `https://${tenant.slug}.tappmesa.com/${table.unique_code}/`
+    }
+
+    // Otros dominios personalizados
+    return `${protocol}//${tenant.slug}.${hostname}/${table.unique_code}/`
   }
 
   const copyToClipboard = async (text, tableId) => {
