@@ -158,6 +158,36 @@ export function AuthProvider({ children }) {
     dispatch({ type: authActions.SET_REGISTRATION_STEP, payload: step });
   };
 
+  // Check if user is super admin
+  const isSuperAdmin = state.user?.role === 'super_admin';
+
+  // Permission checking function
+  const hasPermission = (resource, action) => {
+    if (!state.user) return false;
+
+    // Super admins have all permissions
+    if (isSuperAdmin) return true;
+
+    // Tenant admins have full permissions within their tenant
+    if (state.user.role === 'tenant_admin') {
+      // Define tenant admin permissions
+      const tenantAdminPermissions = [
+        'tables:read', 'tables:write', 'tables:delete',
+        'products:read', 'products:write', 'products:delete',
+        'orders:read', 'orders:write', 'orders:delete',
+        'analytics:read',
+        'settings:read', 'settings:write',
+        'customers:read', 'customers:write',
+        'inventory:read', 'inventory:write'
+      ];
+
+      return tenantAdminPermissions.includes(`${resource}:${action}`);
+    }
+
+    // Default: no permissions for other roles
+    return false;
+  };
+
   const value = {
     ...state,
     register,
@@ -165,6 +195,8 @@ export function AuthProvider({ children }) {
     logout,
     setRegistrationStep,
     checkTrialStatus,
+    isSuperAdmin,
+    hasPermission,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
