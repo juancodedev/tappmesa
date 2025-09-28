@@ -1,6 +1,6 @@
 // src/components/Admin/AdminDashboard.jsx
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -17,14 +17,39 @@ export default function AdminDashboard() {
   const fetchCustomers = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/admin/customers', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('tappmesa-token')}` }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setCustomers(data);
-      }
+      // Por ahora, usar datos simulados hasta que se implementen las APIs
+      const mockCustomers = [
+        {
+          id: 1,
+          restaurantName: 'Café Central',
+          restaurantType: 'Café',
+          ownerName: 'Juan Pérez',
+          email: 'cafe-central@cafe-central.com',
+          phone: '+56912345001',
+          address: 'Av. Providencia 1234',
+          city: 'Santiago',
+          numberOfTables: 8,
+          plan: 'trial',
+          trialEndDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
+          createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+          lastLogin: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          id: 2,
+          restaurantName: 'Tetería Luna',
+          restaurantType: 'Tetería',
+          ownerName: 'María González',
+          email: 'teteria-luna@teteria-luna.com',
+          phone: '+56912345002',
+          address: 'Av. Las Condes 5678',
+          city: 'Las Condes',
+          numberOfTables: 6,
+          plan: 'basic',
+          createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+          lastLogin: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      ];
+      setCustomers(mockCustomers);
     } catch (error) {
       console.error('Error fetching customers:', error);
     } finally {
@@ -34,19 +59,10 @@ export default function AdminDashboard() {
 
   const updateCustomerTrial = async (customerId, action, days = null) => {
     try {
-      const response = await fetch(`/api/admin/customers/${customerId}/trial`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('tappmesa-token')}`
-        },
-        body: JSON.stringify({ action, days })
-      });
-
-      if (response.ok) {
-        fetchCustomers(); // Recargar datos
-        alert('Trial actualizado exitosamente');
-      }
+      // Simular actualización exitosa por ahora
+      console.log(`Trial update: ${action} for customer ${customerId}`, { days });
+      fetchCustomers(); // Recargar datos
+      alert('Trial actualizado exitosamente (simulado)');
     } catch (error) {
       console.error('Error updating trial:', error);
       alert('Error al actualizar el trial');
@@ -55,19 +71,10 @@ export default function AdminDashboard() {
 
   const updateCustomerPlan = async (customerId, newPlan) => {
     try {
-      const response = await fetch(`/api/admin/customers/${customerId}/plan`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('tappmesa-token')}`
-        },
-        body: JSON.stringify({ plan: newPlan })
-      });
-
-      if (response.ok) {
-        fetchCustomers();
-        alert('Plan actualizado exitosamente');
-      }
+      // Simular actualización exitosa por ahora
+      console.log(`Plan update: ${newPlan} for customer ${customerId}`);
+      fetchCustomers();
+      alert('Plan actualizado exitosamente (simulado)');
     } catch (error) {
       console.error('Error updating plan:', error);
       alert('Error al actualizar el plan');
@@ -501,7 +508,7 @@ export default function AdminDashboard() {
 
 // src/components/Dashboard/TrialBanner.jsx
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function TrialBanner() {
   const { user, trialInfo, checkTrialStatus } = useAuth();
