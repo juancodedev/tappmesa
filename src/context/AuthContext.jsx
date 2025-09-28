@@ -108,7 +108,7 @@ export function AuthProvider({ children }) {
           tenant: result.tenant
         }});
         dispatch({ type: authActions.SET_TRIAL_INFO, payload: result.trialInfo });
-        return { success: true, user: result.admin };
+        return { success: true, user: { ...result.admin, tenant: result.tenant } };
       } else {
         dispatch({ type: authActions.SET_ERROR, payload: result.error });
         return { success: false, error: result.error };
@@ -137,7 +137,7 @@ export function AuthProvider({ children }) {
           await checkTrialStatus(result.tenant.id);
         }
 
-        return { success: true, user: result.admin };
+        return { success: true, user: { ...result.admin, tenant: result.tenant } };
       } else {
         dispatch({ type: authActions.SET_ERROR, payload: result.error });
         return { success: false, error: result.error };

@@ -87,24 +87,28 @@ const getTableCode = () => {
 // Función para determinar el tipo de aplicación
 const getAppType = () => {
   const hostname = window.location.hostname
+  const pathname = window.location.pathname
   const subdomain = getSubdomain()
   const tableCode = getTableCode()
-  
-  // Admin específico
-  if (hostname.startsWith('admin.') || window.location.pathname.startsWith('/admin')) {
+
+  // Admin específico - mejorada detección para local y producción
+  if (hostname.startsWith('admin.') ||
+      pathname.startsWith('/admin') ||
+      (hostname === 'localhost' && pathname.includes('/admin')) ||
+      (hostname.includes('local') && pathname.includes('/admin'))) {
     return 'admin'
   }
-  
+
   // Si hay código de mesa, es una sesión de mesa
   if (subdomain && tableCode) {
     return 'table'
   }
-  
+
   // Si hay subdominio, es una cafetería
   if (subdomain) {
     return 'tenant'
   }
-  
+
   // Landing page principal
   return 'landing'
 }

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
-  QrCode, 
-  Eye, 
+import { useTenant } from '../../context/TenantContext'
+import {
+  Plus,
+  Edit,
+  Trash2,
+  QrCode,
+  Eye,
   Coffee,
   Users,
   MapPin,
@@ -15,15 +16,13 @@ import {
 } from 'lucide-react'
 
 const TablesManager = () => {
+  const { tenant: currentTenant } = useTenant()
   const [tables, setTables] = useState([])
   const [loading, setLoading] = useState(true)
   const [showAddModal, setShowAddModal] = useState(false)
   const [selectedTable, setSelectedTable] = useState(null)
   const [showActionsMenu, setShowActionsMenu] = useState(null)
   const [saving, setSaving] = useState(false)
-
-  // Simular tenant ID - en producción vendría del contexto
-  const [currentTenant, setCurrentTenant] = useState(null)
 
   // Form state
   const [formData, setFormData] = useState({
@@ -33,50 +32,20 @@ const TablesManager = () => {
   })
 
   useEffect(() => {
-    loadTenant()
-  }, [])
-
-  useEffect(() => {
     if (currentTenant) {
       loadTables()
     }
   }, [currentTenant])
 
-  const loadTenant = async () => {
-    try {
-      // Cargar el tenant "Café Central" de Supabase
-      const { data, error } = await supabase
-        .from('tenants')
-        .select('*')
-        .eq('slug', 'cafe-central')
-        .single()
-
-      if (error) {
-        console.warn('No se pudo cargar tenant desde Supabase:', error)
-        // Usar datos mock con UUID válido si no funciona Supabase
-        setCurrentTenant({
-          id: '00000000-0000-0000-0000-000000000001',
-          name: 'Café Central (Demo)',
-          slug: 'cafe-central'
-        })
-      } else {
-        setCurrentTenant(data)
-        console.log('✅ Tenant cargado:', data.name)
-      }
-    } catch (error) {
-      console.error('Error loading tenant:', error)
-      setCurrentTenant({
-        id: '00000000-0000-0000-0000-000000000001',
-        name: 'Café Central (Demo)',
-        slug: 'cafe-central'
-      })
-    }
-  }
-
   const loadTables = async () => {
+    if (!currentTenant) {
+      setLoading(false)
+      return
+    }
+
     try {
       setLoading(true)
-      
+
       const { data, error } = await supabase
         .from('tables')
         .select('*')
@@ -85,19 +54,14 @@ const TablesManager = () => {
 
       if (error) {
         console.warn('No se pudo cargar mesas desde Supabase:', error)
-        // Usar datos de ejemplo si falla
-        setTables([
-          { id: 1, number: 'Mesa 1', capacity: 2, location: 'interior', status: 'available', unique_code: 'ABC12345', is_active: true },
-          { id: 2, number: 'Mesa 2', capacity: 4, location: 'interior', status: 'occupied', unique_code: 'DEF67890', is_active: true },
-          { id: 3, number: 'Mesa 3', capacity: 6, location: 'terraza', status: 'reserved', unique_code: 'GHI13579', is_active: true },
-          { id: 4, number: 'Mesa 4', capacity: 2, location: 'barra', status: 'maintenance', unique_code: 'JKL24680', is_active: false },
-        ])
+        setTables([])
       } else {
         setTables(data || [])
         console.log('✅ Mesas cargadas:', data?.length || 0)
       }
     } catch (error) {
       console.error('Error loading tables:', error)
+      setTables([])
     } finally {
       setLoading(false)
     }
@@ -135,6 +99,11 @@ const TablesManager = () => {
   }
 
   const handleSaveTable = async () => {
+    if (!currentTenant) {
+      alert('Error: No se ha cargado el tenant. Por favor, recarga la página.')
+      return
+    }
+
     try {
       setSaving(true)
 
@@ -262,6 +231,22 @@ const TablesManager = () => {
       case 'barra': return 'Barra'
       default: return location
     }
+  }
+
+  if (!currentTenant) {
+    return (
+      <div className="p-6">
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">🏪</div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No hay tenant disponible
+          </h3>
+          <p className="text-gray-600 mb-4">
+            No se pudo cargar la información del local. Verifica que estés en el dominio correcto.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   if (loading) {

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { 
   LayoutDashboard, 
   Coffee, 
@@ -39,114 +39,101 @@ import TenantTester from './TenantTester'
 const SecureAdminApp = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { user, logout, isSuperAdmin, hasPermission } = useAuth()
+  const location = useLocation()
 
   // Navegación base para todos los usuarios autenticados
   const baseNavigation = [
-    { 
-      name: 'Dashboard', 
-      href: '/admin', 
-      icon: LayoutDashboard, 
-      requiredPermissions: [],
-      current: true 
+    {
+      name: 'Dashboard',
+      href: '/admin',
+      icon: LayoutDashboard,
+      requiredPermissions: []
     }
   ]
 
   // Navegación para tenant admins y staff
   const tenantNavigation = [
-    { 
-      name: 'Pedidos', 
-      href: '/admin/orders', 
-      icon: ShoppingBag, 
-      requiredPermissions: ['orders:read'],
-      current: false 
+    {
+      name: 'Pedidos',
+      href: '/admin/orders',
+      icon: ShoppingBag,
+      requiredPermissions: ['orders:read']
     },
-    { 
-      name: 'Reservas', 
-      href: '/admin/reservations', 
-      icon: Calendar, 
-      requiredPermissions: ['reservations:read'],
-      current: false 
+    {
+      name: 'Reservas',
+      href: '/admin/reservations',
+      icon: Calendar,
+      requiredPermissions: ['reservations:read']
     },
-    { 
-      name: 'Clientes', 
-      href: '/admin/customers', 
-      icon: UserCheck, 
-      requiredPermissions: ['customers:read'],
-      current: false 
+    {
+      name: 'Clientes',
+      href: '/admin/customers',
+      icon: UserCheck,
+      requiredPermissions: ['customers:read']
     },
-    { 
-      name: 'Categorías', 
-      href: '/admin/categories', 
-      icon: Tag, 
-      requiredPermissions: ['categories:read'],
-      current: false 
+    {
+      name: 'Categorías',
+      href: '/admin/categories',
+      icon: Tag,
+      requiredPermissions: ['categories:read']
     },
-    { 
-      name: 'Productos', 
-      href: '/admin/products', 
-      icon: Package, 
-      requiredPermissions: ['products:read'],
-      current: false 
+    {
+      name: 'Productos',
+      href: '/admin/products',
+      icon: Package,
+      requiredPermissions: ['products:read']
     },
-    { 
-      name: 'Stock', 
-      href: '/admin/stock', 
-      icon: Package, 
-      requiredPermissions: ['stock:read'],
-      current: false 
+    {
+      name: 'Stock',
+      href: '/admin/stock',
+      icon: Package,
+      requiredPermissions: ['stock:read']
     },
-    { 
-      name: 'Mesas', 
-      href: '/admin/tables', 
-      icon: Coffee, 
-      requiredPermissions: ['tables:read'],
-      current: false 
+    {
+      name: 'Mesas',
+      href: '/admin/tables',
+      icon: Coffee,
+      requiredPermissions: ['tables:read']
     },
-    { 
-      name: 'Códigos QR', 
-      href: '/admin/qr', 
-      icon: QrCode, 
-      requiredPermissions: ['qr:read'],
-      current: false 
+    {
+      name: 'Códigos QR',
+      href: '/admin/qr',
+      icon: QrCode,
+      requiredPermissions: ['qr:read']
     },
-    { 
-      name: 'Estadísticas', 
-      href: '/admin/analytics', 
-      icon: BarChart3, 
-      requiredPermissions: ['analytics:read'],
-      current: false 
+    {
+      name: 'Estadísticas',
+      href: '/admin/analytics',
+      icon: BarChart3,
+      requiredPermissions: ['analytics:read']
     },
-    { 
-      name: 'Configuración', 
-      href: '/admin/settings', 
-      icon: Settings, 
-      requiredPermissions: [],
-      current: false 
+    {
+      name: 'Configuración',
+      href: '/admin/settings',
+      icon: Settings,
+      requiredPermissions: []
     }
   ]
 
   // Navegación exclusiva para super admins
   const superAdminNavigation = [
-    { 
-      name: 'Gestión de Tenants', 
-      href: '/admin/tenants', 
-      icon: Coffee, 
-      requiredPermissions: ['tenants:read'],
-      current: false 
+    {
+      name: 'Gestión de Tenants',
+      href: '/admin/tenants',
+      icon: Coffee,
+      requiredPermissions: ['tenants:read']
     },
-    { 
-      name: 'Usuarios del Sistema', 
-      href: '/admin/system-users', 
-      icon: Shield, 
-      requiredPermissions: ['admin_users:read'],
-      current: false 
+    {
+      name: 'Usuarios del Sistema',
+      href: '/admin/system-users',
+      icon: Shield,
+      requiredPermissions: ['admin_users:read']
     },
-    { 
-      name: 'Multi-Tenant Test', 
-      href: '/admin/tenant-test', 
-      icon: Coffee, 
-      requiredPermissions: [],
-      current: false 
+    {
+      name: 'Multi-Tenant Test',
+      href: '/admin/tenant-test',
+      icon: Coffee,
+      requiredPermissions: []
     }
   ]
 
@@ -174,6 +161,17 @@ const SecureAdminApp = () => {
 
   const navigation = getNavigation()
 
+  // Función para determinar si una opción está activa
+  const isNavigationActive = (href) => {
+    if (href === '/admin' && location.pathname === '/admin') {
+      return true
+    }
+    if (href !== '/admin' && location.pathname.startsWith(href)) {
+      return true
+    }
+    return false
+  }
+
   const handleLogout = async () => {
     await logout()
     // Redirigir será manejado por ProtectedRoute
@@ -186,11 +184,12 @@ const SecureAdminApp = () => {
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setSidebarOpen(false)} />
           <div className="fixed inset-y-0 left-0 w-64 bg-white shadow-lg">
-            <SidebarContent 
-              navigation={navigation} 
+            <SidebarContent
+              navigation={navigation}
               user={user}
               onLogout={handleLogout}
-              closeSidebar={() => setSidebarOpen(false)} 
+              closeSidebar={() => setSidebarOpen(false)}
+              isNavigationActive={isNavigationActive}
             />
           </div>
         </div>
@@ -198,10 +197,11 @@ const SecureAdminApp = () => {
 
       {/* Sidebar desktop */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
-        <SidebarContent 
-          navigation={navigation} 
+        <SidebarContent
+          navigation={navigation}
           user={user}
           onLogout={handleLogout}
+          isNavigationActive={isNavigationActive}
         />
       </div>
 
@@ -334,7 +334,7 @@ const SecureAdminApp = () => {
   )
 }
 
-const SidebarContent = ({ navigation, user, onLogout, closeSidebar }) => (
+const SidebarContent = ({ navigation, user, onLogout, closeSidebar, isNavigationActive }) => (
   <div className="flex flex-col h-full bg-white">
     {/* Logo */}
     <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
@@ -371,15 +371,17 @@ const SidebarContent = ({ navigation, user, onLogout, closeSidebar }) => (
     <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
       {navigation.map((item) => {
         const Icon = item.icon
+        const isActive = isNavigationActive(item.href)
         return (
           <a
             key={item.name}
             href={item.href}
             className={`flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-              item.current
+              isActive
                 ? 'bg-primary text-white'
                 : 'text-gray-700 hover:bg-gray-100'
             }`}
+            onClick={closeSidebar ? () => closeSidebar() : undefined}
           >
             <Icon className="h-5 w-5" />
             <span>{item.name}</span>

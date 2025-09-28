@@ -1,11 +1,12 @@
-import { 
-  Coffee, 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Store, 
-  Users, 
+import { useState } from 'react'
+import {
+  Coffee,
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Store,
+  Users,
   Clock,
   CheckCircle,
   ArrowRight,

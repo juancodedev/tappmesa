@@ -28,6 +28,35 @@ const LoginPage = () => {
 
   const from = location.state?.from?.pathname || '/admin'
 
+  // Función para generar URL del tenant
+  const generateTenantAdminUrl = (tenant) => {
+    if (!tenant) return '/admin'
+
+    const hostname = window.location.hostname
+    const protocol = window.location.protocol
+    const port = window.location.port
+
+    // En desarrollo local con .local
+    if (hostname.endsWith('.local')) {
+      const baseUrl = `${protocol}//${tenant.slug}.tappmesa.local${port ? ':' + port : ''}`
+      return `${baseUrl}/admin`
+    }
+
+    // En desarrollo con localhost
+    if (hostname === 'localhost' || hostname.match(/^\d/)) {
+      const baseUrl = `${protocol}//${hostname}${port ? ':' + port : ''}/admin?cafe=${tenant.slug}`
+      return baseUrl
+    }
+
+    // En producción con dominio personalizado
+    if (hostname.includes('tappmesa.com')) {
+      return `https://${tenant.slug}.tappmesa.com/admin`
+    }
+
+    // Otros dominios personalizados
+    return `${protocol}//${tenant.slug}.${hostname}/admin`
+  }
+
   const validateForm = () => {
     const newErrors = {}
 
@@ -49,7 +78,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     if (!validateForm()) return
 
     setLoginLoading(true)
@@ -57,9 +86,16 @@ const LoginPage = () => {
 
     try {
       const result = await login(formData.email, formData.password)
-      
-      if (result.success) {
-        navigate(from, { replace: true })
+
+      if (result.success && result.user) {
+        // Si el usuario tiene un tenant, redirigir al subdominio del tenant
+        if (result.user.tenant) {
+          const tenantAdminUrl = generateTenantAdminUrl(result.user.tenant)
+          window.location.href = tenantAdminUrl
+        } else {
+          // Si no tiene tenant (super admin), ir al admin normal
+          navigate(from, { replace: true })
+        }
       } else {
         setErrors({ form: result.error })
       }
