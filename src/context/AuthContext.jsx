@@ -1,5 +1,6 @@
 // src/context/AuthContext.jsx
 import { createContext, useContext, useReducer, useEffect } from "react";
+import { authService } from "../lib/supabase";
 
 const AuthContext = createContext();
 
@@ -62,26 +63,19 @@ export function AuthProvider({ children }) {
 
   const checkAuthStatus = async () => {
     try {
-      const token = localStorage.getItem("tappmesa-token");
-      if (!token) {
-        dispatch({ type: authActions.SET_LOADING, payload: false });
-        return;
-      }
+      const session = await authService.getCurrentSession();
 
-      const response = await fetch("/api/auth/verify", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      if (session) {
+        dispatch({ type: authActions.SET_USER, payload: {
+          ...session.admin,
+          tenant: session.tenant
+        }});
 
-      if (response.ok) {
-        const userData = await response.json();
-        dispatch({ type: authActions.SET_USER, payload: userData });
-
-        // Verificar estado del trial
-        if (userData.plan === "trial") {
-          await checkTrialStatus(userData.id);
+        // Verificar estado del trial si es necesario
+        if (session.tenant) {
+          await checkTrialStatus(session.tenant.id);
         }
       } else {
-        localStorage.removeItem("tappmesa-token");
         dispatch({ type: authActions.SET_LOADING, payload: false });
       }
     } catch (error) {
@@ -90,11 +84,10 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const checkTrialStatus = async (userId) => {
+  const checkTrialStatus = async (tenantId) => {
     try {
-      const response = await fetch(`/api/trial/status/${userId}`);
-      if (response.ok) {
-        const trialData = await response.json();
+      const trialData = await authService.getTrialStatus(tenantId);
+      if (trialData) {
         dispatch({ type: authActions.SET_TRIAL_INFO, payload: trialData });
       }
     } catch (error) {
@@ -107,26 +100,18 @@ export function AuthProvider({ children }) {
     dispatch({ type: authActions.SET_ERROR, payload: null });
 
     try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...registrationData,
-          plan: "trial",
-          trialDuration: 60, // 2 meses en días
-        }),
-      });
+      const result = await authService.signUp(registrationData);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem("tappmesa-token", data.token);
-        dispatch({ type: authActions.SET_USER, payload: data.user });
-        dispatch({ type: authActions.SET_TRIAL_INFO, payload: data.trialInfo });
-        return { success: true, user: data.user };
+      if (result.success) {
+        dispatch({ type: authActions.SET_USER, payload: {
+          ...result.admin,
+          tenant: result.tenant
+        }});
+        dispatch({ type: authActions.SET_TRIAL_INFO, payload: result.trialInfo });
+        return { success: true, user: result.admin };
       } else {
-        dispatch({ type: authActions.SET_ERROR, payload: data.message });
-        return { success: false, error: data.message };
+        dispatch({ type: authActions.SET_ERROR, payload: result.error });
+        return { success: false, error: result.error };
       }
     } catch (error) {
       const errorMessage = "Error al registrar. Intenta nuevamente.";
@@ -140,26 +125,22 @@ export function AuthProvider({ children }) {
     dispatch({ type: authActions.SET_ERROR, payload: null });
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const result = await authService.signIn(email, password);
 
-      const data = await response.json();
+      if (result.success) {
+        dispatch({ type: authActions.SET_USER, payload: {
+          ...result.admin,
+          tenant: result.tenant
+        }});
 
-      if (response.ok) {
-        localStorage.setItem("tappmesa-token", data.token);
-        dispatch({ type: authActions.SET_USER, payload: data.user });
-
-        if (data.user.plan === "trial") {
-          await checkTrialStatus(data.user.id);
+        if (result.tenant) {
+          await checkTrialStatus(result.tenant.id);
         }
 
-        return { success: true, user: data.user };
+        return { success: true, user: result.admin };
       } else {
-        dispatch({ type: authActions.SET_ERROR, payload: data.message });
-        return { success: false, error: data.message };
+        dispatch({ type: authActions.SET_ERROR, payload: result.error });
+        return { success: false, error: result.error };
       }
     } catch (error) {
       const errorMessage = "Error al iniciar sesión. Intenta nuevamente.";
@@ -168,8 +149,8 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("tappmesa-token");
+  const logout = async () => {
+    await authService.signOut();
     dispatch({ type: authActions.LOGOUT });
   };
 
