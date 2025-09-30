@@ -35,37 +35,55 @@ const LoginPage = () => {
     const hostname = window.location.hostname
     const protocol = window.location.protocol
     const port = window.location.port
+    const tenantSubdomain = tenant.subdomain || tenant.slug
+
+    console.log('🔄 Generating tenant URL:', {
+      hostname,
+      protocol,
+      port,
+      tenantSubdomain,
+      fullTenant: tenant
+    })
 
     // En desarrollo local con .local
     if (hostname.endsWith('.local')) {
-      const baseUrl = `${protocol}//${tenant.subdomain}.tappmesa.local${port ? ':' + port : ''}`
+      const baseUrl = `${protocol}//${tenantSubdomain}.tappmesa.local${port ? ':' + port : ''}`
+      console.log('📍 Local .local URL:', baseUrl)
       return `${baseUrl}/admin`
     }
 
     // En desarrollo local con .localhost
     if (hostname.endsWith('.localhost')) {
-      const baseUrl = `${protocol}//${tenant.subdomain}.localhost${port ? ':' + port : ''}`
+      const baseUrl = `${protocol}//${tenantSubdomain}.localhost${port ? ':' + port : ''}`
+      console.log('📍 Local .localhost URL:', baseUrl)
       return `${baseUrl}/admin`
     }
 
-    // En desarrollo con localhost - redirigir al subdominio correcto
+    // En desarrollo con localhost o IP - redirigir al subdominio .localhost
     if (hostname === 'localhost' || hostname.match(/^\d/)) {
-      const baseUrl = `${protocol}//${tenant.subdomain}.localhost${port ? ':' + port : ''}`
+      const baseUrl = `${protocol}//${tenantSubdomain}.localhost${port ? ':' + port : ''}`
+      console.log('📍 Localhost redirect URL:', baseUrl)
       return `${baseUrl}/admin`
+    }
+
+    // En producción con Vercel: formato [nombre]-tappmesa.vercel.app
+    if (hostname.includes('.vercel.app')) {
+      const url = `https://${tenantSubdomain}.vercel.app/admin`
+      console.log('📍 Vercel production URL:', url)
+      return url
     }
 
     // En producción con tappmesa.com
     if (hostname.includes('tappmesa.com')) {
-      return `https://${tenant.subdomain}.tappmesa.com/admin`
-    }
-
-    // En producción con Vercel (tappmesa.vercel.app)
-    if (hostname.includes('vercel.app')) {
-      return `https://${tenant.subdomain}.tappmesa.vercel.app/admin`
+      const url = `https://${tenantSubdomain}.tappmesa.com/admin`
+      console.log('📍 Production tappmesa.com URL:', url)
+      return url
     }
 
     // Otros dominios personalizados
-    return `${protocol}//${tenant.subdomain}.${hostname}/admin`
+    const url = `${protocol}//${tenantSubdomain}.${hostname}/admin`
+    console.log('📍 Custom domain URL:', url)
+    return url
   }
 
   const validateForm = () => {
@@ -106,24 +124,37 @@ const LoginPage = () => {
         // Si el usuario tiene un tenant, redirigir al subdominio del tenant
         if (result.user.tenant) {
           const tenantAdminUrl = generateTenantAdminUrl(result.user.tenant)
-          console.log('Redirecting to:', tenantAdminUrl)
+          const currentHostname = window.location.hostname
+          const targetSubdomain = result.user.tenant.subdomain || result.user.tenant.slug
+
+          console.log('🔍 Checking subdomain:', {
+            currentHostname,
+            targetSubdomain,
+            tenantAdminUrl
+          })
 
           // Verificar si ya estamos en el subdominio correcto
-          const currentHostname = window.location.hostname
-          const targetSubdomain = result.user.tenant.subdomain
+          const isCorrectSubdomain =
+            currentHostname === targetSubdomain || // localhost directo
+            currentHostname === `${targetSubdomain}.localhost` || // .localhost
+            currentHostname === `${targetSubdomain}.tappmesa.local` || // .local
+            currentHostname === `${targetSubdomain}.vercel.app` || // Vercel
+            currentHostname === `${targetSubdomain}.tappmesa.com` || // Production
+            currentHostname.startsWith(`${targetSubdomain}.`) || // Cualquier subdominio
+            currentHostname.startsWith(targetSubdomain) // Starts with subdomain
 
-          if (currentHostname.startsWith(targetSubdomain)) {
+          if (isCorrectSubdomain) {
             // Ya estamos en el subdominio correcto, solo navegar
-            console.log('Already on correct subdomain, navigating to /admin')
+            console.log('✅ Already on correct subdomain, navigating to /admin')
             navigate('/admin', { replace: true })
           } else {
             // Redirigir al subdominio correcto
-            console.log('Redirecting to tenant subdomain:', tenantAdminUrl)
+            console.log('🔄 Redirecting to tenant subdomain:', tenantAdminUrl)
             window.location.href = tenantAdminUrl
           }
         } else {
           // Si no tiene tenant (super admin), ir al admin normal
-          console.log('No tenant, navigating to:', from)
+          console.log('👤 No tenant (super admin), navigating to:', from)
           navigate(from, { replace: true })
         }
       } else {
