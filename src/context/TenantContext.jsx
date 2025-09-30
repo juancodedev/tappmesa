@@ -1,5 +1,6 @@
-import { createContext, useState, useEffect } from 'react'
+import { createContext, useState, useEffect, useContext } from 'react'
 import { supabase } from '../lib/supabase'
+import { AuthContext } from './AuthContext'
 
 export const TenantContext = createContext()
 
@@ -127,6 +128,7 @@ const getAppType = () => {
 }
 
 export const TenantProvider = ({ children }) => {
+  const authContext = useContext(AuthContext)
   const [tenant, setTenant] = useState(null)
   const [table, setTable] = useState(null)
   const [tableSession, setTableSession] = useState(null)
@@ -134,7 +136,7 @@ export const TenantProvider = ({ children }) => {
   const [error, setError] = useState(null)
   const [appType, setAppType] = useState('landing')
 
-  const loadTenant = async () => {
+  const loadTenant = async (tenantIdOverride = null) => {
     try {
       setLoading(true)
       setError(null)
@@ -149,11 +151,43 @@ export const TenantProvider = ({ children }) => {
         tableCode,
         appType: currentAppType,
         hostname: window.location.hostname,
-        pathname: window.location.pathname
+        pathname: window.location.pathname,
+        tenantIdOverride
       })
 
-      if (currentAppType === 'landing' || currentAppType === 'admin') {
-        console.log('⚠️ AppType is landing or admin - not loading tenant')
+      // Si es landing sin subdomain, no cargar tenant
+      if (currentAppType === 'landing') {
+        console.log('⚠️ AppType is landing - not loading tenant')
+        setTenant(null)
+        setTable(null)
+        setTableSession(null)
+        return
+      }
+
+      // Si es admin pero hay un tenantIdOverride (desde usuario autenticado), cargar ese tenant
+      if (currentAppType === 'admin' && tenantIdOverride) {
+        console.log('🔑 Loading tenant from authenticated user:', tenantIdOverride)
+
+        const { data: tenantData, error: tenantError } = await supabase
+          .from('tenants')
+          .select('*')
+          .eq('id', tenantIdOverride)
+          .eq('is_active', true)
+          .single()
+
+        if (tenantError) {
+          console.error('❌ Tenant query error:', tenantError)
+          throw new Error('No se pudo cargar la información del local')
+        }
+
+        setTenant(tenantData)
+        console.log('✅ Tenant loaded from user:', tenantData.name)
+        return
+      }
+
+      // Si es admin global (super admin sin tenant), no cargar tenant
+      if (currentAppType === 'admin' && !tenantIdOverride) {
+        console.log('⚠️ AppType is global admin - not loading tenant')
         setTenant(null)
         setTable(null)
         setTableSession(null)
@@ -277,9 +311,18 @@ export const TenantProvider = ({ children }) => {
     }
   }
 
+  // Cargar tenant inicial
   useEffect(() => {
     loadTenant()
   }, [])
+
+  // Recargar tenant cuando cambie el usuario autenticado
+  useEffect(() => {
+    if (authContext?.user?.tenant_id) {
+      console.log('👤 User authenticated with tenant_id:', authContext.user.tenant_id)
+      loadTenant(authContext.user.tenant_id)
+    }
+  }, [authContext?.user?.tenant_id])
 
   const value = {
     tenant,
