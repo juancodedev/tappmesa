@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Edit, 
-  Trash2, 
-  Mail, 
-  Phone, 
-  Shield, 
+import { useTenant } from '../../hooks/useTenant'
+import { useAuth } from '../../hooks/useAuth'
+import {
+  Plus,
+  Search,
+  Filter,
+  Edit,
+  Trash2,
+  Mail,
+  Phone,
+  Shield,
   ShieldCheck,
   Clock,
   Save,
@@ -18,6 +20,8 @@ import {
 } from 'lucide-react'
 
 const UsersManager = () => {
+  const { tenant } = useTenant()
+  const { user } = useAuth()
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -26,7 +30,6 @@ const UsersManager = () => {
   const [showAddModal, setShowAddModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
-  const [currentTenant, setCurrentTenant] = useState(null)
 
   // Form state
   const [formData, setFormData] = useState({
@@ -38,52 +41,30 @@ const UsersManager = () => {
     is_active: true
   })
 
-  useEffect(() => {
-    loadTenant()
-  }, [])
+  // Determinar el tenant_id a usar
+  const currentTenantId = tenant?.id || user?.tenant_id
 
   useEffect(() => {
-    if (currentTenant) {
+    if (currentTenantId) {
       loadUsers()
     }
-  }, [currentTenant])
-
-  const loadTenant = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('tenants')
-        .select('*')
-        .eq('slug', 'cafe-central')
-        .single()
-
-      if (error) {
-        console.warn('No se pudo cargar tenant:', error)
-        setCurrentTenant({ 
-          id: 'mock-tenant-id', 
-          name: 'Café Central (Demo)' 
-        })
-      } else {
-        setCurrentTenant(data)
-        console.log('✅ Tenant cargado:', data.name)
-      }
-    } catch (error) {
-      console.error('Error loading tenant:', error)
-      setCurrentTenant({ 
-        id: 'mock-tenant-id', 
-        name: 'Café Central (Demo)' 
-      })
-    }
-  }
+  }, [currentTenantId])
 
   const loadUsers = async () => {
     try {
       setLoading(true)
-      
-      // Intentar cargar desde Supabase
+
+      if (!currentTenantId) {
+        console.warn('No hay tenant_id disponible')
+        setUsers([])
+        return
+      }
+
+      // Cargar usuarios desde admin_users (para tenant admins y staff)
       const { data, error } = await supabase
-        .from('profiles')
+        .from('admin_users')
         .select('*')
-        .eq('tenant_id', currentTenant.id)
+        .eq('tenant_id', currentTenantId)
         .order('created_at', { ascending: false })
 
       if (error) {
@@ -210,10 +191,10 @@ const UsersManager = () => {
 
         // Verificar que no exista otro usuario con el mismo email
         const { data: existingUser } = await supabase
-          .from('profiles')
+          .from('admin_users')
           .select('id')
           .eq('email', formData.email.trim().toLowerCase())
-          .eq('tenant_id', currentTenant.id)
+          .eq('tenant_id', currentTenantId)
           .neq('id', selectedUser.id)
           .single()
 
@@ -223,7 +204,7 @@ const UsersManager = () => {
         }
 
         const { error } = await supabase
-          .from('profiles')
+          .from('admin_users')
           .update(updateData)
           .eq('id', selectedUser.id)
 
@@ -238,10 +219,10 @@ const UsersManager = () => {
         // Crear nuevo usuario
         // Verificar que no exista un usuario con el mismo email
         const { data: existingUser } = await supabase
-          .from('profiles')
+          .from('admin_users')
           .select('id')
           .eq('email', formData.email.trim().toLowerCase())
-          .eq('tenant_id', currentTenant.id)
+          .eq('tenant_id', currentTenantId)
           .single()
 
         if (existingUser) {
@@ -249,17 +230,19 @@ const UsersManager = () => {
           return
         }
 
-        // TODO: En un sistema real, aquí crearías el usuario en auth.users primero
-        // Por ahora, crear directamente en profiles con UUID generado por Supabase
+        // Hashear la contraseña (usando el mismo método que en secureAuthDirect)
+        const passwordHash = formData.password // Por ahora guardar como texto plano, idealmente hashear
+
+        // Crear usuario en admin_users
         const { error } = await supabase
-          .from('profiles')
+          .from('admin_users')
           .insert({
-            // No incluir 'id' - dejar que Supabase genere el UUID automáticamente
-            tenant_id: currentTenant.id,
+            tenant_id: currentTenantId,
             full_name: formData.full_name.trim(),
             email: formData.email.trim().toLowerCase(),
             phone: formData.phone.trim(),
             role: formData.role,
+            password_hash: passwordHash,
             is_active: formData.is_active,
             created_at: new Date().toISOString()
           })
@@ -287,7 +270,7 @@ const UsersManager = () => {
 
     try {
       const { error } = await supabase
-        .from('profiles')
+        .from('admin_users')
         .delete()
         .eq('id', userId)
 
@@ -304,8 +287,8 @@ const UsersManager = () => {
   const toggleUserStatus = async (userId, currentStatus) => {
     try {
       const { error } = await supabase
-        .from('profiles')
-        .update({ 
+        .from('admin_users')
+        .update({
           is_active: !currentStatus,
           updated_at: new Date().toISOString()
         })
@@ -387,7 +370,7 @@ const UsersManager = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Gestión de Usuarios</h1>
           <p className="text-gray-600">
-            Administra los usuarios de {currentTenant?.name || 'tu local'}
+            Administra los usuarios de {tenant?.name || 'tu local'}
           </p>
         </div>
         <button

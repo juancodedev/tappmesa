@@ -72,6 +72,12 @@ const SecureAdminApp = () => {
       requiredPermissions: ['customers:read']
     },
     {
+      name: 'Usuarios',
+      href: '/admin/users',
+      icon: Users,
+      requiredPermissions: ['users:read']
+    },
+    {
       name: 'Categorías',
       href: '/admin/categories',
       icon: Tag,
@@ -272,7 +278,13 @@ const SecureAdminApp = () => {
                 <CustomersManager />
               </TenantAdminRoute>
             } />
-            
+
+            <Route path="/users" element={
+              <TenantAdminRoute requirePermissions={['users:read']}>
+                <UsersManagerComponent />
+              </TenantAdminRoute>
+            } />
+
             <Route path="/categories" element={
               <TenantAdminRoute requirePermissions={['categories:read']}>
                 <CategoriesManager />
