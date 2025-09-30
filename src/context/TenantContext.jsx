@@ -51,15 +51,31 @@ const getSubdomain = () => {
     return null
   }
 
-  // Producción con Vercel: teteria-luna.tappmesa.vercel.app
+  // Producción con Vercel: teteria-luna-tappmesa.vercel.app
   if (hostname.includes('tappmesa.vercel.app')) {
+    // Nueva lógica para manejar formato: [nombre]-tappmesa.vercel.app
+    if (parts.length >= 3) {
+      const fullSubdomain = parts[0] // ej: "teteria-luna-tappmesa"
+
+      // Verificar si termina con -tappmesa (nuevo formato)
+      if (fullSubdomain.includes('-tappmesa')) {
+        // Usar el nombre completo incluyendo -tappmesa para matching con DB
+        if (!['www-tappmesa', 'admin-tappmesa', 'api-tappmesa', 'app-tappmesa'].includes(fullSubdomain)) {
+          console.log('🚀 Vercel subdomain detected (new format):', fullSubdomain)
+          return fullSubdomain
+        }
+      }
+    }
+
+    // Formato legacy: teteria-luna.tappmesa.vercel.app (por compatibilidad)
     if (parts.length >= 4) {
       const subdomain = parts[0]
       if (!['www', 'admin', 'api', 'app'].includes(subdomain)) {
-        console.log('🚀 Vercel subdomain detected:', subdomain)
+        console.log('🚀 Vercel subdomain detected (legacy format):', subdomain)
         return subdomain
       }
     }
+
     return null
   }
 
