@@ -7,10 +7,9 @@ class DirectAuthService {
     this.sessionToken = localStorage.getItem('tappmesa-session');
   }
 
-  // Hash temporal (NO SEGURO - solo para development)
-  async tempHashPassword(password) {
+  // Hash con crypto.subtle (SHA-256)
+  async cryptoHash(password) {
     try {
-      // Verificar si crypto.subtle está disponible
       if (typeof crypto !== 'undefined' && crypto.subtle) {
         const encoder = new TextEncoder();
         const data = encoder.encode(password + 'tappmesa-salt-2024');
@@ -19,11 +18,13 @@ class DirectAuthService {
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
       }
     } catch (error) {
-      console.warn('crypto.subtle not available, using fallback hash');
+      console.warn('crypto.subtle not available');
     }
+    return null;
+  }
 
-    // Fallback: simple hash para desarrollo sin crypto.subtle
-    // NO USAR EN PRODUCCIÓN - solo para desarrollo local
+  // Fallback hash simple (NO SEGURO - solo para desarrollo)
+  fallbackHash(password) {
     let hash = 0;
     const str = password + 'tappmesa-salt-2024';
     for (let i = 0; i < str.length; i++) {
@@ -32,6 +33,17 @@ class DirectAuthService {
       hash = hash & hash; // Convert to 32bit integer
     }
     return Math.abs(hash).toString(16).padStart(16, '0');
+  }
+
+  // Hash temporal (NO SEGURO - solo para development)
+  async tempHashPassword(password) {
+    // Intentar crypto.subtle primero
+    const cryptoHashResult = await this.cryptoHash(password);
+    if (cryptoHashResult) {
+      return cryptoHashResult;
+    }
+    // Fallback si crypto.subtle no está disponible
+    return this.fallbackHash(password);
   }
 
   // Registro usando Supabase directamente
@@ -214,12 +226,34 @@ class DirectAuthService {
         };
       }
 
-      // Intentar verificar con hash temporal primero (para desarrollo)
-      const tempHash = await this.tempHashPassword(password);
+      // Intentar múltiples métodos de verificación para compatibilidad
+      let passwordValid = false;
 
-      // Si no coincide con el hash temporal, intentar con la password en texto plano
-      // (esto es solo para desarrollo mientras se migra completamente)
-      if (admin.password_hash !== tempHash && admin.password_hash !== password) {
+      // 1. Intentar con crypto.subtle hash (SHA-256)
+      const cryptoHashResult = await this.cryptoHash(password);
+      if (cryptoHashResult && admin.password_hash === cryptoHashResult) {
+        passwordValid = true;
+      }
+
+      // 2. Intentar con fallback hash simple
+      if (!passwordValid) {
+        const fallbackHashResult = this.fallbackHash(password);
+        if (admin.password_hash === fallbackHashResult) {
+          passwordValid = true;
+        }
+      }
+
+      // 3. Intentar con password en texto plano (solo para desarrollo)
+      if (!passwordValid && admin.password_hash === password) {
+        passwordValid = true;
+      }
+
+      if (!passwordValid) {
+        console.error('Password verification failed:', {
+          storedHash: admin.password_hash,
+          cryptoHash: cryptoHashResult,
+          fallbackHash: this.fallbackHash(password)
+        });
         return {
           success: false,
           error: 'Email o contraseña incorrectos'
