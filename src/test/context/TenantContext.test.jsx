@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, waitFor, act } from '@testing-library/react'
-import { TenantProvider, useTenant } from '../../context/TenantContext'
+import { TenantProvider } from '../../context/TenantContext'
+import { useTenant } from '../../hooks/useTenant'
 import { useIsTenant, useTenantUrl } from '../../hooks/useTenantHooks'
 import { createMockSupabase, mockTenant, mockTable, mockTableSession, mockLocation, resetAllMocks } from '../utils'
 

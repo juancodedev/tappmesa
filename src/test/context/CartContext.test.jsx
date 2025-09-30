@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { CartProvider, useCart } from '../../context/CartContext'
+import { CartProvider } from '../../context/CartContext'
+import { useCart } from '../../hooks/useCart'
 import { TenantProvider } from '../../context/TenantContext'
 import { mockTenant, mockProduct, resetAllMocks, createMockSupabase } from '../utils'
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Plus, Minus, Clock, Thermometer } from 'lucide-react'
 import { useTenant } from '../../hooks/useTenant'
-import { useCart } from '../../context/CartContext'
+import { useCart } from '../../hooks/useCart'
 import { getOptimalTextClass } from '../../utils/helpers'
 
 const MenuCard = ({ product }) => {
