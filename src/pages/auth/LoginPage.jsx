@@ -98,19 +98,39 @@ const LoginPage = () => {
     try {
       const result = await login(formData.email, formData.password)
 
+      console.log('Login result:', result)
+
       if (result.success && result.user) {
+        console.log('User tenant:', result.user.tenant)
+
         // Si el usuario tiene un tenant, redirigir al subdominio del tenant
         if (result.user.tenant) {
           const tenantAdminUrl = generateTenantAdminUrl(result.user.tenant)
-          window.location.href = tenantAdminUrl
+          console.log('Redirecting to:', tenantAdminUrl)
+
+          // Verificar si ya estamos en el subdominio correcto
+          const currentHostname = window.location.hostname
+          const targetSubdomain = result.user.tenant.subdomain
+
+          if (currentHostname.startsWith(targetSubdomain)) {
+            // Ya estamos en el subdominio correcto, solo navegar
+            console.log('Already on correct subdomain, navigating to /admin')
+            navigate('/admin', { replace: true })
+          } else {
+            // Redirigir al subdominio correcto
+            console.log('Redirecting to tenant subdomain:', tenantAdminUrl)
+            window.location.href = tenantAdminUrl
+          }
         } else {
           // Si no tiene tenant (super admin), ir al admin normal
+          console.log('No tenant, navigating to:', from)
           navigate(from, { replace: true })
         }
       } else {
         setErrors({ form: result.error })
       }
     } catch (error) {
+      console.error('Login error:', error)
       setErrors({ form: 'Error inesperado. Intenta nuevamente.' })
     } finally {
       setLoginLoading(false)
