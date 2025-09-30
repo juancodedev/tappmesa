@@ -125,8 +125,7 @@ const TablesManager = () => {
           .update({
             number: formData.number.trim(),
             capacity: parseInt(formData.capacity),
-            location: formData.location,
-            updated_at: new Date().toISOString()
+            location: formData.location
           })
           .eq('id', selectedTable.id)
 
@@ -146,20 +145,6 @@ const TablesManager = () => {
           return
         }
 
-        // Obtener configuración de expiración del tenant
-        const { data: settings } = await supabase
-          .from('tenant_settings')
-          .select('qr_code_expiration_days')
-          .eq('tenant_id', currentTenant.id)
-          .single()
-
-        // Calcular fecha de expiración si está configurada
-        let expiresAt = null
-        if (settings?.qr_code_expiration_days && settings.qr_code_expiration_days > 0) {
-          const now = new Date()
-          expiresAt = new Date(now.getTime() + settings.qr_code_expiration_days * 24 * 60 * 60 * 1000)
-        }
-
         // Crear nueva mesa
         const { error } = await supabase
           .from('tables')
@@ -170,9 +155,7 @@ const TablesManager = () => {
             location: formData.location,
             unique_code: generateUniqueCode(),
             status: 'available',
-            is_active: true,
-            qr_code_generated_at: new Date().toISOString(),
-            qr_code_expires_at: expiresAt ? expiresAt.toISOString() : null
+            is_active: true
           })
 
         if (error) throw error

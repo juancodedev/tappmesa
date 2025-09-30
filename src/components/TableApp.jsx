@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import { useTenant } from '../hooks/useTenant';
 import { useTenantUrl } from "../hooks/useTenantHooks";
 import { CartProvider } from "../context/CartContext";
 import MenuLayout from "./layout/MenuLayout";
+import TableOrdersHistory from "./table/TableOrdersHistory";
+import { Receipt, UtensilsCrossed } from 'lucide-react';
 
 const TableApp = () => {
   const { tenant, table, tableSession, loading } = useTenant();
   const tenantUrl = useTenantUrl();
+  const [activeTab, setActiveTab] = useState('menu'); // 'menu' | 'orders'
 
   if (loading) {
     return (
@@ -44,30 +48,62 @@ const TableApp = () => {
 
   return (
     <CartProvider>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 pb-24">
         {/* Header específico de mesa */}
-        <div className="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-50">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-lg font-semibold text-gray-900">
-                {tenant.name}
-              </h1>
-              <p className="text-sm text-gray-600">
-                {table.number} • {table.location}
-              </p>
+        <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
+          <div className="px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-lg font-semibold text-gray-900">
+                  {tenant.name}
+                </h1>
+                <p className="text-sm text-gray-600">
+                  {table.number} • {table.location}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-gray-500">Sesión</p>
+                <p className="text-sm font-mono text-gray-700">
+                  {tableSession?.session_code || "Cargando..."}
+                </p>
+              </div>
             </div>
-            <div className="text-right">
-              <p className="text-xs text-gray-500">Sesión</p>
-              <p className="text-sm font-mono text-gray-700">
-                {tableSession?.session_code || "Cargando..."}
-              </p>
-            </div>
+          </div>
+
+          {/* Tabs de navegación */}
+          <div className="flex border-t border-gray-200">
+            <button
+              onClick={() => setActiveTab('menu')}
+              className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 text-sm font-medium transition-colors ${
+                activeTab === 'menu'
+                  ? 'text-primary border-b-2 border-primary bg-red-50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <UtensilsCrossed className="w-4 h-4" />
+              <span>Menú</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('orders')}
+              className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 text-sm font-medium transition-colors ${
+                activeTab === 'orders'
+                  ? 'text-primary border-b-2 border-primary bg-red-50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Receipt className="w-4 h-4" />
+              <span>Mis Pedidos</span>
+            </button>
           </div>
         </div>
 
-        {/* Menú normal pero con padding top para el header fijo */}
-        <div style={{ paddingTop: "0px" }}>
-          <MenuLayout />
+        {/* Contenido según tab activo */}
+        <div className="p-4">
+          {activeTab === 'menu' ? (
+            <MenuLayout />
+          ) : (
+            <TableOrdersHistory />
+          )}
         </div>
 
         {/* Información de la mesa fija en la parte inferior */}

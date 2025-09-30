@@ -38,22 +38,49 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     if (!tenant) return
 
-    const savedCart = localStorage.getItem(`cart_${tenant.id}`)
+    // Si hay sesión de mesa, usar el session_code para persistencia
+    // Si no, usar tenant.id (para pedidos sin mesa específica)
+    const storageKey = tableSession
+      ? `cart_session_${tableSession.session_code}`
+      : `cart_${tenant.id}`
+
+    const savedCart = localStorage.getItem(storageKey)
     if (savedCart) {
       try {
-        setItems(JSON.parse(savedCart))
+        const parsedCart = JSON.parse(savedCart)
+        // Verificar que el carrito no sea muy antiguo (más de 4 horas)
+        const oldestItem = parsedCart[0]?.addedAt
+        if (oldestItem) {
+          const hoursSince = (Date.now() - new Date(oldestItem).getTime()) / (1000 * 60 * 60)
+          if (hoursSince > 4) {
+            console.log('🧹 Carrito expirado, limpiando...')
+            localStorage.removeItem(storageKey)
+            setItems([])
+            return
+          }
+        }
+        setItems(parsedCart)
       } catch (error) {
         console.error('Error loading cart from localStorage:', error)
       }
     }
-  }, [tenant])
+  }, [tenant, tableSession])
 
   // Guardar carrito en localStorage cuando cambie
   useEffect(() => {
     if (!tenant) return
 
-    localStorage.setItem(`cart_${tenant.id}`, JSON.stringify(items))
-  }, [items, tenant])
+    const storageKey = tableSession
+      ? `cart_session_${tableSession.session_code}`
+      : `cart_${tenant.id}`
+
+    if (items.length === 0) {
+      // Si el carrito está vacío, remover del localStorage
+      localStorage.removeItem(storageKey)
+    } else {
+      localStorage.setItem(storageKey, JSON.stringify(items))
+    }
+  }, [items, tenant, tableSession])
 
   // Agregar item al carrito
   const addItem = (product, quantity = 1, temperature = 'hot', notes = '') => {

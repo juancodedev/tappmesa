@@ -11,13 +11,15 @@ import {
   AdminApp,
   SecureAdminApp,
   TableApp,
-  ReservationsPage,
   LoginPage,
   LandingPage,
   RegisterPage,
   BusinessLoginPage,
   MenuLayout
 } from './components/LazyComponents';
+
+// Importar directamente (no lazy) para reservas
+import ReservationsPage from './pages/reservations/ReservationsPage';
 
 // Keep ProtectedRoute as regular import since it's lightweight
 import ProtectedRoute from './components/ProtectedRoute';
@@ -203,15 +205,9 @@ function App() {
             </ProtectedRoute>
           } />
 
-          {/* Ruta específica para reservas (existente) */}
-          <Route
-            path="/reservas"
-            element={
-              <TenantProvider>
-                <ReservationsPage />
-              </TenantProvider>
-            }
-          />
+          {/* Ruta específica para reservas */}
+          <Route path="/reservas" element={<ReservationsPage />} />
+          <Route path="/reservations" element={<ReservationsPage />} />
 
           {/* Ruta para mesas específicas (existente) */}
           <Route path="/:slug/:table" element={<TableApp />} />
