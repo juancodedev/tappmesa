@@ -1,6 +1,6 @@
 // src/components/Auth/RegistrationForm.jsx
 import { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function RegistrationForm({ onSuccess }) {
   const { register, loading, error, registrationStep, setRegistrationStep } = useAuth();

@@ -1,5 +1,5 @@
 import { useCart } from "../../context/CartContext";
-import { useTenant } from "../../context/TenantContext";
+import { useTenant } from '../../hooks/useTenant';
 import { ShoppingCart } from "lucide-react";
 import { getOptimalTextClass } from "../../utils/helpers";
 

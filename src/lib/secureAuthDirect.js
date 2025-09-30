@@ -28,7 +28,33 @@ class DirectAuthService {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)+/g, '');
 
-      const subdomain = tenantSlug + '-' + Math.random().toString(36).substr(2, 6);
+      // Usar slug limpio como subdomain (sin sufijos aleatorios)
+      // Ejemplo: "Café Central" -> "cafe-central" -> cafe-central.tappmesa.com
+      let subdomain = tenantSlug;
+
+      // Verificar si el subdomain ya existe y agregar número si es necesario
+      const { data: existingTenant } = await supabase
+        .from('tenants')
+        .select('subdomain')
+        .eq('subdomain', subdomain)
+        .single();
+
+      if (existingTenant) {
+        // Si existe, agregar número secuencial: cafe-central-2, cafe-central-3, etc.
+        let counter = 2;
+        let newSubdomain;
+        do {
+          newSubdomain = `${tenantSlug}-${counter}`;
+          const { data: check } = await supabase
+            .from('tenants')
+            .select('subdomain')
+            .eq('subdomain', newSubdomain)
+            .single();
+          if (!check) break;
+          counter++;
+        } while (counter < 100); // Límite de seguridad
+        subdomain = newSubdomain;
+      }
 
       const { data: tenantData, error: tenantError } = await supabase
         .from('tenants')
@@ -153,8 +179,7 @@ class DirectAuthService {
   // Login usando Supabase directamente
   async signIn(email, password) {
     try {
-      const passwordHash = await this.tempHashPassword(password);
-
+      // Primero obtener el usuario por email
       const { data: admin, error: adminError } = await supabase
         .from('admin_users')
         .select(`
@@ -162,11 +187,22 @@ class DirectAuthService {
           tenant:tenants(*)
         `)
         .eq('email', email)
-        .eq('password_hash', passwordHash)
         .eq('is_active', true)
         .single();
 
       if (adminError || !admin) {
+        return {
+          success: false,
+          error: 'Email o contraseña incorrectos'
+        };
+      }
+
+      // Intentar verificar con hash temporal primero (para desarrollo)
+      const tempHash = await this.tempHashPassword(password);
+
+      // Si no coincide con el hash temporal, intentar con la password en texto plano
+      // (esto es solo para desarrollo mientras se migra completamente)
+      if (admin.password_hash !== tempHash && admin.password_hash !== password) {
         return {
           success: false,
           error: 'Email o contraseña incorrectos'

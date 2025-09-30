@@ -1,7 +1,8 @@
 import React from "react";
 import { Analytics } from "@vercel/analytics/react"
 import { Routes, Route } from "react-router-dom";
-import { TenantProvider, useTenant } from "./context/TenantContext";
+import { TenantProvider } from "./context/TenantContext";
+import { useTenant } from "./hooks/useTenant";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from './context/AuthContext';
 

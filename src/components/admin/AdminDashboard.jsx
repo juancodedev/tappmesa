@@ -1,6 +1,6 @@
 // src/components/Admin/AdminDashboard.jsx
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -508,7 +508,7 @@ export default function AdminDashboard() {
 
 // src/components/Dashboard/TrialBanner.jsx
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function TrialBanner() {
   const { user, trialInfo, checkTrialStatus } = useAuth();

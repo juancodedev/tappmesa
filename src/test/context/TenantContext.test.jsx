@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, waitFor, act } from '@testing-library/react'
-import { TenantProvider, useTenant, useIsTenant, useTenantUrl } from '../../context/TenantContext'
+import { TenantProvider, useTenant } from '../../context/TenantContext'
+import { useIsTenant, useTenantUrl } from '../../hooks/useTenantHooks'
 import { createMockSupabase, mockTenant, mockTable, mockTableSession, mockLocation, resetAllMocks } from '../utils'
 
 // Mock the supabase import

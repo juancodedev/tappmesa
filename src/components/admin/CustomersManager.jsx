@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
-import { useTenant } from "../../context/TenantContext";
+import { useTenant } from '../../hooks/useTenant';
 import {
   Users,
   Star,
@@ -141,6 +141,8 @@ const CustomersManager = () => {
   };
 
   const stats = getCustomerStats();
+  console.log(currentTenant);
+  
 
   if (!currentTenant) {
     return (

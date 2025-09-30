@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useTenant } from "../../context/TenantContext";
+import { useTenant } from '../../hooks/useTenant';
 import { supabase } from "../../lib/supabase";
 import {
   Grid3X3,

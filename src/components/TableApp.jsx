@@ -1,4 +1,5 @@
-import { useTenant, useTenantUrl } from "../context/TenantContext";
+import { useTenant } from '../hooks/useTenant';
+import { useTenantUrl } from "../hooks/useTenantHooks";
 import { CartProvider } from "../context/CartContext";
 import MenuLayout from "./layout/MenuLayout";
 

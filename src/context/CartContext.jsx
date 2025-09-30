@@ -1,16 +1,8 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { useTenant } from './TenantContext'
+import { useTenant } from '../hooks/useTenant'
 import { supabase } from '../lib/supabase'
 
-const CartContext = createContext()
-
-export const useCart = () => {
-  const context = useContext(CartContext)
-  if (!context) {
-    throw new Error('useCart must be used within CartProvider')
-  }
-  return context
-}
+export const CartContext = createContext()
 
 // Función para generar número de orden
 const generateOrderNumber = async (tenantId) => {
@@ -241,6 +233,7 @@ export const CartProvider = ({ children }) => {
       closeCart()
 
       console.log('✅ Pedido creado:', order.order_number)
+      console.log('✨ Fast Refresh test - useCart should be compatible now')
       
       return { 
         success: true, 
@@ -299,3 +292,5 @@ export const CartProvider = ({ children }) => {
     </CartContext.Provider>
   )
 }
+
+// useCart hook moved to src/hooks/useCart.js for Fast Refresh compatibility

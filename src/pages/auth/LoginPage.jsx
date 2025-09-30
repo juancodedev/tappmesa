@@ -1,7 +1,7 @@
 //este es el login correcto
 
 import { useState } from 'react'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../hooks/useAuth'
 
 import { useNavigate, useLocation } from 'react-router-dom'
 import { 
@@ -38,34 +38,34 @@ const LoginPage = () => {
 
     // En desarrollo local con .local
     if (hostname.endsWith('.local')) {
-      const baseUrl = `${protocol}//${tenant.slug}.tappmesa.local${port ? ':' + port : ''}`
+      const baseUrl = `${protocol}//${tenant.subdomain}.tappmesa.local${port ? ':' + port : ''}`
       return `${baseUrl}/admin`
     }
 
     // En desarrollo local con .localhost
     if (hostname.endsWith('.localhost')) {
-      const baseUrl = `${protocol}//${tenant.slug}.localhost${port ? ':' + port : ''}`
+      const baseUrl = `${protocol}//${tenant.subdomain}.localhost${port ? ':' + port : ''}`
       return `${baseUrl}/admin`
     }
 
     // En desarrollo con localhost - redirigir al subdominio correcto
     if (hostname === 'localhost' || hostname.match(/^\d/)) {
-      const baseUrl = `${protocol}//${tenant.slug}.localhost${port ? ':' + port : ''}`
+      const baseUrl = `${protocol}//${tenant.subdomain}.localhost${port ? ':' + port : ''}`
       return `${baseUrl}/admin`
     }
 
     // En producción con tappmesa.com
     if (hostname.includes('tappmesa.com')) {
-      return `https://${tenant.slug}.tappmesa.com/admin`
+      return `https://${tenant.subdomain}.tappmesa.com/admin`
     }
 
     // En producción con Vercel (tappmesa.vercel.app)
     if (hostname.includes('vercel.app')) {
-      return `https://${tenant.slug}.tappmesa.vercel.app/admin`
+      return `https://${tenant.subdomain}.tappmesa.vercel.app/admin`
     }
 
     // Otros dominios personalizados
-    return `${protocol}//${tenant.slug}.${hostname}/admin`
+    return `${protocol}//${tenant.subdomain}.${hostname}/admin`
   }
 
   const validateForm = () => {

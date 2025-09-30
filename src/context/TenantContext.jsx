@@ -1,27 +1,21 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
-const TenantContext = createContext()
+export const TenantContext = createContext()
 
-export const useTenant = () => {
-  const context = useContext(TenantContext)
-  if (!context) {
-    throw new Error('useTenant must be used within TenantProvider')
-  }
-  return context
-}
+// useTenant hook moved to src/hooks/useTenant.js for Fast Refresh compatibility
 
 // Función mejorada para extraer subdominio y mesa
 const getSubdomain = () => {
   const hostname = window.location.hostname
   const parts = hostname.split('.')
-  
+
   console.log('🌐 Hostname:', hostname, 'Parts:', parts)
-  
+
   // Desarrollo local con .local o .localhost
   if (hostname.endsWith('.local') || hostname.endsWith('.localhost')) {
     // cafe-central.tappmesa.local → cafe-central
-    // cafe-central.localhost → cafe-central
+    // teteria-luna.localhost → teteria-luna
     if (parts.length >= 2) {
       const subdomain = parts[0]
       if (subdomain !== 'tappmesa' && subdomain !== 'www' && subdomain !== 'localhost') {
@@ -31,7 +25,7 @@ const getSubdomain = () => {
     }
     return null
   }
-  
+
   // Desarrollo con localhost + query param (fallback)
   if (hostname === 'localhost' || hostname.match(/^\d/)) {
     const urlParams = new URLSearchParams(window.location.search)
@@ -42,12 +36,13 @@ const getSubdomain = () => {
     }
     return null
   }
-  
+
   // Producción: cafe-central.tappmesa.com
   if (hostname.includes('tappmesa.com')) {
     if (parts.length >= 3) {
       const subdomain = parts[0]
-      if (subdomain !== 'www' && subdomain !== 'admin') {
+      // Excluir subdominios especiales del sistema
+      if (!['www', 'admin', 'api', 'app', 'mail', 'ftp'].includes(subdomain)) {
         console.log('🌍 Production subdomain detected:', subdomain)
         return subdomain
       }
@@ -59,23 +54,24 @@ const getSubdomain = () => {
   if (hostname.includes('tappmesa.vercel.app')) {
     if (parts.length >= 4) {
       const subdomain = parts[0]
-      if (subdomain !== 'www' && subdomain !== 'admin') {
+      if (!['www', 'admin', 'api', 'app'].includes(subdomain)) {
         console.log('🚀 Vercel subdomain detected:', subdomain)
         return subdomain
       }
     }
     return null
   }
-  
-  // Otros dominios personalizados
+
+  // Dominios personalizados (e.g., cafeteria1.midominio.com)
   if (parts.length >= 2) {
     const subdomain = parts[0]
-    if (subdomain !== 'www') {
+    // Solo considerar como subdomain si no es www y no es el dominio base
+    if (subdomain !== 'www' && parts.length > 2) {
       console.log('🏢 Custom subdomain detected:', subdomain)
       return subdomain
     }
   }
-  
+
   return null
 }
 
@@ -144,7 +140,8 @@ export const TenantProvider = ({ children }) => {
       const currentAppType = getAppType()
       setAppType(currentAppType)
       
-      console.log('🔍 Loading tenant for:', { subdomain, tableCode, appType: currentAppType })
+  console.log('🔍 Loading tenant for:', { subdomain, tableCode, appType: currentAppType })
+      console.log('✨ Fast Refresh test - no incompatibility expected')
       
       if (currentAppType === 'landing' || currentAppType === 'admin') {
         setTenant(null)
@@ -157,11 +154,11 @@ export const TenantProvider = ({ children }) => {
         throw new Error('No se pudo identificar el local')
       }
       
-      // Buscar cafetería por slug (no subdomain)
+      // Buscar cafetería por subdomain (para URLs como teter-a-luna-4slc2m.localhost)
       const { data: tenantData, error: tenantError } = await supabase
         .from('tenants')
         .select('*')
-        .eq('slug', subdomain)  // ✅ Cambiado de 'subdomain' a 'slug'
+        .eq('subdomain', subdomain)  // Usar 'subdomain' para matching exacto
         .eq('is_active', true)
         .single()
 
@@ -282,40 +279,3 @@ export const TenantProvider = ({ children }) => {
   )
 }
 
-// Hook para detectar si estamos en un tenant
-export const useIsTenant = () => {
-  const { appType, tenant } = useTenant()
-  return appType === 'tenant' && !!tenant
-}
-
-// Hook para obtener la URL base del tenant
-export const useTenantUrl = () => {
-  const { tenant } = useTenant()
-  
-  if (!tenant) return null
-  
-  // Generar URL base del tenant usando el slug
-  const hostname = window.location.hostname
-  
-  if (hostname.endsWith('.local')) {
-    return `http://${tenant.slug}.tappmesa.local:5173`  // ✅ Usando slug
-  }
-
-  if (hostname.endsWith('.localhost')) {
-    return `http://${tenant.slug}.localhost:5173`  // ✅ Usando slug con localhost
-  }
-
-  if (hostname.includes('localhost')) {
-    return `http://${tenant.slug}.localhost:5173`  // ✅ Usando slug con subdominio localhost
-  }
-
-  if (hostname.includes('tappmesa.com')) {
-    return `https://${tenant.slug}.tappmesa.com`  // ✅ Usando slug
-  }
-
-  if (hostname.includes('vercel.app')) {
-    return `https://${tenant.slug}.tappmesa.vercel.app`  // ✅ Usando slug
-  }
-
-  return `https://${tenant.slug}.tappmesa.com`  // ✅ Fallback
-}

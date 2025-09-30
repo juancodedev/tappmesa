@@ -1,6 +1,6 @@
 // src/components/Auth/LoginForm.jsx
 import { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function LoginForm({ onSuccess }) {
   const { login, loading, error } = useAuth();

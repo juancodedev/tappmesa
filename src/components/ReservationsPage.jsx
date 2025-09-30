@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Calendar, Clock, Users, MapPin, Phone } from "lucide-react";
-import { useTenant } from "../context/TenantContext";
+import { useTenant } from '../hooks/useTenant';
 import ReservationForm from "./ReservationForm";
 
 const ReservationsPage = () => {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
-import { useTenant } from '../../context/TenantContext'
+import { useTenant } from '../../hooks/useTenant'
 import { QrCode, Download, Eye, Copy, Check, ArrowLeft } from 'lucide-react'
 
 const QRGenerator = ({ tenantId }) => {

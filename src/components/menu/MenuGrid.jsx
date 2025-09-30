@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useTenant } from '../../context/TenantContext'
+import { useTenant } from '../../hooks/useTenant'
 import { supabase } from '../../lib/supabase'
 import MenuCard from './MenuCard'
 import { Coffee, Search } from 'lucide-react'

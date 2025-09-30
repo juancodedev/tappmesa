@@ -2,7 +2,7 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
 import { authService } from "../lib/supabase";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 const initialState = {
   user: null,
@@ -202,10 +202,4 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth debe ser usado dentro de un AuthProvider");
-  }
-  return context;
-}
+// useAuth hook moved to src/hooks/useAuth.js for Fast Refresh compatibility

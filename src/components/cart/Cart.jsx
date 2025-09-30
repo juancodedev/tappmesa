@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useCart } from '../../context/CartContext'
-import { useTenant } from '../../context/TenantContext'
+import { useTenant } from '../../hooks/useTenant'
 import { X, Plus, Minus, ShoppingCart, Trash2, MessageSquare, CheckCircle, Clock } from 'lucide-react'
 
 const CartItem = ({ item }) => {

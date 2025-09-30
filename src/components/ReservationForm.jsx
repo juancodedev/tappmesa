@@ -9,7 +9,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
-import { useTenant } from "../context/TenantContext";
+import { useTenant } from '../hooks/useTenant';
 
 const ReservationForm = () => {
   const { tenant } = useTenant();
