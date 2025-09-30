@@ -138,36 +138,54 @@ export const TenantProvider = ({ children }) => {
     try {
       setLoading(true)
       setError(null)
-      
+
       const subdomain = getSubdomain()
       const tableCode = getTableCode()
       const currentAppType = getAppType()
       setAppType(currentAppType)
-      
-  console.log('🔍 Loading tenant for:', { subdomain, tableCode, appType: currentAppType })
-      console.log('✨ Fast Refresh test - no incompatibility expected')
-      
+
+      console.log('🔍 Loading tenant for:', {
+        subdomain,
+        tableCode,
+        appType: currentAppType,
+        hostname: window.location.hostname,
+        pathname: window.location.pathname
+      })
+
       if (currentAppType === 'landing' || currentAppType === 'admin') {
+        console.log('⚠️ AppType is landing or admin - not loading tenant')
         setTenant(null)
         setTable(null)
         setTableSession(null)
         return
       }
-      
+
       if (!subdomain) {
+        console.error('❌ No subdomain detected')
         throw new Error('No se pudo identificar el local')
       }
-      
-      // Buscar cafetería por subdomain (para URLs como teter-a-luna-4slc2m.localhost)
+
+      console.log('🔎 Querying tenant with subdomain:', subdomain)
+
+      // Buscar cafetería por subdomain
       const { data: tenantData, error: tenantError } = await supabase
         .from('tenants')
         .select('*')
-        .eq('subdomain', subdomain)  // Usar 'subdomain' para matching exacto
+        .eq('subdomain', subdomain)
         .eq('is_active', true)
         .single()
 
       if (tenantError) {
-        console.error('❌ Tenant not found:', tenantError)
+        console.error('❌ Tenant query error:', tenantError)
+        console.error('❌ Subdomain searched:', subdomain)
+
+        // Intentar buscar sin el filtro de subdomain para debugging
+        const { data: allTenants } = await supabase
+          .from('tenants')
+          .select('subdomain, name')
+          .eq('is_active', true)
+
+        console.log('📋 Available tenants:', allTenants)
         throw new Error(`Cafetería "${subdomain}" no encontrada`)
       }
       
