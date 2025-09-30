@@ -12,6 +12,7 @@ import {
   Mail,
   Globe,
   Palette,
+  QrCode,
 } from "lucide-react";
 
 const Settings = () => {
@@ -52,6 +53,9 @@ const Settings = () => {
 
     // Automatización
     order_auto_print: false,
+
+    // QR Codes
+    qr_code_expiration_days: null, // null = nunca expiran
 
     // Notificaciones
     notifications: {
@@ -536,6 +540,57 @@ const Settings = () => {
                 </p>
               </div>
             </label>
+          </div>
+        </div>
+
+        {/* QR Codes */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <QrCode className="w-5 h-5 mr-2" />
+            Códigos QR
+          </h2>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Días de expiración de códigos QR
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={settings.qr_code_expiration_days || ''}
+                onChange={(e) =>
+                  handleInputChange(
+                    "qr_code_expiration_days",
+                    e.target.value === '' ? null : parseInt(e.target.value)
+                  )
+                }
+                placeholder="Dejar vacío para nunca expirar"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <p className="mt-2 text-sm text-gray-600">
+                Los códigos QR de las mesas expirarán después de este número de días.
+                Deja este campo vacío o en 0 para que los códigos nunca expiren
+                (recomendado si los códigos están impresos en las mesas).
+              </p>
+              {settings.qr_code_expiration_days > 0 && (
+                <div className="mt-3 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <p className="text-sm text-yellow-800">
+                    ⚠️ <strong>Nota:</strong> Los códigos QR expirarán después de{" "}
+                    {settings.qr_code_expiration_days} día
+                    {settings.qr_code_expiration_days !== 1 ? "s" : ""}.
+                    Tendrás que regenerarlos manualmente desde la gestión de mesas.
+                  </p>
+                </div>
+              )}
+              {(!settings.qr_code_expiration_days || settings.qr_code_expiration_days === 0) && (
+                <div className="mt-3 bg-green-50 border border-green-200 rounded-lg p-3">
+                  <p className="text-sm text-green-800">
+                    ✅ Los códigos QR nunca expirarán. Esto es ideal cuando los códigos están impresos en las mesas.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

@@ -96,17 +96,17 @@ const getSubdomain = () => {
 const getTableCode = () => {
   const pathname = window.location.pathname
   const pathParts = pathname.split('/').filter(Boolean)
-  
-  // Buscar código de mesa en la URL: /ABCD1234/
+
+  // Buscar código de mesa en la URL: /ABCD1234/ o /ABCD12345678/
   if (pathParts.length > 0) {
     const potentialTableCode = pathParts[0]
-    // Validar formato: 8 caracteres alfanuméricos
-    if (/^[A-Z0-9]{8}$/.test(potentialTableCode)) {
+    // Validar formato: 8-12 caracteres alfanuméricos (soporta códigos antiguos y nuevos)
+    if (/^[A-Z0-9]{8,12}$/.test(potentialTableCode)) {
       console.log('🪑 Table code detected:', potentialTableCode)
       return potentialTableCode
     }
   }
-  
+
   return null
 }
 
@@ -255,6 +255,16 @@ export const TenantProvider = ({ children }) => {
         if (tableError) {
           console.error('❌ Table not found:', tableError)
           throw new Error(`Mesa "${tableCode}" no encontrada`)
+        }
+
+        // Verificar si el código QR ha expirado
+        if (tableData.qr_code_expires_at) {
+          const expiresAt = new Date(tableData.qr_code_expires_at)
+          const now = new Date()
+          if (now > expiresAt) {
+            console.error('❌ QR Code expired:', tableData.unique_code, 'expired at', expiresAt)
+            throw new Error(`El código QR de esta mesa ha expirado. Por favor, solicita un código nuevo al personal.`)
+          }
         }
 
         setTable(tableData)

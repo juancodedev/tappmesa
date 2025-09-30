@@ -74,26 +74,49 @@ const QRGenerator = ({ tenantId }) => {
     const hostname = window.location.hostname
     const protocol = window.location.protocol
     const port = window.location.port
+    const tenantSlug = tenant.subdomain || tenant.slug
 
     // En desarrollo local con .local
     if (hostname.endsWith('.local')) {
-      const baseUrl = `http://${tenant.slug}.tappmesa.local${port ? ':' + port : ''}`
+      // Si ya estamos en el subdominio correcto, usar hostname actual
+      if (hostname.startsWith(tenantSlug)) {
+        return `${protocol}//${hostname}${port ? ':' + port : ''}/${table.unique_code}/`
+      }
+      const baseUrl = `http://${tenantSlug}.tappmesa.local${port ? ':' + port : ''}`
       return `${baseUrl}/${table.unique_code}/`
     }
 
     // En desarrollo con localhost
     if (hostname === 'localhost' || hostname.match(/^\d/)) {
-      const baseUrl = `${protocol}//${hostname}${port ? ':' + port : ''}?cafe=${tenant.slug}`
+      const baseUrl = `${protocol}//${hostname}${port ? ':' + port : ''}?cafe=${tenantSlug}`
       return `${baseUrl}&table=${table.unique_code}`
     }
 
-    // En producción con dominio personalizado
+    // En producción con Vercel: formato [nombre]-tappmesa.vercel.app
+    if (hostname.includes('.vercel.app')) {
+      // Si ya estamos en el subdominio correcto del tenant, usar hostname actual
+      if (hostname.startsWith(tenantSlug)) {
+        return `${protocol}//${hostname}/${table.unique_code}/`
+      }
+      // Si no, construir la URL con el formato correcto
+      return `${protocol}//${tenantSlug}.vercel.app/${table.unique_code}/`
+    }
+
+    // En producción con dominio personalizado tappmesa.com
     if (hostname.includes('tappmesa.com')) {
-      return `https://${tenant.slug}.tappmesa.com/${table.unique_code}/`
+      // Si ya estamos en el subdominio correcto, usar hostname actual
+      if (hostname.startsWith(tenantSlug)) {
+        return `${protocol}//${hostname}/${table.unique_code}/`
+      }
+      return `https://${tenantSlug}.tappmesa.com/${table.unique_code}/`
     }
 
     // Otros dominios personalizados
-    return `${protocol}//${tenant.slug}.${hostname}/${table.unique_code}/`
+    // Si ya estamos en el subdominio correcto, usar hostname actual
+    if (hostname.startsWith(tenantSlug)) {
+      return `${protocol}//${hostname}/${table.unique_code}/`
+    }
+    return `${protocol}//${tenantSlug}.${hostname}/${table.unique_code}/`
   }
 
   const copyToClipboard = async (text, tableId) => {

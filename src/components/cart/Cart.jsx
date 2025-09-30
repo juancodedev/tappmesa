@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCart } from '../../hooks/useCart'
 import { useTenant } from '../../hooks/useTenant'
+import { supabase } from '../../lib/supabase'
 import { X, Plus, Minus, ShoppingCart, Trash2, MessageSquare, CheckCircle, Clock } from 'lucide-react'
 
 const CartItem = ({ item }) => {
@@ -173,6 +174,54 @@ const Cart = () => {
   })
 
   const [orderResult, setOrderResult] = useState(null)
+  const [isReturningCustomer, setIsReturningCustomer] = useState(false)
+  const [checkingCustomer, setCheckingCustomer] = useState(false)
+
+  // Auto-fill table number when table context changes
+  useEffect(() => {
+    if (table?.number) {
+      setCustomerInfo(prev => ({
+        ...prev,
+        tableNumber: table.number
+      }))
+    }
+  }, [table])
+
+  // Check if customer is returning when phone number is entered
+  useEffect(() => {
+    const checkReturningCustomer = async () => {
+      if (!customerInfo.phone || customerInfo.phone.length < 8 || !tenant) return
+
+      setCheckingCustomer(true)
+      try {
+        const { data, error } = await supabase
+          .from('customers')
+          .select('name, phone, total_orders')
+          .eq('tenant_id', tenant.id)
+          .eq('phone', customerInfo.phone)
+          .single()
+
+        if (!error && data) {
+          setIsReturningCustomer(true)
+          setCustomerInfo(prev => ({
+            ...prev,
+            name: data.name || prev.name
+          }))
+        } else {
+          setIsReturningCustomer(false)
+        }
+      } catch (error) {
+        console.log('No customer found, treating as new customer')
+        setIsReturningCustomer(false)
+      } finally {
+        setCheckingCustomer(false)
+      }
+    }
+
+    // Debounce: solo buscar cuando el usuario deja de escribir por 1 segundo
+    const timeoutId = setTimeout(checkReturningCustomer, 1000)
+    return () => clearTimeout(timeoutId)
+  }, [customerInfo.phone, tenant])
 
   const handlePlaceOrder = async () => {
     if (isEmpty) return
@@ -314,27 +363,60 @@ const Cart = () => {
                   Información del pedido
                 </h3>
                 <div className="space-y-3">
-                  <input
-                    type="text"
-                    placeholder="Tu nombre"
-                    value={customerInfo.name}
-                    onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                  <input
-                    type="tel"
-                    placeholder="Número de teléfono"
-                    value={customerInfo.phone}
-                    onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Número de mesa (opcional)"
-                    value={customerInfo.tableNumber}
-                    onChange={(e) => setCustomerInfo({...customerInfo, tableNumber: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
+                  {/* Teléfono - primero para detectar cliente */}
+                  <div>
+                    <input
+                      type="tel"
+                      placeholder="Número de teléfono"
+                      value={customerInfo.phone}
+                      onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                    {checkingCustomer && (
+                      <p className="text-xs text-gray-500 mt-1">Verificando...</p>
+                    )}
+                    {isReturningCustomer && (
+                      <p className="text-xs text-green-600 mt-1">
+                        ✅ ¡Bienvenido de nuevo!
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Nombre */}
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Tu nombre"
+                      value={customerInfo.name}
+                      onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      disabled={isReturningCustomer && customerInfo.name}
+                    />
+                    {isReturningCustomer && customerInfo.name && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        Nombre guardado de tu última visita
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Mesa */}
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Número de mesa"
+                      value={customerInfo.tableNumber}
+                      onChange={(e) => setCustomerInfo({...customerInfo, tableNumber: e.target.value})}
+                      disabled={!!table}
+                      className={`w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${
+                        table ? 'bg-gray-50 cursor-not-allowed' : ''
+                      }`}
+                    />
+                    {table && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        Mesa detectada automáticamente
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             </>
