@@ -178,7 +178,10 @@ export function AuthProvider({ children }) {
         'analytics:read',
         'settings:read', 'settings:write',
         'customers:read', 'customers:write',
-        'inventory:read', 'inventory:write'
+        'inventory:read', 'inventory:write',
+        'qr:read', 'qr:write',
+        'categories:read', 'categories:write', 'categories:delete',
+        'reservations:read', 'reservations:write', 'reservations:delete'
       ];
 
       return tenantAdminPermissions.includes(`${resource}:${action}`);
