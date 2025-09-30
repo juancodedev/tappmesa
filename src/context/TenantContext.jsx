@@ -100,17 +100,21 @@ const getAppType = () => {
   const subdomain = getSubdomain()
   const tableCode = getTableCode()
 
-  // Admin específico - mejorada detección para local y producción
-  if (hostname.startsWith('admin.') ||
-      pathname.startsWith('/admin') ||
-      (hostname === 'localhost' && pathname.includes('/admin')) ||
-      (hostname.includes('local') && pathname.includes('/admin'))) {
-    return 'admin'
-  }
-
   // Si hay código de mesa, es una sesión de mesa
   if (subdomain && tableCode) {
     return 'table'
+  }
+
+  // Admin: diferenciar entre super admin global y admin de tenant
+  // Super Admin Global: tappmesa.vercel.app/admin, admin.tappmesa.com, localhost/admin SIN subdomain
+  if (pathname.startsWith('/admin') || hostname.startsWith('admin.')) {
+    // Si NO hay subdomain, es super admin global
+    if (!subdomain) {
+      return 'admin'
+    }
+    // Si HAY subdomain (ej: teteria-luna.tappmesa.vercel.app/admin)
+    // es el admin específico de ese tenant
+    return 'tenant'
   }
 
   // Si hay subdominio, es una cafetería
