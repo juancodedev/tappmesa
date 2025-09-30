@@ -9,12 +9,29 @@ class DirectAuthService {
 
   // Hash temporal (NO SEGURO - solo para development)
   async tempHashPassword(password) {
-    // Usar una función hash más compleja que Base64
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password + 'tappmesa-salt-2024');
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    try {
+      // Verificar si crypto.subtle está disponible
+      if (typeof crypto !== 'undefined' && crypto.subtle) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password + 'tappmesa-salt-2024');
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+    } catch (error) {
+      console.warn('crypto.subtle not available, using fallback hash');
+    }
+
+    // Fallback: simple hash para desarrollo sin crypto.subtle
+    // NO USAR EN PRODUCCIÓN - solo para desarrollo local
+    let hash = 0;
+    const str = password + 'tappmesa-salt-2024';
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash).toString(16).padStart(16, '0');
   }
 
   // Registro usando Supabase directamente
