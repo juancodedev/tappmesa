@@ -32,7 +32,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
         .from('products')
         .select('*')
         .eq('tenant_id', tenant.id)
-        .eq('is_active', true)
+        .eq('is_available', true)
         .order('name')
 
       if (error) {
