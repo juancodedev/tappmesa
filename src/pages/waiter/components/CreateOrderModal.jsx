@@ -179,8 +179,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
           subtotal,
           tax,
           total,
-          status: 'pending',
-          order_type: 'dine-in'
+          status: 'pending'
         })
         .select()
         .single()
