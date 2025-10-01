@@ -46,7 +46,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     if (!validateForm()) return
 
     setLoginLoading(true)
@@ -54,9 +54,18 @@ const LoginPage = () => {
 
     try {
       const result = await login(formData.email, formData.password)
-      
+
       if (result.success) {
-        navigate(from, { replace: true })
+        // Redirigir según el rol del usuario
+        const userRole = result.user?.role
+
+        if (userRole === 'waiter') {
+          // Garzones van a su dashboard específico
+          navigate('/waiter', { replace: true })
+        } else {
+          // Admins y otros roles van al admin panel
+          navigate(from, { replace: true })
+        }
       } else {
         setErrors({ form: result.error })
       }

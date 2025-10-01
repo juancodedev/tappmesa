@@ -97,7 +97,22 @@ const getTableCode = () => {
   const pathname = window.location.pathname
   const pathParts = pathname.split('/').filter(Boolean)
 
-  // Buscar código de mesa en la URL
+  // 1. Primero buscar en query param (para desarrollo con localhost)
+  const urlParams = new URLSearchParams(window.location.search)
+  const tableParam = urlParams.get('table')
+
+  if (tableParam) {
+    // Validar formato del código de mesa del query param
+    const isNewFormat = /^[A-Z0-9]{8,12}$/.test(tableParam)
+    const isOldFormat = /^[a-z0-9-]+-mesa-\d+$/.test(tableParam)
+
+    if (isNewFormat || isOldFormat) {
+      console.log('🪑 Table code detected (query param):', tableParam, isNewFormat ? '(new format)' : '(old format)')
+      return tableParam
+    }
+  }
+
+  // 2. Buscar código de mesa en el pathname
   if (pathParts.length > 0) {
     const potentialTableCode = pathParts[0]
 
@@ -108,7 +123,7 @@ const getTableCode = () => {
     const isOldFormat = /^[a-z0-9-]+-mesa-\d+$/.test(potentialTableCode)
 
     if (isNewFormat || isOldFormat) {
-      console.log('🪑 Table code detected:', potentialTableCode, isNewFormat ? '(new format)' : '(old format)')
+      console.log('🪑 Table code detected (pathname):', potentialTableCode, isNewFormat ? '(new format)' : '(old format)')
       return potentialTableCode
     }
   }

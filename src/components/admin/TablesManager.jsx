@@ -18,6 +18,7 @@ import {
 const TablesManager = () => {
   const { tenant: currentTenant } = useTenant()
   const [tables, setTables] = useState([])
+  const [tableStatuses, setTableStatuses] = useState([])
   const [loading, setLoading] = useState(true)
   const [showAddModal, setShowAddModal] = useState(false)
   const [selectedTable, setSelectedTable] = useState(null)
@@ -28,12 +29,14 @@ const TablesManager = () => {
   const [formData, setFormData] = useState({
     number: '',
     capacity: 2,
-    location: 'interior'
+    location: 'interior',
+    status_id: ''
   })
 
   useEffect(() => {
     if (currentTenant) {
       loadTables()
+      loadTableStatuses()
     }
   }, [currentTenant])
 
@@ -48,7 +51,10 @@ const TablesManager = () => {
 
       const { data, error } = await supabase
         .from('tables')
-        .select('*')
+        .select(`
+          *,
+          status:table_statuses(id, name, color, icon)
+        `)
         .eq('tenant_id', currentTenant.id)
         .order('number')
 
@@ -64,6 +70,32 @@ const TablesManager = () => {
       setTables([])
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadTableStatuses = async () => {
+    if (!currentTenant) return
+
+    try {
+      const { data, error } = await supabase
+        .from('table_statuses')
+        .select('*')
+        .eq('tenant_id', currentTenant.id)
+        .order('order_index', { ascending: true })
+
+      if (error) throw error
+
+      setTableStatuses(data || [])
+
+      // Set default status if creating new table
+      if (data && data.length > 0 && !formData.status_id) {
+        const availableStatus = data.find(s => s.name === 'Disponible')
+        if (availableStatus) {
+          setFormData(prev => ({ ...prev, status_id: availableStatus.id }))
+        }
+      }
+    } catch (error) {
+      console.error('Error loading table statuses:', error)
     }
   }
 
@@ -217,10 +249,15 @@ const TablesManager = () => {
 
   const handleAddTable = () => {
     setSelectedTable(null)
+
+    // Obtener el estado "Disponible" por defecto si existe
+    const availableStatus = tableStatuses.find(s => s.name === 'Disponible')
+
     setFormData({
       number: `Mesa ${tables.length + 1}`,
       capacity: 2,
-      location: 'interior'
+      location: 'interior',
+      status_id: availableStatus?.id || tableStatuses[0]?.id || ''
     })
     setShowAddModal(true)
   }
@@ -230,7 +267,8 @@ const TablesManager = () => {
     setFormData({
       number: table.number,
       capacity: table.capacity,
-      location: table.location
+      location: table.location,
+      status_id: table.status_id || ''
     })
     setShowAddModal(true)
     setShowActionsMenu(null)
@@ -258,13 +296,20 @@ const TablesManager = () => {
 
       if (selectedTable) {
         // Editar mesa existente
+        const updateData = {
+          number: formData.number.trim(),
+          capacity: parseInt(formData.capacity),
+          location: formData.location
+        }
+
+        // Solo agregar status_id si está definido
+        if (formData.status_id) {
+          updateData.status_id = formData.status_id
+        }
+
         const { error } = await supabase
           .from('tables')
-          .update({
-            number: formData.number.trim(),
-            capacity: parseInt(formData.capacity),
-            location: formData.location
-          })
+          .update(updateData)
           .eq('id', selectedTable.id)
 
         if (error) throw error
@@ -284,17 +329,23 @@ const TablesManager = () => {
         }
 
         // Crear nueva mesa
+        const insertData = {
+          tenant_id: currentTenant.id,
+          number: formData.number.trim(),
+          capacity: parseInt(formData.capacity),
+          location: formData.location,
+          unique_code: generateUniqueCode(),
+          is_active: true
+        }
+
+        // Agregar status_id si está definido
+        if (formData.status_id) {
+          insertData.status_id = formData.status_id
+        }
+
         const { error } = await supabase
           .from('tables')
-          .insert({
-            tenant_id: currentTenant.id,
-            number: formData.number.trim(),
-            capacity: parseInt(formData.capacity),
-            location: formData.location,
-            unique_code: generateUniqueCode(),
-            status: 'available',
-            is_active: true
-          })
+          .insert(insertData)
 
         if (error) throw error
         console.log('✅ Mesa creada')
@@ -639,6 +690,26 @@ const TablesManager = () => {
                   <option value="exterior">Exterior</option>
                 </select>
               </div>
+
+              {/* Estado */}
+              {tableStatuses.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Estado Inicial
+                  </label>
+                  <select
+                    value={formData.status_id}
+                    onChange={(e) => setFormData({ ...formData, status_id: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  >
+                    {tableStatuses.map((status) => (
+                      <option key={status.id} value={status.id}>
+                        {status.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               {/* Información adicional */}
               {!selectedTable && (

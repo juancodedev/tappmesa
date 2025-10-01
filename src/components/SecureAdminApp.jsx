@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
-import { 
-  LayoutDashboard, 
-  Coffee, 
-  Users, 
-  QrCode, 
-  BarChart3, 
-  Package, 
+import {
+  LayoutDashboard,
+  Coffee,
+  Users,
+  QrCode,
+  BarChart3,
+  Package,
   Settings,
   Menu,
   X,
@@ -15,7 +15,8 @@ import {
   Calendar,
   Tag,
   UserCheck,
-  Shield
+  Shield,
+  Circle
 } from 'lucide-react'
 
 import { useAuth } from '../hooks/useAuth'
@@ -24,6 +25,7 @@ import ProtectedRoute, { SuperAdminRoute, TenantAdminRoute } from './ProtectedRo
 // Importar componentes
 import Dashboard from './admin/Dashboard'
 import TablesManagerComponent from './admin/TablesManager'
+import TableStatusesManager from './admin/TableStatusesManager'
 import QRGenerator from './admin/QRGenerator'
 import UsersManagerComponent from './admin/UsersManager'
 import AnalyticsComponent from './admin/Analytics'
@@ -99,6 +101,12 @@ const SecureAdminApp = () => {
       name: 'Mesas',
       href: '/admin/tables',
       icon: Coffee,
+      requiredPermissions: ['tables:read']
+    },
+    {
+      name: 'Estados de Mesa',
+      href: '/admin/table-statuses',
+      icon: Circle,
       requiredPermissions: ['tables:read']
     },
     {
@@ -308,7 +316,13 @@ const SecureAdminApp = () => {
                 <TablesManagerComponent />
               </TenantAdminRoute>
             } />
-            
+
+            <Route path="/table-statuses" element={
+              <TenantAdminRoute requirePermissions={['tables:read']}>
+                <TableStatusesManager />
+              </TenantAdminRoute>
+            } />
+
             <Route path="/qr" element={
               <TenantAdminRoute requirePermissions={['qr:read']}>
                 <QRGenerator tenantId={user?.tenant_id} />
