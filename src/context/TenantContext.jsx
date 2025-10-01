@@ -97,12 +97,18 @@ const getTableCode = () => {
   const pathname = window.location.pathname
   const pathParts = pathname.split('/').filter(Boolean)
 
-  // Buscar código de mesa en la URL: /ABCD1234/ o /ABCD12345678/
+  // Buscar código de mesa en la URL
   if (pathParts.length > 0) {
     const potentialTableCode = pathParts[0]
-    // Validar formato: 8-12 caracteres alfanuméricos (soporta códigos antiguos y nuevos)
-    if (/^[A-Z0-9]{8,12}$/.test(potentialTableCode)) {
-      console.log('🪑 Table code detected:', potentialTableCode)
+
+    // Validar formatos soportados:
+    // 1. Formato nuevo: 8-12 caracteres alfanuméricos mayúsculas (ABCD12345678)
+    // 2. Formato antiguo: tenant-slug-mesa-N (coffee-co-mesa-1)
+    const isNewFormat = /^[A-Z0-9]{8,12}$/.test(potentialTableCode)
+    const isOldFormat = /^[a-z0-9-]+-mesa-\d+$/.test(potentialTableCode)
+
+    if (isNewFormat || isOldFormat) {
+      console.log('🪑 Table code detected:', potentialTableCode, isNewFormat ? '(new format)' : '(old format)')
       return potentialTableCode
     }
   }

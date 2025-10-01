@@ -77,6 +77,85 @@ const TablesManager = () => {
     return result
   }
 
+  // Detectar si un código es del formato antiguo
+  const isOldCodeFormat = (code) => {
+    // Formato antiguo: tenant-slug-mesa-N (ej: coffee-co-mesa-1)
+    return /^[a-z0-9-]+-mesa-\d+$/.test(code)
+  }
+
+  // Regenerar código de una mesa específica
+  const handleRegenerateCode = async (tableId) => {
+    if (!confirm('¿Regenerar el código QR de esta mesa? El código antiguo dejará de funcionar.')) {
+      return
+    }
+
+    try {
+      const newCode = generateUniqueCode()
+
+      const { error } = await supabase
+        .from('tables')
+        .update({
+          unique_code: newCode,
+          qr_code_generated_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', tableId)
+
+      if (error) throw error
+
+      console.log('✅ Código regenerado:', newCode)
+      alert(`Código regenerado exitosamente: ${newCode}`)
+      await loadTables()
+    } catch (error) {
+      console.error('Error regenerating code:', error)
+      alert('Error al regenerar el código: ' + error.message)
+    }
+  }
+
+  // Regenerar todos los códigos antiguos
+  const handleRegenerateAllOldCodes = async () => {
+    const oldCodeTables = tables.filter(t => isOldCodeFormat(t.unique_code))
+
+    if (oldCodeTables.length === 0) {
+      alert('No hay códigos antiguos para actualizar')
+      return
+    }
+
+    if (!confirm(
+      `¿Actualizar ${oldCodeTables.length} códigos antiguos a formato nuevo?\n\n` +
+      `ADVERTENCIA: Los códigos QR impresos antiguos dejarán de funcionar.`
+    )) {
+      return
+    }
+
+    try {
+      let updated = 0
+      for (const table of oldCodeTables) {
+        const newCode = generateUniqueCode()
+
+        const { error } = await supabase
+          .from('tables')
+          .update({
+            unique_code: newCode,
+            qr_code_generated_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', table.id)
+
+        if (!error) {
+          updated++
+          console.log(`✅ ${table.number}: ${table.unique_code} → ${newCode}`)
+        }
+      }
+
+      alert(`${updated} códigos actualizados correctamente`)
+      await loadTables()
+    } catch (error) {
+      console.error('Error regenerating codes:', error)
+      alert('Error al regenerar códigos: ' + error.message)
+    }
+  }
+
   const handleAddTable = () => {
     setSelectedTable(null)
     setFormData({
@@ -263,6 +342,8 @@ const TablesManager = () => {
     )
   }
 
+  const oldCodesCount = tables.filter(t => isOldCodeFormat(t.unique_code)).length
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -272,6 +353,19 @@ const TablesManager = () => {
           <p className="text-gray-600">
             Administra las mesas de {currentTenant?.name || 'tu local'}
           </p>
+          {oldCodesCount > 0 && (
+            <div className="mt-2 flex items-center space-x-2">
+              <span className="text-sm text-orange-600">
+                ⚠️ {oldCodesCount} mesa{oldCodesCount !== 1 ? 's' : ''} con código antiguo
+              </span>
+              <button
+                onClick={handleRegenerateAllOldCodes}
+                className="text-sm text-primary hover:text-red-700 underline"
+              >
+                Actualizar todas
+              </button>
+            </div>
+          )}
         </div>
         <button
           onClick={handleAddTable}
@@ -387,9 +481,24 @@ const TablesManager = () => {
               
               <div className="pt-2 border-t border-gray-100">
                 <p className="text-xs text-gray-500 mb-1">Código único:</p>
-                <code className="text-xs bg-gray-100 px-2 py-1 rounded font-mono">
-                  {table.unique_code}
-                </code>
+                <div className="flex items-center justify-between">
+                  <code className="text-xs bg-gray-100 px-2 py-1 rounded font-mono">
+                    {table.unique_code}
+                  </code>
+                  {isOldCodeFormat(table.unique_code) && (
+                    <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">
+                      Antiguo
+                    </span>
+                  )}
+                </div>
+                {isOldCodeFormat(table.unique_code) && (
+                  <button
+                    onClick={() => handleRegenerateCode(table.id)}
+                    className="mt-1 text-xs text-primary hover:text-red-700 underline"
+                  >
+                    Actualizar a nuevo formato
+                  </button>
+                )}
               </div>
             </div>
 
