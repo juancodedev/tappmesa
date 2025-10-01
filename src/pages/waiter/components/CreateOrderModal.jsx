@@ -236,7 +236,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
         {/* Content */}
         <div className="flex-1 overflow-hidden flex">
           {/* Left: Table Selection / Menu */}
-          <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex-1 overflow-y-auto p-6 max-h-[calc(90vh-80px)]">
             {currentStep === 'table' ? (
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Selecciona una mesa</h3>
@@ -346,7 +346,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
                 </h3>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-4">
+              <div className="flex-1 overflow-y-auto p-4 max-h-[calc(90vh-300px)]">
                 {cart.length === 0 ? (
                   <div className="text-center py-12">
                     <ShoppingCart className="w-12 h-12 text-gray-400 mx-auto mb-3" />
