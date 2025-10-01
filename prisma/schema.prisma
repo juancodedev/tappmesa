@@ -49,22 +49,26 @@ model admin_sessions {
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model admin_users {
-  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email            String             @unique @db.VarChar
-  password_hash    String             @db.VarChar
-  full_name        String             @db.VarChar
-  role             String?            @default("tenant_admin") @db.VarChar
-  tenant_id        String?            @db.Uuid
-  is_active        Boolean?           @default(true)
-  last_login       DateTime?          @db.Timestamptz(6)
-  created_at       DateTime?          @default(now()) @db.Timestamptz(6)
-  updated_at       DateTime?          @default(now()) @db.Timestamptz(6)
-  admin_audit_logs admin_audit_logs[]
-  admin_sessions   admin_sessions[]
-  tenants          tenants?           @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id                    String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                 String                  @unique @db.VarChar
+  password_hash         String                  @db.VarChar
+  full_name             String                  @db.VarChar
+  role                  String?                 @default("tenant_admin") @db.VarChar
+  tenant_id             String?                 @db.Uuid
+  is_active             Boolean?                @default(true)
+  last_login            DateTime?               @db.Timestamptz(6)
+  created_at            DateTime?               @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime?               @default(now()) @db.Timestamptz(6)
+  needs_password_reset  Boolean?                @default(false)
+  admin_audit_logs      admin_audit_logs[]
+  admin_sessions        admin_sessions[]
+  tenants               tenants?                @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  marketing_campaigns   marketing_campaigns[]
+  password_reset_tokens password_reset_tokens[]
 
   @@index([email], map: "idx_admin_users_email")
   @@index([tenant_id], map: "idx_admin_users_tenant")
+  @@index([tenant_id, is_active], map: "idx_admin_users_tenant_active")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -129,10 +133,14 @@ model customers {
   last_order_date          DateTime?                @db.Timestamptz(6)
   created_at               DateTime?                @default(now()) @db.Timestamptz(6)
   updated_at               DateTime?                @default(now()) @db.Timestamptz(6)
+  campaign_recipients      campaign_recipients[]
+  customer_coupons         customer_coupons[]
+  customer_loyalty         customer_loyalty[]
   customer_order_history   customer_order_history[]
   tenants                  tenants?                 @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([tenant_id, phone], map: "idx_customers_tenant_phone")
+  @@index([tenant_id], map: "idx_customers_tenant_active")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -199,10 +207,14 @@ model orders {
   created_at             DateTime?                @default(now()) @db.Timestamptz(6)
   table_session_id       String?                  @db.Uuid
   updated_at             DateTime?                @default(now()) @db.Timestamptz(6)
+  customer_coupons       customer_coupons[]
   customer_order_history customer_order_history[]
+  loyalty_transactions   loyalty_transactions[]
   order_items            order_items[]
   table_sessions         table_sessions?          @relation(fields: [table_session_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   tenants                tenants?                 @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([tenant_id, status], map: "idx_orders_tenant_status")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -232,6 +244,7 @@ model products {
   stock_movements     stock_movements[]
 
   @@unique([tenant_id, slug])
+  @@index([tenant_id, is_available], map: "idx_products_tenant_available")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -401,74 +414,308 @@ model table_sessions {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model tables {
-  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id      String?          @db.Uuid
-  number         String           @db.VarChar
-  capacity       Int
-  location       String?          @db.VarChar
-  unique_code    String?          @unique @db.VarChar
-  qr_code_url    String?
-  status         String?          @default("available") @db.VarChar
-  is_active      Boolean?         @default(true)
-  created_at     DateTime?        @default(now()) @db.Timestamptz(6)
-  table_sessions table_sessions[]
-  tenants        tenants?         @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id                   String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id            String?          @db.Uuid
+  number               String           @db.VarChar
+  capacity             Int
+  location             String?          @db.VarChar
+  unique_code          String?          @unique @db.VarChar
+  qr_code_url          String?
+  status               String?          @default("available") @db.VarChar
+  is_active            Boolean?         @default(true)
+  created_at           DateTime?        @default(now()) @db.Timestamptz(6)
+  qr_code_generated_at DateTime?        @default(now()) @db.Timestamptz(6)
+  qr_code_expires_at   DateTime?        @db.Timestamptz(6)
+  table_sessions       table_sessions[]
+  tenants              tenants?         @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([tenant_id, number])
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model tenant_settings {
-  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id             String?   @unique @db.Uuid
-  business_hours        Json?     @default("{\"friday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"monday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"sunday\": {\"open\": \"09:00\", \"close\": \"18:00\", \"closed\": false}, \"tuesday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"saturday\": {\"open\": \"09:00\", \"close\": \"21:00\", \"closed\": false}, \"thursday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"wednesday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}}")
-  tax_rate              Decimal?  @default(0.19) @db.Decimal(5, 4)
-  currency              String?   @default("CLP") @db.VarChar
-  order_auto_print      Boolean?  @default(false)
-  table_service_enabled Boolean?  @default(true)
-  takeaway_enabled      Boolean?  @default(true)
-  delivery_enabled      Boolean?  @default(false)
-  notifications         Json?     @default("{\"sms\": false, \"push\": true, \"email\": true}")
-  created_at            DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at            DateTime? @default(now()) @db.Timestamptz(6)
-  tenants               tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id                      String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id               String?   @unique @db.Uuid
+  business_hours          Json?     @default("{\"friday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"monday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"sunday\": {\"open\": \"09:00\", \"close\": \"18:00\", \"closed\": false}, \"tuesday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"saturday\": {\"open\": \"09:00\", \"close\": \"21:00\", \"closed\": false}, \"thursday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"wednesday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}}")
+  tax_rate                Decimal?  @default(0.19) @db.Decimal(5, 4)
+  currency                String?   @default("CLP") @db.VarChar
+  order_auto_print        Boolean?  @default(false)
+  table_service_enabled   Boolean?  @default(true)
+  takeaway_enabled        Boolean?  @default(true)
+  delivery_enabled        Boolean?  @default(false)
+  notifications           Json?     @default("{\"sms\": false, \"push\": true, \"email\": true}")
+  created_at              DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime? @default(now()) @db.Timestamptz(6)
+  qr_code_expiration_days Int?
+  tenants                 tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model tenants {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                 String                 @db.VarChar
+  slug                 String                 @unique @db.VarChar
+  subdomain            String?                @unique @db.VarChar
+  business_type        String?                @default("cafe") @db.VarChar
+  logo_url             String?
+  primary_color        String?                @default("#dc2626") @db.VarChar(7)
+  secondary_color      String?                @default("#f97316") @db.VarChar(7)
+  phone                String?                @db.VarChar
+  email                String?                @db.VarChar
+  address              String?
+  description          String?
+  timezone             String?                @default("America/Santiago") @db.VarChar
+  is_active            Boolean?               @default(true)
+  created_at           DateTime?              @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?              @default(now()) @db.Timestamptz(6)
+  admin_audit_logs     admin_audit_logs[]
+  admin_users          admin_users[]
+  business_hours       business_hours[]
+  categories           categories[]
+  coupons              coupons[]
+  customer_coupons     customer_coupons[]
+  customer_loyalty     customer_loyalty[]
+  customers            customers[]
+  inventory            inventory[]
+  inventory_movements  inventory_movements[]
+  loyalty_programs     loyalty_programs[]
+  loyalty_transactions loyalty_transactions[]
+  marketing_campaigns  marketing_campaigns[]
+  orders               orders[]
+  products             products[]
+  profiles             profiles[]
+  reservations         reservations[]
+  restaurant_tables    restaurant_tables[]
+  stock_alerts         stock_alerts[]
+  stock_inventory      stock_inventory[]
+  stock_movements      stock_movements[]
+  suppliers            suppliers[]
+  table_sessions       table_sessions[]
+  tables               tables[]
+  tenant_settings      tenant_settings?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model admin_users_backup_insecure {
+  id                String?   @db.Uuid
+  email             String?   @db.VarChar
+  old_password_hash String?   @db.VarChar
+  created_at        DateTime? @db.Timestamptz(6)
+
+  @@ignore
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model campaign_recipients {
+  id                  String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  campaign_id         String              @db.Uuid
+  customer_id         String              @db.Uuid
+  status              String?             @default("pending") @db.VarChar
+  sent_at             DateTime?           @db.Timestamptz(6)
+  delivered_at        DateTime?           @db.Timestamptz(6)
+  opened_at           DateTime?           @db.Timestamptz(6)
+  clicked_at          DateTime?           @db.Timestamptz(6)
+  error_message       String?
+  created_at          DateTime?           @default(now()) @db.Timestamptz(6)
+  marketing_campaigns marketing_campaigns @relation(fields: [campaign_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  customers           customers           @relation(fields: [customer_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([campaign_id, customer_id], map: "campaign_recipients_unique")
+  @@index([campaign_id], map: "idx_campaign_recipients_campaign")
+  @@index([customer_id], map: "idx_campaign_recipients_customer")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model coupons {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id            String                 @db.Uuid
+  code                 String                 @unique @db.VarChar
+  name                 String                 @db.VarChar
+  description          String?
+  discount_type        String                 @db.VarChar
+  discount_value       Decimal?               @db.Decimal(10, 2)
+  max_discount_amount  Decimal?               @db.Decimal(10, 2)
+  min_purchase_amount  Decimal?               @db.Decimal(10, 2)
+  applicable_to        String?                @db.VarChar
+  applicable_ids       String[]               @db.Uuid
+  usage_limit          Int?
+  usage_count          Int?                   @default(0)
+  usage_per_customer   Int?                   @default(1)
+  is_active            Boolean?               @default(true)
+  valid_from           DateTime?              @default(now()) @db.Timestamptz(6)
+  valid_until          DateTime?              @db.Timestamptz(6)
+  created_at           DateTime?              @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?              @default(now()) @db.Timestamptz(6)
+  tenants              tenants                @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  customer_coupons     customer_coupons[]
+  loyalty_transactions loyalty_transactions[]
+  marketing_campaigns  marketing_campaigns[]
+
+  @@index([tenant_id, is_active], map: "idx_coupons_active")
+  @@index([code], map: "idx_coupons_code")
+  @@index([tenant_id], map: "idx_coupons_tenant")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model customer_coupons {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id     String    @db.Uuid
+  coupon_id       String    @db.Uuid
+  tenant_id       String    @db.Uuid
+  assigned_at     DateTime? @default(now()) @db.Timestamptz(6)
+  assigned_by     String?   @db.VarChar
+  assigned_reason String?   @db.VarChar
+  is_used         Boolean?  @default(false)
+  used_at         DateTime? @db.Timestamptz(6)
+  order_id        String?   @db.Uuid
+  expires_at      DateTime? @db.Timestamptz(6)
+  created_at      DateTime? @default(now()) @db.Timestamptz(6)
+  coupons         coupons   @relation(fields: [coupon_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  customers       customers @relation(fields: [customer_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  orders          orders?   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tenants         tenants   @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([customer_id, coupon_id, id], map: "customer_coupons_unique")
+  @@index([coupon_id], map: "idx_customer_coupons_coupon")
+  @@index([customer_id], map: "idx_customer_coupons_customer")
+  @@index([customer_id, is_used], map: "idx_customer_coupons_unused")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model customer_loyalty {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id          String                 @db.Uuid
+  program_id           String                 @db.Uuid
+  tenant_id            String                 @db.Uuid
+  current_points       Int?                   @default(0)
+  total_points_earned  Int?                   @default(0)
+  current_visits       Int?                   @default(0)
+  total_visits         Int?                   @default(0)
+  current_stamps       Int?                   @default(0)
+  rewards_redeemed     Int?                   @default(0)
+  last_reward_date     DateTime?              @db.Timestamptz(6)
+  status               String?                @default("active") @db.VarChar
+  enrolled_at          DateTime?              @default(now()) @db.Timestamptz(6)
+  last_activity        DateTime?              @default(now()) @db.Timestamptz(6)
+  created_at           DateTime?              @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?              @default(now()) @db.Timestamptz(6)
+  customers            customers              @relation(fields: [customer_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  loyalty_programs     loyalty_programs       @relation(fields: [program_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tenants              tenants                @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  loyalty_transactions loyalty_transactions[]
+
+  @@unique([customer_id, program_id], map: "customer_loyalty_unique")
+  @@index([customer_id], map: "idx_customer_loyalty_customer")
+  @@index([program_id], map: "idx_customer_loyalty_program")
+  @@index([tenant_id], map: "idx_customer_loyalty_tenant")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model loyalty_programs {
+  id                 String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id          String             @db.Uuid
+  name               String             @db.VarChar
+  description        String?
+  program_type       String             @db.VarChar
+  points_per_dollar  Decimal?           @db.Decimal(10, 2)
+  points_per_visit   Int?
+  visits_required    Int?
+  reward_description String?            @db.VarChar
+  points_to_redeem   Int?
+  discount_type      String?            @db.VarChar
+  discount_value     Decimal?           @db.Decimal(10, 2)
+  is_active          Boolean?           @default(true)
+  start_date         DateTime?          @default(now()) @db.Timestamptz(6)
+  end_date           DateTime?          @db.Timestamptz(6)
+  created_at         DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime?          @default(now()) @db.Timestamptz(6)
+  customer_loyalty   customer_loyalty[]
+  tenants            tenants            @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([tenant_id, name], map: "loyalty_programs_tenant_name_unique")
+  @@index([tenant_id, is_active], map: "idx_loyalty_programs_active")
+  @@index([tenant_id], map: "idx_loyalty_programs_tenant")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model loyalty_transactions {
+  id                  String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_loyalty_id String           @db.Uuid
+  tenant_id           String           @db.Uuid
+  transaction_type    String           @db.VarChar
+  points_change       Int?             @default(0)
+  visits_change       Int?             @default(0)
+  stamps_change       Int?             @default(0)
+  order_id            String?          @db.Uuid
+  coupon_id           String?          @db.Uuid
+  description         String?          @db.VarChar
+  notes               String?
+  created_at          DateTime?        @default(now()) @db.Timestamptz(6)
+  created_by          String?          @db.VarChar
+  coupons             coupons?         @relation(fields: [coupon_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  customer_loyalty    customer_loyalty @relation(fields: [customer_loyalty_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  orders              orders?          @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tenants             tenants          @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([created_at], map: "idx_loyalty_transactions_created")
+  @@index([customer_loyalty_id], map: "idx_loyalty_transactions_customer_loyalty")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model marketing_campaigns {
   id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id           String                @db.Uuid
   name                String                @db.VarChar
-  slug                String                @unique @db.VarChar
-  subdomain           String?               @unique @db.VarChar
-  business_type       String?               @default("cafe") @db.VarChar
-  logo_url            String?
-  primary_color       String?               @default("#dc2626") @db.VarChar(7)
-  secondary_color     String?               @default("#f97316") @db.VarChar(7)
-  phone               String?               @db.VarChar
-  email               String?               @db.VarChar
-  address             String?
   description         String?
-  timezone            String?               @default("America/Santiago") @db.VarChar
-  is_active           Boolean?              @default(true)
+  campaign_type       String?               @db.VarChar
+  subject             String?               @db.VarChar
+  message             String
+  target_audience     String                @db.VarChar
+  custom_filter       Json?                 @db.Json
+  coupon_id           String?               @db.Uuid
+  status              String?               @default("draft") @db.VarChar
+  scheduled_at        DateTime?             @db.Timestamptz(6)
+  sent_at             DateTime?             @db.Timestamptz(6)
+  recipients_count    Int?                  @default(0)
+  sent_count          Int?                  @default(0)
+  delivered_count     Int?                  @default(0)
+  opened_count        Int?                  @default(0)
+  clicked_count       Int?                  @default(0)
   created_at          DateTime?             @default(now()) @db.Timestamptz(6)
+  created_by          String?               @db.Uuid
   updated_at          DateTime?             @default(now()) @db.Timestamptz(6)
-  admin_audit_logs    admin_audit_logs[]
-  admin_users         admin_users[]
-  business_hours      business_hours[]
-  categories          categories[]
-  customers           customers[]
-  inventory           inventory[]
-  inventory_movements inventory_movements[]
-  orders              orders[]
-  products            products[]
-  profiles            profiles[]
-  reservations        reservations[]
-  restaurant_tables   restaurant_tables[]
-  stock_alerts        stock_alerts[]
-  stock_inventory     stock_inventory[]
-  stock_movements     stock_movements[]
-  suppliers           suppliers[]
-  table_sessions      table_sessions[]
-  tables              tables[]
-  tenant_settings     tenant_settings?
+  campaign_recipients campaign_recipients[]
+  coupons             coupons?              @relation(fields: [coupon_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  admin_users         admin_users?          @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tenants             tenants               @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([status, scheduled_at], map: "idx_campaigns_status")
+  @@index([tenant_id], map: "idx_campaigns_tenant")
+}
+
+model password_reset_tokens {
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id     String      @db.Uuid
+  token       String      @unique @db.VarChar(255)
+  expires_at  DateTime    @db.Timestamptz(6)
+  used_at     DateTime?   @db.Timestamptz(6)
+  created_at  DateTime?   @default(now()) @db.Timestamptz(6)
+  admin_users admin_users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([expires_at], map: "idx_password_reset_tokens_expires")
+  @@index([token], map: "idx_password_reset_tokens_token")
+  @@index([user_id], map: "idx_password_reset_tokens_user")
 }

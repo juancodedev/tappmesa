@@ -92,7 +92,7 @@ const TablesManager = () => {
     try {
       const newCode = generateUniqueCode()
 
-      // Try with qr_code_generated_at first
+      // Try with all optional columns first
       let { error } = await supabase
         .from('tables')
         .update({
@@ -102,13 +102,13 @@ const TablesManager = () => {
         })
         .eq('id', tableId)
 
-      // If column doesn't exist, try without it
-      if (error && error.message?.includes('qr_code_generated_at')) {
+      // If columns don't exist, try with just unique_code
+      if (error && (error.message?.includes('qr_code_generated_at') || error.message?.includes('updated_at'))) {
+        console.warn('⚠️ Columnas opcionales missing, usando update básico')
         const result = await supabase
           .from('tables')
           .update({
-            unique_code: newCode,
-            updated_at: new Date().toISOString()
+            unique_code: newCode
           })
           .eq('id', tableId)
 
@@ -161,7 +161,7 @@ const TablesManager = () => {
         const newCode = generateUniqueCode()
         console.log(`🔄 Actualizando ${table.number}: ${table.unique_code} → ${newCode}`)
 
-        // First try with qr_code_generated_at (new schema)
+        // Try with all columns first (new schema)
         let { data, error } = await supabase
           .from('tables')
           .update({
@@ -172,14 +172,13 @@ const TablesManager = () => {
           .eq('id', table.id)
           .select()
 
-        // If fails due to missing column, try without it (old schema)
-        if (error && error.message?.includes('qr_code_generated_at')) {
-          console.warn('⚠️ qr_code_generated_at column missing, using simple update')
+        // If fails due to missing columns, try with fewer columns
+        if (error && (error.message?.includes('qr_code_generated_at') || error.message?.includes('updated_at'))) {
+          console.warn('⚠️ Columnas opcionales missing, usando update básico')
           const result = await supabase
             .from('tables')
             .update({
-              unique_code: newCode,
-              updated_at: new Date().toISOString()
+              unique_code: newCode
             })
             .eq('id', table.id)
             .select()

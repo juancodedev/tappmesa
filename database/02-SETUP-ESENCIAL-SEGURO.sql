@@ -87,6 +87,20 @@ END $$;
 -- PASO 3: AGREGAR COLUMNAS DE QR CODE (SI NO EXISTEN)
 -- ============================================================================
 
+-- Agregar updated_at a tables (si no existe)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'tables' AND column_name = 'updated_at'
+  ) THEN
+    ALTER TABLE tables ADD COLUMN updated_at TIMESTAMPTZ DEFAULT NOW();
+    RAISE NOTICE 'Columna updated_at agregada';
+  ELSE
+    RAISE NOTICE 'Columna updated_at ya existe';
+  END IF;
+END $$;
+
 -- Agregar qr_code_generated_at a tables
 DO $$
 BEGIN
@@ -248,7 +262,7 @@ BEGIN
   SELECT COUNT(*) INTO qr_columns
   FROM information_schema.columns
   WHERE table_name = 'tables'
-    AND column_name IN ('qr_code_generated_at', 'qr_code_expires_at');
+    AND column_name IN ('updated_at', 'qr_code_generated_at', 'qr_code_expires_at');
 
   RAISE NOTICE '';
   RAISE NOTICE '============================================================';
@@ -256,10 +270,10 @@ BEGIN
   RAISE NOTICE '============================================================';
   RAISE NOTICE 'Politicas RLS Orders: % (esperado: 4)', orders_policies;
   RAISE NOTICE 'Politicas RLS Tables: % (esperado: 4)', tables_policies;
-  RAISE NOTICE 'Columnas QR en Tables: % (esperado: 2)', qr_columns;
+  RAISE NOTICE 'Columnas QR en Tables: % (esperado: 3)', qr_columns;
   RAISE NOTICE '';
 
-  IF orders_policies >= 4 AND tables_policies >= 4 AND qr_columns = 2 THEN
+  IF orders_policies >= 4 AND tables_policies >= 4 AND qr_columns = 3 THEN
     RAISE NOTICE 'TODO CONFIGURADO CORRECTAMENTE';
     RAISE NOTICE '';
     RAISE NOTICE 'Proximos pasos:';
