@@ -65,7 +65,10 @@ BEGIN
 END $$;
 
 -- 5. Crear tabla de permisos por rol (para documentación y futuro uso)
-CREATE TABLE IF NOT EXISTS role_permissions (
+-- Primero eliminamos la tabla si existe para asegurar estructura correcta
+DROP TABLE IF EXISTS role_permissions CASCADE;
+
+CREATE TABLE role_permissions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   role VARCHAR(50) NOT NULL,
   resource VARCHAR(50) NOT NULL,
@@ -77,9 +80,6 @@ CREATE TABLE IF NOT EXISTS role_permissions (
 -- 6. Definir permisos para el rol waiter
 DO $$
 BEGIN
-  -- Limpiar permisos existentes del waiter
-  DELETE FROM role_permissions WHERE role = 'waiter';
-
   -- Insertar permisos del waiter
   INSERT INTO role_permissions (role, resource, actions) VALUES
     ('waiter', 'orders', ARRAY['read', 'create', 'update']),
@@ -93,6 +93,10 @@ BEGIN
   SET actions = EXCLUDED.actions;
 
   RAISE NOTICE '✓ Permisos del rol waiter configurados';
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE NOTICE '⚠️ Error al configurar permisos: %', SQLERRM;
+    RAISE NOTICE '⚠️ Continuando con el resto del script...';
 END $$;
 
 -- 7. Crear vista para facilitar consultas de permisos
