@@ -23,7 +23,10 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
   const loadProducts = async () => {
     setLoading(true)
     try {
-      console.log('🍽️ Cargando productos para tenant:', tenant.id)
+      console.log('🍽️ Cargando productos para tenant:', {
+        id: tenant.id,
+        name: tenant.name
+      })
 
       const { data, error } = await supabase
         .from('products')
@@ -33,15 +36,29 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
         .order('name')
 
       if (error) {
-        console.error('❌ Error cargando productos:', error)
+        console.error('❌ Error cargando productos:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code,
+          fullError: error
+        })
         throw error
       }
 
       console.log('✅ Productos cargados:', data?.length || 0)
+      if (data && data.length > 0) {
+        console.log('📦 Primeros productos:', data.slice(0, 3))
+      }
       setProducts(data || [])
     } catch (error) {
-      console.error('Error loading products:', error)
-      alert('Error al cargar productos: ' + error.message)
+      console.error('💥 Error loading products:', {
+        message: error?.message,
+        name: error?.name,
+        stack: error?.stack,
+        fullError: error
+      })
+      alert('Error al cargar productos: ' + (error?.message || 'Error desconocido'))
     } finally {
       setLoading(false)
     }
