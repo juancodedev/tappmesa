@@ -15,7 +15,7 @@
     "test:watch": "vitest --watch"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.2",
+    "@prisma/client": "^6.16.3",
     "@supabase/supabase-js": "^2.57.4",
     "@tailwindcss/vite": "^4.1.13",
     "@vercel/analytics": "^1.5.0",
@@ -23,7 +23,6 @@
     "clsx": "^2.1.1",
     "dotenv": "^17.2.2",
     "lucide-react": "^0.544.0",
-    "prisma": "^6.16.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.1"
@@ -46,6 +45,7 @@
     "globals": "^16.3.0",
     "jsdom": "^27.0.0",
     "postcss": "^8.5.6",
+    "prisma": "^6.16.3",
     "tailwindcss": "^4.1.13",
     "vite": "^7.1.2",
     "vitest": "^3.2.4"

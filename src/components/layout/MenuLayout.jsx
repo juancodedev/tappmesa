@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import Header from './Header'
+import CustomerMenuHeader from './CustomerMenuHeader'
 import SearchBar from '../menu/SearchBar'
 import CategoryTabs from '../menu/CategoryTabs'
 import MenuGrid from '../menu/MenuGrid'
 import Cart from '../cart/Cart'
 import FloatingCartButton from '../cart/FloatingCartButton'
+import TableOrdersHistory from '../table/TableOrdersHistory'
 
 const MenuLayout = ({ children }) => {
   const [showSearch, setShowSearch] = useState(false)
-  const [showMenu, setShowMenu] = useState(false)
+  const [showOrders, setShowOrders] = useState(false)
   const [activeCategory, setActiveCategory] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -31,11 +32,8 @@ const MenuLayout = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header fijo */}
-      <Header 
-        onMenuToggle={() => setShowMenu(!showMenu)}
-        onSearchToggle={handleSearchToggle}
-      />
+      {/* Header del menú del cliente */}
+      <CustomerMenuHeader onOrdersClick={() => setShowOrders(!showOrders)} />
 
       {/* Barra de búsqueda */}
       <SearchBar
@@ -55,32 +53,36 @@ const MenuLayout = ({ children }) => {
       {/* Contenido principal */}
       <main className={`px-4 pb-20 ${showSearch ? 'pt-32' : 'pt-28'}`}>
         {children ? children : (
-          <MenuGrid 
+          <MenuGrid
             activeCategory={activeCategory}
             searchTerm={searchTerm}
           />
         )}
       </main>
 
-      {/* Menu lateral (placeholder) */}
-      {showMenu && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
-          <div className="fixed top-0 right-0 h-full w-64 bg-white shadow-lg p-4">
-            <button
-              onClick={() => setShowMenu(false)}
-              className="mb-4 text-gray-600 hover:text-gray-900"
-            >
-              ✕ Cerrar
-            </button>
-            <div className="space-y-4">
-              <a href="#" className="block text-gray-700 hover:text-gray-900">Inicio</a>
-              <a href="#" className="block text-gray-700 hover:text-gray-900">Carrito</a>
-              <a href="#" className="block text-gray-700 hover:text-gray-900">Reservas</a>
-              <a href="#" className="block text-gray-700 hover:text-gray-900">Contacto</a>
+      {/* Modal de pedidos */}
+      {showOrders && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50" onClick={() => setShowOrders(false)}>
+          <div
+            className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-lg overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between z-10">
+              <h2 className="text-lg font-semibold text-gray-900">Mis Pedidos</h2>
+              <button
+                onClick={() => setShowOrders(false)}
+                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-4">
+              <TableOrdersHistory />
             </div>
           </div>
         </div>
       )}
+
       {/* Botón flotante del carrito */}
       <FloatingCartButton />
 

@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { Calendar, Clock, Users, Phone, Mail, User, MessageSquare, CheckCircle, AlertCircle } from 'lucide-react'
+import { Calendar, Clock, Users, Phone, Mail, User, MessageSquare, CheckCircle, AlertCircle, Armchair } from 'lucide-react'
 
 const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -10,12 +10,87 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
     reservation_date: '',
     reservation_time: '',
     party_size: 2,
+    table_id: '',
     special_requests: ''
   })
 
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
+  const [availableTables, setAvailableTables] = useState([])
+  const [loadingTables, setLoadingTables] = useState(false)
+
+  // Cargar mesas cuando el tenant está disponible
+  useEffect(() => {
+    if (tenantId) {
+      loadTables()
+    }
+  }, [tenantId])
+
+  // Recargar mesas cuando cambia party_size, date o time
+  useEffect(() => {
+    if (tenantId && formData.party_size && formData.reservation_date && formData.reservation_time) {
+      loadAvailableTables()
+    }
+  }, [formData.party_size, formData.reservation_date, formData.reservation_time])
+
+  const loadTables = async () => {
+    setLoadingTables(true)
+    try {
+      const { data, error } = await supabase
+        .from('tables')
+        .select('*')
+        .eq('tenant_id', tenantId)
+        .order('number', { ascending: true })
+
+      if (error) throw error
+      setAvailableTables(data || [])
+    } catch (err) {
+      console.error('Error loading tables:', err)
+    } finally {
+      setLoadingTables(false)
+    }
+  }
+
+  const loadAvailableTables = async () => {
+    if (!formData.reservation_date || !formData.reservation_time) return
+
+    setLoadingTables(true)
+    try {
+      // Obtener todas las mesas del tenant
+      const { data: allTables, error: tablesError } = await supabase
+        .from('tables')
+        .select('*')
+        .eq('tenant_id', tenantId)
+        .gte('capacity', formData.party_size)
+        .order('number', { ascending: true })
+
+      if (tablesError) throw tablesError
+
+      // Obtener reservas existentes para la fecha/hora seleccionada
+      const reservationDateTime = `${formData.reservation_date} ${formData.reservation_time}`
+      const { data: existingReservations, error: reservationsError } = await supabase
+        .from('reservations')
+        .select('table_id')
+        .eq('tenant_id', tenantId)
+        .eq('status', 'confirmed')
+        .gte('reservation_date', formData.reservation_date)
+        .lte('reservation_date', formData.reservation_date)
+
+      if (reservationsError) throw reservationsError
+
+      // Filtrar mesas ya reservadas
+      const reservedTableIds = new Set(existingReservations?.map(r => r.table_id) || [])
+      const available = (allTables || []).filter(table => !reservedTableIds.has(table.id))
+
+      setAvailableTables(available)
+    } catch (err) {
+      console.error('Error loading available tables:', err)
+      setAvailableTables([])
+    } finally {
+      setLoadingTables(false)
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -50,6 +125,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
           reservation_date: formData.reservation_date,
           reservation_time: formData.reservation_time,
           party_size: parseInt(formData.party_size),
+          table_id: formData.table_id || null,
           special_requests: formData.special_requests.trim() || null,
           status: 'pending' // Cambiar a pending para que el admin confirme
         })
@@ -68,6 +144,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
         reservation_date: '',
         reservation_time: '',
         party_size: 2,
+        table_id: '',
         special_requests: ''
       })
 
@@ -249,6 +326,45 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
             </select>
           </div>
         </div>
+
+        {/* Selección de mesa */}
+        {formData.reservation_date && formData.reservation_time && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Mesa preferida (opcional)
+            </label>
+            <div className="relative">
+              <Armchair className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <select
+                name="table_id"
+                value={formData.table_id}
+                onChange={handleChange}
+                disabled={loadingTables}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-white disabled:bg-gray-100 disabled:cursor-not-allowed"
+              >
+                <option value="">Cualquier mesa disponible</option>
+                {availableTables.map((table) => (
+                  <option key={table.id} value={table.id}>
+                    Mesa {table.number} - Capacidad: {table.capacity} personas
+                  </option>
+                ))}
+              </select>
+            </div>
+            {loadingTables && (
+              <p className="text-xs text-gray-500 mt-1">Cargando mesas disponibles...</p>
+            )}
+            {!loadingTables && availableTables.length === 0 && (
+              <p className="text-xs text-amber-600 mt-1">
+                ⚠️ No hay mesas disponibles para la fecha y hora seleccionadas con capacidad para {formData.party_size} personas
+              </p>
+            )}
+            {!loadingTables && availableTables.length > 0 && (
+              <p className="text-xs text-green-600 mt-1">
+                ✓ {availableTables.length} mesa{availableTables.length !== 1 ? 's' : ''} disponible{availableTables.length !== 1 ? 's' : ''}
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Solicitudes especiales */}
         <div>
