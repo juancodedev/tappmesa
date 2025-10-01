@@ -23,6 +23,8 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
   const loadProducts = async () => {
     setLoading(true)
     try {
+      console.log('🍽️ Cargando productos para tenant:', tenant.id)
+
       const { data, error } = await supabase
         .from('products')
         .select('*')
@@ -30,10 +32,16 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
         .eq('is_active', true)
         .order('name')
 
-      if (error) throw error
+      if (error) {
+        console.error('❌ Error cargando productos:', error)
+        throw error
+      }
+
+      console.log('✅ Productos cargados:', data?.length || 0)
       setProducts(data || [])
     } catch (error) {
       console.error('Error loading products:', error)
+      alert('Error al cargar productos: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -321,6 +329,18 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
                   <div className="text-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
                     <p className="text-gray-600">Cargando productos...</p>
+                  </div>
+                ) : filteredProducts.length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Search className="w-8 h-8 text-gray-400" />
+                    </div>
+                    <p className="text-gray-900 font-medium mb-2">No se encontraron productos</p>
+                    <p className="text-sm text-gray-600">
+                      {searchTerm || activeCategory !== 'all'
+                        ? 'Intenta con otro filtro o búsqueda'
+                        : 'No hay productos disponibles para este local'}
+                    </p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
