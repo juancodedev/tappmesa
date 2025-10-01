@@ -114,7 +114,18 @@ const TablesManager = () => {
 
   // Regenerar todos los códigos antiguos
   const handleRegenerateAllOldCodes = async () => {
+    console.log('🔄 Iniciando migración de códigos...')
+    console.log('📊 Total de mesas:', tables.length)
+
+    // Debug: mostrar todos los códigos
+    tables.forEach(t => {
+      const isOld = isOldCodeFormat(t.unique_code)
+      console.log(`Mesa "${t.number}": ${t.unique_code} → ${isOld ? '⚠️ ANTIGUO' : '✅ NUEVO'}`)
+    })
+
     const oldCodeTables = tables.filter(t => isOldCodeFormat(t.unique_code))
+
+    console.log('📋 Mesas con código antiguo encontradas:', oldCodeTables.length)
 
     if (oldCodeTables.length === 0) {
       alert('No hay códigos antiguos para actualizar')
@@ -130,10 +141,13 @@ const TablesManager = () => {
 
     try {
       let updated = 0
+      let errors = []
+
       for (const table of oldCodeTables) {
         const newCode = generateUniqueCode()
+        console.log(`🔄 Actualizando ${table.number}: ${table.unique_code} → ${newCode}`)
 
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('tables')
           .update({
             unique_code: newCode,
@@ -141,17 +155,32 @@ const TablesManager = () => {
             updated_at: new Date().toISOString()
           })
           .eq('id', table.id)
+          .select()
 
-        if (!error) {
+        if (error) {
+          console.error(`❌ Error en ${table.number}:`, error)
+          errors.push(`${table.number}: ${error.message}`)
+        } else if (data && data.length > 0) {
           updated++
           console.log(`✅ ${table.number}: ${table.unique_code} → ${newCode}`)
+        } else {
+          console.warn(`⚠️ No se actualizó ${table.number} (no data returned)`)
+          errors.push(`${table.number}: No se encontró la mesa`)
         }
       }
 
-      alert(`${updated} códigos actualizados correctamente`)
+      console.log(`📊 Resultado: ${updated} actualizadas, ${errors.length} errores`)
+
+      if (errors.length > 0) {
+        console.error('❌ Errores:', errors)
+        alert(`${updated} códigos actualizados, ${errors.length} errores:\n${errors.join('\n')}`)
+      } else {
+        alert(`${updated} códigos actualizados correctamente`)
+      }
+
       await loadTables()
     } catch (error) {
-      console.error('Error regenerating codes:', error)
+      console.error('💥 Error crítico:', error)
       alert('Error al regenerar códigos: ' + error.message)
     }
   }
