@@ -61,12 +61,6 @@ const TableApp = () => {
                   {table.number} • {table.location}
                 </p>
               </div>
-              <div className="text-right">
-                <p className="text-xs text-gray-500">Sesión</p>
-                <p className="text-sm font-mono text-gray-700">
-                  {tableSession?.session_code || "Cargando..."}
-                </p>
-              </div>
             </div>
           </div>
 

@@ -44,12 +44,24 @@ const TablesGrid = ({ tables, activeSessions, view, onCreateOrder, onRefresh }) 
 
     setUpdatingTable(session.table_id)
     try {
+      // Cerrar sesión
       const { error } = await supabase
         .from('table_sessions')
         .update({ status: 'closed', ended_at: new Date().toISOString() })
         .eq('id', session.id)
 
       if (error) throw error
+
+      // Cambiar estado de la mesa a "disponible" automáticamente
+      const { error: tableError } = await supabase
+        .from('tables')
+        .update({ status: 'available' })
+        .eq('id', session.table_id)
+
+      if (tableError) {
+        console.error('Error updating table status:', tableError)
+        // No lanzamos error para no bloquear el flujo principal
+      }
 
       onRefresh()
     } catch (error) {

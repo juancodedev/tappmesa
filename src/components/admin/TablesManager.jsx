@@ -343,13 +343,12 @@ const TablesManager = () => {
           return
         }
 
-        // Crear nueva mesa
+        // Crear nueva mesa (sin código QR - se generará a petición)
         const insertData = {
           tenant_id: currentTenant.id,
           number: formData.number.trim(),
           capacity: parseInt(formData.capacity),
           location: formData.location,
-          unique_code: generateUniqueCode(),
           is_active: true
         }
 
@@ -361,8 +360,7 @@ const TablesManager = () => {
         console.log('📝 Creando mesa con datos:', {
           tenant_id: insertData.tenant_id,
           tenant_name: currentTenant.name,
-          number: insertData.number,
-          unique_code: insertData.unique_code
+          number: insertData.number
         })
 
         const { data: createdTable, error } = await supabase
@@ -420,7 +418,41 @@ const TablesManager = () => {
     setShowActionsMenu(null)
   }
 
+  const handleGenerateQR = async (tableId) => {
+    if (!confirm('¿Generar código QR para esta mesa?')) {
+      return
+    }
+
+    try {
+      const newCode = generateUniqueCode()
+
+      const { error } = await supabase
+        .from('tables')
+        .update({
+          unique_code: newCode,
+          qr_code_generated_at: new Date().toISOString()
+        })
+        .eq('id', tableId)
+
+      if (error) throw error
+
+      alert('¡Código QR generado exitosamente!')
+      await loadTables()
+    } catch (error) {
+      console.error('Error generating QR:', error)
+      alert('Error al generar el código QR: ' + error.message)
+    }
+  }
+
   const handleViewQR = (table) => {
+    if (!table.unique_code) {
+      if (confirm('Esta mesa no tiene código QR. ¿Deseas generarlo ahora?')) {
+        handleGenerateQR(table.id)
+      }
+      setShowActionsMenu(null)
+      return
+    }
+
     // Abrir página de QR en nueva pestaña
     const url = `/admin/qr?table=${table.id}`
     window.open(url, '_blank')
@@ -773,7 +805,7 @@ const TablesManager = () => {
               {!selectedTable && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                   <p className="text-sm text-blue-700">
-                    <strong>📝 Nota:</strong> Se generará automáticamente un código QR único para esta mesa.
+                    <strong>📝 Nota:</strong> Podrás generar un código QR para esta mesa después de crearla usando el botón "Ver QR".
                   </p>
                 </div>
               )}

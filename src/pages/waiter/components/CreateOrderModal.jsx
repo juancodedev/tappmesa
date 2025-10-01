@@ -192,6 +192,19 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
 
       if (updateSessionError) throw updateSessionError
 
+      // 7. Cambiar estado de la mesa a "ocupada" automáticamente
+      const { error: updateTableError } = await supabase
+        .from('tables')
+        .update({
+          status: 'occupied'
+        })
+        .eq('id', selectedTableId)
+
+      if (updateTableError) {
+        console.error('Error updating table status:', updateTableError)
+        // No lanzamos error para no bloquear el flujo principal
+      }
+
       onSuccess()
     } catch (error) {
       console.error('Error creating order:', error)
