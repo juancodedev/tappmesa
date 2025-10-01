@@ -56,14 +56,51 @@ const LoginPage = () => {
       const result = await login(formData.email, formData.password)
 
       if (result.success) {
-        // Redirigir según el rol del usuario
-        const userRole = result.user?.role
+        const user = result.user
+        const tenant = user?.tenant
 
-        if (userRole === 'waiter') {
-          // Garzones van a su dashboard específico
+        // Si el usuario tiene un tenant, redirigir a su subdominio
+        if (tenant && tenant.subdomain) {
+          const currentHost = window.location.hostname
+          const currentPort = window.location.port
+          const protocol = window.location.protocol
+
+          // Determinar el destino según el rol
+          const destination = user.role === 'waiter' ? '/waiter' : '/admin'
+
+          // Verificar si ya estamos en el subdominio correcto
+          const isOnCorrectSubdomain = currentHost.startsWith(tenant.subdomain)
+
+          if (!isOnCorrectSubdomain) {
+            // Construir URL del subdominio
+            let targetHost = ''
+
+            if (currentHost === 'localhost' || currentHost.endsWith('.localhost')) {
+              // Desarrollo local
+              targetHost = `${tenant.subdomain}.localhost${currentPort ? ':' + currentPort : ''}`
+            } else if (currentHost.includes('vercel.app')) {
+              // Producción Vercel
+              targetHost = `${tenant.subdomain}.vercel.app`
+            } else {
+              // Otro entorno (custom domain)
+              targetHost = `${tenant.subdomain}.${currentHost}`
+            }
+
+            // Obtener el token de sesión para pasarlo al nuevo subdominio
+            const sessionToken = localStorage.getItem('tappmesa-session')
+
+            // Redirigir al subdominio con el token en la URL (será capturado y guardado)
+            const targetUrl = `${protocol}//${targetHost}${destination}?token=${encodeURIComponent(sessionToken)}`
+            console.log('🔄 Redirigiendo a subdominio del tenant:', targetHost)
+            window.location.href = targetUrl
+            return
+          }
+        }
+
+        // Si no tiene tenant o ya está en el subdominio correcto, usar navegación normal
+        if (user.role === 'waiter') {
           navigate('/waiter', { replace: true })
         } else {
-          // Admins y otros roles van al admin panel
           navigate(from, { replace: true })
         }
       } else {

@@ -58,6 +58,19 @@ export function AuthProvider({ children }) {
 
   // Verificar autenticación al cargar
   useEffect(() => {
+    // Capturar token de la URL si existe (viene de redirección de login)
+    const urlParams = new URLSearchParams(window.location.search)
+    const tokenFromUrl = urlParams.get('token')
+
+    if (tokenFromUrl) {
+      console.log('🔑 Token capturado de URL, guardando en localStorage')
+      localStorage.setItem('tappmesa-session', tokenFromUrl)
+
+      // Limpiar el token de la URL por seguridad
+      const cleanUrl = window.location.pathname
+      window.history.replaceState({}, document.title, cleanUrl)
+    }
+
     checkAuthStatus();
   }, []);
 
