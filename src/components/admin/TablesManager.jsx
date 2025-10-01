@@ -92,7 +92,8 @@ const TablesManager = () => {
     try {
       const newCode = generateUniqueCode()
 
-      const { error } = await supabase
+      // Try with qr_code_generated_at first
+      let { error } = await supabase
         .from('tables')
         .update({
           unique_code: newCode,
@@ -100,6 +101,19 @@ const TablesManager = () => {
           updated_at: new Date().toISOString()
         })
         .eq('id', tableId)
+
+      // If column doesn't exist, try without it
+      if (error && error.message?.includes('qr_code_generated_at')) {
+        const result = await supabase
+          .from('tables')
+          .update({
+            unique_code: newCode,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', tableId)
+
+        error = result.error
+      }
 
       if (error) throw error
 
@@ -147,7 +161,8 @@ const TablesManager = () => {
         const newCode = generateUniqueCode()
         console.log(`🔄 Actualizando ${table.number}: ${table.unique_code} → ${newCode}`)
 
-        const { data, error } = await supabase
+        // First try with qr_code_generated_at (new schema)
+        let { data, error } = await supabase
           .from('tables')
           .update({
             unique_code: newCode,
@@ -156,6 +171,22 @@ const TablesManager = () => {
           })
           .eq('id', table.id)
           .select()
+
+        // If fails due to missing column, try without it (old schema)
+        if (error && error.message?.includes('qr_code_generated_at')) {
+          console.warn('⚠️ qr_code_generated_at column missing, using simple update')
+          const result = await supabase
+            .from('tables')
+            .update({
+              unique_code: newCode,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', table.id)
+            .select()
+
+          data = result.data
+          error = result.error
+        }
 
         if (error) {
           console.error(`❌ Error en ${table.number}:`, error)
