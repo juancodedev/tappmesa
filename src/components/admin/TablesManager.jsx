@@ -128,8 +128,10 @@ const TablesManager = () => {
 
   // Detectar si un código es del formato antiguo
   const isOldCodeFormat = (code) => {
-    // Formato antiguo: tenant-slug-mesa-N (ej: coffee-co-mesa-1)
-    return /^[a-z0-9-]+-mesa-\d+$/.test(code)
+    if (!code) return false
+    // Formato antiguo: tenant-slug-mesa-N (ej: coffee-co-mesa-1, caf-central-mesa-1)
+    // También detecta códigos con caracteres especiales mal codificados
+    return /^[a-z0-9-]+-mesa-\d+$/i.test(code) || code.includes('-mesa-')
   }
 
   // Regenerar código de una mesa específica
@@ -177,32 +179,55 @@ const TablesManager = () => {
 
   // Regenerar todos los códigos antiguos
   const handleRegenerateAllOldCodes = async () => {
+    if (!currentTenant) {
+      alert('Error: No se ha cargado el tenant')
+      return
+    }
+
     console.log('🔄 Iniciando migración de códigos...')
-    console.log('📊 Total de mesas:', tables.length)
-
-    // Debug: mostrar todos los códigos
-    tables.forEach(t => {
-      const isOld = isOldCodeFormat(t.unique_code)
-      console.log(`Mesa "${t.number}": ${t.unique_code} → ${isOld ? '⚠️ ANTIGUO' : '✅ NUEVO'}`)
-    })
-
-    const oldCodeTables = tables.filter(t => isOldCodeFormat(t.unique_code))
-
-    console.log('📋 Mesas con código antiguo encontradas:', oldCodeTables.length)
-
-    if (oldCodeTables.length === 0) {
-      alert('No hay códigos antiguos para actualizar')
-      return
-    }
-
-    if (!confirm(
-      `¿Actualizar ${oldCodeTables.length} códigos antiguos a formato nuevo?\n\n` +
-      `ADVERTENCIA: Los códigos QR impresos antiguos dejarán de funcionar.`
-    )) {
-      return
-    }
 
     try {
+      // Cargar TODAS las mesas del tenant desde la base de datos
+      const { data: allTables, error: loadError } = await supabase
+        .from('tables')
+        .select('*')
+        .eq('tenant_id', currentTenant.id)
+
+      if (loadError) {
+        console.error('Error cargando mesas:', loadError)
+        alert('Error al cargar mesas: ' + loadError.message)
+        return
+      }
+
+      console.log('📊 Total de mesas en BD:', allTables?.length || 0)
+
+      if (!allTables || allTables.length === 0) {
+        alert('No se encontraron mesas para actualizar')
+        return
+      }
+
+      // Debug: mostrar todos los códigos
+      allTables.forEach(t => {
+        const isOld = isOldCodeFormat(t.unique_code)
+        console.log(`Mesa "${t.number}": ${t.unique_code} → ${isOld ? '⚠️ ANTIGUO' : '✅ NUEVO'}`)
+      })
+
+      const oldCodeTables = allTables.filter(t => isOldCodeFormat(t.unique_code))
+
+      console.log('📋 Mesas con código antiguo encontradas:', oldCodeTables.length)
+
+      if (oldCodeTables.length === 0) {
+        alert('No hay códigos antiguos para actualizar')
+        return
+      }
+
+      if (!confirm(
+        `¿Actualizar ${oldCodeTables.length} códigos antiguos a formato nuevo?\n\n` +
+        `ADVERTENCIA: Los códigos QR impresos antiguos dejarán de funcionar.`
+      )) {
+        return
+      }
+
       let updated = 0
       let errors = []
 
@@ -254,7 +279,7 @@ const TablesManager = () => {
         console.error('❌ Errores:', errors)
         alert(`${updated} códigos actualizados, ${errors.length} errores:\n${errors.join('\n')}`)
       } else {
-        alert(`${updated} códigos actualizados correctamente`)
+        alert(`✅ ${updated} códigos actualizados correctamente. Recarga la página para ver los cambios.`)
       }
 
       await loadTables()

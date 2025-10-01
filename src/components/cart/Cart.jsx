@@ -365,20 +365,41 @@ const Cart = () => {
                 <div className="space-y-3">
                   {/* Teléfono - primero para detectar cliente */}
                   <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Número de teléfono
+                    </label>
                     <input
                       type="tel"
-                      placeholder="Número de teléfono"
+                      placeholder="Ej: +56912345678"
                       value={customerInfo.phone}
                       onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
+                    {!customerInfo.phone && (
+                      <div className="mt-2 bg-gradient-to-r from-primary/10 to-red-50 border border-primary/30 rounded-lg p-3">
+                        <div className="flex items-start space-x-2">
+                          <span className="text-lg">🎁</span>
+                          <div>
+                            <p className="text-sm font-semibold text-primary mb-1">
+                              ¡Únete a nuestro programa de fidelidad!
+                            </p>
+                            <p className="text-xs text-gray-700">
+                              Regístrate y obtén <strong>descuentos exclusivos</strong>, promociones especiales y acumula puntos en cada compra. ¡Tu próximo café podría ser gratis! ☕
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     {checkingCustomer && (
                       <p className="text-xs text-gray-500 mt-1">Verificando...</p>
                     )}
                     {isReturningCustomer && (
-                      <p className="text-xs text-green-600 mt-1">
-                        ✅ ¡Bienvenido de nuevo!
-                      </p>
+                      <div className="mt-2 bg-green-50 border border-green-200 rounded-lg p-2">
+                        <p className="text-xs text-green-700 font-medium flex items-center space-x-1">
+                          <span>✅</span>
+                          <span>¡Bienvenido de nuevo! Gracias por tu preferencia</span>
+                        </p>
+                      </div>
                     )}
                   </div>
 
