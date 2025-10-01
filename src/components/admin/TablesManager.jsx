@@ -57,10 +57,7 @@ const TablesManager = () => {
 
       const { data, error } = await supabase
         .from('tables')
-        .select(`
-          *,
-          status:table_statuses(id, name, color, icon)
-        `)
+        .select('*')
         .eq('tenant_id', currentTenant.id)
         .order('number')
 
@@ -68,8 +65,13 @@ const TablesManager = () => {
         console.error('❌ Error al cargar mesas desde Supabase:', error)
         setTables([])
       } else {
-        setTables(data || [])
-        console.log('✅ Mesas cargadas para tenant', currentTenant.name + ':', data?.length || 0)
+        // Asegurar que todas las mesas tengan un status válido
+        const tablesWithStatus = (data || []).map(table => ({
+          ...table,
+          status: table.status || 'available'
+        }))
+        setTables(tablesWithStatus)
+        console.log('✅ Mesas cargadas para tenant', currentTenant.name + ':', tablesWithStatus.length)
 
         // VALIDACIÓN: Verificar que todas las mesas pertenecen al tenant correcto
         if (data && data.length > 0) {
