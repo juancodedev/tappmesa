@@ -42,12 +42,18 @@ const TablesManager = () => {
 
   const loadTables = async () => {
     if (!currentTenant) {
+      console.warn('⚠️ No se puede cargar mesas: currentTenant es null')
       setLoading(false)
       return
     }
 
     try {
       setLoading(true)
+
+      console.log('🔍 Cargando mesas para tenant:', {
+        tenant_id: currentTenant.id,
+        tenant_name: currentTenant.name
+      })
 
       const { data, error } = await supabase
         .from('tables')
@@ -59,14 +65,23 @@ const TablesManager = () => {
         .order('number')
 
       if (error) {
-        console.warn('No se pudo cargar mesas desde Supabase:', error)
+        console.error('❌ Error al cargar mesas desde Supabase:', error)
         setTables([])
       } else {
         setTables(data || [])
-        console.log('✅ Mesas cargadas:', data?.length || 0)
+        console.log('✅ Mesas cargadas para tenant', currentTenant.name + ':', data?.length || 0)
+
+        // VALIDACIÓN: Verificar que todas las mesas pertenecen al tenant correcto
+        if (data && data.length > 0) {
+          const wrongTenantTables = data.filter(t => t.tenant_id !== currentTenant.id)
+          if (wrongTenantTables.length > 0) {
+            console.error('🚨 ALERTA DE SEGURIDAD: Se cargaron mesas de otros tenants:', wrongTenantTables)
+            alert('Error de seguridad: Se detectaron mesas de otros locales. Contacta a soporte.')
+          }
+        }
       }
     } catch (error) {
-      console.error('Error loading tables:', error)
+      console.error('❌ Error loading tables:', error)
       setTables([])
     } finally {
       setLoading(false)
@@ -343,12 +358,32 @@ const TablesManager = () => {
           insertData.status_id = formData.status_id
         }
 
-        const { error } = await supabase
+        console.log('📝 Creando mesa con datos:', {
+          tenant_id: insertData.tenant_id,
+          tenant_name: currentTenant.name,
+          number: insertData.number,
+          unique_code: insertData.unique_code
+        })
+
+        const { data: createdTable, error } = await supabase
           .from('tables')
           .insert(insertData)
+          .select()
+          .single()
 
         if (error) throw error
-        console.log('✅ Mesa creada')
+
+        // VALIDACIÓN: Verificar que la mesa creada tiene el tenant_id correcto
+        if (createdTable && createdTable.tenant_id !== currentTenant.id) {
+          console.error('🚨 ALERTA DE SEGURIDAD: Mesa creada con tenant_id incorrecto!', {
+            expected: currentTenant.id,
+            actual: createdTable.tenant_id,
+            table: createdTable
+          })
+          throw new Error('Error de seguridad: La mesa se creó con un tenant_id incorrecto')
+        }
+
+        console.log('✅ Mesa creada exitosamente para tenant:', currentTenant.name)
       }
 
       // Recargar mesas
@@ -463,6 +498,29 @@ const TablesManager = () => {
           <p className="text-gray-600">
             Administra las mesas de {currentTenant?.name || 'tu local'}
           </p>
+
+          {/* Indicador de tenant */}
+          {currentTenant && (
+            <div className="mt-2 inline-flex items-center space-x-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span className="text-xs font-medium text-blue-900">
+                Local: {currentTenant.name}
+              </span>
+              <span className="text-xs text-blue-600">
+                (ID: {currentTenant.id.substring(0, 8)}...)
+              </span>
+            </div>
+          )}
+
+          {!currentTenant && (
+            <div className="mt-2 inline-flex items-center space-x-2 px-3 py-1 bg-red-50 border border-red-200 rounded-lg">
+              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+              <span className="text-xs font-medium text-red-900">
+                ⚠️ Local no identificado - No se pueden gestionar mesas
+              </span>
+            </div>
+          )}
+
           {oldCodesCount > 0 && (
             <div className="mt-2 flex items-center space-x-2">
               <span className="text-sm text-orange-600">
