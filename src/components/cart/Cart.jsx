@@ -316,7 +316,7 @@ const Cart = () => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end sm:items-center sm:justify-center">
-      <div className="bg-white w-full h-5/6 sm:w-96 sm:h-auto sm:max-h-5/6 sm:rounded-lg overflow-hidden flex flex-col">
+      <div className="bg-white w-full h-5/6 sm:w-96 sm:h-auto sm:max-h-[90vh] sm:rounded-lg overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
@@ -337,7 +337,7 @@ const Cart = () => {
         </div>
 
         {/* Contenido */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto max-h-[calc(90vh-280px)]">
           {isEmpty ? (
             <div className="flex flex-col items-center justify-center h-64 text-center px-4">
               <ShoppingCart className="w-16 h-16 text-gray-300 mb-4" />
