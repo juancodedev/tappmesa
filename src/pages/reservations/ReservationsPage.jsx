@@ -2,6 +2,7 @@ import { useTenant } from '../../hooks/useTenant'
 import ReservationForm from '../../components/reservations/ReservationForm'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Calendar } from 'lucide-react'
+import logger from '../../utils/logger'
 
 const ReservationsPage = () => {
   const { tenant, loading } = useTenant()
@@ -142,7 +143,7 @@ const ReservationsPage = () => {
               tenantId={tenant.id}
               tenantName={tenant.name}
               onSuccess={(reservation) => {
-                console.log('Reserva creada:', reservation)
+                logger.dev('Reserva creada:', reservation)
               }}
             />
           </div>
