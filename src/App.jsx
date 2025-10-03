@@ -21,6 +21,7 @@ import {
 // Importar directamente (no lazy) para reservas y waiter
 import ReservationsPage from './pages/reservations/ReservationsPage';
 import WaiterDashboard from './pages/waiter/WaiterDashboard';
+import KitchenDashboard from './pages/kitchen/KitchenDashboard';
 
 // Keep ProtectedRoute as regular import since it's lightweight
 import ProtectedRoute from './components/ProtectedRoute';
@@ -174,6 +175,10 @@ function App() {
           {/* Ruta para el dashboard del garzón */}
           <Route path="/waiter" element={<WaiterDashboard />} />
           <Route path="/garzon" element={<WaiterDashboard />} />
+
+          {/* Ruta para el dashboard de cocina */}
+          <Route path="/kitchen" element={<KitchenDashboard />} />
+          <Route path="/cocina" element={<KitchenDashboard />} />
 
           {/* Ruta específica para reservas */}
           <Route path="/reservas" element={<ReservationsPage />} />
