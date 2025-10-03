@@ -59,13 +59,13 @@ const TablesGrid = ({ tables, activeSessions, view, onCreateOrder, onRefresh }) 
         .eq('id', session.table_id)
 
       if (tableError) {
-        // console.error('Error updating table status:', tableError)
+        console.error('Error updating table status:', tableError)
         // No lanzamos error para no bloquear el flujo principal
       }
 
       onRefresh()
     } catch (error) {
-      // console.error('Error closing session:', error)
+      console.error('Error closing session:', error)
       alert('Error al cerrar la sesión: ' + error.message)
     } finally {
       setUpdatingTable(null)

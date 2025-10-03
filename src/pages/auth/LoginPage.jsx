@@ -105,6 +105,31 @@ const LoginPage = () => {
     return Object.keys(newErrors).length === 0
   }
 
+  // Función para obtener ruta según rol del usuario
+  const getRoleBasedRoute = (user) => {
+    const role = user.role?.toLowerCase()
+
+    switch (role) {
+      case 'waiter':
+      case 'mesero':
+        return '/waiter'
+
+      case 'kitchen':
+      case 'chef':
+      case 'cocinero':
+        return '/kitchen'
+
+      case 'tenant_admin':
+      case 'admin':
+      case 'super_admin':
+        return '/admin'
+
+      default:
+        // Por defecto, ir al admin
+        return '/admin'
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -116,10 +141,13 @@ const LoginPage = () => {
     try {
       const result = await login(formData.email, formData.password)
 
-      console.log('Login result:', result)
+      // console.log('Login result:', result)
 
       if (result.success && result.user) {
-        console.log('User tenant:', result.user.tenant)
+        // console.log('User tenant:', result.user.tenant)
+
+        // Determinar ruta según rol del usuario
+        const roleRoute = getRoleBasedRoute(result.user)
 
         // Si el usuario tiene un tenant, redirigir al subdominio del tenant
         if (result.user.tenant) {
@@ -127,11 +155,13 @@ const LoginPage = () => {
           const currentHostname = window.location.hostname
           const targetSubdomain = result.user.tenant.subdomain || result.user.tenant.slug
 
-          console.log('🔍 Checking subdomain:', {
-            currentHostname,
-            targetSubdomain,
-            tenantAdminUrl
-          })
+          // console.log('🔍 Checking subdomain:', {
+          //   currentHostname,
+          //   targetSubdomain,
+          //   tenantAdminUrl,
+          //   role: result.user.role,
+          //   destination: roleRoute
+          // })
 
           // Verificar si ya estamos en el subdominio correcto
           const isCorrectSubdomain =
@@ -144,24 +174,25 @@ const LoginPage = () => {
             currentHostname.startsWith(targetSubdomain) // Starts with subdomain
 
           if (isCorrectSubdomain) {
-            // Ya estamos en el subdominio correcto, solo navegar
-            console.log('✅ Already on correct subdomain, navigating to /admin')
-            navigate('/admin', { replace: true })
+            // Ya estamos en el subdominio correcto, navegar según rol
+            // console.log(`✅ Already on correct subdomain, navigating to ${roleRoute}`)
+            navigate(roleRoute, { replace: true })
           } else {
-            // Redirigir al subdominio correcto
-            console.log('🔄 Redirecting to tenant subdomain:', tenantAdminUrl)
-            window.location.href = tenantAdminUrl
+            // Redirigir al subdominio correcto con la ruta del rol
+            const targetUrl = tenantAdminUrl.replace('/admin', roleRoute)
+            // console.log('🔄 Redirecting to tenant subdomain:', targetUrl)
+            window.location.href = targetUrl
           }
         } else {
           // Si no tiene tenant (super admin), ir al admin normal
-          console.log('👤 No tenant (super admin), navigating to:', from)
+          // console.log('👤 No tenant (super admin), navigating to:', from)
           navigate(from, { replace: true })
         }
       } else {
         setErrors({ form: result.error })
       }
     } catch (error) {
-      console.error('Login error:', error)
+      // console.error('Login error:', error)
       setErrors({ form: 'Error inesperado. Intenta nuevamente.' })
     } finally {
       setLoginLoading(false)

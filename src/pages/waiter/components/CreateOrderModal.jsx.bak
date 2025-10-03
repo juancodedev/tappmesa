@@ -36,7 +36,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
         .order('name')
 
       if (error) {
-        // console.error('❌ Error cargando productos:', {
+        console.error('❌ Error cargando productos:', {
           message: error.message,
           details: error.details,
           hint: error.hint,
@@ -52,7 +52,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
       }
       setProducts(data || [])
     } catch (error) {
-      // console.error('💥 Error loading products:', {
+      console.error('💥 Error loading products:', {
         message: error?.message,
         name: error?.name,
         stack: error?.stack,
@@ -75,7 +75,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
       if (error) throw error
       setCategories(data || [])
     } catch (error) {
-      // console.error('Error loading categories:', error)
+      console.error('Error loading categories:', error)
     }
   }
 
@@ -225,13 +225,13 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
         .eq('id', selectedTableId)
 
       if (updateTableError) {
-        // console.error('Error updating table status:', updateTableError)
+        console.error('Error updating table status:', updateTableError)
         // No lanzamos error para no bloquear el flujo principal
       }
 
       onSuccess()
     } catch (error) {
-      // console.error('Error creating order:', error)
+      console.error('Error creating order:', error)
       alert('Error al crear el pedido: ' + error.message)
     } finally {
       setSubmitting(false)

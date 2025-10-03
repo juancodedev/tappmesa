@@ -1,6 +1,7 @@
 // Middleware para resolver tenants basado en subdominios
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase.js';
+import logger from '../utils/logger.js';
 
 export class TenantResolver {
   static cache = new Map();
@@ -60,7 +61,7 @@ export class TenantResolver {
         .single();
 
       if (error || !tenant) {
-        console.log(`Tenant no encontrado para subdominio: ${subdomain}`);
+        logger.warn(`Tenant no encontrado para subdominio: ${subdomain}`);
         return null;
       }
 
@@ -72,7 +73,7 @@ export class TenantResolver {
 
       return tenant;
     } catch (error) {
-      console.error('Error resolviendo tenant:', error);
+      logger.error('Error resolviendo tenant:', error);
       return null;
     }
   }
@@ -93,7 +94,7 @@ export class TenantResolver {
         .single();
 
       if (error) {
-        console.error('Error obteniendo configuraciones:', error);
+        logger.error('Error obteniendo configuraciones:', error);
         return null;
       }
 
@@ -105,7 +106,7 @@ export class TenantResolver {
 
       return settings;
     } catch (error) {
-      console.error('Error obteniendo configuraciones:', error);
+      logger.error('Error obteniendo configuraciones:', error);
       return null;
     }
   }
@@ -129,7 +130,7 @@ export class TenantResolver {
 
       return true;
     } catch (error) {
-      console.error('Error estableciendo contexto de tenant:', error);
+      logger.error('Error estableciendo contexto de tenant:', error);
       return false;
     }
   }
