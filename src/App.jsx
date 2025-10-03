@@ -5,6 +5,7 @@ import { TenantProvider } from "./context/TenantContext";
 import { useTenant } from "./hooks/useTenant";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from './context/AuthContext';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Lazy-loaded components for better code splitting
 import {
@@ -21,6 +22,7 @@ import {
 // Importar directamente (no lazy) para reservas y waiter
 import ReservationsPage from './pages/reservations/ReservationsPage';
 import WaiterDashboard from './pages/waiter/WaiterDashboard';
+import KitchenDashboard from './pages/kitchen/KitchenDashboard';
 
 // Keep ProtectedRoute as regular import since it's lightweight
 import ProtectedRoute from './components/ProtectedRoute';
@@ -148,50 +150,56 @@ const AppContent = () => {
 
 function App() {
   return (
-    <AuthProvider>
-      <TenantProvider>
-        <Routes>
-          {/* Nuevas rutas de autenticación y registro */}
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<BusinessLoginPage />} />
-          
-          {/* Rutas de páginas legales/informativas */}
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/terms" element={<TermsPage />} />
-          <Route path="/help" element={<HelpPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          
-          {/* Ruta de login para admin (existente) */}
-          <Route path="/admin/login" element={<LoginPage />} />
-          
-          {/* Rutas más específicas primero (existentes) */}
-          <Route path="/admin/*" element={
-            <ProtectedRoute>
-              <SecureAdminApp />
-            </ProtectedRoute>
-          } />
+    <ErrorBoundary>
+      <AuthProvider>
+        <TenantProvider>
+          <Routes>
+            {/* Nuevas rutas de autenticación y registro */}
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<BusinessLoginPage />} />
 
-          {/* Ruta para el dashboard del garzón */}
-          <Route path="/waiter" element={<WaiterDashboard />} />
-          <Route path="/garzon" element={<WaiterDashboard />} />
+            {/* Rutas de páginas legales/informativas */}
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/help" element={<HelpPage />} />
+            <Route path="/contact" element={<ContactPage />} />
 
-          {/* Ruta específica para reservas */}
-          <Route path="/reservas" element={<ReservationsPage />} />
-          <Route path="/reservations" element={<ReservationsPage />} />
+            {/* Ruta de login para admin (existente) */}
+            <Route path="/admin/login" element={<LoginPage />} />
 
-          {/* Ruta para mesas específicas (existente) */}
-          <Route path="/:slug/:table" element={<TableApp />} />
+            {/* Rutas más específicas primero (existentes) */}
+            <Route path="/admin/*" element={
+              <ProtectedRoute>
+                <SecureAdminApp />
+              </ProtectedRoute>
+            } />
 
-          {/* Ruta de inicio exacta - ahora con landing mejorada */}
-          <Route path="/" element={<EnhancedLandingPage />} />
+            {/* Ruta para el dashboard del garzón */}
+            <Route path="/waiter" element={<WaiterDashboard />} />
+            <Route path="/garzon" element={<WaiterDashboard />} />
 
-          {/* Ruta catch-all al final (existente) */}
-          <Route path="/*" element={<AppContent />} />
-        </Routes>
-        {import.meta.env.DEV && <SubdomainDebug />}
-      </TenantProvider>
-      <Analytics />
-    </AuthProvider>
+            {/* Ruta para el dashboard de cocina */}
+            <Route path="/kitchen" element={<KitchenDashboard />} />
+            <Route path="/cocina" element={<KitchenDashboard />} />
+
+            {/* Ruta específica para reservas */}
+            <Route path="/reservas" element={<ReservationsPage />} />
+            <Route path="/reservations" element={<ReservationsPage />} />
+
+            {/* Ruta para mesas específicas (existente) */}
+            <Route path="/:slug/:table" element={<TableApp />} />
+
+            {/* Ruta de inicio exacta - ahora con landing mejorada */}
+            <Route path="/" element={<EnhancedLandingPage />} />
+
+            {/* Ruta catch-all al final (existente) */}
+            <Route path="/*" element={<AppContent />} />
+          </Routes>
+          {import.meta.env.DEV && <SubdomainDebug />}
+        </TenantProvider>
+        <Analytics />
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
