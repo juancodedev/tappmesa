@@ -9,7 +9,7 @@ export const useIsTenant = () => {
 // Hook para obtener la URL base del tenant
 export const useTenantUrl = () => {
   const { tenant } = useTenant()
-  // console.log('tenant', tenant)
+  console.log('tenant', tenant)
   
   if (!tenant) return null
   
