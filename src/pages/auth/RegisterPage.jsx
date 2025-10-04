@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from 'react'
+import { useState, useCallback, useMemo, memo } from 'react'
 import {
   Coffee,
   User,
@@ -125,7 +125,7 @@ const RegisterPage = () => {
     window.location.href = '/login';
   };
 
-  const StepIndicator = () => (
+  const StepIndicator = useMemo(() => () => (
     <div className="flex items-center justify-between mb-8">
       {steps.map((step, index) => (
         <div key={step.number} className="flex items-center">
@@ -158,9 +158,9 @@ const RegisterPage = () => {
         </div>
       ))}
     </div>
-  );
+  ), [currentStep, steps]);
 
-  const Step1 = () => (
+  const Step1 = useMemo(() => () => (
     <div className="space-y-6">
       <div className="text-center mb-8">
         <h3 className="text-2xl font-bold text-coffee-900 mb-2">¡Hola! Cuéntanos sobre ti</h3>
@@ -256,16 +256,16 @@ const RegisterPage = () => {
           <div>
             <h4 className="font-semibold text-primary-700 mb-1">Tu seguridad es importante</h4>
             <p className="text-primary-600 text-sm">
-              Usamos cifrado de grado bancario. Tu contraseña se almacena de forma segura con Supabase Auth. 
+              Usamos cifrado de grado bancario. Tu contraseña se almacena de forma segura con Supabase Auth.
               Nunca compartiremos tu información personal.
             </p>
           </div>
         </div>
       </div>
     </div>
-  );
+  ), [formData, handleInputChange]);
 
-  const Step2 = () => (
+  const Step2 = useMemo(() => () => (
     <div className="space-y-6">
       <div className="text-center mb-8">
         <h3 className="text-2xl font-bold text-coffee-900 mb-2">Cuéntanos sobre tu cafetería</h3>
@@ -366,9 +366,9 @@ const RegisterPage = () => {
         </div>
       </div>
     </div>
-  );
+  ), [formData, handleInputChange, cafeTypes]);
 
-  const Step3 = () => (
+  const Step3 = useMemo(() => () => (
     <div className="space-y-6">
       <div className="text-center mb-8">
         <h3 className="text-2xl font-bold text-coffee-900 mb-2">Configuración inicial</h3>
@@ -462,9 +462,9 @@ const RegisterPage = () => {
         </div>
       </div>
     </div>
-  );
+  ), [formData, handleInputChange]);
 
-  const Step4 = () => (
+  const Step4 = useMemo(() => () => (
     <div className="space-y-6">
       <div className="text-center mb-8">
         <h3 className="text-2xl font-bold text-coffee-900 mb-2">Selecciona tu plan</h3>
@@ -546,7 +546,7 @@ const RegisterPage = () => {
         </div>
       </div>
     </div>
-  );
+  ), [formData, handleInputChange, plans]);
 
   if (success) {
     return (
