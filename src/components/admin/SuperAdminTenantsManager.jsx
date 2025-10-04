@@ -42,13 +42,25 @@ const SuperAdminTenantsManager = () => {
     try {
       setLoading(true)
 
-      // Load all tenants with their subscriptions
+      // Load all tenants first (basic data)
       const { data: tenantsData, error: tenantsError } = await supabase
         .from('tenants')
-        .select(`
-          *,
-          tenant_subscriptions (
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (tenantsError) {
+        console.error('Error loading tenants:', tenantsError)
+        throw new Error(`Error al cargar tenants: ${tenantsError.message}`)
+      }
+
+      // Try to load subscriptions (may not exist yet)
+      let subscriptionsMap = {}
+      try {
+        const { data: subscriptionsData } = await supabase
+          .from('tenant_subscriptions')
+          .select(`
             id,
+            tenant_id,
             plan_id,
             subscription_status,
             custom_max_tables,
@@ -56,18 +68,31 @@ const SuperAdminTenantsManager = () => {
             custom_max_people,
             created_at,
             updated_at
-          )
-        `)
-        .order('created_at', { ascending: false })
+          `)
 
-      if (tenantsError) throw tenantsError
+        if (subscriptionsData) {
+          subscriptionsMap = subscriptionsData.reduce((acc, sub) => {
+            acc[sub.tenant_id] = sub
+            return acc
+          }, {})
+        }
+      } catch (subError) {
+        console.warn('Subscription tables not available yet:', subError)
+      }
 
-      // Load all subscription plans
-      const { data: plansData, error: plansError } = await supabase
-        .from('subscription_plans')
-        .select('*')
+      // Try to load subscription plans (may not exist yet)
+      let plansData = []
+      try {
+        const { data, error: plansError } = await supabase
+          .from('subscription_plans')
+          .select('*')
 
-      if (plansError) throw plansError
+        if (!plansError && data) {
+          plansData = data
+        }
+      } catch (planError) {
+        console.warn('Subscription plans table not available yet:', planError)
+      }
 
       // Get counts for each tenant
       const tenantsWithCounts = await Promise.all(
@@ -96,8 +121,12 @@ const SuperAdminTenantsManager = () => {
             .select('*', { count: 'exact', head: true })
             .eq('tenant_id', tenant.id)
 
+          // Attach subscription data if available
+          const subscription = subscriptionsMap[tenant.id]
+
           return {
             ...tenant,
+            tenant_subscriptions: subscription ? [subscription] : [],
             counts: {
               tables: tablesCount || 0,
               products: productsCount || 0,
@@ -112,7 +141,8 @@ const SuperAdminTenantsManager = () => {
       setPlans(plansData || [])
     } catch (error) {
       console.error('Error loading tenants:', error)
-      alert('Error al cargar tenants')
+      const errorMessage = error.message || 'Error desconocido al cargar tenants'
+      alert(`Error al cargar tenants: ${errorMessage}\n\nVerifica la consola para más detalles.`)
     } finally {
       setLoading(false)
     }
