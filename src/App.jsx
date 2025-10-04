@@ -46,8 +46,6 @@ const SubdomainDebug = () => {
 const EnhancedLandingPage = () => {
   const { appType } = useTenant();
 
-  console.log('🏠 EnhancedLandingPage - appType:', appType, 'hostname:', window.location.hostname);
-
   // Siempre mostrar la nueva landing cuando appType es 'landing'
   // Esto incluye localhost, tappmesa.local, y dominios principales
   return <LandingPage />;

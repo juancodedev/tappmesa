@@ -240,16 +240,18 @@ const RegisterForm = ({
         {/* Términos y Condiciones */}
         <div className="form-group">
           <div className="checkbox-group">
-            <label className="checkbox-label">
+            <label className="checkbox-label" htmlFor="acceptTerms">
               <input
                 type="checkbox"
+                id="acceptTerms"
+                name="acceptTerms"
                 checked={formData.acceptTerms}
                 onChange={(e) => handleInputChange('acceptTerms', e.target.checked)}
                 className="checkbox-input"
               />
               <span className="checkbox-custom"></span>
               <span className="checkbox-text">
-                Acepto los <a href="/terms" target="_blank">Términos de Servicio</a> y 
+                Acepto los <a href="/terms" target="_blank">Términos de Servicio</a> y
                 la <a href="/privacy" target="_blank">Política de Privacidad</a> *
               </span>
             </label>
@@ -259,9 +261,11 @@ const RegisterForm = ({
           </div>
 
           <div className="checkbox-group">
-            <label className="checkbox-label">
+            <label className="checkbox-label" htmlFor="acceptMarketing">
               <input
                 type="checkbox"
+                id="acceptMarketing"
+                name="acceptMarketing"
                 checked={formData.acceptMarketing}
                 onChange={(e) => handleInputChange('acceptMarketing', e.target.checked)}
                 className="checkbox-input"
