@@ -43,6 +43,7 @@ import SuperAdminTenantsManager from './admin/SuperAdminTenantsManager'
 import SubscriptionPlansManager from './admin/SubscriptionPlansManager'
 import TenantSubscriptionsManager from './admin/TenantSubscriptionsManager'
 import PreBillSettings from './admin/PreBillSettings'
+import SystemUsersManager from './admin/SystemUsersManager'
 
 const SecureAdminApp = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -398,7 +399,7 @@ const SecureAdminApp = () => {
 
             <Route path="/system-users" element={
               <SuperAdminRoute>
-                <UsersManagerComponent />
+                <SystemUsersManager />
               </SuperAdminRoute>
             } />
           </Routes>
