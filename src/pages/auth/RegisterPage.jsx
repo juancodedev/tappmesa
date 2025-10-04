@@ -174,7 +174,6 @@ const RegisterPage = () => {
             Nombre Completo *
           </label>
           <input
-            key="ownerName"
             type="text"
             value={formData.ownerName}
             onChange={(e) => handleInputChange('ownerName', e.target.value)}
@@ -189,7 +188,6 @@ const RegisterPage = () => {
             Teléfono *
           </label>
           <input
-            key="phone"
             type="tel"
             value={formData.phone}
             onChange={(e) => handleInputChange('phone', e.target.value)}
@@ -204,7 +202,6 @@ const RegisterPage = () => {
             Email *
           </label>
           <input
-            key="email"
             type="email"
             value={formData.email}
             onChange={(e) => handleInputChange('email', e.target.value)}
@@ -221,7 +218,6 @@ const RegisterPage = () => {
             🔒 Contraseña *
           </label>
           <input
-            key="password"
             type="password"
             value={formData.password}
             onChange={(e) => handleInputChange('password', e.target.value)}
@@ -238,7 +234,6 @@ const RegisterPage = () => {
             🔒 Confirmar Contraseña *
           </label>
           <input
-            key="confirmPassword"
             type="password"
             value={formData.confirmPassword}
             onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
