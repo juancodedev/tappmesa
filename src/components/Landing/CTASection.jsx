@@ -102,10 +102,13 @@ const CTASection = () => {
                   <div className="input-group">
                     <input
                       type="email"
+                      id="cta-email"
+                      name="cta-email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="tu@restaurante.com"
                       className="email-input"
+                      autoComplete="email"
                       required
                     />
                     <Button 
