@@ -16,7 +16,9 @@ import {
   Tag,
   UserCheck,
   Shield,
-  Circle
+  Circle,
+  DollarSign,
+  FileText
 } from 'lucide-react'
 
 import { useAuth } from '../hooks/useAuth'
@@ -37,6 +39,11 @@ import CustomersManager from './admin/CustomersManager'
 import CategoriesManager from './admin/CategoriesManager'
 import ProductsManager from './admin/ProductsManager'
 import TenantTester from './TenantTester'
+import SuperAdminTenantsManager from './admin/SuperAdminTenantsManager'
+import SubscriptionPlansManager from './admin/SubscriptionPlansManager'
+import TenantSubscriptionsManager from './admin/TenantSubscriptionsManager'
+import PreBillSettings from './admin/PreBillSettings'
+import SystemUsersManager from './admin/SystemUsersManager'
 
 const SecureAdminApp = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -122,6 +129,12 @@ const SecureAdminApp = () => {
       requiredPermissions: ['analytics:read']
     },
     {
+      name: 'Pre-Cuentas',
+      href: '/admin/prebill-settings',
+      icon: FileText,
+      requiredPermissions: []
+    },
+    {
       name: 'Configuración',
       href: '/admin/settings',
       icon: Settings,
@@ -136,6 +149,18 @@ const SecureAdminApp = () => {
       href: '/admin/tenants',
       icon: Coffee,
       requiredPermissions: ['tenants:read']
+    },
+    {
+      name: 'Planes de Suscripción',
+      href: '/admin/subscription-plans',
+      icon: Package,
+      requiredPermissions: []
+    },
+    {
+      name: 'Suscripciones de Tenants',
+      href: '/admin/tenant-subscriptions',
+      icon: DollarSign,
+      requiredPermissions: []
     },
     {
       name: 'Usuarios del Sistema',
@@ -341,16 +366,40 @@ const SecureAdminApp = () => {
               </ProtectedRoute>
             } />
 
+            <Route path="/prebill-settings" element={
+              <TenantAdminRoute>
+                <PreBillSettings />
+              </TenantAdminRoute>
+            } />
+
             {/* Rutas exclusivas para super admin */}
+            <Route path="/tenants" element={
+              <SuperAdminRoute>
+                <SuperAdminTenantsManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/subscription-plans" element={
+              <SuperAdminRoute>
+                <SubscriptionPlansManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/tenant-subscriptions" element={
+              <SuperAdminRoute>
+                <TenantSubscriptionsManager />
+              </SuperAdminRoute>
+            } />
+
             <Route path="/tenant-test" element={
               <SuperAdminRoute>
                 <TenantTester />
               </SuperAdminRoute>
             } />
-            
+
             <Route path="/system-users" element={
               <SuperAdminRoute>
-                <UsersManagerComponent />
+                <SystemUsersManager />
               </SuperAdminRoute>
             } />
           </Routes>

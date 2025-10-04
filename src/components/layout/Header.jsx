@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Header = () => {
+const Header = ({ onOpenLogin, onOpenRegister }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -35,11 +35,19 @@ const Header = () => {
   };
 
   const handleLogin = () => {
-    navigate('/login');
+    if (onOpenLogin) {
+      onOpenLogin();
+    } else {
+      navigate('/login');
+    }
   };
 
   const handleRegister = () => {
-    navigate('/register');
+    if (onOpenRegister) {
+      onOpenRegister();
+    } else {
+      navigate('/register');
+    }
   };
 
   return (

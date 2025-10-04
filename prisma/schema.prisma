@@ -211,6 +211,7 @@ model orders {
   customer_order_history customer_order_history[]
   loyalty_transactions   loyalty_transactions[]
   order_items            order_items[]
+  pre_bills              pre_bills[]
   table_sessions         table_sessions?          @relation(fields: [table_session_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   tenants                tenants?                 @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
@@ -396,20 +397,24 @@ model suppliers {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model table_sessions {
-  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id      String?   @db.Uuid
-  table_id       String?   @db.Uuid
-  session_code   String    @db.VarChar
-  customer_name  String?   @db.VarChar
-  customer_phone String?   @db.VarChar
-  started_at     DateTime? @default(now()) @db.Timestamptz(6)
-  ended_at       DateTime? @db.Timestamptz(6)
-  status         String?   @default("active") @db.VarChar
-  total_orders   Int?      @default(0)
-  total_amount   Decimal?  @default(0) @db.Decimal(10, 2)
+  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id      String?     @db.Uuid
+  table_id       String?     @db.Uuid
+  session_code   String      @db.VarChar
+  customer_name  String?     @db.VarChar
+  customer_phone String?     @db.VarChar
+  waiter_name    String?     @db.VarChar(100)
+  guest_count    Int?        @default(1)
+  started_at     DateTime?   @default(now()) @db.Timestamptz(6)
+  opened_at      DateTime?   @default(now()) @db.Timestamptz(6)
+  ended_at       DateTime?   @db.Timestamptz(6)
+  status         String?     @default("active") @db.VarChar
+  total_orders   Int?        @default(0)
+  total_amount   Decimal?    @default(0) @db.Decimal(10, 2)
   orders         orders[]
-  tables         tables?   @relation(fields: [table_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  tenants        tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  pre_bills      pre_bills[]
+  tables         tables?     @relation(fields: [table_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tenants        tenants?    @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -418,6 +423,7 @@ model tables {
   tenant_id            String?          @db.Uuid
   number               String           @db.VarChar
   capacity             Int
+  max_capacity         Int?             @default(4)
   location             String?          @db.VarChar
   unique_code          String?          @unique @db.VarChar
   qr_code_url          String?
@@ -466,6 +472,8 @@ model tenants {
   description          String?
   timezone             String?                @default("America/Santiago") @db.VarChar
   is_active            Boolean?               @default(true)
+  tip_percentage       Decimal?               @default(10.0) @db.Decimal(5, 2)
+  show_survey          Boolean?               @default(false)
   created_at           DateTime?              @default(now()) @db.Timestamptz(6)
   updated_at           DateTime?              @default(now()) @db.Timestamptz(6)
   admin_audit_logs     admin_audit_logs[]
@@ -493,6 +501,10 @@ model tenants {
   table_sessions       table_sessions[]
   tables               tables[]
   tenant_settings      tenant_settings?
+  tenant_subscription  tenant_subscriptions?
+  pre_bills            pre_bills[]
+  surveys              surveys[]
+  survey_responses     survey_responses[]
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -718,4 +730,105 @@ model password_reset_tokens {
   @@index([expires_at], map: "idx_password_reset_tokens_expires")
   @@index([token], map: "idx_password_reset_tokens_token")
   @@index([user_id], map: "idx_password_reset_tokens_user")
+}
+
+/// Subscription plans managed by super admin
+model subscription_plans {
+  id                    String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                  String                 @db.VarChar(100)
+  description           String?
+  price                 Decimal                @db.Decimal(10, 2)
+  max_tables            Int?                   @default(10)
+  max_products          Int?                   @default(50)
+  max_people_per_table  Int?                   @default(4)
+  has_paper_prebill     Boolean?               @default(true)
+  has_paper_command     Boolean?               @default(true)
+  has_surveys           Boolean?               @default(false)
+  has_analytics         Boolean?               @default(false)
+  is_active             Boolean?               @default(true)
+  display_order         Int?                   @default(0)
+  created_at            DateTime?              @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime?              @default(now()) @db.Timestamptz(6)
+  tenant_subscriptions  tenant_subscriptions[]
+
+  @@index([is_active], map: "idx_subscription_plans_active")
+}
+
+/// Tenant subscription with custom limits
+model tenant_subscriptions {
+  id                     String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id              String              @unique @db.Uuid
+  plan_id                String              @db.Uuid
+  custom_max_tables      Int?
+  custom_max_products    Int?
+  custom_max_people      Int?
+  subscription_status    String?             @default("active") @db.VarChar(20)
+  started_at             DateTime?           @default(now()) @db.Timestamptz(6)
+  expires_at             DateTime?           @db.Timestamptz(6)
+  created_at             DateTime?           @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime?           @default(now()) @db.Timestamptz(6)
+  tenant                 tenants             @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  plan                   subscription_plans  @relation(fields: [plan_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([tenant_id], map: "idx_tenant_subscriptions_tenant")
+  @@index([plan_id], map: "idx_tenant_subscriptions_plan")
+}
+
+/// Pre-bills/Pre-cuentas for tables
+model pre_bills {
+  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id         String          @db.Uuid
+  order_id          String          @db.Uuid
+  table_session_id  String?         @db.Uuid
+  table_number      String?         @db.VarChar(20)
+  waiter_name       String?         @db.VarChar(100)
+  guest_count       Int?            @default(1)
+  subtotal          Decimal         @db.Decimal(10, 2)
+  tip_percentage    Decimal         @db.Decimal(5, 2)
+  tip_amount        Decimal         @db.Decimal(10, 2)
+  tax               Decimal?        @default(0) @db.Decimal(10, 2)
+  total             Decimal         @db.Decimal(10, 2)
+  generated_at      DateTime?       @default(now()) @db.Timestamptz(6)
+  tenant            tenants         @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  order             orders          @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  table_session     table_sessions? @relation(fields: [table_session_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  survey_responses  survey_responses[]
+
+  @@index([tenant_id], map: "idx_pre_bills_tenant")
+  @@index([order_id], map: "idx_pre_bills_order")
+  @@index([generated_at], map: "idx_pre_bills_generated")
+}
+
+/// Survey configuration per tenant
+model surveys {
+  id                String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id         String             @unique @db.Uuid
+  survey_url        String?            @db.VarChar(500)
+  benefit_text      String?            @db.VarChar(200)
+  qr_code_url       String?            @db.VarChar(500)
+  is_active         Boolean?           @default(true)
+  created_at        DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime?          @default(now()) @db.Timestamptz(6)
+  tenant            tenants            @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  survey_responses  survey_responses[]
+
+  @@index([tenant_id], map: "idx_surveys_tenant")
+}
+
+/// Survey responses from customers
+model survey_responses {
+  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  survey_id     String      @db.Uuid
+  tenant_id     String      @db.Uuid
+  pre_bill_id   String?     @db.Uuid
+  response_data Json?
+  customer_name String?     @db.VarChar(100)
+  submitted_at  DateTime?   @default(now()) @db.Timestamptz(6)
+  survey        surveys     @relation(fields: [survey_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tenant        tenants     @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  pre_bill      pre_bills?  @relation(fields: [pre_bill_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@index([survey_id], map: "idx_survey_responses_survey")
+  @@index([tenant_id], map: "idx_survey_responses_tenant")
+  @@index([submitted_at], map: "idx_survey_responses_submitted")
 }

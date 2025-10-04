@@ -1,12 +1,10 @@
-// src/components/UI/Header.jsx
-
-// src/components/layout/Header.jsx
+// src/components/ui/Header.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../common/Logo';
 import Button from '../ui/Button';
 
-const Header = () => {
+const Header = ({ onOpenLogin, onOpenRegister }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -39,11 +37,19 @@ const Header = () => {
   };
 
   const handleLogin = () => {
-    navigate('/login');
+    if (onOpenLogin) {
+      onOpenLogin();
+    } else {
+      navigate('/login');
+    }
   };
 
   const handleRegister = () => {
-    navigate('/register');
+    if (onOpenRegister) {
+      onOpenRegister();
+    } else {
+      navigate('/register');
+    }
   };
 
   return (

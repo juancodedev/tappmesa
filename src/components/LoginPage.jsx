@@ -241,17 +241,19 @@ const LoginPage = () => {
             </button>
           </form>
 
-          {/* Credenciales de prueba */}
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h4 className="text-sm font-medium text-blue-900 mb-2">Credenciales de prueba:</h4>
-            <div className="text-xs text-blue-800 space-y-1">
-              <p><strong>Super Admin:</strong> admin@tappmesa.com / admin123</p>
-              <p><strong>Café Central:</strong> cafe-central@cafe-central.com / admin123</p>
-              <p><strong>Tetería Luna:</strong> teteria-luna@teteria-luna.com / admin123</p>
-              <p><strong>Bistro Sunrise:</strong> bistro-sunrise@bistro-sunrise.com / admin123</p>
-              <p><strong>Coffee & Co:</strong> coffee-co@coffee-co.com / admin123</p>
+          {/* Credenciales de prueba - SOLO EN DESARROLLO */}
+          {import.meta.env.DEV && (
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <h4 className="text-sm font-medium text-blue-900 mb-2">Credenciales de prueba:</h4>
+              <div className="text-xs text-blue-800 space-y-1">
+                <p><strong>Super Admin:</strong> admin@tappmesa.com / admin123</p>
+                <p><strong>Café Central:</strong> cafe-central@cafe-central.com / admin123</p>
+                <p><strong>Tetería Luna:</strong> teteria-luna@teteria-luna.com / admin123</p>
+                <p><strong>Bistro Sunrise:</strong> bistro-sunrise@bistro-sunrise.com / admin123</p>
+                <p><strong>Coffee & Co:</strong> coffee-co@coffee-co.com / admin123</p>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Footer */}

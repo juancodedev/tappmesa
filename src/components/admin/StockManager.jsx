@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useTenant } from '../../hooks/useTenant'
+import logger from '../../utils/logger'
 import {
   Package,
   AlertTriangle,
@@ -83,7 +84,7 @@ const StockManager = () => {
 
       setInventory(transformedData)
     } catch (error) {
-      console.error('Error loading inventory:', error)
+      logger.error('Error loading inventory:', error)
       alert('Error al cargar el inventario: ' + error.message)
     } finally {
       setLoading(false)
@@ -150,7 +151,7 @@ const StockManager = () => {
 
       setMovementHistory(data || [])
     } catch (error) {
-      console.error('Error loading movement history:', error)
+      logger.error('Error loading movement history:', error)
       alert('Error al cargar el historial: ' + error.message)
     }
   }
@@ -200,7 +201,7 @@ const StockManager = () => {
       setShowEditModal(false)
       await loadInventory()
     } catch (error) {
-      console.error('Error updating inventory:', error)
+      logger.error('Error updating inventory:', error)
       alert('Error al actualizar el inventario: ' + error.message)
     }
   }
@@ -266,7 +267,7 @@ const StockManager = () => {
       setMovementForm({ quantity: '', reason: 'purchase', notes: '' })
       await loadInventory()
     } catch (error) {
-      console.error('Error processing stock movement:', error)
+      logger.error('Error processing stock movement:', error)
       alert('Error al procesar el movimiento: ' + error.message)
     }
   }
