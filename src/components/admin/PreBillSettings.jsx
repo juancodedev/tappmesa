@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 
 const PreBillSettings = () => {
-  const { tenant, reloadTenant } = useTenant()
+  const { tenant, loadTenant } = useTenant()
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
 
@@ -109,8 +109,8 @@ const PreBillSettings = () => {
       setTimeout(() => setSaved(false), 3000)
 
       // Reload tenant data
-      if (reloadTenant) {
-        reloadTenant()
+      if (loadTenant) {
+        loadTenant()
       }
     } catch (error) {
       console.error('Error saving settings:', error)
