@@ -696,7 +696,7 @@ const DemoSection = () => {
   );
 
   return (
-    <section id="demo" className="py-20 bg-gradient-to-br from-cream-200 via-white to-cream-100 relative overflow-hidden">
+    <section id="demo-section" className="py-20 bg-gradient-to-br from-cream-200 via-white to-cream-100 relative overflow-hidden">
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">
