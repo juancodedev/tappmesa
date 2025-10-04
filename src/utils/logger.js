@@ -5,8 +5,6 @@
  * En producción: Solo muestra errores críticos
  */
 
-import * as Sentry from '@sentry/react';
-
 const isDev = import.meta.env.DEV || import.meta.env.MODE === 'development';
 const isProd = import.meta.env.PROD || import.meta.env.MODE === 'production';
 
@@ -48,35 +46,18 @@ export const logger = {
    */
   error: (...args) => {
     console.error('[ERROR]', ...args);
-
-    // Enviar a Sentry en producción
-    if (isProd && args[0] instanceof Error) {
-      Sentry.captureException(args[0], {
-        level: 'error',
-        extra: args.slice(1).reduce((acc, arg, i) => {
-          acc[`arg_${i}`] = arg;
-          return acc;
-        }, {})
-      });
-    }
   },
 
   /**
-   * Errores críticos - Se muestran siempre + envían a Sentry
+   * Errores críticos - Se muestran siempre + pueden enviar a servicio de monitoreo
    * Usar para errores que requieren atención inmediata
    */
   critical: (...args) => {
     console.error('[CRITICAL]', ...args);
-
-    // Enviar a Sentry siempre (incluso en dev si está configurado)
-    const error = args[0] instanceof Error ? args[0] : new Error(args.join(' '));
-    Sentry.captureException(error, {
-      level: 'fatal',
-      extra: args.slice(1).reduce((acc, arg, i) => {
-        acc[`arg_${i}`] = arg;
-        return acc;
-      }, {})
-    });
+    // TODO: Integrar con Sentry u otro servicio de monitoreo
+    // if (isProd) {
+    //   Sentry.captureException(new Error(args.join(' ')));
+    // }
   },
 
   /**

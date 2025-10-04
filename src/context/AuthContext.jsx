@@ -1,6 +1,7 @@
 // src/context/AuthContext.jsx
 import { createContext, useContext, useReducer, useEffect } from "react";
 import { authService } from "../lib/supabase";
+import logger from "../utils/logger";
 
 export const AuthContext = createContext();
 
@@ -63,7 +64,7 @@ export function AuthProvider({ children }) {
     const tokenFromUrl = urlParams.get('token')
 
     if (tokenFromUrl) {
-      console.log('🔑 Token capturado de URL, guardando en localStorage')
+      logger.dev('🔑 Token capturado de URL, guardando en localStorage')
       localStorage.setItem('tappmesa-session', tokenFromUrl)
 
       // Limpiar el token de la URL por seguridad
@@ -92,7 +93,7 @@ export function AuthProvider({ children }) {
         dispatch({ type: authActions.SET_LOADING, payload: false });
       }
     } catch (error) {
-      console.error("Error checking auth status:", error);
+      logger.error("Error checking auth status:", error);
       dispatch({ type: authActions.SET_LOADING, payload: false });
     }
   };
@@ -104,7 +105,7 @@ export function AuthProvider({ children }) {
         dispatch({ type: authActions.SET_TRIAL_INFO, payload: trialData });
       }
     } catch (error) {
-      console.error("Error checking trial status:", error);
+      logger.error("Error checking trial status:", error);
     }
   };
 

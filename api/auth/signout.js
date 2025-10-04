@@ -1,5 +1,6 @@
 // API Route: /api/auth/signout.js
 const { createClient } = require('@supabase/supabase-js');
+const logger = require('../utils/logger');
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
@@ -35,7 +36,7 @@ module.exports = async function handler(req, res) {
       .eq('session_token', sessionToken);
 
     if (error) {
-      console.error('Error deleting session:', error);
+      logger.warn('Error deleting session', error);
     }
 
     // Crear log de auditoría si tenemos información de la sesión
@@ -57,7 +58,7 @@ module.exports = async function handler(req, res) {
     res.status(200).json({ success: true });
 
   } catch (error) {
-    console.error('Signout error:', error);
+    logger.error('Signout error', error);
     res.status(500).json({
       error: 'Error interno del servidor'
     });

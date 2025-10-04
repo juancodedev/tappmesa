@@ -1,6 +1,7 @@
 // src/components/Reservations/ReservationContext.jsx
 import { createContext, useContext, useReducer } from 'react';
 import { reservationService } from '../../lib/supabase';
+import logger from '../utils/logger';
 
 const ReservationContext = createContext();
 
@@ -173,7 +174,7 @@ export function ReservationProvider({ children }) {
       }
     } catch (error) {
       setError('Error al obtener disponibilidad de mesas');
-      console.error('Error getting table availability:', error);
+      logger.error('Error getting table availability:', error);
     }
   };
 
@@ -210,7 +211,7 @@ export function ReservationProvider({ children }) {
     } catch (error) {
       const errorMessage = 'Error al crear la reserva';
       setError(errorMessage);
-      console.error('Error creating reservation:', error);
+      logger.error('Error creating reservation:', error);
       return { success: false, error: errorMessage };
     }
   };
@@ -233,7 +234,7 @@ export function ReservationProvider({ children }) {
       }
     } catch (error) {
       setError('Error al obtener reservas');
-      console.error('Error getting reservations:', error);
+      logger.error('Error getting reservations:', error);
     }
   };
 

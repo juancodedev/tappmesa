@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from 'react'
 import { supabase } from '../lib/supabase'
 import { AuthContext } from './AuthContext'
+import logger from '../utils/logger'
 
 export const TenantContext = createContext()
 
@@ -11,7 +12,7 @@ const getSubdomain = () => {
   const hostname = window.location.hostname
   const parts = hostname.split('.')
 
-  console.log('🌐 Hostname:', hostname, 'Parts:', parts)
+  logger.dev('🌐 Hostname:', hostname, 'Parts:', parts)
 
   // Desarrollo local con .local o .localhost
   if (hostname.endsWith('.local') || hostname.endsWith('.localhost')) {
@@ -20,7 +21,7 @@ const getSubdomain = () => {
     if (parts.length >= 2) {
       const subdomain = parts[0]
       if (subdomain !== 'tappmesa' && subdomain !== 'www' && subdomain !== 'localhost') {
-        console.log('🏠 Local subdomain detected:', subdomain)
+        logger.dev('🏠 Local subdomain detected:', subdomain)
         return subdomain
       }
     }
@@ -32,7 +33,7 @@ const getSubdomain = () => {
     const urlParams = new URLSearchParams(window.location.search)
     const cafeParam = urlParams.get('cafe')
     if (cafeParam) {
-      console.log('🔗 Query param detected:', cafeParam)
+      logger.dev('🔗 Query param detected:', cafeParam)
       return cafeParam
     }
     return null
@@ -44,7 +45,7 @@ const getSubdomain = () => {
       const subdomain = parts[0]
       // Excluir subdominios especiales del sistema
       if (!['www', 'admin', 'api', 'app', 'mail', 'ftp'].includes(subdomain)) {
-        console.log('🌍 Production subdomain detected:', subdomain)
+        logger.dev('🌍 Production subdomain detected:', subdomain)
         return subdomain
       }
     }
@@ -61,7 +62,7 @@ const getSubdomain = () => {
       if (fullSubdomain.includes('-tappmesa')) {
         // Usar el nombre completo incluyendo -tappmesa para matching con DB
         if (!['www-tappmesa', 'admin-tappmesa', 'api-tappmesa', 'app-tappmesa'].includes(fullSubdomain)) {
-          console.log('🚀 Vercel subdomain detected (new format):', fullSubdomain)
+          logger.dev('🚀 Vercel subdomain detected (new format):', fullSubdomain)
           return fullSubdomain
         }
       }
@@ -71,7 +72,7 @@ const getSubdomain = () => {
     if (parts.length >= 4) {
       const subdomain = parts[0]
       if (!['www', 'admin', 'api', 'app'].includes(subdomain)) {
-        console.log('🚀 Vercel subdomain detected (legacy format):', subdomain)
+        logger.dev('🚀 Vercel subdomain detected (legacy format):', subdomain)
         return subdomain
       }
     }
@@ -84,7 +85,7 @@ const getSubdomain = () => {
     const subdomain = parts[0]
     // Solo considerar como subdomain si no es www y no es el dominio base
     if (subdomain !== 'www' && parts.length > 2) {
-      console.log('🏢 Custom subdomain detected:', subdomain)
+      logger.dev('🏢 Custom subdomain detected:', subdomain)
       return subdomain
     }
   }
@@ -107,7 +108,7 @@ const getTableCode = () => {
     const isOldFormat = /^[a-z0-9-]+-mesa-\d+$/.test(tableParam)
 
     if (isNewFormat || isOldFormat) {
-      console.log('🪑 Table code detected (query param):', tableParam, isNewFormat ? '(new format)' : '(old format)')
+      logger.dev('🪑 Table code detected (query param):', tableParam, isNewFormat ? '(new format)' : '(old format)')
       return tableParam
     }
   }
@@ -123,7 +124,7 @@ const getTableCode = () => {
     const isOldFormat = /^[a-z0-9-]+-mesa-\d+$/.test(potentialTableCode)
 
     if (isNewFormat || isOldFormat) {
-      console.log('🪑 Table code detected (pathname):', potentialTableCode, isNewFormat ? '(new format)' : '(old format)')
+      logger.dev('🪑 Table code detected (pathname):', potentialTableCode, isNewFormat ? '(new format)' : '(old format)')
       return potentialTableCode
     }
   }
@@ -183,7 +184,7 @@ export const TenantProvider = ({ children }) => {
       const currentAppType = getAppType()
       setAppType(currentAppType)
 
-      console.log('🔍 Loading tenant for:', {
+      logger.dev('🔍 Loading tenant for:', {
         subdomain,
         tableCode,
         appType: currentAppType,
@@ -194,7 +195,7 @@ export const TenantProvider = ({ children }) => {
 
       // Si es landing sin subdomain, no cargar tenant
       if (currentAppType === 'landing') {
-        console.log('⚠️ AppType is landing - not loading tenant')
+        logger.dev('⚠️ AppType is landing - not loading tenant')
         setTenant(null)
         setTable(null)
         setTableSession(null)
@@ -203,7 +204,7 @@ export const TenantProvider = ({ children }) => {
 
       // Si es admin pero hay un tenantIdOverride (desde usuario autenticado), cargar ese tenant
       if (currentAppType === 'admin' && tenantIdOverride) {
-        console.log('🔑 Loading tenant from authenticated user:', tenantIdOverride)
+        logger.dev('🔑 Loading tenant from authenticated user:', tenantIdOverride)
 
         const { data: tenantData, error: tenantError } = await supabase
           .from('tenants')
@@ -213,18 +214,18 @@ export const TenantProvider = ({ children }) => {
           .single()
 
         if (tenantError) {
-          console.error('❌ Tenant query error:', tenantError)
+          logger.error('❌ Tenant query error:', tenantError)
           throw new Error('No se pudo cargar la información del local')
         }
 
         setTenant(tenantData)
-        console.log('✅ Tenant loaded from user:', tenantData.name)
+        logger.dev('✅ Tenant loaded from user:', tenantData.name)
         return
       }
 
       // Si es admin global (super admin sin tenant), no cargar tenant
       if (currentAppType === 'admin' && !tenantIdOverride) {
-        console.log('⚠️ AppType is global admin - not loading tenant')
+        logger.dev('⚠️ AppType is global admin - not loading tenant')
         setTenant(null)
         setTable(null)
         setTableSession(null)
@@ -232,11 +233,11 @@ export const TenantProvider = ({ children }) => {
       }
 
       if (!subdomain) {
-        console.error('❌ No subdomain detected')
+        logger.error('❌ No subdomain detected')
         throw new Error('No se pudo identificar el local')
       }
 
-      console.log('🔎 Querying tenant with subdomain:', subdomain)
+      logger.dev('🔎 Querying tenant with subdomain:', subdomain)
 
       // Buscar cafetería por subdomain
       const { data: tenantData, error: tenantError } = await supabase
@@ -247,8 +248,8 @@ export const TenantProvider = ({ children }) => {
         .single()
 
       if (tenantError) {
-        console.error('❌ Tenant query error:', tenantError)
-        console.error('❌ Subdomain searched:', subdomain)
+        logger.error('❌ Tenant query error:', tenantError)
+        logger.error('❌ Subdomain searched:', subdomain)
 
         // Intentar buscar sin el filtro de subdomain para debugging
         const { data: allTenants } = await supabase
@@ -256,12 +257,12 @@ export const TenantProvider = ({ children }) => {
           .select('subdomain, name')
           .eq('is_active', true)
 
-        console.log('📋 Available tenants:', allTenants)
+        logger.dev('📋 Available tenants:', allTenants)
         throw new Error(`Cafetería "${subdomain}" no encontrada`)
       }
       
       setTenant(tenantData)
-      console.log('✅ Tenant loaded:', tenantData.name)
+      logger.dev('✅ Tenant loaded:', tenantData.name)
       
       // Si hay código de mesa, cargar información de la mesa
       if (tableCode && currentAppType === 'table') {
@@ -274,7 +275,7 @@ export const TenantProvider = ({ children }) => {
           .single()
 
         if (tableError) {
-          console.error('❌ Table not found:', tableError)
+          logger.error('❌ Table not found:', tableError)
           throw new Error(`Mesa "${tableCode}" no encontrada`)
         }
 
@@ -283,13 +284,13 @@ export const TenantProvider = ({ children }) => {
           const expiresAt = new Date(tableData.qr_code_expires_at)
           const now = new Date()
           if (now > expiresAt) {
-            console.error('❌ QR Code expired:', tableData.unique_code, 'expired at', expiresAt)
+            logger.warn('❌ QR Code expired:', tableData.unique_code, 'expired at', expiresAt)
             throw new Error(`El código QR de esta mesa ha expirado. Por favor, solicita un código nuevo al personal.`)
           }
         }
 
         setTable(tableData)
-        console.log('✅ Table loaded:', tableData.number)
+        logger.dev('✅ Table loaded:', tableData.number)
 
         // Crear o recuperar sesión de mesa
         await createOrResumeTableSession(tenantData.id, tableData.id, tableCode)
@@ -305,7 +306,7 @@ export const TenantProvider = ({ children }) => {
       }
       
     } catch (error) {
-      console.error('❌ Error loading tenant:', error)
+      logger.error('❌ Error loading tenant:', error)
       setError(error.message)
       setTenant(null)
       setTable(null)
@@ -330,7 +331,7 @@ export const TenantProvider = ({ children }) => {
 
       if (existingSession) {
         setTableSession(existingSession)
-        console.log('✅ Resumed table session:', existingSession.session_code)
+        logger.dev('✅ Resumed table session:', existingSession.session_code)
         return
       }
 
@@ -351,10 +352,10 @@ export const TenantProvider = ({ children }) => {
       if (error) throw error
 
       setTableSession(newSession)
-      console.log('✅ Created new table session:', sessionCode)
+      logger.dev('✅ Created new table session:', sessionCode)
 
     } catch (error) {
-      console.error('❌ Error managing table session:', error)
+      logger.error('❌ Error managing table session:', error)
     }
   }
 
@@ -366,7 +367,7 @@ export const TenantProvider = ({ children }) => {
   // Recargar tenant cuando cambie el usuario autenticado
   useEffect(() => {
     if (authContext?.user?.tenant_id) {
-      console.log('👤 User authenticated with tenant_id:', authContext.user.tenant_id)
+      logger.dev('👤 User authenticated with tenant_id:', authContext.user.tenant_id)
       loadTenant(authContext.user.tenant_id)
     }
   }, [authContext?.user?.tenant_id])
