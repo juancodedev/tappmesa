@@ -1,24 +1,43 @@
 /* src/pages/landing/styles/landing.css */
 
-/* Variables */
+/* Variables - Paleta de Cafetería/Tetería */
 :root {
-    --primary-color: #2563eb;
-    --primary-dark: #1d4ed8;
-    --primary-light: #3b82f6;
-    --secondary-color: #10b981;
-    --accent-color: #f59e0b;
-    --text-primary: #111827;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
-    --background: #ffffff;
-    --background-secondary: #f9fafb;
-    --background-accent: #f3f4f6;
-    --border-color: #e5e7eb;
-    --border-light: #f3f4f6;
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    /* Colores principales - tonos café y crema */
+    --primary-color: #8B4513;          /* Café oscuro (Saddle Brown) */
+    --primary-dark: #5C2E0A;           /* Café muy oscuro */
+    --primary-light: #A0522D;          /* Siena */
+
+    /* Colores secundarios - tonos cálidos */
+    --secondary-color: #D2691E;        /* Chocolate */
+    --accent-color: #DEB887;           /* Beige/Crema (Burlywood) */
+    --accent-warm: #CD853F;            /* Perú */
+
+    /* Verde té (para elementos de tetería) */
+    --tea-green: #8FBC8F;              /* Verde mar oscuro */
+    --tea-dark: #556B2F;               /* Verde oliva oscuro */
+
+    /* Tonos tierra y terracota */
+    --terracotta: #E07855;
+    --cream: #F5DEB3;                  /* Trigo */
+    --latte: #C9A880;                  /* Café con leche */
+
+    /* Neutrales cálidos */
+    --text-primary: #2C1810;           /* Café muy oscuro */
+    --text-secondary: #6B4423;         /* Café medio */
+    --text-muted: #9A7B65;             /* Café claro */
+    --background: #FFF8F0;             /* Crema muy claro */
+    --background-secondary: #FAF0E6;   /* Lino */
+    --background-accent: #F4E6D7;      /* Arena */
+    --border-color: #E8D5C4;           /* Beige oscuro */
+    --border-light: #F0E5D8;           /* Beige claro */
+
+    /* Sombras cálidas */
+    --shadow-sm: 0 1px 2px 0 rgba(92, 46, 10, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(92, 46, 10, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(92, 46, 10, 0.15);
+    --shadow-xl: 0 20px 25px -5px rgba(92, 46, 10, 0.2);
+
+    /* Radios (sin cambios) */
     --radius-sm: 0.375rem;
     --radius-md: 0.5rem;
     --radius-lg: 0.75rem;
