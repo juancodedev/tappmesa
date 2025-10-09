@@ -11,18 +11,19 @@ import {
   RefreshCw,
   Calendar
 } from 'lucide-react'
+import TenantSelector from './TenantSelector'
 
 const SuperAdminTablesManager = () => {
   const [tables, setTables] = useState([])
   const [tenants, setTenants] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  const [tenantFilter, setTenantFilter] = useState('all')
+  const [selectedTenantId, setSelectedTenantId] = useState(null)
   const [statusFilter, setStatusFilter] = useState('all')
 
   useEffect(() => {
     loadData()
-  }, [tenantFilter, statusFilter])
+  }, [selectedTenantId, statusFilter])
 
   const loadData = async () => {
     try {
@@ -41,8 +42,8 @@ const SuperAdminTablesManager = () => {
         `)
         .order('created_at', { ascending: false })
 
-      if (tenantFilter !== 'all') {
-        query = query.eq('tenant_id', tenantFilter)
+      if (selectedTenantId) {
+        query = query.eq('tenant_id', selectedTenantId)
       }
 
       if (statusFilter !== 'all') {
@@ -126,8 +127,17 @@ const SuperAdminTablesManager = () => {
           </button>
         </div>
 
+        {/* Tenant Selector */}
+        <div className="mt-4">
+          <TenantSelector
+            tenants={tenants}
+            selectedTenantId={selectedTenantId}
+            onTenantChange={setSelectedTenantId}
+          />
+        </div>
+
         {/* Filters */}
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <input
@@ -138,19 +148,6 @@ const SuperAdminTablesManager = () => {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
             />
           </div>
-
-          <select
-            value={tenantFilter}
-            onChange={(e) => setTenantFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
-          >
-            <option value="all">Todos los tenants</option>
-            {tenants.map((tenant) => (
-              <option key={tenant.id} value={tenant.id}>
-                {tenant.name}
-              </option>
-            ))}
-          </select>
 
           <select
             value={statusFilter}

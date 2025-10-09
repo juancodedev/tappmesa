@@ -13,6 +13,7 @@ import {
   Eye,
   BarChart3
 } from 'lucide-react'
+import TenantSelector from './TenantSelector'
 
 const SuperAdminProductsManager = () => {
   const [products, setProducts] = useState([])
@@ -20,13 +21,13 @@ const SuperAdminProductsManager = () => {
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  const [tenantFilter, setTenantFilter] = useState('all')
+  const [selectedTenantId, setSelectedTenantId] = useState(null)
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
 
   useEffect(() => {
     loadData()
-  }, [tenantFilter, categoryFilter, statusFilter])
+  }, [selectedTenantId, categoryFilter, statusFilter])
 
   const loadData = async () => {
     try {
@@ -49,8 +50,8 @@ const SuperAdminProductsManager = () => {
         `)
         .order('created_at', { ascending: false })
 
-      if (tenantFilter !== 'all') {
-        query = query.eq('tenant_id', tenantFilter)
+      if (selectedTenantId) {
+        query = query.eq('tenant_id', selectedTenantId)
       }
 
       if (categoryFilter !== 'all') {
@@ -116,9 +117,9 @@ const SuperAdminProductsManager = () => {
   }
 
   // Get unique categories for current filtered products
-  const availableCategories = tenantFilter === 'all'
-    ? categories
-    : categories.filter(c => c.tenant_id === tenantFilter)
+  const availableCategories = selectedTenantId
+    ? categories.filter(c => c.tenant_id === selectedTenantId)
+    : categories
 
   if (loading) {
     return (
@@ -150,8 +151,17 @@ const SuperAdminProductsManager = () => {
           </button>
         </div>
 
+        {/* Tenant Selector */}
+        <div className="mt-4">
+          <TenantSelector
+            tenants={tenants}
+            selectedTenantId={selectedTenantId}
+            onTenantChange={setSelectedTenantId}
+          />
+        </div>
+
         {/* Filters */}
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <input
@@ -162,19 +172,6 @@ const SuperAdminProductsManager = () => {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
             />
           </div>
-
-          <select
-            value={tenantFilter}
-            onChange={(e) => setTenantFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
-          >
-            <option value="all">Todos los tenants</option>
-            {tenants.map((tenant) => (
-              <option key={tenant.id} value={tenant.id}>
-                {tenant.name}
-              </option>
-            ))}
-          </select>
 
           <select
             value={categoryFilter}
