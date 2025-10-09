@@ -1,16 +1,47 @@
 // API Route: /api/auth/signup.js
 const bcrypt = require('bcryptjs');
 const { createClient } = require('@supabase/supabase-js');
+const logger = require('../utils/logger');
+const { rateLimiter, blacklistMiddleware } = require('../middleware/rateLimit');
+const { corsMiddleware } = require('../middleware/cors');
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY // Usar service role key para operaciones privilegiadas
 );
 
+// Validación de email
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Sanitización de subdomain
+function sanitizeSubdomain(str) {
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '')
+    .substring(0, 50); // Límite de longitud
+}
+
 module.exports = async function handler(req, res) {
+  // CORS
+  if (corsMiddleware(req, res, ['POST', 'OPTIONS'])) {
+    return;
+  }
+
   // Solo permitir POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Blacklist check
+  if (blacklistMiddleware(req, res)) {
+    return;
+  }
+
+  // Rate limiting
+  const rateLimit = rateLimiter('auth/signup');
+  if (rateLimit(req, res)) {
+    return;
   }
 
   try {
@@ -33,9 +64,24 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    if (password.length < 6) {
+    // Validar formato de email
+    if (!EMAIL_REGEX.test(email)) {
       return res.status(400).json({
-        error: 'La contraseña debe tener al menos 6 caracteres'
+        error: 'Formato de email inválido'
+      });
+    }
+
+    // Validar longitud de contraseña
+    if (password.length < 8) {
+      return res.status(400).json({
+        error: 'La contraseña debe tener al menos 8 caracteres'
+      });
+    }
+
+    // Validar longitudes máximas
+    if (email.length > 255 || ownerName.length > 100 || restaurantName.length > 100) {
+      return res.status(400).json({
+        error: 'Uno o más campos exceden la longitud máxima permitida'
       });
     }
 
@@ -57,10 +103,9 @@ module.exports = async function handler(req, res) {
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
     // 1. Crear tenant (restaurante)
-    const tenantSlug = restaurantName.toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)+/g, '');
+    const tenantSlug = sanitizeSubdomain(restaurantName);
 
+    // Generar subdomain único con sufijo aleatorio
     const subdomain = tenantSlug + '-' + Math.random().toString(36).substr(2, 6);
 
     const { data: tenantData, error: tenantError } = await supabase
@@ -156,7 +201,7 @@ module.exports = async function handler(req, res) {
     // 6. Crear sesión inicial
     const sessionToken = generateSessionToken();
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 30); // 30 días
+    expiresAt.setDate(expiresAt.getDate() + 7); // 7 días (reducido de 30 para mejor seguridad)
 
     await supabase
       .from('admin_sessions')
@@ -196,9 +241,9 @@ module.exports = async function handler(req, res) {
     res.status(201).json(response);
 
   } catch (error) {
-    console.error('Signup error:', error);
+    logger.error('Signup error', error);
     res.status(500).json({
-      error: error.message || 'Error interno del servidor'
+      error: 'Error interno del servidor'
     });
   }
 }

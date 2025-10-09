@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { useTenant } from '../hooks/useTenant'
 import { supabase } from '../lib/supabase'
+import logger from '../utils/logger'
 
 export const CartContext = createContext()
 
@@ -23,7 +24,7 @@ const generateOrderNumber = async (tenantId) => {
     const orderCount = (count || 0) + 1
     return `${dateStr}-${orderCount.toString().padStart(3, '0')}`
   } catch (error) {
-    console.error('Error generating order number:', error)
+    logger.error('Error generating order number:', error)
     return `${dateStr}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`
   }
 }
@@ -53,7 +54,7 @@ export const CartProvider = ({ children }) => {
         if (oldestItem) {
           const hoursSince = (Date.now() - new Date(oldestItem).getTime()) / (1000 * 60 * 60)
           if (hoursSince > 4) {
-            console.log('🧹 Carrito expirado, limpiando...')
+            logger.dev('🧹 Carrito expirado, limpiando...')
             localStorage.removeItem(storageKey)
             setItems([])
             return
@@ -61,7 +62,7 @@ export const CartProvider = ({ children }) => {
         }
         setItems(parsedCart)
       } catch (error) {
-        console.error('Error loading cart from localStorage:', error)
+        logger.error('Error loading cart from localStorage:', error)
       }
     }
   }, [tenant, tableSession])
@@ -259,8 +260,7 @@ export const CartProvider = ({ children }) => {
       clearCart()
       closeCart()
 
-      console.log('✅ Pedido creado:', order.order_number)
-      console.log('✨ Fast Refresh test - useCart should be compatible now')
+      logger.dev('✅ Pedido creado:', order.order_number)
       
       return { 
         success: true, 
@@ -269,7 +269,7 @@ export const CartProvider = ({ children }) => {
       }
 
     } catch (error) {
-      console.error('❌ Error creating order:', error)
+      logger.error('❌ Error creating order:', error)
       return { 
         success: false, 
         error: 'Error al procesar el pedido: ' + error.message 

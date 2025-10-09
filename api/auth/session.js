@@ -1,5 +1,6 @@
 // API Route: /api/auth/session.js
 const { createClient } = require('@supabase/supabase-js');
+const logger = require('../utils/logger');
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
@@ -52,7 +53,7 @@ module.exports = async function handler(req, res) {
     res.status(200).json(response);
 
   } catch (error) {
-    console.error('Session verification error:', error);
+    logger.error('Session verification error', error);
     res.status(500).json({
       error: 'Error interno del servidor'
     });

@@ -53,7 +53,7 @@ const ActiveOrdersPanel = ({ activeSessions, onRefresh }) => {
 
       onRefresh()
     } catch (error) {
-      // console.error('Error updating order:', error)
+      console.error('Error updating order:', error)
       alert('Error al actualizar el pedido: ' + error.message)
     } finally {
       setUpdatingOrder(null)

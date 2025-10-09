@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useTenant } from '../../hooks/useTenant'
+import logger from '../../utils/logger'
 import {
   Calendar,
   Clock,
@@ -59,7 +60,7 @@ const ReservationsManager = () => {
 
       setReservations(data || [])
     } catch (error) {
-      console.error('Error loading reservations:', error)
+      logger.error('Error loading reservations:', error)
     } finally {
       setLoading(false)
     }
@@ -79,7 +80,7 @@ const ReservationsManager = () => {
 
       await loadReservations()
     } catch (error) {
-      console.error('Error updating reservation:', error)
+      logger.error('Error updating reservation:', error)
       alert('Error al actualizar la reserva')
     }
   }
@@ -120,7 +121,7 @@ const ReservationsManager = () => {
       await loadReservations()
       closeEditModal()
     } catch (error) {
-      console.error('Error updating reservation:', error)
+      logger.error('Error updating reservation:', error)
       alert('Error al actualizar la reserva: ' + error.message)
     }
   }

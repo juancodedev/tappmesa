@@ -1,6 +1,10 @@
 // API Route: /api/auth/reset-password.js
 const bcrypt = require('bcryptjs');
 const { createClient } = require('@supabase/supabase-js');
+const logger = require('../utils/logger');
+const { rateLimiter, blacklistMiddleware } = require('../middleware/rateLimit');
+const { corsMiddleware } = require('../middleware/cors');
+const { sendEmail, getPasswordResetEmail } = require('../services/emailService');
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
@@ -8,6 +12,16 @@ const supabase = createClient(
 );
 
 module.exports = async function handler(req, res) {
+  // CORS
+  if (corsMiddleware(req, res, ['POST', 'OPTIONS'])) {
+    return;
+  }
+
+  // Blacklist check
+  if (blacklistMiddleware(req, res)) {
+    return;
+  }
+
   if (req.method === 'POST' && req.url.includes('/request')) {
     return handleResetRequest(req, res);
   }
@@ -25,6 +39,12 @@ module.exports = async function handler(req, res) {
 
 // Solicitar reset de contraseña
 async function handleResetRequest(req, res) {
+  // Rate limiting para reset requests
+  const rateLimit = rateLimiter('auth/reset-password/request');
+  if (rateLimit(req, res)) {
+    return;
+  }
+
   try {
     const { email } = req.body;
 
@@ -56,10 +76,23 @@ async function handleResetRequest(req, res) {
 
     const token = tokenData[0];
 
-    // TODO: Enviar email con el token de reset
-    // Por ahora, registrar en los logs para testing
-    console.log(`Password reset token for ${email}: ${token.reset_token}`);
-    console.log(`Reset URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?token=${token.reset_token}`);
+    // Enviar email con el token de reset
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const resetUrl = `${frontendUrl}/reset-password?token=${token.reset_token}`;
+
+    const { subject, html } = getPasswordResetEmail(user.full_name, resetUrl, 60);
+    const emailResult = await sendEmail(email, subject, html);
+
+    if (!emailResult.success) {
+      logger.error('Failed to send password reset email', emailResult.error);
+      // No fallar el request, solo logear el error
+    }
+
+    // SEGURIDAD: NO registrar tokens en logs de producción
+    logger.audit('password_reset_requested', token.user_id, {
+      email: email.substring(0, 3) + '***', // Email parcialmente ofuscado
+      emailSent: emailResult.success
+    });
 
     // Crear log de auditoría
     await supabase
@@ -80,7 +113,7 @@ async function handleResetRequest(req, res) {
     });
 
   } catch (error) {
-    console.error('Reset request error:', error);
+    logger.error('Reset request error', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 }
@@ -119,7 +152,7 @@ async function handleResetConfirm(req, res) {
     });
 
   } catch (error) {
-    console.error('Reset confirm error:', error);
+    logger.error('Reset confirm error', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 }
@@ -201,7 +234,7 @@ async function handleResetPassword(req, res) {
     });
 
   } catch (error) {
-    console.error('Reset password error:', error);
+    logger.error('Reset password error', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 }

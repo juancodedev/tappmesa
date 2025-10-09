@@ -1,6 +1,9 @@
 // API Route: /api/auth/signin.js
 const bcrypt = require('bcryptjs');
 const { createClient } = require('@supabase/supabase-js');
+const logger = require('../utils/logger');
+const { rateLimiter, blacklistMiddleware } = require('../middleware/rateLimit');
+const { corsMiddleware } = require('../middleware/cors');
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
@@ -8,8 +11,24 @@ const supabase = createClient(
 );
 
 module.exports = async function handler(req, res) {
+  // CORS
+  if (corsMiddleware(req, res, ['POST', 'OPTIONS'])) {
+    return; // Preflight handled
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Blacklist check
+  if (blacklistMiddleware(req, res)) {
+    return; // Blocked
+  }
+
+  // Rate limiting
+  const rateLimit = rateLimiter('auth/signin');
+  if (rateLimit(req, res)) {
+    return; // Rate limit exceeded
   }
 
   try {
@@ -56,7 +75,7 @@ module.exports = async function handler(req, res) {
     // Crear nueva sesión
     const sessionToken = generateSessionToken();
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 30); // 30 días
+    expiresAt.setDate(expiresAt.getDate() + 7); // 7 días (reducido de 30 para mejor seguridad)
 
     await supabase
       .from('admin_sessions')
@@ -101,7 +120,7 @@ module.exports = async function handler(req, res) {
     res.status(200).json(response);
 
   } catch (error) {
-    console.error('Signin error:', error);
+    logger.error('Signin error', error);
     res.status(500).json({
       error: 'Error interno del servidor'
     });
