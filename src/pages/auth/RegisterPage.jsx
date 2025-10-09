@@ -125,7 +125,7 @@ const RegisterPage = () => {
     window.location.href = '/login';
   };
 
-  const StepIndicator = useMemo(() => () => (
+  const StepIndicator = useMemo(() => (
     <div className="flex items-center justify-between mb-8">
       {steps.map((step, index) => (
         <div key={step.number} className="flex items-center">
@@ -160,7 +160,7 @@ const RegisterPage = () => {
     </div>
   ), [currentStep, steps]);
 
-  const Step1 = useMemo(() => () => (
+  const Step1 = useMemo(() => (
     <div className="space-y-6">
       <div className="text-center mb-8">
         <h3 className="text-2xl font-bold text-coffee-900 mb-2">¡Hola! Cuéntanos sobre ti</h3>
@@ -265,7 +265,7 @@ const RegisterPage = () => {
     </div>
   ), [formData, handleInputChange]);
 
-  const Step2 = useMemo(() => () => (
+  const Step2 = useMemo(() => (
     <div className="space-y-6">
       <div className="text-center mb-8">
         <h3 className="text-2xl font-bold text-coffee-900 mb-2">Cuéntanos sobre tu cafetería</h3>
@@ -368,7 +368,7 @@ const RegisterPage = () => {
     </div>
   ), [formData, handleInputChange, cafeTypes]);
 
-  const Step3 = useMemo(() => () => (
+  const Step3 = useMemo(() => (
     <div className="space-y-6">
       <div className="text-center mb-8">
         <h3 className="text-2xl font-bold text-coffee-900 mb-2">Configuración inicial</h3>
@@ -464,7 +464,7 @@ const RegisterPage = () => {
     </div>
   ), [formData, handleInputChange]);
 
-  const Step4 = useMemo(() => () => (
+  const Step4 = useMemo(() => (
     <div className="space-y-6">
       <div className="text-center mb-8">
         <h3 className="text-2xl font-bold text-coffee-900 mb-2">Selecciona tu plan</h3>
@@ -627,12 +627,12 @@ const RegisterPage = () => {
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-2xl shadow-2xl border border-cream-200 overflow-hidden">
             <div className="p-8">
-              <StepIndicator />
-              
-              {currentStep === 1 && <Step1 />}
-              {currentStep === 2 && <Step2 />}
-              {currentStep === 3 && <Step3 />}
-              {currentStep === 4 && <Step4 />}
+              {StepIndicator}
+
+              {currentStep === 1 && Step1}
+              {currentStep === 2 && Step2}
+              {currentStep === 3 && Step3}
+              {currentStep === 4 && Step4}
               
               {/* Navigation Buttons */}
               <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
