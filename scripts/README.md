@@ -29,37 +29,23 @@ node scripts/seed-test-users.js
 
 ### ✅ Usuarios que se Crearán
 
-El script creará automáticamente:
+> 🔐 **Las credenciales de prueba están documentadas en el README principal**
+>
+> Ver: [README.md - Sección Credenciales de Prueba](../README.md#-credenciales-de-prueba)
 
-#### 1. **Super Admin**
-- 📧 **Email**: `admin@tappmesa.com`
-- 🔑 **Password**: `admin123`
-- 🏷️ **Role**: `super_admin`
-- 📝 **Descripción**: Administrador general del sistema
+**El script creará:**
 
-#### 2. **Café Central**
-- 📧 **Email**: `cafe-central@cafe-central.com`
-- 🔑 **Password**: `admin123`
-- 🏷️ **Role**: `tenant_admin`
-- 🏪 **Restaurante**: Café Central (8 mesas)
+#### Roles incluidos:
+- **Super Admin** - Acceso global al sistema
+- **Tenant Admins** - Para cada restaurante creado
+- **Staff** - Meseros, cocina, etc.
 
-#### 3. **Tetería Luna**
-- 📧 **Email**: `teteria-luna@teteria-luna.com`
-- 🔑 **Password**: `admin123`
-- 🏷️ **Role**: `tenant_admin`
-- 🏪 **Restaurante**: Tetería Luna (6 mesas)
-
-#### 4. **Bistro Sunrise**
-- 📧 **Email**: `bistro-sunrise@bistro-sunrise.com`
-- 🔑 **Password**: `admin123`
-- 🏷️ **Role**: `tenant_admin`
-- 🏪 **Restaurante**: Bistro Sunrise (12 mesas)
-
-#### 5. **Coffee & Co**
-- 📧 **Email**: `coffee-co@coffee-co.com`
-- 🔑 **Password**: `admin123`
-- 🏷️ **Role**: `tenant_admin`
-- 🏪 **Restaurante**: Coffee & Co (10 mesas)
+#### Tenants de ejemplo:
+- Tetería Luna
+- Coffee Central
+- Café Central
+- Bistro Sunrise
+- Coffee & Co
 
 ### 🏗️ Datos Adicionales Creados
 

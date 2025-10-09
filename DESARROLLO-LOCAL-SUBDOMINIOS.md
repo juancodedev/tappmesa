@@ -138,23 +138,15 @@ http://bistro-sunrise-tappmesa.local:5173
 
 ## 📋 Cuentas de Prueba
 
-```
-Email: teteria-luna@teteria-luna.com
-Password: admin123
-Subdomain: teteria-luna-tappmesa
+> 🔐 **Las credenciales completas de prueba están en el README principal**
+>
+> Ver: [README.md - Sección Credenciales de Prueba](README.md#-credenciales-de-prueba)
 
-Email: bistro-sunrise@bistro-sunrise.com
-Password: admin123
-Subdomain: bistro-sunrise-tappmesa
-
-Email: coffee-co@coffee-co.com
-Password: admin123
-Subdomain: coffee-co-tappmesa
-
-Email: cafe-central@cafe-central.com
-Password: admin123
-Subdomain: cafe-central-tappmesa
-```
+**Subdominios disponibles:**
+- `teteria-luna-tappmesa.localhost:5173`
+- `coffee-central-tappmesa.localhost:5173`
+- `cafe-central-tappmesa.localhost:5173`
+- `bistro-sunrise-tappmesa.localhost:5173`
 
 ---
 

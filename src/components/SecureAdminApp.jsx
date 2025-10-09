@@ -44,6 +44,9 @@ import SubscriptionPlansManager from './admin/SubscriptionPlansManager'
 import TenantSubscriptionsManager from './admin/TenantSubscriptionsManager'
 import PreBillSettings from './admin/PreBillSettings'
 import SystemUsersManager from './admin/SystemUsersManager'
+import SuperAdminOrdersManager from './admin/SuperAdminOrdersManager'
+import SuperAdminProductsManager from './admin/SuperAdminProductsManager'
+import SuperAdminTablesManager from './admin/SuperAdminTablesManager'
 
 const SecureAdminApp = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -157,7 +160,7 @@ const SecureAdminApp = () => {
       requiredPermissions: []
     },
     {
-      name: 'Suscripciones de Tenants',
+      name: 'Suscripciones',
       href: '/admin/tenant-subscriptions',
       icon: DollarSign,
       requiredPermissions: []
@@ -169,8 +172,20 @@ const SecureAdminApp = () => {
       requiredPermissions: ['admin_users:read']
     },
     {
-      name: 'Multi-Tenant Test',
-      href: '/admin/tenant-test',
+      name: 'Todos los Pedidos',
+      href: '/admin/all-orders',
+      icon: ShoppingBag,
+      requiredPermissions: []
+    },
+    {
+      name: 'Todos los Productos',
+      href: '/admin/all-products',
+      icon: Package,
+      requiredPermissions: []
+    },
+    {
+      name: 'Todas las Mesas',
+      href: '/admin/all-tables',
       icon: Coffee,
       requiredPermissions: []
     }
@@ -400,6 +415,24 @@ const SecureAdminApp = () => {
             <Route path="/system-users" element={
               <SuperAdminRoute>
                 <SystemUsersManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/all-orders" element={
+              <SuperAdminRoute>
+                <SuperAdminOrdersManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/all-products" element={
+              <SuperAdminRoute>
+                <SuperAdminProductsManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/all-tables" element={
+              <SuperAdminRoute>
+                <SuperAdminTablesManager />
               </SuperAdminRoute>
             } />
           </Routes>
