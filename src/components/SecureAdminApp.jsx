@@ -47,6 +47,10 @@ import SystemUsersManager from './admin/SystemUsersManager'
 import SuperAdminOrdersManager from './admin/SuperAdminOrdersManager'
 import SuperAdminProductsManager from './admin/SuperAdminProductsManager'
 import SuperAdminTablesManager from './admin/SuperAdminTablesManager'
+import SuperAdminReservationsManager from './admin/SuperAdminReservationsManager'
+import SuperAdminCustomersManager from './admin/SuperAdminCustomersManager'
+import SuperAdminCategoriesManager from './admin/SuperAdminCategoriesManager'
+import SuperAdminStockManager from './admin/SuperAdminStockManager'
 
 const SecureAdminApp = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -187,6 +191,30 @@ const SecureAdminApp = () => {
       name: 'Todas las Mesas',
       href: '/admin/all-tables',
       icon: Coffee,
+      requiredPermissions: []
+    },
+    {
+      name: 'Todas las Reservas',
+      href: '/admin/all-reservations',
+      icon: Calendar,
+      requiredPermissions: []
+    },
+    {
+      name: 'Todos los Clientes',
+      href: '/admin/all-customers',
+      icon: Users,
+      requiredPermissions: []
+    },
+    {
+      name: 'Todas las Categorías',
+      href: '/admin/all-categories',
+      icon: Tag,
+      requiredPermissions: []
+    },
+    {
+      name: 'Todo el Inventario',
+      href: '/admin/all-stock',
+      icon: Package,
       requiredPermissions: []
     }
   ]
@@ -433,6 +461,30 @@ const SecureAdminApp = () => {
             <Route path="/all-tables" element={
               <SuperAdminRoute>
                 <SuperAdminTablesManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/all-reservations" element={
+              <SuperAdminRoute>
+                <SuperAdminReservationsManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/all-customers" element={
+              <SuperAdminRoute>
+                <SuperAdminCustomersManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/all-categories" element={
+              <SuperAdminRoute>
+                <SuperAdminCategoriesManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/all-stock" element={
+              <SuperAdminRoute>
+                <SuperAdminStockManager />
               </SuperAdminRoute>
             } />
           </Routes>
