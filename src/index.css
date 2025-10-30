@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Variables CSS para Landing Page */
+@layer base {
+  :root {
+    --shadow-soft: 0 4px 20px rgba(139, 69, 19, 0.1);
+    --shadow-elevated: 0 10px 40px rgba(139, 69, 19, 0.15);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 /* Reset y configuración base mobile */
 * {
   margin: 0;
@@ -22,6 +35,50 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Animaciones para Landing Page */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
 /* Utilidades mobile-first */
 @layer utilities {
   .touch-target {
@@ -31,11 +88,11 @@ body {
     align-items: center;
     justify-content: center;
   }
-  
+
   .safe-area-top {
     padding-top: env(safe-area-inset-top);
   }
-  
+
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
