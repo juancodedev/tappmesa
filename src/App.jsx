@@ -180,13 +180,9 @@ function App() {
             <Route path="/kitchen" element={<KitchenDashboard />} />
             <Route path="/cocina" element={<KitchenDashboard />} />
 
-          {/* Ruta para el dashboard de cocina */}
-          <Route path="/kitchen" element={<KitchenDashboard />} />
-          <Route path="/cocina" element={<KitchenDashboard />} />
-
-          {/* Ruta específica para reservas */}
-          <Route path="/reservas" element={<ReservationsPage />} />
-          <Route path="/reservations" element={<ReservationsPage />} />
+            {/* Ruta específica para reservas */}
+            <Route path="/reservas" element={<ReservationsPage />} />
+            <Route path="/reservations" element={<ReservationsPage />} />
 
             {/* Ruta para mesas específicas (existente) */}
             <Route path="/:slug/:table" element={<TableApp />} />
