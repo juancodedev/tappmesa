@@ -2,6 +2,127 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Landing page design system */
+@layer base {
+  :root {
+    --background: 32 40% 97%;
+    --foreground: 25 47% 15%;
+
+    --card: 30 45% 98%;
+    --card-foreground: 25 47% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 25 47% 15%;
+
+    --primary: 25 60% 35%;
+    --primary-foreground: 30 45% 98%;
+
+    --secondary: 27 60% 60%;
+    --secondary-foreground: 30 45% 98%;
+
+    --muted: 32 30% 92%;
+    --muted-foreground: 25 20% 45%;
+
+    --accent: 30 80% 65%;
+    --accent-foreground: 25 47% 15%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 32 20% 88%;
+    --input: 32 20% 88%;
+    --ring: 25 60% 35%;
+
+    --radius: 0.75rem;
+
+    /* Gradients for cafe theme */
+    --gradient-warm: linear-gradient(135deg, hsl(25 60% 35%), hsl(30 70% 50%));
+    --gradient-cream: linear-gradient(180deg, hsl(32 40% 97%), hsl(30 45% 94%));
+    --gradient-hero: linear-gradient(135deg, hsl(25 60% 35% / 0.95), hsl(30 70% 45% / 0.9));
+    
+    /* Shadows */
+    --shadow-soft: 0 4px 20px hsl(25 60% 35% / 0.1);
+    --shadow-elevated: 0 10px 40px hsl(25 60% 35% / 0.15);
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --background: 25 30% 10%;
+    --foreground: 30 45% 98%;
+
+    --card: 25 35% 12%;
+    --card-foreground: 30 45% 98%;
+
+    --popover: 25 35% 12%;
+    --popover-foreground: 30 45% 98%;
+
+    --primary: 30 70% 60%;
+    --primary-foreground: 25 47% 15%;
+
+    --secondary: 25 40% 20%;
+    --secondary-foreground: 30 45% 98%;
+
+    --muted: 25 30% 18%;
+    --muted-foreground: 30 20% 65%;
+
+    --accent: 30 70% 55%;
+    --accent-foreground: 30 45% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 25 30% 22%;
+    --input: 25 30% 22%;
+    --ring: 30 70% 60%;
+  }
+}
+
+/* Landing page animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
 /* Reset y configuración base mobile */
 * {
   margin: 0;
@@ -13,6 +134,7 @@ html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
 }
 
 body {

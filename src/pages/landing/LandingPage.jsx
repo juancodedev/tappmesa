@@ -1,20 +1,23 @@
 // src/pages/landing/LandingPage.jsx
 import React from "react";
-import Header from "../../components/layout/Header";
-import Footer from "../../components/layout/Footer";
-import HeroSection from "./components/HeroSection";
-import FeaturesSection from "./components/FeaturesSection";
-import HowItWorksSection from "./components/HowItWorksSection";
-import PricingSection from "./components/PricingSection";
-import TestimonialsSection from "./components/TestimonialsSection";
-import DemoSection from "./components/DemoSection";
-import CTASection from "./components/CTASection";
+// import Header from "../../components/layout/Header";
+import Navbar from "../../components/layout/Navbar";
+
+// import Footer from "../../components/layout/Footer";
+// import HeroSection from "./components/HeroSection";
+// import FeaturesSection from "./components/FeaturesSection";
+// import HowItWorksSection from "./components/HowItWorksSection";
+// import PricingSection from "./components/PricingSection";
+// import TestimonialsSection from "./components/TestimonialsSection";
+// import DemoSection from "./components/DemoSection";
+// import CTASection from "./components/CTASection";
 
 const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
-      <Header />
-      <main>
+      {/* <Header /> */}
+      <Navbar />
+      {/* <main>
         <HeroSection />
         <FeaturesSection />
         <HowItWorksSection />
@@ -23,7 +26,7 @@ const LandingPage = () => {
         <PricingSection />
         <CTASection />
       </main>
-      <Footer />
+      <Footer /> */}
     </div>
   );
 };
