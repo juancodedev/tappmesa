@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import * as Sentry from '@sentry/react'
 import App from './App.jsx'
-import './index.css'
+// import './index.css'
 
 // Configurar Sentry solo en producción
 if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {

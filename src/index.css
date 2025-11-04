@@ -1,6 +1,7 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
+@import "tailwindcss";
 
 /* Variables CSS para Landing Page */
 @layer base {
@@ -16,24 +17,24 @@
 }
 
 /* Reset y configuración base mobile */
-* {
+/* * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
+} */
 
-html {
+/* html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
-}
+} */
 
-body {
+/* body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
+} */
 
 /* Animaciones para Landing Page */
 @keyframes fade-in {
@@ -80,7 +81,7 @@ body {
 }
 
 /* Utilidades mobile-first */
-@layer utilities {
+/* @layer utilities {
   .touch-target {
     min-height: 44px;
     min-width: 44px;
@@ -96,14 +97,14 @@ body {
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
-}
+} */
 
 /* Scrollbar personalizado para categorías */
-.scrollbar-hide {
+/* .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
-}
+} */
