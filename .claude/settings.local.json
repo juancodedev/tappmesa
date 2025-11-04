@@ -10,7 +10,8 @@
       "Bash(git commit:*)",
       "Bash(npm run build:*)",
       "Bash(git stash:*)",
-      "Read(//Users/juanmunoz/Documents/GitHub/table-order-brew/src/components/ui/**)"
+      "Read(//Users/juanmunoz/Documents/GitHub/table-order-brew/src/components/ui/**)",
+      "Bash(node -e:*)"
     ],
     "deny": [],
     "ask": []
