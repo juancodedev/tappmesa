@@ -5,10 +5,13 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
+  console.warn('⚠️ Missing Supabase environment variables. Some features will be disabled.')
+  console.warn('⚠️ Create a .env file based on .env.example to enable all features.')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = supabaseUrl && supabaseAnonKey
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null
 
 // Servicio de autenticación actualizado - usando cliente directo mientras se soluciona Vercel
 import { directAuthService } from './secureAuthDirect.js';
