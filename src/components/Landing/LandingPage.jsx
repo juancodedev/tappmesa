@@ -1,10 +1,10 @@
 // src/components/Landing/LandingPage.jsx
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 
 // Components
-import Header from '../UI/Header';
-import Footer from '../UI/Footer';
+import Header from '../layout/Header';
+import Footer from '../layout/Footer';
 import AuthModal from '../Auth/AuthModal';
 import HeroSection from './HeroSection';
 import FeaturesSection from './FeaturesSection';

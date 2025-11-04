@@ -30,13 +30,21 @@ const KitchenDashboard = () => {
       }, 10000)
 
       return () => clearInterval(interval)
+    } else if (!tenantLoading) {
+      // Si no hay tenant y ya terminó de cargar, detener loading
+      setLoading(false)
     }
-  }, [tenant, filter])
+  }, [tenant, tenantLoading, filter])
 
   const loadOrders = async () => {
-    if (!tenant) return
+    if (!tenant) {
+      setLoading(false)
+      return
+    }
 
     try {
+      setLoading(true)
+
       let query = supabase
         .from('orders')
         .select(`
@@ -73,7 +81,8 @@ const KitchenDashboard = () => {
       if (error) throw error
       setOrders(data || [])
     } catch (error) {
-      // console.error('Error loading kitchen orders:', error)
+      console.error('Error loading kitchen orders:', error)
+      alert('Error al cargar pedidos: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -166,6 +175,47 @@ const KitchenDashboard = () => {
         <div className="text-center">
           <RefreshCw className="h-12 w-12 text-orange-600 animate-spin mx-auto mb-4" />
           <p className="text-gray-600">Cargando pedidos...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!tenant) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center px-4">
+          <AlertCircle className="h-16 w-16 text-red-600 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Error: Cafetería no encontrada
+          </h1>
+          <p className="text-gray-600 mb-4">
+            No se pudo identificar la cafetería. Por favor, accede desde el subdominio correcto.
+          </p>
+          <p className="text-sm text-gray-500">
+            Ejemplo: <code className="bg-gray-200 px-2 py-1 rounded">tu-cafeteria-tappmesa.localhost:5173/kitchen</code>
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center px-4">
+          <AlertCircle className="h-16 w-16 text-yellow-600 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Autenticación requerida
+          </h1>
+          <p className="text-gray-600 mb-4">
+            Debes iniciar sesión para acceder al panel de cocina.
+          </p>
+          <a
+            href="/admin/login"
+            className="inline-block bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-colors"
+          >
+            Ir a Login
+          </a>
         </div>
       </div>
     )

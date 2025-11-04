@@ -1,5 +1,4 @@
-// src/pages/landing/LandingPage.jsx
-// Nueva landing page migrada desde Lovable
+// src/pages/landing/LandingV2.jsx
 import React from 'react';
 import Navbar from '../../components/Landing/v2/Navbar';
 import Hero from '../../components/Landing/v2/Hero';
@@ -11,7 +10,7 @@ import Pricing from '../../components/Landing/v2/Pricing';
 import CTA from '../../components/Landing/v2/CTA';
 import Footer from '../../components/Landing/v2/Footer';
 
-const LandingPage = () => {
+const LandingV2 = () => {
   return (
     <div className="min-h-screen bg-cream-50">
       <Navbar />
@@ -24,9 +23,9 @@ const LandingPage = () => {
         <Pricing />
         <CTA />
       </main>
-      <Footer /> */}
+      <Footer />
     </div>
   );
 };
 
-export default LandingPage;
+export default LandingV2;

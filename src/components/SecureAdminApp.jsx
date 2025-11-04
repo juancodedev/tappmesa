@@ -16,7 +16,9 @@ import {
   Tag,
   UserCheck,
   Shield,
-  Circle
+  Circle,
+  DollarSign,
+  FileText
 } from 'lucide-react'
 
 import { useAuth } from '../hooks/useAuth'
@@ -37,6 +39,18 @@ import CustomersManager from './admin/CustomersManager'
 import CategoriesManager from './admin/CategoriesManager'
 import ProductsManager from './admin/ProductsManager'
 import TenantTester from './TenantTester'
+import SuperAdminTenantsManager from './admin/SuperAdminTenantsManager'
+import SubscriptionPlansManager from './admin/SubscriptionPlansManager'
+import TenantSubscriptionsManager from './admin/TenantSubscriptionsManager'
+import PreBillSettings from './admin/PreBillSettings'
+import SystemUsersManager from './admin/SystemUsersManager'
+import SuperAdminOrdersManager from './admin/SuperAdminOrdersManager'
+import SuperAdminProductsManager from './admin/SuperAdminProductsManager'
+import SuperAdminTablesManager from './admin/SuperAdminTablesManager'
+import SuperAdminReservationsManager from './admin/SuperAdminReservationsManager'
+import SuperAdminCustomersManager from './admin/SuperAdminCustomersManager'
+import SuperAdminCategoriesManager from './admin/SuperAdminCategoriesManager'
+import SuperAdminStockManager from './admin/SuperAdminStockManager'
 
 const SecureAdminApp = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -122,6 +136,12 @@ const SecureAdminApp = () => {
       requiredPermissions: ['analytics:read']
     },
     {
+      name: 'Pre-Cuentas',
+      href: '/admin/prebill-settings',
+      icon: FileText,
+      requiredPermissions: []
+    },
+    {
       name: 'Configuración',
       href: '/admin/settings',
       icon: Settings,
@@ -138,15 +158,63 @@ const SecureAdminApp = () => {
       requiredPermissions: ['tenants:read']
     },
     {
+      name: 'Planes de Suscripción',
+      href: '/admin/subscription-plans',
+      icon: Package,
+      requiredPermissions: []
+    },
+    {
+      name: 'Suscripciones',
+      href: '/admin/tenant-subscriptions',
+      icon: DollarSign,
+      requiredPermissions: []
+    },
+    {
       name: 'Usuarios del Sistema',
       href: '/admin/system-users',
       icon: Shield,
       requiredPermissions: ['admin_users:read']
     },
     {
-      name: 'Multi-Tenant Test',
-      href: '/admin/tenant-test',
+      name: 'Todos los Pedidos',
+      href: '/admin/all-orders',
+      icon: ShoppingBag,
+      requiredPermissions: []
+    },
+    {
+      name: 'Todos los Productos',
+      href: '/admin/all-products',
+      icon: Package,
+      requiredPermissions: []
+    },
+    {
+      name: 'Todas las Mesas',
+      href: '/admin/all-tables',
       icon: Coffee,
+      requiredPermissions: []
+    },
+    {
+      name: 'Todas las Reservas',
+      href: '/admin/all-reservations',
+      icon: Calendar,
+      requiredPermissions: []
+    },
+    {
+      name: 'Todos los Clientes',
+      href: '/admin/all-customers',
+      icon: Users,
+      requiredPermissions: []
+    },
+    {
+      name: 'Todas las Categorías',
+      href: '/admin/all-categories',
+      icon: Tag,
+      requiredPermissions: []
+    },
+    {
+      name: 'Todo el Inventario',
+      href: '/admin/all-stock',
+      icon: Package,
       requiredPermissions: []
     }
   ]
@@ -341,16 +409,82 @@ const SecureAdminApp = () => {
               </ProtectedRoute>
             } />
 
+            <Route path="/prebill-settings" element={
+              <TenantAdminRoute>
+                <PreBillSettings />
+              </TenantAdminRoute>
+            } />
+
             {/* Rutas exclusivas para super admin */}
+            <Route path="/tenants" element={
+              <SuperAdminRoute>
+                <SuperAdminTenantsManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/subscription-plans" element={
+              <SuperAdminRoute>
+                <SubscriptionPlansManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/tenant-subscriptions" element={
+              <SuperAdminRoute>
+                <TenantSubscriptionsManager />
+              </SuperAdminRoute>
+            } />
+
             <Route path="/tenant-test" element={
               <SuperAdminRoute>
                 <TenantTester />
               </SuperAdminRoute>
             } />
-            
+
             <Route path="/system-users" element={
               <SuperAdminRoute>
-                <UsersManagerComponent />
+                <SystemUsersManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/all-orders" element={
+              <SuperAdminRoute>
+                <SuperAdminOrdersManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/all-products" element={
+              <SuperAdminRoute>
+                <SuperAdminProductsManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/all-tables" element={
+              <SuperAdminRoute>
+                <SuperAdminTablesManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/all-reservations" element={
+              <SuperAdminRoute>
+                <SuperAdminReservationsManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/all-customers" element={
+              <SuperAdminRoute>
+                <SuperAdminCustomersManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/all-categories" element={
+              <SuperAdminRoute>
+                <SuperAdminCategoriesManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/all-stock" element={
+              <SuperAdminRoute>
+                <SuperAdminStockManager />
               </SuperAdminRoute>
             } />
           </Routes>

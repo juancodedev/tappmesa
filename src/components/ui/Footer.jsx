@@ -175,8 +175,11 @@ const Footer = () => {
               <div className="newsletter-input-group">
                 <input
                   type="email"
+                  id="newsletter-email"
+                  name="newsletter-email"
                   placeholder="tu@email.com"
                   className="newsletter-input"
+                  autoComplete="email"
                   required
                 />
                 <button type="submit" className="newsletter-button">

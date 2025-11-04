@@ -6,49 +6,91 @@ export default {
   ],
   theme: {
     extend: {
-      // Paleta de colores específica para cafeterías
+      // Paleta de colores específica para cafeterías y teterías
       colors: {
-        // Colores principales de café
+        // Colores principales - tonos café
         primary: {
-          50: '#fef7ed',
-          100: '#fdecd1',
-          200: '#fad5a2',
-          300: '#f7b969',
-          400: '#f59e42',
-          500: '#b8956a', // Color principal café dorado
-          600: '#a67c52',
-          700: '#8b6340',
-          800: '#725139',
-          900: '#5e4232',
+          50: '#FAF0E6',   // Lino muy claro
+          100: '#F5DEB3',  // Trigo
+          200: '#DEB887',  // Burlywood / Beige-crema
+          300: '#CD853F',  // Perú
+          400: '#A0522D',  // Siena
+          500: '#8B4513',  // Saddle Brown - Color principal (café oscuro)
+          600: '#6B3410',  // Café más oscuro
+          700: '#5C2E0A',  // Café muy oscuro
+          800: '#4A2508',  // Café ultra oscuro
+          900: '#2C1810',  // Café casi negro
         },
-        
-        // Tonos de café naturales
+
+        // Tonos de café naturales y secundarios
         coffee: {
-          50: '#fafaf9',
-          100: '#f5f5f4',
-          200: '#e7e5e4',
-          300: '#d6d3d1',
-          400: '#a8a29e',
-          500: '#78716c',
-          600: '#57534e', // Café medio
-          700: '#44403c',
-          800: '#292524',
-          900: '#1c1917', // Café muy oscuro
+          50: '#FFF8F0',   // Crema muy claro (fondo)
+          100: '#FAF0E6',  // Lino
+          200: '#F4E6D7',  // Arena/Beige
+          300: '#E8D5C4',  // Beige oscuro (bordes)
+          400: '#C9A880',  // Latte / Café con leche
+          500: '#9A7B65',  // Café claro
+          600: '#6B4423',  // Café medio
+          700: '#5C2E0A',  // Café muy oscuro
+          800: '#4A2508',  // Café ultra oscuro
+          900: '#2C1810',  // Café casi negro (texto principal)
         },
-        
-        // Tonos crema y beige
+
+        // Tonos crema y beige cálidos
         cream: {
-          50: '#fffdf7',
-          100: '#fffaed',
-          200: '#fef3c7', // Crema principal
-          300: '#fde68a',
-          400: '#fcd34d',
-          500: '#f59e0b',
-          600: '#d97706',
-          700: '#b45309',
-          800: '#92400e',
-          900: '#78350f',
-        }
+          50: '#FFFCF5',   // Blanco cálido
+          100: '#FFF8F0',  // Crema muy claro
+          200: '#F5DEB3',  // Trigo / Crema principal
+          300: '#F0E5D8',  // Beige claro (bordes)
+          400: '#DEB887',  // Burlywood
+          500: '#D2B48C',  // Tan
+          600: '#C9A880',  // Latte
+          700: '#B8956A',  // Café dorado
+          800: '#A67C52',  // Café claro oscuro
+          900: '#8B6340',  // Café medio
+        },
+
+        // Colores secundarios - chocolate
+        secondary: {
+          50: '#FBF2E9',
+          100: '#F5E1CE',
+          200: '#EBBC8E',
+          300: '#E39A60',
+          400: '#D87E3F',
+          500: '#D2691E',  // Chocolate - Color secundario principal
+          600: '#B8581A',
+          700: '#9A4916',
+          800: '#7C3B13',
+          900: '#663010',
+        },
+
+        // Tonos tierra y terracota (acento cálido)
+        terracotta: {
+          50: '#FFF3EE',
+          100: '#FFE4D9',
+          200: '#FFC4AF',
+          300: '#FFA485',
+          400: '#FF845A',
+          500: '#E07855',  // Terracota principal
+          600: '#C66347',
+          700: '#A8503A',
+          800: '#8A3F2E',
+          900: '#6C3023',
+        },
+
+        // Verde té (para elementos de tetería)
+        tea: {
+          50: '#F0F7F0',
+          100: '#E1EFE1',
+          200: '#C3DFC3',
+          300: '#A5CFA5',
+          400: '#8FBC8F',  // Verde mar oscuro - Principal
+          500: '#7AA87A',
+          600: '#658F65',
+          700: '#556B2F',  // Verde oliva oscuro
+          800: '#445623',
+          900: '#334118',
+        },
       },
 
       // Animaciones personalizadas
@@ -56,35 +98,36 @@ export default {
         // Animaciones de flotación
         'float': 'float 6s ease-in-out infinite',
         'float-delay': 'float-delay 6s ease-in-out infinite 2s',
-        
+
         // Animaciones de vapor de café
         'steam': 'steam 3s ease-out infinite',
         'steam-delay': 'steam 3s ease-out infinite 1s',
-        
+
         // Efectos de café
         'coffee-ripple': 'coffee-ripple 2s ease-out infinite',
         'gentle-pulse': 'gentle-pulse 3s ease-in-out infinite',
-        
+        'pulse-slow': 'pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+
         // Animaciones de entrada
         'slide-up': 'slide-up 0.8s ease-out forwards',
         'slide-in-left': 'slide-in-left 0.8s ease-out forwards',
         'slide-in-right': 'slide-in-right 0.8s ease-out forwards',
         'zoom-in': 'zoom-in 0.6s ease-out forwards',
-        
+
         // Efectos especiales
         'gentle-rotate': 'gentle-rotate 20s linear infinite',
         'glow': 'glow 2s ease-in-out infinite',
         'heartbeat': 'heartbeat 1.5s ease-in-out infinite',
         'gentle-shake': 'gentle-shake 0.5s ease-in-out',
-        
+
         // Efectos de loading
         'wave': 'wave 1.5s ease-in-out infinite',
         'gradient-shift': 'gradient-shift 8s ease infinite',
-        
+
         // Contadores y estadísticas
         'count-up': 'count-up 0.8s ease-out forwards',
         'stat-bar': 'stat-bar 1.5s ease-out forwards',
-        
+
         // Notificaciones
         'notification-slide': 'notification-slide 4s ease-in-out',
         'testimonial-slide': 'testimonial-slide 0.8s ease-out forwards',
@@ -123,13 +166,23 @@ export default {
         
         // Pulso suave
         'gentle-pulse': {
-          '0%, 100%': { 
-            transform: 'scale(1)', 
-            boxShadow: '0 0 0 0 rgba(184, 149, 106, 0.4)' 
+          '0%, 100%': {
+            transform: 'scale(1)',
+            boxShadow: '0 0 0 0 rgba(184, 149, 106, 0.4)'
           },
-          '50%': { 
-            transform: 'scale(1.02)', 
-            boxShadow: '0 0 0 10px rgba(184, 149, 106, 0)' 
+          '50%': {
+            transform: 'scale(1.02)',
+            boxShadow: '0 0 0 10px rgba(184, 149, 106, 0)'
+          },
+        },
+
+        // Pulso lento para landing
+        'pulse-slow': {
+          '0%, 100%': {
+            opacity: '1',
+          },
+          '50%': {
+            opacity: '0.8',
           },
         },
         
@@ -204,12 +257,15 @@ export default {
         },
       },
 
-      // Gradientes personalizados
+      // Gradientes personalizados para cafetería/tetería
       backgroundImage: {
-        'coffee-gradient': 'linear-gradient(135deg, #fef3c7 0%, #b8956a 100%)',
-        'warm-gradient': 'linear-gradient(135deg, #fef3c7 0%, #fdecd1 50%, #fef3c7 100%)',
-        'coffee-dark': 'linear-gradient(135deg, #1c1917 0%, #57534e 50%, #1c1917 100%)',
-        'animated-gradient': 'linear-gradient(-45deg, #b8956a, #57534e, #b8956a, #fef3c7)',
+        'coffee-gradient': 'linear-gradient(135deg, #FFF8F0 0%, #F5DEB3 50%, #DEB887 100%)',
+        'warm-gradient': 'linear-gradient(135deg, #FFF8F0 0%, #FAF0E6 25%, #F5DEB3 75%, #DEB887 100%)',
+        'coffee-dark': 'linear-gradient(135deg, #2C1810 0%, #5C2E0A 50%, #8B4513 100%)',
+        'chocolate-gradient': 'linear-gradient(135deg, #D2691E 0%, #E07855 50%, #CD853F 100%)',
+        'tea-gradient': 'linear-gradient(135deg, #E1EFE1 0%, #8FBC8F 50%, #556B2F 100%)',
+        'animated-gradient': 'linear-gradient(-45deg, #8B4513, #D2691E, #DEB887, #F5DEB3)',
+        'hero-gradient': 'linear-gradient(135deg, #FFF8F0 0%, #F5DEB3 100%)',
       },
 
       // Tamaños de gradiente para animaciones
@@ -217,14 +273,16 @@ export default {
         '400': '400% 400%',
       },
 
-      // Sombras personalizadas
+      // Sombras personalizadas con tonos café
       boxShadow: {
-        'coffee': '0 4px 6px -1px rgba(184, 149, 106, 0.1), 0 2px 4px -1px rgba(184, 149, 106, 0.06)',
-        'coffee-lg': '0 10px 15px -3px rgba(184, 149, 106, 0.1), 0 4px 6px -2px rgba(184, 149, 106, 0.05)',
-        'coffee-xl': '0 20px 25px -5px rgba(184, 149, 106, 0.1), 0 10px 10px -5px rgba(184, 149, 106, 0.04)',
-        'coffee-2xl': '0 25px 50px -12px rgba(184, 149, 106, 0.25)',
-        'glow-coffee': '0 0 20px rgba(184, 149, 106, 0.4)',
-        'glow-coffee-lg': '0 0 30px rgba(184, 149, 106, 0.6)',
+        'coffee': '0 4px 6px -1px rgba(92, 46, 10, 0.1), 0 2px 4px -1px rgba(92, 46, 10, 0.06)',
+        'coffee-lg': '0 10px 15px -3px rgba(92, 46, 10, 0.1), 0 4px 6px -2px rgba(92, 46, 10, 0.05)',
+        'coffee-xl': '0 20px 25px -5px rgba(92, 46, 10, 0.15), 0 10px 10px -5px rgba(92, 46, 10, 0.04)',
+        'coffee-2xl': '0 25px 50px -12px rgba(92, 46, 10, 0.25)',
+        'glow-coffee': '0 0 20px rgba(139, 69, 19, 0.3)',
+        'glow-coffee-lg': '0 0 30px rgba(139, 69, 19, 0.4)',
+        'warm': '0 4px 12px rgba(222, 184, 135, 0.2)',
+        'warm-lg': '0 8px 24px rgba(222, 184, 135, 0.3)',
       },
 
       // Spacing adicional
@@ -383,6 +441,12 @@ export default {
           '&:hover::before': {
             left: '100%',
           },
+        },
+
+        // Touch target para mejorar accesibilidad móvil
+        '.touch-target': {
+          minHeight: '44px',
+          minWidth: '44px',
         },
       };
 
