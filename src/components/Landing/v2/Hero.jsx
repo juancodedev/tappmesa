@@ -1,90 +1,91 @@
 // src/components/Landing/v2/Hero.jsx
 import React from 'react';
-import { Coffee, QrCode, Smartphone, TrendingUp } from 'lucide-react';
-import heroImage from '../../../assets/hero-cafe.jpg';
+import { Coffee, QrCode, Smartphone, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const Hero = () => {
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-      {/* Background Image with Overlay */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src={heroImage}
-          alt="Clientes ordenando desde tablets en cafetería moderna"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-500/95 via-primary-500/85 to-primary-500/70" />
-      </div>
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-20" style={{
+      backgroundImage: 'linear-gradient(rgba(139, 69, 19, 0.85), rgba(92, 64, 51, 0.9)), url("https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=2000")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    }}>
+      {/* Decorative gradient blobs - hidden for coffee theme */}
+      <div className="absolute top-20 -left-40 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl animate-float" />
+      <div className="absolute bottom-20 -right-40 w-96 h-96 bg-secondary-400/10 rounded-full blur-3xl animate-float-delay" />
 
       {/* Content */}
-      <div className="container relative z-10 mx-auto px-4 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Column - Text Content */}
-          <div className="text-cream-50 animate-fade-in">
-            <div className="inline-flex items-center gap-2 bg-terracotta-500/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-              <Coffee className="w-4 h-4" />
-              <span className="text-sm font-medium">Revoluciona tu Cafetería</span>
+          <div className="text-left animate-fade-in">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-coffee-800/90 px-4 py-2 rounded-full mb-8">
+              <Coffee className="w-4 h-4 text-cream-200" />
+              <span className="text-sm font-semibold text-cream-100">Revoluciona tu Cafetería</span>
             </div>
 
-            <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              Tus Clientes Ordenan
-              <span className="block bg-gradient-to-r from-terracotta-400 to-secondary-500 bg-clip-text text-transparent">
+            {/* Heading */}
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+              <span className="text-white">Tus Clientes Ordenan</span>
+              <br />
+              <span className="text-secondary-300">
                 Desde su Mesa
               </span>
             </h1>
 
-            <p className="text-xl mb-8 text-cream-100 leading-relaxed">
-              Sistema de pedidos digital que moderniza tu cafetería. Sin meseros corriendo, sin esperas largas.
-              Solo café delicioso y clientes felices.
+            {/* Description */}
+            <p className="text-xl lg:text-2xl mb-8 text-cream-100 leading-relaxed max-w-2xl">
+              Sistema de pedidos digital que moderniza tu cafetería. Sin meseros corriendo, sin esperas largas. Solo café delicioso y clientes felices.
             </p>
 
-            <div className="flex flex-wrap gap-4 mb-10">
-              <button className="group px-8 py-3 bg-gradient-to-r from-terracotta-500 to-secondary-500 text-cream-50 rounded-lg hover:shadow-glow-coffee-lg transition-all font-medium text-base flex items-center gap-2">
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-12 justify-start">
+              <button className="group px-8 py-4 bg-secondary-500 text-white rounded-xl hover:bg-secondary-600 hover:shadow-2xl hover:scale-105 transition-all font-semibold text-lg flex items-center justify-center gap-2">
                 Prueba Gratis 14 Días
-                <TrendingUp className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="px-8 py-3 bg-cream-50/10 backdrop-blur-sm border-2 border-cream-50/30 text-cream-50 rounded-lg hover:bg-cream-50/20 transition-all font-medium text-base">
+              <button className="px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl hover:bg-white/10 transition-all font-semibold text-lg flex items-center justify-center gap-2">
                 Ver Demo
               </button>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-6">
-              <div className="animate-scale-in" style={{ animationDelay: '0.2s' }}>
-                <div className="text-3xl font-bold text-terracotta-400">300+</div>
-                <div className="text-sm text-cream-200">Cafeterías</div>
-              </div>
-              <div className="animate-scale-in" style={{ animationDelay: '0.3s' }}>
-                <div className="text-3xl font-bold text-terracotta-400">50k+</div>
-                <div className="text-sm text-cream-200">Pedidos/Mes</div>
-              </div>
-              <div className="animate-scale-in" style={{ animationDelay: '0.4s' }}>
-                <div className="text-3xl font-bold text-terracotta-400">98%</div>
-                <div className="text-sm text-cream-200">Satisfacción</div>
-              </div>
             </div>
           </div>
 
           {/* Right Column - Feature Cards */}
-          <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <div className="space-y-4 lg:space-y-5 animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <FeatureCard
               icon={<QrCode className="w-6 h-6" />}
               title="Escanea QR"
               description="Cliente escanea código desde su mesa"
-              delay="0.4s"
+              delay="0.3s"
             />
             <FeatureCard
               icon={<Smartphone className="w-6 h-6" />}
               title="Ordena Fácil"
               description="Elige productos, personaliza y paga en segundos"
-              delay="0.5s"
+              delay="0.4s"
             />
             <FeatureCard
               icon={<Coffee className="w-6 h-6" />}
               title="Recibe Directo"
               description="Pedido llega a cocina automáticamente"
-              delay="0.6s"
+              delay="0.5s"
             />
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-8 mt-20 max-w-3xl">
+          <div className="text-left animate-scale-in" style={{ animationDelay: '0.6s' }}>
+            <div className="text-4xl lg:text-5xl font-bold text-secondary-300 mb-2">300+</div>
+            <div className="text-sm text-cream-200 font-medium">Cafeterías</div>
+          </div>
+          <div className="text-left animate-scale-in" style={{ animationDelay: '0.7s' }}>
+            <div className="text-4xl lg:text-5xl font-bold text-secondary-300 mb-2">50k+</div>
+            <div className="text-sm text-cream-200 font-medium">Pedidos/Mes</div>
+          </div>
+          <div className="text-left animate-scale-in" style={{ animationDelay: '0.8s' }}>
+            <div className="text-4xl lg:text-5xl font-bold text-secondary-300 mb-2">98%</div>
+            <div className="text-sm text-cream-200 font-medium">Satisfacción</div>
           </div>
         </div>
       </div>
@@ -95,15 +96,17 @@ const Hero = () => {
 const FeatureCard = ({ icon, title, description, delay = '0s' }) => {
   return (
     <div
-      className="flex items-start gap-4 bg-cream-50/95 backdrop-blur-sm p-6 rounded-xl shadow-coffee hover:shadow-coffee-lg transition-all hover:scale-105 animate-scale-in"
+      className="group relative bg-white/95 backdrop-blur-sm p-6 lg:p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 animate-scale-in"
       style={{ animationDelay: delay }}
     >
-      <div className="bg-primary-500 text-cream-50 p-3 rounded-lg flex-shrink-0">
-        {icon}
-      </div>
-      <div>
-        <h3 className="font-semibold text-lg mb-1 text-coffee-900">{title}</h3>
-        <p className="text-coffee-600 text-sm">{description}</p>
+      <div className="relative flex items-start gap-4">
+        <div className="flex-shrink-0 p-3 rounded-xl bg-secondary-500 text-white shadow-md">
+          {icon}
+        </div>
+        <div>
+          <h3 className="font-bold text-xl mb-2 text-gray-900">{title}</h3>
+          <p className="text-gray-700 leading-relaxed">{description}</p>
+        </div>
       </div>
     </div>
   );
