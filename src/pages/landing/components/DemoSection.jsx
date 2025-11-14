@@ -746,7 +746,7 @@ const DemoSection = () => {
         {/* CTA */}
         <div className="text-center mt-16">
           <div className="bg-coffee-dark rounded-2xl p-8 text-coffee-900 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-coffee-900 via-primary-500/20 to-coffee-900 opacity-50"></div>
+            <div className="absolute inset-0 bg-linear-to-r from-coffee-900 via-primary-500/20 to-coffee-900 opacity-50"></div>
             <div className="relative z-10">
               <h3 className="text-3xl font-bold mb-4">
                 ¿Listo para digitalizar tu cafetería? ☕

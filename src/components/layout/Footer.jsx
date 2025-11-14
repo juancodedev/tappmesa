@@ -261,7 +261,7 @@ const Footer = () => {
 
         {/* Newsletter mejorado específico para cafeterías */}
         <div className="border-t border-coffee-700 py-8">
-          <div className="bg-gradient-to-r from-coffee-800/50 to-primary-900/20 rounded-2xl p-6 border border-coffee-600">
+          <div className="bg-linear-to-r from-coffee-800/50 to-primary-900/20 rounded-2xl p-6 border border-coffee-600">
             <div className="grid lg:grid-cols-2 gap-8 items-center">
               <div>
                 <h3 className="text-2xl font-bold text-coffee-900 mb-3 flex items-center gap-3">
@@ -300,7 +300,7 @@ const Footer = () => {
                   </form>
                 ) : (
                   <div className="bg-green-600 text-coffee-900 p-4 rounded-lg flex items-center gap-3">
-                    <CheckCircle className="h-6 w-6 flex-shrink-0" />
+                    <CheckCircle className="h-6 w-6 shrink-0" />
                     <div>
                       <div className="font-semibold">¡Bienvenido a la comunidad!</div>
                       <div className="text-sm opacity-90">Recibirás el primer café digital esta semana</div>

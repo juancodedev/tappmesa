@@ -19,7 +19,7 @@ const CTA = () => {
 
             <h2 className="text-4xl lg:text-5xl font-bold mb-6">
               Comienza Gratis Hoy
-              <span className="block bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mt-2">
+              <span className="block bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent mt-2">
                 Sin Tarjeta de Crédito
               </span>
             </h2>

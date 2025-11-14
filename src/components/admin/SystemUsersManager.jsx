@@ -327,7 +327,7 @@ const SystemUsersManager = () => {
                   {/* User Info */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10 bg-linear-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+                      <div className="shrink-0 h-10 w-10 bg-linear-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center">
                         <span className="text-white font-bold text-lg">
                           {user.full_name?.charAt(0).toUpperCase() || 'U'}
                         </span>
@@ -423,7 +423,7 @@ const SystemUsersManager = () => {
       {/* Info Box */}
       <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <div className="flex items-start space-x-3">
-          <Shield className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+          <Shield className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
           <div className="text-sm text-blue-900">
             <p className="font-medium">Panel de Usuarios del Sistema</p>
             <p className="mt-1">

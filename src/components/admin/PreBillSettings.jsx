@@ -233,7 +233,7 @@ const PreBillSettings = () => {
           {showSurvey && (
             <div className="space-y-4">
               <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start space-x-2">
-                <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="h-5 w-5 text-yellow-600 shrink-0 mt-0.5" />
                 <div className="text-sm text-yellow-900">
                   <p className="font-medium">Esta funcionalidad requiere un plan premium</p>
                   <p className="mt-1">
@@ -329,7 +329,7 @@ const PreBillSettings = () => {
 
         {/* Info Box */}
         <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start space-x-3">
-          <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+          <AlertCircle className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
           <div className="text-sm text-blue-900">
             <p className="font-medium mb-2">Información importante:</p>
             <ul className="list-disc list-inside space-y-1 text-blue-800">

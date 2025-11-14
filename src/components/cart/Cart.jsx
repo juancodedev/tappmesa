@@ -36,7 +36,7 @@ const CartItem = ({ item }) => {
     <div className="bg-white rounded-lg p-4 border border-gray-200">
       <div className="flex items-start space-x-3">
         {/* Imagen del producto */}
-        <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
+        <div className="w-16 h-16 bg-gray-100 rounded-lg shrink-0 overflow-hidden">
           {item.product.image_url ? (
             <img 
               src={item.product.image_url} 
@@ -376,7 +376,7 @@ const Cart = () => {
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                     {!customerInfo.phone && (
-                      <div className="mt-2 bg-gradient-to-r from-primary/10 to-red-50 border border-primary/30 rounded-lg p-3">
+                      <div className="mt-2 bg-linear-to-r from-primary/10 to-red-50 border border-primary/30 rounded-lg p-3">
                         <div className="flex items-start space-x-2">
                           <span className="text-lg">🎁</span>
                           <div>

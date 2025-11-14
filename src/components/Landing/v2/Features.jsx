@@ -49,7 +49,7 @@ const Features = () => {
         <div className="text-center mb-16 lg:mb-20 animate-fade-in">
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-gray-900">
             Todo lo que tu Cafetería
-            <span className="block bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mt-2">
+            <span className="block bg-linear-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mt-2">
               Necesita para Crecer
             </span>
           </h2>
@@ -67,7 +67,7 @@ const Features = () => {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {/* Gradient glow effect on hover */}
-              <div className={`absolute inset-0 bg-gradient-to-r ${feature.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity`} />
+              <div className={`absolute inset-0 bg-linear-to-r ${feature.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity`} />
 
               {/* Icon */}
               <div className="relative mb-6">

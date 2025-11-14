@@ -97,7 +97,7 @@ const Pricing = () => {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary-500 to-secondary-500 text-cream-50 px-4 py-1 rounded-full text-sm font-semibold">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-linear-to-r from-primary-500 to-secondary-500 text-cream-50 px-4 py-1 rounded-full text-sm font-semibold">
                   Más Popular
                 </div>
               )}
@@ -128,7 +128,7 @@ const Pricing = () => {
               <ul className="space-y-3 mb-8">
                 {plan.features.map((feature, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary-500 shrink-0 mt-0.5" />
                     <span className="text-sm text-coffee-900">{feature}</span>
                   </li>
                 ))}
@@ -138,7 +138,7 @@ const Pricing = () => {
               <button
                 className={`w-full px-4 py-3 rounded-lg font-medium transition-all ${
                   plan.popular
-                    ? "bg-gradient-to-r from-primary-500 to-secondary-500 text-cream-50 hover:shadow-coffee-lg"
+                    ? "bg-linear-to-r from-primary-500 to-secondary-500 text-cream-50 hover:shadow-coffee-lg"
                     : "border-2 border-cream-300 text-coffee-900 hover:bg-cream-100"
                 }`}
               >
@@ -149,7 +149,7 @@ const Pricing = () => {
         </div>
 
         {/* Bottom CTA */}
-        <div className="text-center max-w-3xl mx-auto p-8 bg-gradient-to-r from-terracotta-500/10 to-secondary-500/10 rounded-2xl border-2 border-cream-300/50 animate-fade-in">
+        <div className="text-center max-w-3xl mx-auto p-8 bg-linear-to-r from-terracotta-500/10 to-secondary-500/10 rounded-2xl border-2 border-cream-300/50 animate-fade-in">
           <h3 className="text-2xl font-bold mb-3 text-coffee-900">
             ¿Necesitas un plan personalizado? ☕
           </h3>
@@ -158,7 +158,7 @@ const Pricing = () => {
             el plan perfecto para tu negocio cafetero.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <button className="px-6 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-cream-50 rounded-lg hover:shadow-coffee-lg transition-all font-medium">
+            <button className="px-6 py-3 bg-linear-to-r from-primary-500 to-secondary-500 text-cream-50 rounded-lg hover:shadow-coffee-lg transition-all font-medium">
               Contactar Ventas
             </button>
             <button className="px-6 py-3 border-2 border-cream-300 text-coffee-900 rounded-lg hover:bg-cream-100 transition-all font-medium">

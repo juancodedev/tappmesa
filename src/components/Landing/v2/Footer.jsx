@@ -16,7 +16,7 @@ const Footer = () => {
                   <Coffee className="w-6 h-6 text-white" />
                 </div>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold bg-linear-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent">
                 TappMesa
               </span>
             </div>

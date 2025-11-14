@@ -7,7 +7,7 @@ import TableOrdersHistory from "./table/TableOrdersHistory";
 import { Receipt, UtensilsCrossed } from 'lucide-react';
 
 const TableApp = () => {
-  const { tenant, table, tableSession, loading } = useTenant();
+  const { tenant, table, loading } = useTenant();
   const tenantUrl = useTenantUrl();
   const [activeTab, setActiveTab] = useState('menu'); // 'menu' | 'orders'
 

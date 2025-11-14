@@ -106,7 +106,7 @@ const LoginPage = () => {
       } else {
         setErrors({ form: result.error })
       }
-    } catch (error) {
+    } catch {
       setErrors({ form: 'Error inesperado. Intenta nuevamente.' })
     } finally {
       setLoginLoading(false)
@@ -151,7 +151,7 @@ const LoginPage = () => {
             {/* Error general */}
             {errors.form && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
-                <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 shrink-0" />
                 <div>
                   <h3 className="text-sm font-medium text-red-800">Error de autenticación</h3>
                   <p className="text-sm text-red-700 mt-1">{errors.form}</p>

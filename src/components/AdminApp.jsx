@@ -33,7 +33,7 @@ import TenantTester from './TenantTester'
 import CompleteStockManager from './admin/CompleteStockManager'
 
 // Importar supabase para obtener tenant ID
-import { supabase } from '../lib/supabase'
+// import { supabase } from '../lib/supabase'
 
 const TablesManager = () => (
   <div className="p-6">

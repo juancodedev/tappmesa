@@ -1,12 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { supabase } from "../lib/supabase";
 import {
   ExternalLink,
   Coffee,
   Calendar,
-  ShoppingBag,
-  Users,
-  Clock,
   MapPin,
 } from "lucide-react";
 
@@ -15,11 +12,7 @@ const TenantTester = () => {
   const [tenantStats, setTenantStats] = useState({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadTenants();
-  }, []);
-
-  const loadTenants = async () => {
+  const loadTenants = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -45,7 +38,7 @@ const TenantTester = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const loadTenantStats = async (tenantId) => {
     try {
@@ -94,7 +87,7 @@ const TenantTester = () => {
         tables: tablesCount || 0,
         ordersToday: ordersToday || 0,
         activeReservations: activeReservations || 0,
-        categories: categories.length,
+        categories: categories,
       };
     } catch (error) {
       console.error("Error loading tenant stats:", error);
@@ -203,13 +196,13 @@ const TenantTester = () => {
               className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
             >
               {/* Header */}
-              <div className="bg-gradient-to-r from-primary to-red-700 text-white p-4">
+              <div className="bg-linear-to-r from-primary to-red-700 text-white p-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-xl font-bold">{tenant.name}</h3>
                     <p className="text-red-100">@{tenant.slug}</p>
                   </div>
-                  <div className="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
                     <Coffee className="w-6 h-6" />
                   </div>
                 </div>

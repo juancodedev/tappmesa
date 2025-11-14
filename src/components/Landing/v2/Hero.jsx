@@ -100,7 +100,7 @@ const FeatureCard = ({ icon, title, description, delay = '0s' }) => {
       style={{ animationDelay: delay }}
     >
       <div className="relative flex items-start gap-4">
-        <div className="flex-shrink-0 p-3 rounded-xl bg-secondary-500 text-white shadow-md">
+        <div className="shrink-0 p-3 rounded-xl bg-secondary-500 text-white shadow-md">
           {icon}
         </div>
         <div>

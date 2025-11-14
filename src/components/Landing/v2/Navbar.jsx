@@ -17,7 +17,7 @@ const Navbar = () => {
                 <Coffee className="w-5 h-5 text-white" />
               </div>
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-linear-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
               CaféMesa
             </span>
           </div>
@@ -55,7 +55,7 @@ const Navbar = () => {
             <button className="px-5 py-2.5 text-gray-700 hover:text-primary-600 hover:bg-gray-100/50 rounded-xl transition-all font-semibold text-sm">
               Iniciar Sesión
             </button>
-            <button className="px-6 py-2.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl hover:shadow-xl hover:shadow-primary-500/20 hover:scale-105 transition-all font-semibold text-sm">
+            <button className="px-6 py-2.5 bg-linear-to-r from-primary-600 to-secondary-600 text-white rounded-xl hover:shadow-xl hover:shadow-primary-500/20 hover:scale-105 transition-all font-semibold text-sm">
               Prueba Gratis
             </button>
           </div>
@@ -110,7 +110,7 @@ const Navbar = () => {
                 <button className="px-4 py-3 text-gray-700 hover:bg-gray-100/50 rounded-lg transition-all font-semibold text-center">
                   Iniciar Sesión
                 </button>
-                <button className="px-4 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-lg hover:shadow-lg transition-all font-semibold">
+                <button className="px-4 py-3 bg-linear-to-r from-primary-600 to-secondary-600 text-white rounded-lg hover:shadow-lg transition-all font-semibold">
                   Prueba Gratis
                 </button>
               </div>

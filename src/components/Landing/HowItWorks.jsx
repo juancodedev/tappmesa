@@ -64,7 +64,7 @@ const HowItWorks = () => {
               <Card className="p-8 hover:shadow-[var(--shadow-elevated)] transition-all">
                 <div className="flex flex-col md:flex-row gap-6 items-start">
                   {/* Number Badge */}
-                  <div className="flex-shrink-0">
+                  <div className="shrink-0">
                     <div className="relative">
                       <div className="w-16 h-16 rounded-full bg-linear-to-br from-primary to-secondary flex items-center justify-center text-2xl font-bold text-primary-foreground">
                         {step.number}
@@ -76,7 +76,7 @@ const HowItWorks = () => {
                   </div>
 
                   {/* Icon */}
-                  <div className="flex-shrink-0 bg-accent/10 p-4 rounded-xl text-accent">
+                  <div className="shrink-0 bg-accent/10 p-4 rounded-xl text-accent">
                     {step.icon}
                   </div>
 

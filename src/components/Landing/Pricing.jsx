@@ -97,7 +97,7 @@ const Pricing = () => {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-secondary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-linear-to-r from-primary to-secondary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold">
                   Más Popular
                 </div>
               )}
@@ -128,7 +128,7 @@ const Pricing = () => {
               <ul className="space-y-3 mb-8">
                 {plan.features.map((feature, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                     <span className="text-sm">{feature}</span>
                   </li>
                 ))}
@@ -147,7 +147,7 @@ const Pricing = () => {
         </div>
 
         {/* Bottom CTA */}
-        <div className="text-center max-w-3xl mx-auto p-8 bg-gradient-to-r from-accent/10 to-secondary/10 rounded-2xl border animate-fade-in">
+        <div className="text-center max-w-3xl mx-auto p-8 bg-linear-to-r from-accent/10 to-secondary/10 rounded-2xl border animate-fade-in">
           <h3 className="text-2xl font-bold mb-3">
             ¿Necesitas un plan personalizado? ☕
           </h3>

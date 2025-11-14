@@ -12,7 +12,7 @@ const Hero = () => {
           alt="Clientes ordenando desde tablets en cafetería moderna" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/70" />
+        <div className="absolute inset-0 bg-linear-to-r from-primary/95 via-primary/85 to-primary/70" />
       </div>
 
       {/* Content */}
@@ -27,7 +27,7 @@ const Hero = () => {
             
             <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               Tus Clientes Ordenan
-              <span className="block bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
+              <span className="block bg-linear-to-r from-accent to-secondary bg-clip-text text-transparent">
                 Desde su Mesa
               </span>
             </h1>
@@ -91,20 +91,13 @@ const Hero = () => {
   );
 };
 
-interface FeatureCardProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  delay?: string;
-}
-
-const FeatureCard = ({ icon, title, description, delay = "0s" }: FeatureCardProps) => {
+const FeatureCard = ({ icon, title, description, delay = "0s" }) => {
   return (
     <div 
       className="flex items-start gap-4 bg-card/95 backdrop-blur-sm p-6 rounded-xl shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-elevated)] transition-all hover:scale-105 animate-scale-in"
       style={{ animationDelay: delay }}
     >
-      <div className="bg-primary text-primary-foreground p-3 rounded-lg flex-shrink-0">
+      <div className="bg-primary text-primary-foreground p-3 rounded-lg shrink-0">
         {icon}
       </div>
       <div>

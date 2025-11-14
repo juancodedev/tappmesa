@@ -66,7 +66,7 @@ const CategoryTabs = ({ activeCategory, onCategoryChange }) => {
       <div className="sticky top-16 z-20 bg-white border-b border-gray-200 px-4 py-3">
         <div className="flex space-x-3 overflow-x-auto">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="flex-shrink-0 animate-pulse">
+            <div key={i} className="shrink-0 animate-pulse">
               <div className="h-10 w-20 bg-gray-200 rounded-lg"></div>
             </div>
           ))}
@@ -87,7 +87,7 @@ const CategoryTabs = ({ activeCategory, onCategoryChange }) => {
               <button
                 key={category.id}
                 onClick={() => onCategoryChange(category.slug)}
-                className={`flex-shrink-0 flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 whitespace-nowrap touch-target ${
+                className={`shrink-0 flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 whitespace-nowrap touch-target ${
                   isActive
                     ? "text-white shadow-md"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"

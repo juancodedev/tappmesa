@@ -80,7 +80,7 @@ const HowItWorks = () => {
         <div className="text-center mb-16 lg:mb-20 animate-fade-in">
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-gray-900">
             ¿Cómo funciona
-            <span className="block bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mt-2">
+            <span className="block bg-linear-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mt-2">
               TappMesa?
             </span>
           </h2>
@@ -99,7 +99,7 @@ const HowItWorks = () => {
             >
               <div className="group relative bg-white p-6 lg:p-8 rounded-2xl border border-gray-200/50 hover:border-gray-300 shadow-lg hover:shadow-2xl transition-all">
                 {/* Gradient glow effect on hover */}
-                <div className={`absolute inset-0 bg-gradient-to-r ${step.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity`} />
+                <div className={`absolute inset-0 bg-linear-to-r ${step.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity`} />
 
                 <div className="relative flex flex-col sm:flex-row gap-6 items-start">
                   {/* Number Badge */}
@@ -144,13 +144,13 @@ const HowItWorks = () => {
               style={{ animationDelay: `${0.6 + index * 0.1}s` }}
             >
               {/* Gradient glow effect on hover */}
-              <div className={`absolute inset-0 bg-gradient-to-r ${stat.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity`} />
+              <div className={`absolute inset-0 bg-linear-to-r ${stat.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity`} />
 
               <div className="relative text-center">
                 <div className={`inline-flex p-3 rounded-xl bg-linear-to-br ${stat.gradient} text-white shadow-lg mb-4 group-hover:scale-110 transition-transform`}>
                   {stat.icon}
                 </div>
-                <div className="text-4xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-2">
+                <div className="text-4xl font-bold bg-linear-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-2">
                   {stat.value}
                 </div>
                 <div className="text-sm font-semibold text-gray-600">{stat.label}</div>

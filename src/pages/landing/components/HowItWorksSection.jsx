@@ -128,7 +128,7 @@ const HowItWorksSection = () => {
             {currentSteps.map((step, index) => (
               <div key={step.step} className="relative">
                 <div className="flex flex-col lg:flex-row gap-6 items-start">
-                  <div className="flex-shrink-0 flex flex-col items-center">
+                  <div className="shrink-0 flex flex-col items-center">
                     <div className="w-16 h-16 bg-primary-500 text-coffee-900 rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
                       {step.step}
                     </div>

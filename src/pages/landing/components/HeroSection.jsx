@@ -27,7 +27,7 @@ const HeroSection = () => {
           alt="Clientes ordenando desde tablets en cafetería moderna"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/70" />
+        <div className="absolute inset-0 bg-linear-to-r from-primary/95 via-primary/85 to-primary/70" />
       </div>
       <div className="container relative z-10 mx-auto px-4 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -40,7 +40,7 @@ const HeroSection = () => {
             </div>
             <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               Tus Clientes Ordenan
-              <span className="block bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
+              <span className="block bg-linear-to-r from-accent to-secondary bg-clip-text text-transparent">
                 Desde su Mesa
               </span>
             </h1>
