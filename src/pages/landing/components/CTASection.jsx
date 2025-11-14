@@ -95,7 +95,7 @@ const CTASection = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-coffee-900 via-coffee-800 to-primary-900 relative overflow-hidden">
+    <section className="py-20 bg-linear-to-br from-coffee-900 via-coffee-800 to-primary-900 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-r from-coffee-900/90 via-primary-500/20 to-coffee-900/90"></div>
       <div className="absolute top-0 left-0 w-full h-full">

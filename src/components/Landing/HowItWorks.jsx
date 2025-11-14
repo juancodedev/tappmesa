@@ -66,7 +66,7 @@ const HowItWorks = () => {
                   {/* Number Badge */}
                   <div className="flex-shrink-0">
                     <div className="relative">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-2xl font-bold text-primary-foreground">
+                      <div className="w-16 h-16 rounded-full bg-linear-to-br from-primary to-secondary flex items-center justify-center text-2xl font-bold text-primary-foreground">
                         {step.number}
                       </div>
                       {index < steps.length - 1 && (

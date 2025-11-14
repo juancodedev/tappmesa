@@ -4,7 +4,7 @@ import { ArrowRight, MessageCircle, Sparkles, CheckCircle2, Zap } from 'lucide-r
 
 const CTA = () => {
   return (
-    <section className="py-24 lg:py-32 bg-gradient-to-br from-gray-50 via-primary-50/20 to-gray-50 relative overflow-hidden">
+    <section className="py-24 lg:py-32 bg-linear-to-br from-gray-50 via-primary-50/20 to-gray-50 relative overflow-hidden">
       {/* Decorative gradient blobs */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-primary-300/20 rounded-full blur-3xl animate-float" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary-300/20 rounded-full blur-3xl animate-float-delay" />
