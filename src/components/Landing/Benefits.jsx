@@ -43,7 +43,7 @@ const Benefits = () => {
                   className="flex items-start gap-3 animate-scale-in"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-6 h-6 text-primary shrink-0 mt-0.5" />
                   <span className="text-foreground font-medium">{benefit}</span>
                 </li>
               ))}
@@ -69,7 +69,7 @@ const Benefits = () => {
                   className="flex items-start gap-3 animate-scale-in"
                   style={{ animationDelay: `${0.2 + index * 0.1}s` }}
                 >
-                  <CheckCircle2 className="w-6 h-6 text-secondary flex-shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-6 h-6 text-secondary shrink-0 mt-0.5" />
                   <span className="text-foreground font-medium">{benefit}</span>
                 </li>
               ))}

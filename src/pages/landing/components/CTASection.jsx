@@ -97,7 +97,7 @@ const CTASection = () => {
   return (
     <section className="py-20 bg-linear-to-br from-coffee-900 via-coffee-800 to-primary-900 relative overflow-hidden">
       {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-r from-coffee-900/90 via-primary-500/20 to-coffee-900/90"></div>
+      <div className="absolute inset-0 bg-linear-to-r from-coffee-900/90 via-primary-500/20 to-coffee-900/90"></div>
       <div className="absolute top-0 left-0 w-full h-full">
         <div className="absolute top-20 left-10 text-8xl opacity-5 text-coffee-900 animate-float">☕</div>
         <div className="absolute bottom-20 right-20 text-6xl opacity-5 text-coffee-900 animate-float-delay">🚀</div>
@@ -145,7 +145,7 @@ const CTASection = () => {
           </p>
 
           {/* Limited Time Offer */}
-          <div className="bg-gradient-to-r from-primary-500 to-primary-400 rounded-2xl p-6 max-w-2xl mx-auto mb-8 border border-primary-300">
+          <div className="bg-linear-to-r from-primary-500 to-primary-400 rounded-2xl p-6 max-w-2xl mx-auto mb-8 border border-primary-300">
             <div className="flex items-center justify-center gap-2 mb-3">
               <Gift className="h-6 w-6 text-coffee-900" />
               <span className="text-coffee-900 font-bold text-lg">Oferta de Lanzamiento</span>
@@ -275,7 +275,7 @@ const CTASection = () => {
 
         {/* Final Push */}
         <div className="text-center">
-          <div className="bg-gradient-to-r from-primary-600 to-primary-500 rounded-3xl p-8 border border-primary-400 max-w-3xl mx-auto shadow-2xl">
+          <div className="bg-linear-to-r from-primary-600 to-primary-500 rounded-3xl p-8 border border-primary-400 max-w-3xl mx-auto shadow-2xl">
             <h3 className="text-3xl font-bold text-coffee-900 mb-4">
               ¿Qué Esperas para Digitalizar tu Cafetería?
             </h3>

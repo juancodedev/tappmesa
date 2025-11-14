@@ -86,7 +86,7 @@ const ReservationsPage = () => {
       </div>
 
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary to-red-700 text-white py-12">
+      <div className="bg-linear-to-r from-primary to-red-700 text-white py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Calendar className="w-16 h-16 mx-auto mb-4" />
           <h2 className="text-3xl md:text-4xl font-bold mb-4">

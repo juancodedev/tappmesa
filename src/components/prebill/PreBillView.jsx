@@ -178,7 +178,7 @@ const PreBillView = () => {
       <div ref={printRef} className="max-w-3xl mx-auto px-4 py-8 print:px-0 print:py-4">
         <div className="bg-white shadow-lg rounded-lg overflow-hidden print:shadow-none print:rounded-none">
           {/* Encabezado */}
-          <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-8 print:bg-white print:text-black print:border-b-2 print:border-black">
+          <div className="bg-linear-to-r from-orange-500 to-red-500 text-white px-6 py-8 print:bg-white print:text-black print:border-b-2 print:border-black">
             <div className="text-center">
               <h1 className="text-3xl font-bold mb-2 print:text-black">
                 {formattedData.header.tenant_name}

@@ -152,7 +152,7 @@ const PreBillGenerator = ({ order, onSuccess }) => {
       {error && (
         <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
           <div className="flex items-start space-x-2">
-            <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-medium text-red-800">Error</p>
               <p className="text-sm text-red-700">{error}</p>

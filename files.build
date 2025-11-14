@@ -1,0 +1,1212 @@
+
+> tappmesa@0.0.0 lint /Users/juanshocl/Documents/GitHub/tappmesa
+> eslint .
+
+
+/Users/juanshocl/Documents/GitHub/tappmesa/api/auth/reset-password.js
+   2:16  error  'require' is not defined  no-undef
+   3:26  error  'require' is not defined  no-undef
+   4:16  error  'require' is not defined  no-undef
+   5:46  error  'require' is not defined  no-undef
+   6:28  error  'require' is not defined  no-undef
+   7:46  error  'require' is not defined  no-undef
+  10:3   error  'process' is not defined  no-undef
+  11:3   error  'process' is not defined  no-undef
+  14:1   error  'module' is not defined   no-undef
+  80:25  error  'process' is not defined  no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/api/auth/session.js
+   2:26  error  'require' is not defined  no-undef
+   3:16  error  'require' is not defined  no-undef
+   6:3   error  'process' is not defined  no-undef
+   7:3   error  'process' is not defined  no-undef
+  10:1   error  'module' is not defined   no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/api/auth/signin.js
+   2:16  error  'require' is not defined  no-undef
+   3:26  error  'require' is not defined  no-undef
+   4:16  error  'require' is not defined  no-undef
+   5:46  error  'require' is not defined  no-undef
+   6:28  error  'require' is not defined  no-undef
+   9:3   error  'process' is not defined  no-undef
+  10:3   error  'process' is not defined  no-undef
+  13:1   error  'module' is not defined   no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/api/auth/signout.js
+   2:26  error  'require' is not defined  no-undef
+   3:16  error  'require' is not defined  no-undef
+   6:3   error  'process' is not defined  no-undef
+   7:3   error  'process' is not defined  no-undef
+  10:1   error  'module' is not defined   no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/api/auth/signup.js
+   2:16  error  'require' is not defined  no-undef
+   3:26  error  'require' is not defined  no-undef
+   4:16  error  'require' is not defined  no-undef
+   5:46  error  'require' is not defined  no-undef
+   6:28  error  'require' is not defined  no-undef
+   9:3   error  'process' is not defined  no-undef
+  10:3   error  'process' is not defined  no-undef
+  25:1   error  'module' is not defined   no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/api/middleware/cors.js
+  63:1  error  'module' is not defined  no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/api/middleware/rateLimit.js
+    8:16  error  'require' is not defined  no-undef
+  142:27  error  'process' is not defined  no-undef
+  192:1   error  'module' is not defined   no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/api/middleware/validation.js
+    8:16  error  'require' is not defined                                           no-undef
+   31:33  error  Unexpected control character(s) in regular expression: \x00, \x1f  no-control-regex
+  122:43  error  Unnecessary escape character: \[                                   no-useless-escape
+  122:60  error  Unnecessary escape character: \/                                   no-useless-escape
+  157:34  error  Unnecessary escape character: \.                                   no-useless-escape
+  182:7   error  'process' is not defined                                           no-undef
+  285:1   error  'module' is not defined                                            no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/api/services/emailService.js
+   13:16  error  'require' is not defined    no-undef
+   16:24  error  'process' is not defined    no-undef
+   17:20  error  'process' is not defined    no-undef
+   18:19  error  'process' is not defined    no-undef
+   87:7   error  'process' is not defined    no-undef
+   88:16  error  'require' is not defined    no-undef
+   89:18  error  'require' is not defined    no-undef
+   92:32  error  '__dirname' is not defined  no-undef
+  285:1   error  'module' is not defined     no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/api/test.js
+  2:1  error  'module' is not defined  no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/api/utils/logger.js
+   8:15  error  'process' is not defined                                                                no-undef
+   8:58  error  'process' is not defined                                                                no-undef
+   9:7   error  'isProd' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   9:16  error  'process' is not defined                                                                no-undef
+  87:1   error  'module' is not defined                                                                 no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/scripts/migrate-users-to-bcrypt.js
+   16:21  error  'process' is not defined                      no-undef
+   17:28  error  'process' is not defined                      no-undef
+   22:3   error  'process' is not defined                      no-undef
+  118:23  error  'process' is not defined                      no-undef
+  152:5   error  'process' is not defined                      no-undef
+  225:35  error  'process' is not defined                      no-undef
+  226:19  error  'process' is not defined                      no-undef
+  234:7   error  Unexpected lexical declaration in case block  no-case-declarations
+  234:21  error  'process' is not defined                      no-undef
+  235:7   error  Unexpected lexical declaration in case block  no-case-declarations
+  235:24  error  'process' is not defined                      no-undef
+  238:9   error  'process' is not defined                      no-undef
+  240:7   error  Unexpected lexical declaration in case block  no-case-declarations
+  245:7   error  Unexpected lexical declaration in case block  no-case-declarations
+  245:21  error  'process' is not defined                      no-undef
+  246:7   error  Unexpected lexical declaration in case block  no-case-declarations
+  246:23  error  'process' is not defined                      no-undef
+  249:9   error  'process' is not defined                      no-undef
+  251:7   error  Unexpected lexical declaration in case block  no-case-declarations
+
+/Users/juanshocl/Documents/GitHub/tappmesa/scripts/seed-test-users.js
+    5:21  error  'process' is not defined                                                               no-undef
+    6:28  error  'process' is not defined                                                               no-undef
+   13:3   error  'process' is not defined                                                               no-undef
+  210:17  error  'admin' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  247:13  error  'data' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  282:5   error  'process' is not defined                                                               no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/App.jsx
+  32:19  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  47:11  error  'appType' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/Landing/BenefitsSection.jsx
+  284:46  error  Parsing error: Unexpected token 1
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/Landing/ContactSection.jsx
+  6:16  error  'isInView' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/Landing/FeaturesSection.jsx
+  239:45  error  Parsing error: Identifier directly after number
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/Landing/HeroSection.jsx
+  23:6  warning  React Hook useEffect has a missing dependency: 'stats.length'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/Landing/LandingPage.jsx
+  25:20  error  'scrollDirection' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  50:30  error  'userData' is defined but never used                                                             no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/ProtectedRoute.jsx
+  114:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/ReservationForm.jsx
+   39:6  warning  React Hook useEffect has missing dependencies: 'loadAvailableTables' and 'loadBusinessHours'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+   45:6  warning  React Hook useEffect has a missing dependency: 'generateTimeSlots'. Either include it or remove the dependency array                              react-hooks/exhaustive-deps
+  248:9  error    'isDateAvailable' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                   no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/CategoriesManager.jsx
+  33:6  warning  React Hook useEffect has a missing dependency: 'loadCategories'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/CompleteStockManager.jsx
+  30:10  error    'suppliers' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                       no-unused-vars
+  71:6   warning  React Hook useEffect has a missing dependency: 'loadAllData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/CustomersManager.jsx
+  31:6  warning  React Hook useEffect has a missing dependency: 'loadCustomers'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/Dashboard.jsx
+  2:10  error  'supabase' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/OrdersManager.jsx
+  32:6  warning  React Hook useEffect has a missing dependency: 'loadOrders'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/PreBillSettings.jsx
+  33:6  warning  React Hook useEffect has a missing dependency: 'loadSettings'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/ProductsManager.jsx
+  51:6  warning  React Hook useEffect has missing dependencies: 'loadCategories' and 'loadProducts'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/ReservationsManager.jsx
+  34:6  warning  React Hook useEffect has a missing dependency: 'loadReservations'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/Settings.jsx
+  1:20  error  'useEffect' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/StockManager.jsx
+  52:6  warning  React Hook useEffect has a missing dependency: 'loadInventory'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/SuperAdminCategoriesManager.jsx
+  25:6  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/SuperAdminCustomersManager.jsx
+  28:6  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/SuperAdminOrdersManager.jsx
+  30:6   warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  45:11  error    Unexpected lexical declaration in case block                                                                 no-case-declarations
+  49:11  error    Unexpected lexical declaration in case block                                                                 no-case-declarations
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/SuperAdminProductsManager.jsx
+  30:6  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/SuperAdminReservationsManager.jsx
+  31:6  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/SuperAdminStockManager.jsx
+  27:6  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/SuperAdminTablesManager.jsx
+  26:6  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/SuperAdminTenantsManager.jsx
+  28:9   error  'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+  35:10  error  'showActionsMenu' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  35:27  error  'setShowActionsMenu' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/TableStatusesManager.jsx
+  58:6  warning  React Hook useEffect has a missing dependency: 'loadStatuses'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/TablesManager.jsx
+  41:6  warning  React Hook useEffect has missing dependencies: 'loadTableStatuses' and 'loadTables'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/TenantSubscriptionsManager.jsx
+  131:9  error    'getPlanName' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                   no-unused-vars
+  399:6  warning  React Hook useEffect has a missing dependency: 'loadStats'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/admin/UsersManager.jsx
+  51:6  warning  React Hook useEffect has a missing dependency: 'loadUsers'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/cart/Cart.jsx
+  153:26  error  'tableSession' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  213:16  error  'error' is defined but never used                                                             no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/layout/CustomerMenuHeader.jsx
+  22:6  warning  React Hook useEffect has a missing dependency: 'loadCurrentOrder'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/layout/MenuLayout.jsx
+  16:9  error  'handleSearchToggle' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/menu/MenuGrid.jsx
+  76:9  error  'handleAddToCart' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/prebill/PreBillView.jsx
+  10:11  error    'tenant' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                          no-unused-vars
+  23:6   warning  React Hook useEffect has a missing dependency: 'loadPreBill'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  65:9   error    'formatCurrency' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                  no-unused-vars
+  73:9   error    'formatDate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                      no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/reservations/ReservationForm.jsx
+  28:6   warning  React Hook useEffect has a missing dependency: 'loadTables'. Either include it or remove the dependency array                            react-hooks/exhaustive-deps
+  35:6   warning  React Hook useEffect has missing dependencies: 'loadAvailableTables' and 'tenantId'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  71:13  error    'reservationDateTime' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                      no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/table/TableOrdersHistory.jsx
+   8:25  error    'tenant' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                no-unused-vars
+  24:6   warning  React Hook useEffect has a missing dependency: 'loadSessionOrders'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/ui/Button.jsx
+  43:18  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/components/ui/Card.jsx
+  5:47  error  Parsing error: Identifier 'React' has already been declared
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/context/AuthContext.jsx
+    2:25  error    'useContext' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                   no-unused-vars
+    6:14  error    Fast refresh only works when a file only exports components. Move your React context(s) to a separate file          react-refresh/only-export-components
+   76:6   warning  React Hook useEffect has a missing dependency: 'checkAuthStatus'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  130:14  error    'error' is defined but never used                                                                                   no-unused-vars
+  159:14  error    'error' is defined but never used                                                                                   no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/context/CartContext.jsx
+  1:25  error  'useContext' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                           no-unused-vars
+  6:14  error  Fast refresh only works when a file only exports components. Move your React context(s) to a separate file  react-refresh/only-export-components
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/context/ReservationsContext.jsx
+  365:10  error  Parsing error: Identifier 'useReservation' has already been declared
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/context/TenantContext.jsx
+    6:14  error    Fast refresh only works when a file only exports components. Move your React context(s) to a separate file     react-refresh/only-export-components
+  365:6   warning  React Hook useEffect has a missing dependency: 'loadTenant'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  373:6   warning  React Hook useEffect has a missing dependency: 'loadTenant'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/generated/prisma/client.js
+  4:1   error  'module' is not defined   no-undef
+  4:23  error  'require' is not defined  no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/generated/prisma/default.js
+  4:1   error  'module' is not defined   no-undef
+  4:23  error  'require' is not defined  no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/generated/prisma/edge.js
+    5:23   error  'exports' is not defined                                                                     no-undef
+   18:3    error  'skip' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+   24:3    error  'warnOnce' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+   27:3    error  'getRuntime' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   28:3    error  'createParam' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   29:5    error  'require' is not defined                                                                     no-undef
+   34:1    error  'exports' is not defined                                                                     no-undef
+   35:1    error  'exports' is not defined                                                                     no-undef
+   88:1    error  'exports' is not defined                                                                     no-undef
+   95:1    error  'exports' is not defined                                                                     no-undef
+  109:1    error  'exports' is not defined                                                                     no-undef
+  119:1    error  'exports' is not defined                                                                     no-undef
+  133:1    error  'exports' is not defined                                                                     no-undef
+  143:1    error  'exports' is not defined                                                                     no-undef
+  154:1    error  'exports' is not defined                                                                     no-undef
+  163:1    error  'exports' is not defined                                                                     no-undef
+  180:1    error  'exports' is not defined                                                                     no-undef
+  192:1    error  'exports' is not defined                                                                     no-undef
+  206:1    error  'exports' is not defined                                                                     no-undef
+  216:1    error  'exports' is not defined                                                                     no-undef
+  234:1    error  'exports' is not defined                                                                     no-undef
+  252:1    error  'exports' is not defined                                                                     no-undef
+  266:1    error  'exports' is not defined                                                                     no-undef
+  282:1    error  'exports' is not defined                                                                     no-undef
+  291:1    error  'exports' is not defined                                                                     no-undef
+  298:1    error  'exports' is not defined                                                                     no-undef
+  309:1    error  'exports' is not defined                                                                     no-undef
+  326:1    error  'exports' is not defined                                                                     no-undef
+  343:1    error  'exports' is not defined                                                                     no-undef
+  358:1    error  'exports' is not defined                                                                     no-undef
+  372:1    error  'exports' is not defined                                                                     no-undef
+  387:1    error  'exports' is not defined                                                                     no-undef
+  403:1    error  'exports' is not defined                                                                     no-undef
+  422:1    error  'exports' is not defined                                                                     no-undef
+  435:1    error  'exports' is not defined                                                                     no-undef
+  457:1    error  'exports' is not defined                                                                     no-undef
+  472:1    error  'exports' is not defined                                                                     no-undef
+  491:1    error  'exports' is not defined                                                                     no-undef
+  511:1    error  'exports' is not defined                                                                     no-undef
+  527:1    error  'exports' is not defined                                                                     no-undef
+  551:1    error  'exports' is not defined                                                                     no-undef
+  560:1    error  'exports' is not defined                                                                     no-undef
+  565:1    error  'exports' is not defined                                                                     no-undef
+  570:1    error  'exports' is not defined                                                                     no-undef
+  575:1    error  'exports' is not defined                                                                     no-undef
+  581:1    error  'exports' is not defined                                                                     no-undef
+  587:1    error  'exports' is not defined                                                                     no-undef
+  676:20   error  'exports' is not defined                                                                     no-undef
+  682:120  error  'process' is not defined                                                                     no-undef
+  682:135  error  'process' is not defined                                                                     no-undef
+  686:99   error  'process' is not defined                                                                     no-undef
+  686:114  error  'process' is not defined                                                                     no-undef
+  687:110  error  'process' is not defined                                                                     no-undef
+  687:125  error  'process' is not defined                                                                     no-undef
+  691:1    error  'exports' is not defined                                                                     no-undef
+  692:15   error  'exports' is not defined                                                                     no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/generated/prisma/index-browser.js
+    5:23  error  'exports' is not defined                                                              no-undef
+   13:3   error  'skip' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   14:5   error  'require' is not defined                                                              no-undef
+   19:1   error  'exports' is not defined                                                              no-undef
+   20:1   error  'exports' is not defined                                                              no-undef
+  116:1   error  'exports' is not defined                                                              no-undef
+  123:1   error  'exports' is not defined                                                              no-undef
+  137:1   error  'exports' is not defined                                                              no-undef
+  147:1   error  'exports' is not defined                                                              no-undef
+  161:1   error  'exports' is not defined                                                              no-undef
+  171:1   error  'exports' is not defined                                                              no-undef
+  182:1   error  'exports' is not defined                                                              no-undef
+  191:1   error  'exports' is not defined                                                              no-undef
+  208:1   error  'exports' is not defined                                                              no-undef
+  220:1   error  'exports' is not defined                                                              no-undef
+  234:1   error  'exports' is not defined                                                              no-undef
+  244:1   error  'exports' is not defined                                                              no-undef
+  262:1   error  'exports' is not defined                                                              no-undef
+  280:1   error  'exports' is not defined                                                              no-undef
+  294:1   error  'exports' is not defined                                                              no-undef
+  310:1   error  'exports' is not defined                                                              no-undef
+  319:1   error  'exports' is not defined                                                              no-undef
+  326:1   error  'exports' is not defined                                                              no-undef
+  337:1   error  'exports' is not defined                                                              no-undef
+  354:1   error  'exports' is not defined                                                              no-undef
+  371:1   error  'exports' is not defined                                                              no-undef
+  386:1   error  'exports' is not defined                                                              no-undef
+  400:1   error  'exports' is not defined                                                              no-undef
+  415:1   error  'exports' is not defined                                                              no-undef
+  431:1   error  'exports' is not defined                                                              no-undef
+  450:1   error  'exports' is not defined                                                              no-undef
+  463:1   error  'exports' is not defined                                                              no-undef
+  485:1   error  'exports' is not defined                                                              no-undef
+  500:1   error  'exports' is not defined                                                              no-undef
+  519:1   error  'exports' is not defined                                                              no-undef
+  539:1   error  'exports' is not defined                                                              no-undef
+  555:1   error  'exports' is not defined                                                              no-undef
+  579:1   error  'exports' is not defined                                                              no-undef
+  588:1   error  'exports' is not defined                                                              no-undef
+  593:1   error  'exports' is not defined                                                              no-undef
+  598:1   error  'exports' is not defined                                                              no-undef
+  603:1   error  'exports' is not defined                                                              no-undef
+  609:1   error  'exports' is not defined                                                              no-undef
+  615:1   error  'exports' is not defined                                                              no-undef
+  656:11  error  'target' is defined but never used                                                    no-unused-vars
+  656:19  error  'prop' is defined but never used                                                      no-unused-vars
+  677:1   error  'exports' is not defined                                                              no-undef
+  679:15  error  'exports' is not defined                                                              no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/generated/prisma/index.js
+    5:23  error  'exports' is not defined                                                                     no-undef
+   18:3   error  'skip' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+   24:3   error  'warnOnce' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+   27:3   error  'getRuntime' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   28:3   error  'createParam' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   29:5   error  'require' is not defined                                                                     no-undef
+   34:1   error  'exports' is not defined                                                                     no-undef
+   35:1   error  'exports' is not defined                                                                     no-undef
+   84:16  error  'require' is not defined                                                                     no-undef
+   89:1   error  'exports' is not defined                                                                     no-undef
+   96:1   error  'exports' is not defined                                                                     no-undef
+  110:1   error  'exports' is not defined                                                                     no-undef
+  120:1   error  'exports' is not defined                                                                     no-undef
+  134:1   error  'exports' is not defined                                                                     no-undef
+  144:1   error  'exports' is not defined                                                                     no-undef
+  155:1   error  'exports' is not defined                                                                     no-undef
+  164:1   error  'exports' is not defined                                                                     no-undef
+  181:1   error  'exports' is not defined                                                                     no-undef
+  193:1   error  'exports' is not defined                                                                     no-undef
+  207:1   error  'exports' is not defined                                                                     no-undef
+  217:1   error  'exports' is not defined                                                                     no-undef
+  235:1   error  'exports' is not defined                                                                     no-undef
+  253:1   error  'exports' is not defined                                                                     no-undef
+  267:1   error  'exports' is not defined                                                                     no-undef
+  283:1   error  'exports' is not defined                                                                     no-undef
+  292:1   error  'exports' is not defined                                                                     no-undef
+  299:1   error  'exports' is not defined                                                                     no-undef
+  310:1   error  'exports' is not defined                                                                     no-undef
+  327:1   error  'exports' is not defined                                                                     no-undef
+  344:1   error  'exports' is not defined                                                                     no-undef
+  359:1   error  'exports' is not defined                                                                     no-undef
+  373:1   error  'exports' is not defined                                                                     no-undef
+  388:1   error  'exports' is not defined                                                                     no-undef
+  404:1   error  'exports' is not defined                                                                     no-undef
+  423:1   error  'exports' is not defined                                                                     no-undef
+  436:1   error  'exports' is not defined                                                                     no-undef
+  458:1   error  'exports' is not defined                                                                     no-undef
+  473:1   error  'exports' is not defined                                                                     no-undef
+  492:1   error  'exports' is not defined                                                                     no-undef
+  512:1   error  'exports' is not defined                                                                     no-undef
+  528:1   error  'exports' is not defined                                                                     no-undef
+  552:1   error  'exports' is not defined                                                                     no-undef
+  561:1   error  'exports' is not defined                                                                     no-undef
+  566:1   error  'exports' is not defined                                                                     no-undef
+  571:1   error  'exports' is not defined                                                                     no-undef
+  576:1   error  'exports' is not defined                                                                     no-undef
+  582:1   error  'exports' is not defined                                                                     no-undef
+  588:1   error  'exports' is not defined                                                                     no-undef
+  675:12  error  'require' is not defined                                                                     no-undef
+  677:18  error  '__dirname' is not defined                                                                   no-undef
+  678:30  error  '__dirname' is not defined                                                                   no-undef
+  685:36  error  'process' is not defined                                                                     no-undef
+  688:30  error  'process' is not defined                                                                     no-undef
+  693:20  error  'exports' is not defined                                                                     no-undef
+  698:30  error  'require' is not defined                                                                     no-undef
+  706:1   error  'exports' is not defined                                                                     no-undef
+  707:15  error  'exports' is not defined                                                                     no-undef
+  710:11  error  '__dirname' is not defined                                                                   no-undef
+  711:11  error  'process' is not defined                                                                     no-undef
+  713:11  error  '__dirname' is not defined                                                                   no-undef
+  714:11  error  'process' is not defined                                                                     no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/generated/prisma/query_engine_bg.js
+  1:3773  error  'module' is not defined                                                    no-undef
+  1:3981  error  'module' is not defined                                                    no-undef
+  1:4969  error  'module' is not defined                                                    no-undef
+  1:5243  error  'FinalizationRegistry' is not defined                                      no-undef
+  2:463   error  'FinalizationRegistry' is not defined                                      no-undef
+  2:4853  error  'module' is not defined                                                    no-undef
+  2:5214  error  'global' is not defined                                                    no-undef
+  2:6038  error  'n' is defined but never used                                              no-unused-vars
+  2:7094  error  Unexpected constant truthiness on the left-hand side of a `&&` expression  no-constant-binary-expression
+  2:7098  error  'module' is not defined                                                    no-undef
+  2:7114  error  'QueryEngine' is not defined                                               no-undef
+  2:7126  error  '__wbg_String_8f0eb39a4a4c2f66' is not defined                             no-undef
+  2:7156  error  '__wbg_buffer_609cc3eee51ed158' is not defined                             no-undef
+  2:7186  error  '__wbg_call_672a4d21634d4a24' is not defined                               no-undef
+  2:7214  error  '__wbg_call_7cccdd69e0791ae2' is not defined                               no-undef
+  2:7242  error  '__wbg_crypto_805be4ce92f1e370' is not defined                             no-undef
+  2:7272  error  '__wbg_done_769e5ede4b31c67b' is not defined                               no-undef
+  2:7300  error  '__wbg_entries_3265d4158b33e5dc' is not defined                            no-undef
+  2:7331  error  '__wbg_exec_3e2d2d0644c927df' is not defined                               no-undef
+  2:7359  error  '__wbg_getRandomValues_f6a868620c8bab49' is not defined                    no-undef
+  2:7398  error  '__wbg_getTime_46267b1c24877e30' is not defined                            no-undef
+  2:7429  error  '__wbg_get_67b2ba62fc30de12' is not defined                                no-undef
+  2:7456  error  '__wbg_get_b9b93047fe3cf45b' is not defined                                no-undef
+  2:7483  error  '__wbg_get_ece95cf6585650d9' is not defined                                no-undef
+  2:7510  error  '__wbg_getwithrefkey_1dc361bd10053bfe' is not defined                      no-undef
+  2:7547  error  '__wbg_has_a5ea9117f258a0ec' is not defined                                no-undef
+  2:7574  error  '__wbg_instanceof_ArrayBuffer_e14585432e3737fc' is not defined             no-undef
+  2:7620  error  '__wbg_instanceof_Map_f3469ce2244d2430' is not defined                     no-undef
+  2:7658  error  '__wbg_instanceof_Promise_935168b8f4b49db3' is not defined                 no-undef
+  2:7700  error  '__wbg_instanceof_Uint8Array_17156bcf118086a9' is not defined              no-undef
+  2:7745  error  '__wbg_isArray_a1eab7e0d067391b' is not defined                            no-undef
+  2:7776  error  '__wbg_isSafeInteger_343e2beeeece1bb0' is not defined                      no-undef
+  2:7813  error  '__wbg_iterator_9a24c88df860dc65' is not defined                           no-undef
+  2:7845  error  '__wbg_keys_5c77a08ddc2fb8a6' is not defined                               no-undef
+  2:7873  error  '__wbg_length_a446193dc22c12f8' is not defined                             no-undef
+  2:7903  error  '__wbg_length_e2d2a49132c1b256' is not defined                             no-undef
+  2:7933  error  '__wbg_msCrypto_2ac4d17c4748234a' is not defined                           no-undef
+  2:7965  error  '__wbg_new0_f788a2397c7ca929' is not defined                               no-undef
+  2:7993  error  '__wbg_new_23a2665fac83c611' is not defined                                no-undef
+  2:8020  error  '__wbg_new_405e22f390576ce2' is not defined                                no-undef
+  2:8047  error  '__wbg_new_5e0be73521bc8c17' is not defined                                no-undef
+  2:8074  error  '__wbg_new_63847613cde5d4bc' is not defined                                no-undef
+  2:8101  error  '__wbg_new_78feb108b6472713' is not defined                                no-undef
+  2:8128  error  '__wbg_new_a12002a7f91c75be' is not defined                                no-undef
+  2:8155  error  '__wbg_newnoargs_105ed471475aaf50' is not defined                          no-undef
+  2:8188  error  '__wbg_newwithbyteoffsetandlength_d97e637ebe145a9a' is not defined         no-undef
+  2:8238  error  '__wbg_newwithlength_a381634e90c276d4' is not defined                      no-undef
+  2:8275  error  '__wbg_next_25feadfc0913fea9' is not defined                               no-undef
+  2:8303  error  '__wbg_next_6574e1a8a62d1055' is not defined                               no-undef
+  2:8331  error  '__wbg_node_ecc8306b9857f33d' is not defined                               no-undef
+  2:8359  error  '__wbg_now_7fd00a794a07d388' is not defined                                no-undef
+  2:8386  error  '__wbg_now_807e54c39636c349' is not defined                                no-undef
+  2:8413  error  '__wbg_now_b3f7572f6ef3d3a9' is not defined                                no-undef
+  2:8440  error  '__wbg_process_5cff2739921be718' is not defined                            no-undef
+  2:8471  error  '__wbg_push_737cfc8c1432c2c6' is not defined                               no-undef
+  2:8499  error  '__wbg_queueMicrotask_5a8a9131f3f0b37b' is not defined                     no-undef
+  2:8537  error  '__wbg_queueMicrotask_6d79674585219521' is not defined                     no-undef
+  2:8575  error  '__wbg_randomFillSync_d3c85af7e31cf1f8' is not defined                     no-undef
+  2:8613  error  '__wbg_require_0c566c6f2eef6c79' is not defined                            no-undef
+  2:8644  error  '__wbg_resolve_4851785c9c5f573d' is not defined                            no-undef
+  2:8675  error  '__wbg_setTimeout_5d6a1d4fc51ea450' is not defined                         no-undef
+  2:8709  error  '__wbg_set_37837023f3d740e8' is not defined                                no-undef
+  2:8736  error  '__wbg_set_3f1d0b984ed272ed' is not defined                                no-undef
+  2:8763  error  '__wbg_set_65595bdd868b3009' is not defined                                no-undef
+  2:8790  error  '__wbg_set_8fc6bf8a5b1071d1' is not defined                                no-undef
+  2:8817  error  '__wbg_set_bb8cecf6a62b9f46' is not defined                                no-undef
+  2:8844  error  '__wbg_set_wasm' is not defined                                            no-undef
+  2:8859  error  '__wbg_static_accessor_GLOBAL_88a902d13a557d07' is not defined             no-undef
+  2:8905  error  '__wbg_static_accessor_GLOBAL_THIS_56578be7e9f832b0' is not defined        no-undef
+  2:8956  error  '__wbg_static_accessor_SELF_37c5d418e4bf5819' is not defined               no-undef
+  2:9000  error  '__wbg_static_accessor_WINDOW_5de37043a91a9c40' is not defined             no-undef
+  2:9046  error  '__wbg_subarray_aa9065fa9dc5df96' is not defined                           no-undef
+  2:9078  error  '__wbg_then_44b73946d2fb3e7d' is not defined                               no-undef
+  2:9106  error  '__wbg_then_48b406749878a531' is not defined                               no-undef
+  2:9134  error  '__wbg_valueOf_7392193dd78c6b97' is not defined                            no-undef
+  2:9165  error  '__wbg_value_cd1ffa7b1ab794f1' is not defined                              no-undef
+  2:9194  error  '__wbg_versions_a8e5a362e1f16442' is not defined                           no-undef
+  2:9226  error  '__wbindgen_as_number' is not defined                                      no-undef
+  2:9247  error  '__wbindgen_bigint_from_i64' is not defined                                no-undef
+  2:9274  error  '__wbindgen_bigint_from_u64' is not defined                                no-undef
+  2:9301  error  '__wbindgen_bigint_get_as_i64' is not defined                              no-undef
+  2:9330  error  '__wbindgen_boolean_get' is not defined                                    no-undef
+  2:9353  error  '__wbindgen_cb_drop' is not defined                                        no-undef
+  2:9372  error  '__wbindgen_closure_wrapper7729' is not defined                            no-undef
+  2:9403  error  '__wbindgen_debug_string' is not defined                                   no-undef
+  2:9427  error  '__wbindgen_error_new' is not defined                                      no-undef
+  2:9448  error  '__wbindgen_in' is not defined                                             no-undef
+  2:9462  error  '__wbindgen_init_externref_table' is not defined                           no-undef
+  2:9494  error  '__wbindgen_is_bigint' is not defined                                      no-undef
+  2:9515  error  '__wbindgen_is_function' is not defined                                    no-undef
+  2:9538  error  '__wbindgen_is_object' is not defined                                      no-undef
+  2:9559  error  '__wbindgen_is_string' is not defined                                      no-undef
+  2:9580  error  '__wbindgen_is_undefined' is not defined                                   no-undef
+  2:9604  error  '__wbindgen_jsval_eq' is not defined                                       no-undef
+  2:9624  error  '__wbindgen_jsval_loose_eq' is not defined                                 no-undef
+  2:9650  error  '__wbindgen_memory' is not defined                                         no-undef
+  2:9668  error  '__wbindgen_number_get' is not defined                                     no-undef
+  2:9690  error  '__wbindgen_number_new' is not defined                                     no-undef
+  2:9712  error  '__wbindgen_string_get' is not defined                                     no-undef
+  2:9734  error  '__wbindgen_string_new' is not defined                                     no-undef
+  2:9756  error  '__wbindgen_throw' is not defined                                          no-undef
+  2:9773  error  'debug_panic' is not defined                                               no-undef
+  2:9785  error  'getBuildTimeInfo' is not defined                                          no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/generated/prisma/runtime/edge-esm.js
+   4:637    error  'b' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   4:798    error  'x' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   4:4113   error  Expected method 'get' to always return a value                                      getter-return
+   4:4228   error  Expected method 'get' to always return a value                                      getter-return
+   4:23143  error  'i' is defined but never used                                                       no-unused-vars
+   4:23145  error  'o' is defined but never used                                                       no-unused-vars
+   4:35317  error  'e' is defined but never used                                                       no-unused-vars
+   4:35779  error  'bm' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:35811  error  'xm' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:35844  error  'vm' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:36010  error  'km' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:36956  error  's' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   4:67508  error  'd' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   4:72180  error  Do not access Object.prototype method 'hasOwnProperty' from target object           no-prototype-builtins
+   5:232    error  '$getTemplateParameters' is not defined                                             no-undef
+   7:8763   error  '#e' is defined but never used                                                      no-unused-private-class-members
+   7:8807   error  '#e' is defined but never used                                                      no-unused-private-class-members
+   7:8853   error  '#e' is defined but never used                                                      no-unused-private-class-members
+   9:337    error  '$EnabledCallSite' is not defined                                                   no-undef
+  14:8600   error  Redundant double negation                                                           no-extra-boolean-cast
+  16:1363   error  Empty block statement                                                               no-empty
+  16:1605   error  'a' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  16:1621   error  'l' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  16:1636   error  'd' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  16:1651   error  'g' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  32:1182   error  'o' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/generated/prisma/runtime/edge.js
+   4:693    error  'b' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   4:854    error  'x' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   4:4169   error  Expected method 'get' to always return a value                                      getter-return
+   4:4284   error  Expected method 'get' to always return a value                                      getter-return
+   4:23199  error  'i' is defined but never used                                                       no-unused-vars
+   4:23201  error  'o' is defined but never used                                                       no-unused-vars
+   4:35733  error  'module' is not defined                                                             no-undef
+   4:36081  error  'e' is defined but never used                                                       no-unused-vars
+   4:36575  error  'vm' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:36750  error  'km' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:37720  error  's' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   4:68286  error  'd' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   4:72959  error  Do not access Object.prototype method 'hasOwnProperty' from target object           no-prototype-builtins
+   5:232    error  '$getTemplateParameters' is not defined                                             no-undef
+   7:8763   error  '#e' is defined but never used                                                      no-unused-private-class-members
+   7:8807   error  '#e' is defined but never used                                                      no-unused-private-class-members
+   7:8853   error  '#e' is defined but never used                                                      no-unused-private-class-members
+   9:337    error  '$EnabledCallSite' is not defined                                                   no-undef
+  14:8600   error  Redundant double negation                                                           no-extra-boolean-cast
+  16:1363   error  Empty block statement                                                               no-empty
+  16:1604   error  'a' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  16:1620   error  'l' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  16:1635   error  'd' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  16:1650   error  'g' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  32:1182   error  'o' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  33:995    error  Unexpected constant truthiness on the left-hand side of a `&&` expression           no-constant-binary-expression
+  33:999    error  'module' is not defined                                                             no-undef
+  33:1015   error  'DMMF' is not defined                                                               no-undef
+  33:1020   error  'Debug' is not defined                                                              no-undef
+  33:1026   error  'Decimal' is not defined                                                            no-undef
+  33:1034   error  'Extensions' is not defined                                                         no-undef
+  33:1045   error  'MetricsClient' is not defined                                                      no-undef
+  33:1059   error  'PrismaClientInitializationError' is not defined                                    no-undef
+  33:1091   error  'PrismaClientKnownRequestError' is not defined                                      no-undef
+  33:1121   error  'PrismaClientRustPanicError' is not defined                                         no-undef
+  33:1148   error  'PrismaClientUnknownRequestError' is not defined                                    no-undef
+  33:1180   error  'PrismaClientValidationError' is not defined                                        no-undef
+  33:1208   error  'Public' is not defined                                                             no-undef
+  33:1215   error  'Sql' is not defined                                                                no-undef
+  33:1219   error  'createParam' is not defined                                                        no-undef
+  33:1231   error  'defineDmmfProperty' is not defined                                                 no-undef
+  33:1250   error  'deserializeJsonResponse' is not defined                                            no-undef
+  33:1274   error  'deserializeRawResult' is not defined                                               no-undef
+  33:1295   error  'dmmfToRuntimeDataModel' is not defined                                             no-undef
+  33:1318   error  'empty' is not defined                                                              no-undef
+  33:1324   error  'getPrismaClient' is not defined                                                    no-undef
+  33:1340   error  'getRuntime' is not defined                                                         no-undef
+  33:1351   error  'join' is not defined                                                               no-undef
+  33:1356   error  'makeStrictEnum' is not defined                                                     no-undef
+  33:1371   error  'makeTypedQueryFactory' is not defined                                              no-undef
+  33:1393   error  'objectEnumValues' is not defined                                                   no-undef
+  33:1410   error  'raw' is not defined                                                                no-undef
+  33:1414   error  'serializeJsonQuery' is not defined                                                 no-undef
+  33:1433   error  'skip' is not defined                                                               no-undef
+  33:1438   error  'sqltag' is not defined                                                             no-undef
+  33:1445   error  'warnEnvConflicts' is not defined                                                   no-undef
+  33:1462   error  'warnOnce' is not defined                                                           no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/generated/prisma/runtime/index-browser.js
+  4:705    error  'module' is not defined                                                            no-undef
+  4:778    error  'e' is defined but never used                                                      no-unused-vars
+  4:28022  error  'f' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  4:32672  error  Do not access Object.prototype method 'hasOwnProperty' from target object          no-prototype-builtins
+  4:34928  error  Unexpected constant truthiness on the left-hand side of a `&&` expression          no-constant-binary-expression
+  4:34932  error  'module' is not defined                                                            no-undef
+  4:34948  error  'Decimal' is not defined                                                           no-undef
+  4:34956  error  'Public' is not defined                                                            no-undef
+  4:34963  error  'getRuntime' is not defined                                                        no-undef
+  4:34974  error  'makeStrictEnum' is not defined                                                    no-undef
+  4:34989  error  'objectEnumValues' is not defined                                                  no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/generated/prisma/runtime/library.js
+    4:735    error  'process' is not defined                                                            no-undef
+    4:907    error  'require' is not defined                                                            no-undef
+    4:929    error  'require' is not defined                                                            no-undef
+    4:965    error  'process' is not defined                                                            no-undef
+    4:1556   error  'process' is not defined                                                            no-undef
+    4:2815   error  'process' is not defined                                                            no-undef
+    4:3094   error  'process' is not defined                                                            no-undef
+    4:3118   error  'process' is not defined                                                            no-undef
+    4:3527   error  'process' is not defined                                                            no-undef
+    4:3553   error  'process' is not defined                                                            no-undef
+    4:8652   error  'require' is not defined                                                            no-undef
+    4:8674   error  'require' is not defined                                                            no-undef
+    4:8698   error  'require' is not defined                                                            no-undef
+    4:8720   error  'require' is not defined                                                            no-undef
+    6:575    error  'process' is not defined                                                            no-undef
+    6:599    error  'process' is not defined                                                            no-undef
+    6:631    error  'process' is not defined                                                            no-undef
+    6:1676   error  'process' is not defined                                                            no-undef
+    6:1903   error  'process' is not defined                                                            no-undef
+    6:2023   error  'process' is not defined                                                            no-undef
+    6:2422   error  'process' is not defined                                                            no-undef
+    6:2773   error  'Buffer' is not defined                                                             no-undef
+    6:2807   error  'Buffer' is not defined                                                             no-undef
+    6:6328   error  'module' is not defined                                                             no-undef
+    6:6556   error  'e' is defined but never used                                                       no-unused-vars
+    6:7063   error  'process' is not defined                                                            no-undef
+    6:7082   error  'process' is not defined                                                            no-undef
+    6:7098   error  'process' is not defined                                                            no-undef
+    6:7782   error  'process' is not defined                                                            no-undef
+    7:80     error  'require' is not defined                                                            no-undef
+    7:120    error  'process' is not defined                                                            no-undef
+    7:195    error  'process' is not defined                                                            no-undef
+    7:1374   error  'require' is not defined                                                            no-undef
+    7:1410   error  'require' is not defined                                                            no-undef
+    7:1444   error  'require' is not defined                                                            no-undef
+    7:3968   error  'eg' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    7:3985   error  'e' is defined but never used                                                       no-unused-vars
+    7:4472   error  'rg' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    7:4920   error  'tg' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    7:5266   error  'ng' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    7:5279   error  'ig' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    7:5329   error  'og' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    7:5378   error  'sg' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    7:5416   error  'ag' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    7:6496   error  'require' is not defined                                                            no-undef
+    7:6563   error  'process' is not defined                                                            no-undef
+    7:6817   error  'process' is not defined                                                            no-undef
+    8:2359   error  'e' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+    9:1802   error  'require' is not defined                                                            no-undef
+    9:1873   error  'gg' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    9:1920   error  'hg' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    9:1966   error  'yg' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    9:2009   error  'bg' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    9:2119   error  'wg' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    9:2174   error  'WorkerGlobalScope' is not defined                                                  no-undef
+    9:2192   error  'xg' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    9:2256   error  'DedicatedWorkerGlobalScope' is not defined                                         no-undef
+    9:2283   error  'vg' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    9:2344   error  'SharedWorkerGlobalScope' is not defined                                            no-undef
+    9:2430   error  'ServiceWorkerGlobalScope' is not defined                                           no-undef
+    9:4468   error  'Buffer' is not defined                                                             no-undef
+    9:5475   error  'process' is not defined                                                            no-undef
+    9:7131   error  'require' is not defined                                                            no-undef
+    9:7164   error  'wh' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    9:7223   error  '__dirname' is not defined                                                          no-undef
+    9:7244   error  'xh' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    9:7280   error  '__dirname' is not defined                                                          no-undef
+    9:7331   error  '__dirname' is not defined                                                          no-undef
+    9:7388   error  '__dirname' is not defined                                                          no-undef
+    9:7453   error  '__dirname' is not defined                                                          no-undef
+    9:7518   error  '__dirname' is not defined                                                          no-undef
+    9:7583   error  '__dirname' is not defined                                                          no-undef
+    9:7644   error  '__dirname' is not defined                                                          no-undef
+    9:7707   error  '__dirname' is not defined                                                          no-undef
+    9:7770   error  '__dirname' is not defined                                                          no-undef
+    9:7833   error  '__dirname' is not defined                                                          no-undef
+    9:7896   error  '__dirname' is not defined                                                          no-undef
+    9:7961   error  '__dirname' is not defined                                                          no-undef
+    9:8032   error  '__dirname' is not defined                                                          no-undef
+    9:8108   error  '__dirname' is not defined                                                          no-undef
+    9:8184   error  '__dirname' is not defined                                                          no-undef
+    9:8260   error  '__dirname' is not defined                                                          no-undef
+    9:8341   error  '__dirname' is not defined                                                          no-undef
+    9:8422   error  '__dirname' is not defined                                                          no-undef
+    9:8503   error  '__dirname' is not defined                                                          no-undef
+    9:8569   error  '__dirname' is not defined                                                          no-undef
+    9:8649   error  '__dirname' is not defined                                                          no-undef
+    9:8723   error  '__dirname' is not defined                                                          no-undef
+    9:8797   error  '__dirname' is not defined                                                          no-undef
+    9:8871   error  '__dirname' is not defined                                                          no-undef
+    9:8926   error  'require' is not defined                                                            no-undef
+    9:8984   error  'process' is not defined                                                            no-undef
+   15:369    error  'process' is not defined                                                            no-undef
+   15:1328   error  'require' is not defined                                                            no-undef
+   15:1483   error  'require' is not defined                                                            no-undef
+   15:1512   error  'require' is not defined                                                            no-undef
+   15:1577   error  'process' is not defined                                                            no-undef
+   16:306    error  'process' is not defined                                                            no-undef
+   16:350    error  'process' is not defined                                                            no-undef
+   24:163    error  'process' is not defined                                                            no-undef
+   24:301    error  'process' is not defined                                                            no-undef
+   24:28395  error  'u' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   24:33067  error  Do not access Object.prototype method 'hasOwnProperty' from target object           no-prototype-builtins
+   24:36177  error  'require' is not defined                                                            no-undef
+   24:37020  error  Do not access Object.prototype method 'hasOwnProperty' from target object           no-prototype-builtins
+   24:37372  error  Do not access Object.prototype method 'hasOwnProperty' from target object           no-prototype-builtins
+   24:37416  error  Do not access Object.prototype method 'hasOwnProperty' from target object           no-prototype-builtins
+   24:37449  error  Do not access Object.prototype method 'hasOwnProperty' from target object           no-prototype-builtins
+   24:37648  error  Do not access Object.prototype method 'hasOwnProperty' from target object           no-prototype-builtins
+   24:38109  error  Do not access Object.prototype method 'hasOwnProperty' from target object           no-prototype-builtins
+   24:38857  error  'p' is already defined                                                              no-redeclare
+   24:38932  error  'c' is already defined                                                              no-redeclare
+   24:38945  error  'p' is already defined                                                              no-redeclare
+   24:38962  error  'd' is already defined                                                              no-redeclare
+   24:39482  error  Expected a conditional expression and instead saw an assignment                     no-cond-assign
+   24:41569  error  Unnecessary escape character: \[                                                    no-useless-escape
+   28:485    error  'process' is not defined                                                            no-undef
+   31:8703   error  '#e' is defined but never used                                                      no-unused-private-class-members
+   31:8747   error  '#e' is defined but never used                                                      no-unused-private-class-members
+   31:8793   error  '#e' is defined but never used                                                      no-unused-private-class-members
+   32:498    error  'Buffer' is not defined                                                             no-undef
+   32:7964   error  'Buffer' is not defined                                                             no-undef
+   32:12912  error  'require' is not defined                                                            no-undef
+   32:12943  error  'require' is not defined                                                            no-undef
+   32:12971  error  'require' is not defined                                                            no-undef
+   32:12996  error  'require' is not defined                                                            no-undef
+   34:2532   error  '$EnabledCallSite' is not defined                                                   no-undef
+   36:197    error  'require' is not defined                                                            no-undef
+   36:222    error  'require' is not defined                                                            no-undef
+   67:151    error  'process' is not defined                                                            no-undef
+   67:198    error  'process' is not defined                                                            no-undef
+   67:518    error  '__filename' is not defined                                                         no-undef
+   67:701    error  'process' is not defined                                                            no-undef
+   67:907    error  '__dirname' is not defined                                                          no-undef
+   67:951    error  '__dirname' is not defined                                                          no-undef
+   67:980    error  '__dirname' is not defined                                                          no-undef
+   67:1046   error  '__filename' is not defined                                                         no-undef
+   67:1436   error  Unnecessary escape character: \[                                                    no-useless-escape
+   77:23     error  'process' is not defined                                                            no-undef
+  113:474    error  'Buffer' is not defined                                                             no-undef
+  113:2641   error  'process' is not defined                                                            no-undef
+  113:3151   error  'process' is not defined                                                            no-undef
+  113:9772   error  Redundant double negation                                                           no-extra-boolean-cast
+  114:385    error  'process' is not defined                                                            no-undef
+  114:496    error  'process' is not defined                                                            no-undef
+  114:7513   error  'require' is not defined                                                            no-undef
+  114:7538   error  'require' is not defined                                                            no-undef
+  114:7791   error  'process' is not defined                                                            no-undef
+  114:7903   error  'process' is not defined                                                            no-undef
+  115:566    error  'WeakRef' is not defined                                                            no-undef
+  115:822    error  'process' is not defined                                                            no-undef
+  115:1726   error  Empty block statement                                                               no-empty
+  115:1788   error  Empty block statement                                                               no-empty
+  115:3340   error  'setImmediate' is not defined                                                       no-undef
+  117:1319   error  'process' is not defined                                                            no-undef
+  117:1369   error  Empty block statement                                                               no-empty
+  117:1629   error  'l' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  117:1644   error  'u' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  117:1659   error  'c' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  117:2328   error  'Buffer' is not defined                                                             no-undef
+  117:2462   error  'Buffer' is not defined                                                             no-undef
+  117:2607   error  'Buffer' is not defined                                                             no-undef
+  124:3337   error  'process' is not defined                                                            no-undef
+  124:4252   error  'Buffer' is not defined                                                             no-undef
+  124:6510   error  'process' is not defined                                                            no-undef
+  133:2366   error  'process' is not defined                                                            no-undef
+  133:2430   error  'process' is not defined                                                            no-undef
+  134:999    error  Unexpected constant truthiness on the left-hand side of a `&&` expression           no-constant-binary-expression
+  134:1003   error  'module' is not defined                                                             no-undef
+  134:1019   error  'DMMF' is not defined                                                               no-undef
+  134:1024   error  'Debug' is not defined                                                              no-undef
+  134:1030   error  'Decimal' is not defined                                                            no-undef
+  134:1038   error  'Extensions' is not defined                                                         no-undef
+  134:1049   error  'MetricsClient' is not defined                                                      no-undef
+  134:1063   error  'PrismaClientInitializationError' is not defined                                    no-undef
+  134:1095   error  'PrismaClientKnownRequestError' is not defined                                      no-undef
+  134:1125   error  'PrismaClientRustPanicError' is not defined                                         no-undef
+  134:1152   error  'PrismaClientUnknownRequestError' is not defined                                    no-undef
+  134:1184   error  'PrismaClientValidationError' is not defined                                        no-undef
+  134:1212   error  'Public' is not defined                                                             no-undef
+  134:1219   error  'Sql' is not defined                                                                no-undef
+  134:1223   error  'createParam' is not defined                                                        no-undef
+  134:1235   error  'defineDmmfProperty' is not defined                                                 no-undef
+  134:1254   error  'deserializeJsonResponse' is not defined                                            no-undef
+  134:1278   error  'deserializeRawResult' is not defined                                               no-undef
+  134:1299   error  'dmmfToRuntimeDataModel' is not defined                                             no-undef
+  134:1322   error  'empty' is not defined                                                              no-undef
+  134:1328   error  'getPrismaClient' is not defined                                                    no-undef
+  134:1344   error  'getRuntime' is not defined                                                         no-undef
+  134:1355   error  'join' is not defined                                                               no-undef
+  134:1360   error  'makeStrictEnum' is not defined                                                     no-undef
+  134:1375   error  'makeTypedQueryFactory' is not defined                                              no-undef
+  134:1397   error  'objectEnumValues' is not defined                                                   no-undef
+  134:1414   error  'raw' is not defined                                                                no-undef
+  134:1418   error  'serializeJsonQuery' is not defined                                                 no-undef
+  134:1437   error  'skip' is not defined                                                               no-undef
+  134:1442   error  'sqltag' is not defined                                                             no-undef
+  134:1449   error  'warnEnvConflicts' is not defined                                                   no-undef
+  134:1466   error  'warnOnce' is not defined                                                           no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/generated/prisma/runtime/react-native.js
+   4:693    error  'x' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:4235   error  Expected method 'get' to always return a value                                     getter-return
+   4:4350   error  Expected method 'get' to always return a value                                     getter-return
+   4:23265  error  'i' is defined but never used                                                      no-unused-vars
+   4:23267  error  'o' is defined but never used                                                      no-unused-vars
+   4:36419  error  'module' is not defined                                                            no-undef
+   4:36767  error  'e' is defined but never used                                                      no-unused-vars
+   5:32598  error  'u' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   5:37271  error  Do not access Object.prototype method 'hasOwnProperty' from target object          no-prototype-builtins
+   5:41384  error  Do not access Object.prototype method 'hasOwnProperty' from target object          no-prototype-builtins
+   5:41736  error  Do not access Object.prototype method 'hasOwnProperty' from target object          no-prototype-builtins
+   5:41780  error  Do not access Object.prototype method 'hasOwnProperty' from target object          no-prototype-builtins
+   5:41813  error  Do not access Object.prototype method 'hasOwnProperty' from target object          no-prototype-builtins
+   5:42012  error  Do not access Object.prototype method 'hasOwnProperty' from target object          no-prototype-builtins
+   5:42473  error  Do not access Object.prototype method 'hasOwnProperty' from target object          no-prototype-builtins
+   5:43217  error  'h' is already defined                                                             no-redeclare
+   5:43291  error  'g' is already defined                                                             no-redeclare
+   5:43303  error  'h' is already defined                                                             no-redeclare
+   5:43319  error  'T' is already defined                                                             no-redeclare
+   5:43838  error  Expected a conditional expression and instead saw an assignment                    no-cond-assign
+   5:45925  error  Unnecessary escape character: \[                                                   no-useless-escape
+  12:8763   error  '#e' is defined but never used                                                     no-unused-private-class-members
+  12:8807   error  '#e' is defined but never used                                                     no-unused-private-class-members
+  12:8853   error  '#e' is defined but never used                                                     no-unused-private-class-members
+  15:2532   error  '$EnabledCallSite' is not defined                                                  no-undef
+  17:350    error  Unnecessary escape character: \[                                                   no-useless-escape
+  63:2206   error  'n' is defined but never used                                                      no-unused-vars
+  63:2227   error  '__PrismaProxy' is not defined                                                     no-undef
+  63:2469   error  '__PrismaProxy' is not defined                                                     no-undef
+  63:2543   error  '__PrismaProxy' is not defined                                                     no-undef
+  63:2613   error  '__PrismaProxy' is not defined                                                     no-undef
+  63:2753   error  't' is defined but never used                                                      no-unused-vars
+  63:2822   error  '__PrismaProxy' is not defined                                                     no-undef
+  63:2916   error  '__PrismaProxy' is not defined                                                     no-undef
+  63:3013   error  '__PrismaProxy' is not defined                                                     no-undef
+  63:3080   error  't' is defined but never used                                                      no-unused-vars
+  63:3150   error  '__PrismaProxy' is not defined                                                     no-undef
+  63:3222   error  '__PrismaProxy' is not defined                                                     no-undef
+  63:3294   error  '__PrismaProxy' is not defined                                                     no-undef
+  63:4233   error  'r' is defined but never used                                                      no-unused-vars
+  63:8144   error  Empty block statement                                                              no-empty
+  63:8206   error  Empty block statement                                                              no-empty
+  63:9758   error  'setImmediate' is not defined                                                      no-undef
+  65:1363   error  Empty block statement                                                              no-empty
+  65:1613   error  'a' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  65:1629   error  'l' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  65:1644   error  'u' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  65:1659   error  'g' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  81:1182   error  'o' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  82:995    error  Unexpected constant truthiness on the left-hand side of a `&&` expression          no-constant-binary-expression
+  82:999    error  'module' is not defined                                                            no-undef
+  82:1015   error  'DMMF' is not defined                                                              no-undef
+  82:1020   error  'Debug' is not defined                                                             no-undef
+  82:1026   error  'Decimal' is not defined                                                           no-undef
+  82:1034   error  'Extensions' is not defined                                                        no-undef
+  82:1045   error  'MetricsClient' is not defined                                                     no-undef
+  82:1059   error  'PrismaClientInitializationError' is not defined                                   no-undef
+  82:1091   error  'PrismaClientKnownRequestError' is not defined                                     no-undef
+  82:1121   error  'PrismaClientRustPanicError' is not defined                                        no-undef
+  82:1148   error  'PrismaClientUnknownRequestError' is not defined                                   no-undef
+  82:1180   error  'PrismaClientValidationError' is not defined                                       no-undef
+  82:1208   error  'Public' is not defined                                                            no-undef
+  82:1215   error  'Sql' is not defined                                                               no-undef
+  82:1219   error  'createParam' is not defined                                                       no-undef
+  82:1231   error  'defineDmmfProperty' is not defined                                                no-undef
+  82:1250   error  'deserializeJsonResponse' is not defined                                           no-undef
+  82:1274   error  'deserializeRawResult' is not defined                                              no-undef
+  82:1295   error  'dmmfToRuntimeDataModel' is not defined                                            no-undef
+  82:1318   error  'empty' is not defined                                                             no-undef
+  82:1324   error  'getPrismaClient' is not defined                                                   no-undef
+  82:1340   error  'getRuntime' is not defined                                                        no-undef
+  82:1351   error  'join' is not defined                                                              no-undef
+  82:1356   error  'makeStrictEnum' is not defined                                                    no-undef
+  82:1371   error  'makeTypedQueryFactory' is not defined                                             no-undef
+  82:1393   error  'objectEnumValues' is not defined                                                  no-undef
+  82:1410   error  'raw' is not defined                                                               no-undef
+  82:1414   error  'serializeJsonQuery' is not defined                                                no-undef
+  82:1433   error  'skip' is not defined                                                              no-undef
+  82:1438   error  'sqltag' is not defined                                                            no-undef
+  82:1445   error  'warnEnvConflicts' is not defined                                                  no-undef
+  82:1462   error  'warnOnce' is not defined                                                          no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/generated/prisma/runtime/wasm-compiler-edge.js
+   4:10619  error  'x' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   4:15860  error  Expected a conditional expression and instead saw an assignment                     no-cond-assign
+   4:16515  error  Do not access Object.prototype method 'hasOwnProperty' from target object           no-prototype-builtins
+   4:17016  error  'di' is already defined                                                             no-redeclare
+   4:34073  error  't' is defined but never used                                                       no-unused-vars
+   4:43189  error  Empty block statement                                                               no-empty
+   4:44305  error  'module' is not defined                                                             no-undef
+   4:44677  error  'e' is defined but never used                                                       no-unused-vars
+   4:45216  error  '$g' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:45238  error  'qg' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:45322  error  'jg' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:45418  error  'zg' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:46332  error  's' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   5:6401   error  'ap' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   6:232    error  '$getTemplateParameters' is not defined                                             no-undef
+   8:8777   error  '#t' is defined but never used                                                      no-unused-private-class-members
+   8:8821   error  '#t' is defined but never used                                                      no-unused-private-class-members
+   8:8867   error  '#t' is defined but never used                                                      no-unused-private-class-members
+   9:12639  error  'e' is defined but never used                                                       no-unused-vars
+  10:357    error  '$EnabledCallSite' is not defined                                                   no-undef
+  12:370    error  Unnecessary escape character: \[                                                    no-useless-escape
+  58:15051  error  'e' is defined but never used                                                       no-unused-vars
+  58:16134  error  'WorkerGlobalScope' is not defined                                                  no-undef
+  58:23750  error  'f' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  58:43068  error  Unexpected control character(s) in regular expression: \x09                         no-control-regex
+  58:44876  error  Empty block statement                                                               no-empty
+  62:533    error  Unsafe usage of ThrowStatement                                                      no-unsafe-finally
+  62:3634   error  't' is defined but never used                                                       no-unused-vars
+  62:10580  error  Redundant double negation                                                           no-extra-boolean-cast
+  64:1363   error  Empty block statement                                                               no-empty
+  64:1619   error  'a' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  64:1635   error  'f' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  64:1879   error  'r' is defined but never used                                                       no-unused-vars
+  64:1881   error  'n' is defined but never used                                                       no-unused-vars
+  82:1186   error  'o' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  83:1007   error  Unexpected constant truthiness on the left-hand side of a `&&` expression           no-constant-binary-expression
+  83:1011   error  'module' is not defined                                                             no-undef
+  83:1027   error  'DMMF' is not defined                                                               no-undef
+  83:1032   error  'Debug' is not defined                                                              no-undef
+  83:1038   error  'Decimal' is not defined                                                            no-undef
+  83:1046   error  'Extensions' is not defined                                                         no-undef
+  83:1057   error  'MetricsClient' is not defined                                                      no-undef
+  83:1071   error  'PrismaClientInitializationError' is not defined                                    no-undef
+  83:1103   error  'PrismaClientKnownRequestError' is not defined                                      no-undef
+  83:1133   error  'PrismaClientRustPanicError' is not defined                                         no-undef
+  83:1160   error  'PrismaClientUnknownRequestError' is not defined                                    no-undef
+  83:1192   error  'PrismaClientValidationError' is not defined                                        no-undef
+  83:1220   error  'Public' is not defined                                                             no-undef
+  83:1227   error  'Sql' is not defined                                                                no-undef
+  83:1231   error  'createParam' is not defined                                                        no-undef
+  83:1243   error  'defineDmmfProperty' is not defined                                                 no-undef
+  83:1262   error  'deserializeJsonResponse' is not defined                                            no-undef
+  83:1286   error  'deserializeRawResult' is not defined                                               no-undef
+  83:1307   error  'dmmfToRuntimeDataModel' is not defined                                             no-undef
+  83:1330   error  'empty' is not defined                                                              no-undef
+  83:1336   error  'getPrismaClient' is not defined                                                    no-undef
+  83:1352   error  'getRuntime' is not defined                                                         no-undef
+  83:1363   error  'join' is not defined                                                               no-undef
+  83:1368   error  'makeStrictEnum' is not defined                                                     no-undef
+  83:1383   error  'makeTypedQueryFactory' is not defined                                              no-undef
+  83:1405   error  'objectEnumValues' is not defined                                                   no-undef
+  83:1422   error  'raw' is not defined                                                                no-undef
+  83:1426   error  'serializeJsonQuery' is not defined                                                 no-undef
+  83:1445   error  'skip' is not defined                                                               no-undef
+  83:1450   error  'sqltag' is not defined                                                             no-undef
+  83:1457   error  'warnEnvConflicts' is not defined                                                   no-undef
+  83:1474   error  'warnOnce' is not defined                                                           no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/generated/prisma/runtime/wasm-engine-edge.js
+   4:15891  error  Expected a conditional expression and instead saw an assignment                     no-cond-assign
+   4:16546  error  Do not access Object.prototype method 'hasOwnProperty' from target object           no-prototype-builtins
+   4:17046  error  'Tr' is already defined                                                             no-redeclare
+   4:31151  error  'module' is not defined                                                             no-undef
+   4:31523  error  't' is defined but never used                                                       no-unused-vars
+   4:31997  error  'zu' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:32073  error  'ec' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:32084  error  'tc' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:32144  error  'rc' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:32168  error  'nc' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:32192  error  'ic' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:32204  error  'oc' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:32216  error  'sc' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:32228  error  'ac' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:32240  error  'lc' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:32252  error  'uc' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:32264  error  'cc' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:32276  error  'mc' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:32288  error  'pc' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   4:33178  error  's' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   4:41779  error  'ta' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   5:232    error  '$getTemplateParameters' is not defined                                             no-undef
+   7:8775   error  '#e' is defined but never used                                                      no-unused-private-class-members
+   7:8819   error  '#e' is defined but never used                                                      no-unused-private-class-members
+   7:8865   error  '#e' is defined but never used                                                      no-unused-private-class-members
+   8:12625  error  't' is defined but never used                                                       no-unused-vars
+   9:357    error  '$EnabledCallSite' is not defined                                                   no-undef
+  14:1377   error  'oO' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  14:5655   error  Empty block statement                                                               no-empty
+  14:5717   error  Empty block statement                                                               no-empty
+  14:7269   error  'setImmediate' is not defined                                                       no-undef
+  15:2613   error  'e' is defined but never used                                                       no-unused-vars
+  15:2654   error  'e' is defined but never used                                                       no-unused-vars
+  15:2685   error  'e' is defined but never used                                                       no-unused-vars
+  15:2687   error  'r' is defined but never used                                                       no-unused-vars
+  15:2689   error  'n' is defined but never used                                                       no-unused-vars
+  15:2742   error  'e' is defined but never used                                                       no-unused-vars
+  15:2795   error  'e' is defined but never used                                                       no-unused-vars
+  15:2797   error  'r' is defined but never used                                                       no-unused-vars
+  15:2855   error  'e' is defined but never used                                                       no-unused-vars
+  15:2857   error  'r' is defined but never used                                                       no-unused-vars
+  16:1363   error  Empty block statement                                                               no-empty
+  16:1616   error  'a' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  16:1632   error  'f' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  16:1647   error  'h' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  16:1870   error  'r' is defined but never used                                                       no-unused-vars
+  16:1872   error  'n' is defined but never used                                                       no-unused-vars
+  34:1186   error  'o' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  35:1007   error  Unexpected constant truthiness on the left-hand side of a `&&` expression           no-constant-binary-expression
+  35:1011   error  'module' is not defined                                                             no-undef
+  35:1027   error  'DMMF' is not defined                                                               no-undef
+  35:1032   error  'Debug' is not defined                                                              no-undef
+  35:1038   error  'Decimal' is not defined                                                            no-undef
+  35:1046   error  'Extensions' is not defined                                                         no-undef
+  35:1057   error  'MetricsClient' is not defined                                                      no-undef
+  35:1071   error  'PrismaClientInitializationError' is not defined                                    no-undef
+  35:1103   error  'PrismaClientKnownRequestError' is not defined                                      no-undef
+  35:1133   error  'PrismaClientRustPanicError' is not defined                                         no-undef
+  35:1160   error  'PrismaClientUnknownRequestError' is not defined                                    no-undef
+  35:1192   error  'PrismaClientValidationError' is not defined                                        no-undef
+  35:1220   error  'Public' is not defined                                                             no-undef
+  35:1227   error  'Sql' is not defined                                                                no-undef
+  35:1231   error  'createParam' is not defined                                                        no-undef
+  35:1243   error  'defineDmmfProperty' is not defined                                                 no-undef
+  35:1262   error  'deserializeJsonResponse' is not defined                                            no-undef
+  35:1286   error  'deserializeRawResult' is not defined                                               no-undef
+  35:1307   error  'dmmfToRuntimeDataModel' is not defined                                             no-undef
+  35:1330   error  'empty' is not defined                                                              no-undef
+  35:1336   error  'getPrismaClient' is not defined                                                    no-undef
+  35:1352   error  'getRuntime' is not defined                                                         no-undef
+  35:1363   error  'join' is not defined                                                               no-undef
+  35:1368   error  'makeStrictEnum' is not defined                                                     no-undef
+  35:1383   error  'makeTypedQueryFactory' is not defined                                              no-undef
+  35:1405   error  'objectEnumValues' is not defined                                                   no-undef
+  35:1422   error  'raw' is not defined                                                                no-undef
+  35:1426   error  'serializeJsonQuery' is not defined                                                 no-undef
+  35:1445   error  'skip' is not defined                                                               no-undef
+  35:1450   error  'sqltag' is not defined                                                             no-undef
+  35:1457   error  'warnEnvConflicts' is not defined                                                   no-undef
+  35:1474   error  'warnOnce' is not defined                                                           no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/generated/prisma/wasm.js
+    5:23   error  'exports' is not defined                                                                     no-undef
+   18:3    error  'skip' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+   24:3    error  'warnOnce' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+   27:3    error  'getRuntime' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+   28:3    error  'createParam' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   29:5    error  'require' is not defined                                                                     no-undef
+   34:1    error  'exports' is not defined                                                                     no-undef
+   35:1    error  'exports' is not defined                                                                     no-undef
+   88:1    error  'exports' is not defined                                                                     no-undef
+   95:1    error  'exports' is not defined                                                                     no-undef
+  109:1    error  'exports' is not defined                                                                     no-undef
+  119:1    error  'exports' is not defined                                                                     no-undef
+  133:1    error  'exports' is not defined                                                                     no-undef
+  143:1    error  'exports' is not defined                                                                     no-undef
+  154:1    error  'exports' is not defined                                                                     no-undef
+  163:1    error  'exports' is not defined                                                                     no-undef
+  180:1    error  'exports' is not defined                                                                     no-undef
+  192:1    error  'exports' is not defined                                                                     no-undef
+  206:1    error  'exports' is not defined                                                                     no-undef
+  216:1    error  'exports' is not defined                                                                     no-undef
+  234:1    error  'exports' is not defined                                                                     no-undef
+  252:1    error  'exports' is not defined                                                                     no-undef
+  266:1    error  'exports' is not defined                                                                     no-undef
+  282:1    error  'exports' is not defined                                                                     no-undef
+  291:1    error  'exports' is not defined                                                                     no-undef
+  298:1    error  'exports' is not defined                                                                     no-undef
+  309:1    error  'exports' is not defined                                                                     no-undef
+  326:1    error  'exports' is not defined                                                                     no-undef
+  343:1    error  'exports' is not defined                                                                     no-undef
+  358:1    error  'exports' is not defined                                                                     no-undef
+  372:1    error  'exports' is not defined                                                                     no-undef
+  387:1    error  'exports' is not defined                                                                     no-undef
+  403:1    error  'exports' is not defined                                                                     no-undef
+  422:1    error  'exports' is not defined                                                                     no-undef
+  435:1    error  'exports' is not defined                                                                     no-undef
+  457:1    error  'exports' is not defined                                                                     no-undef
+  472:1    error  'exports' is not defined                                                                     no-undef
+  491:1    error  'exports' is not defined                                                                     no-undef
+  511:1    error  'exports' is not defined                                                                     no-undef
+  527:1    error  'exports' is not defined                                                                     no-undef
+  551:1    error  'exports' is not defined                                                                     no-undef
+  560:1    error  'exports' is not defined                                                                     no-undef
+  565:1    error  'exports' is not defined                                                                     no-undef
+  570:1    error  'exports' is not defined                                                                     no-undef
+  575:1    error  'exports' is not defined                                                                     no-undef
+  581:1    error  'exports' is not defined                                                                     no-undef
+  587:1    error  'exports' is not defined                                                                     no-undef
+  676:20   error  'exports' is not defined                                                                     no-undef
+  678:27   error  'require' is not defined                                                                     no-undef
+  689:120  error  'process' is not defined                                                                     no-undef
+  689:135  error  'process' is not defined                                                                     no-undef
+  693:99   error  'process' is not defined                                                                     no-undef
+  693:114  error  'process' is not defined                                                                     no-undef
+  694:110  error  'process' is not defined                                                                     no-undef
+  694:125  error  'process' is not defined                                                                     no-undef
+  698:1    error  'exports' is not defined                                                                     no-undef
+  699:15   error  'exports' is not defined                                                                     no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/hooks/useInView.js
+  116:6  warning  React Hook useEffect has a missing dependency: 'elements'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/lib/authService.js
+    3:10  error  'supabase' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    4:8   error  'bcrypt' is defined but never used. Allowed unused vars must match /^[A-Z_]/u    no-unused-vars
+  203:24  error  'password' is defined but never used                                             no-unused-vars
+  203:34  error  'hash' is defined but never used                                                 no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/lib/secureAuthDirect.js
+  20:14  error  'error' is defined but never used  no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/lib/supabase.js
+  571:21  error  'process' is not defined  no-undef
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/pages/auth/LoginPage.jsx
+  194:14  error  'error' is defined but never used  no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/pages/auth/RegisterPage.jsx
+   1:42  error    'memo' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                              no-unused-vars
+  49:9   warning  The 'steps' array makes the dependencies of useMemo Hook (at line 161) change on every render. To fix this, wrap the initialization of 'steps' in its own useMemo() Hook                                                 react-hooks/exhaustive-deps
+  56:9   warning  The 'cafeTypes' array makes the dependencies of useMemo Hook (at line 369) change on every render. Move it inside the useMemo callback. Alternatively, wrap the initialization of 'cafeTypes' in its own useMemo() Hook  react-hooks/exhaustive-deps
+  65:9   warning  The 'plans' array makes the dependencies of useMemo Hook (at line 549) change on every render. Move it inside the useMemo callback. Alternatively, wrap the initialization of 'plans' in its own useMemo() Hook          react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/pages/auth/components/SuccessMessage.jsx
+  28:6  warning  React Hook useEffect has a missing dependency: 'handleGoToDashboard'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/pages/kitchen/KitchenDashboard.jsx
+   37:6   warning  React Hook useEffect has a missing dependency: 'loadOrders'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  105:14  error    'error' is defined but never used                                                                              no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/pages/landing/components/DemoSection.jsx
+  28:10  error  'orderStatus' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  28:23  error  'setOrderStatus' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/pages/landing/components/HeroSection.jsx
+  10:9  error  'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u    no-unused-vars
+  16:9  error  'handleDemo' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/pages/waiter/WaiterDashboard.jsx
+  41:6   warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  80:14  error    'error' is defined but never used                                                                            no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/pages/waiter/components/CreateOrderModal.jsx
+  21:6   warning  React Hook useEffect has missing dependencies: 'loadCategories' and 'loadProducts'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  77:14  error    'error' is defined but never used                                                                                                       no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/pages/waiter/components/CreateReservationModal.jsx
+  27:25  error  'reservation' is defined but never used  no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/src/test/utils.js
+  59:5  error  'tenantValue' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  60:5  error  'cartValue' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u    no-unused-vars
+
+/Users/juanshocl/Documents/GitHub/tappmesa/vite.config.js
+  11:53  error  'process' is not defined                                                                        no-undef
+  12:58  error  'process' is not defined                                                                        no-undef
+  78:17  error  'facadeModuleId' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+✖ 1033 problems (995 errors, 38 warnings)
+  4 errors and 0 warnings potentially fixable with the `--fix` option.
+
+ ELIFECYCLE  Command failed with exit code 1.

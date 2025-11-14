@@ -47,7 +47,7 @@ const Features = () => {
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4">
             Todo lo que tu Cafetería
-            <span className="block bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <span className="block bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
               Necesita para Crecer
             </span>
           </h2>

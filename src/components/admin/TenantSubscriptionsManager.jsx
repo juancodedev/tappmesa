@@ -190,7 +190,7 @@ const TenantSubscriptionsManager = () => {
                 className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden"
               >
                 {/* Header */}
-                <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-4">
+                <div className="bg-linear-to-r from-orange-500 to-red-500 text-white px-6 py-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <Building2 className="h-6 w-6" />
@@ -375,7 +375,7 @@ const TenantSubscriptionsManager = () => {
 
       {/* Info Box */}
       <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start space-x-3">
-        <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+        <AlertCircle className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
         <div className="text-sm text-blue-900">
           <p className="font-medium">Límites personalizados:</p>
           <ul className="list-disc list-inside mt-1 space-y-1 text-blue-800">

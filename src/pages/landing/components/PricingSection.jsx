@@ -145,7 +145,7 @@ const PricingSection = () => {
                 <div className="space-y-3 mb-8">
                   {plan.features.map((feature, featureIndex) => (
                     <div key={featureIndex} className="flex items-start gap-3">
-                      <Check className={`h-5 w-5 mt-0.5 flex-shrink-0 ${
+                      <Check className={`h-5 w-5 mt-0.5 shrink-0 ${
                         plan.popular ? 'text-coffee-900' : 'text-primary-500'
                       }`} />
                       <span className={`text-sm ${plan.popular ? 'text-coffee-900' : 'text-coffee-700'}`}>

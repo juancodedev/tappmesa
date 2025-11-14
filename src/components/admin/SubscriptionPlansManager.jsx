@@ -371,7 +371,7 @@ const SubscriptionPlansManager = () => {
               } overflow-hidden hover:shadow-lg transition-shadow`}
             >
               {/* Header */}
-              <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-3">
+              <div className="bg-linear-to-r from-orange-500 to-red-500 text-white px-4 py-3">
                 {editingPlan === plan.id ? (
                   <input
                     type="text"
@@ -621,7 +621,7 @@ const SubscriptionPlansManager = () => {
 
       {/* Info Box */}
       <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start space-x-3">
-        <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+        <AlertCircle className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
         <div className="text-sm text-blue-900">
           <p className="font-medium">Información importante:</p>
           <ul className="list-disc list-inside mt-1 space-y-1 text-blue-800">

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { render, screen, waitFor, act } from '@testing-library/react'
+import { render, screen, waitFor} from '@testing-library/react'
 import { TenantProvider } from '../../context/TenantContext'
 import { useTenant } from '../../hooks/useTenant'
 import { useIsTenant, useTenantUrl } from '../../hooks/useTenantHooks'

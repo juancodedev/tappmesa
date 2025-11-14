@@ -211,7 +211,7 @@ const TestimonialsSection = () => {
 
         {/* Success Story Highlight */}
         <div className="bg-coffee-dark rounded-2xl p-8 text-center text-coffee-900 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-coffee-900 via-primary-500/20 to-coffee-900 opacity-50"></div>
+          <div className="absolute inset-0 bg-linear-to-r from-coffee-900 via-primary-500/20 to-coffee-900 opacity-50"></div>
           <div className="relative z-10">
             <div className="flex justify-center items-center gap-2 mb-4">
               <TrendingUp className="h-8 w-8 text-primary-300" />

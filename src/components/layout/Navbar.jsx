@@ -13,7 +13,7 @@ const Navbar = () => {
             <div className="bg-linear-to-br from-primary to-secondary p-2 rounded-lg">
               <Coffee className="w-6 h-6 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
               CaféMesa
             </span>
           </div>

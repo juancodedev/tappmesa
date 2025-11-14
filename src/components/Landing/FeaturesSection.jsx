@@ -1,6 +1,6 @@
 // src/components/Landing/FeaturesSection.jsx
 import { useState } from 'react';
-import { useInView } from '../hooks/useInView';
+import { useInView } from '../../hooks/useInView';
 
 export default function FeaturesSection() {
   const [activeFeature, setActiveFeature] = useState(0);
