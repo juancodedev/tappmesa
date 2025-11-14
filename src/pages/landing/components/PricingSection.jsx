@@ -71,7 +71,7 @@ const PricingSection = () => {
   ];
 
   return (
-    <section id="pricing" className="py-20 bg-gradient-to-br from-cream-200 via-white to-cream-100">
+    <section id="pricing" className="py-20 bg-linear-to-br from-cream-200 via-white to-cream-100">
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">

@@ -4,7 +4,7 @@ import { ArrowRight, MessageCircle, Sparkles } from "lucide-react";
 
 const CTA = () => {
   return (
-    <section className="py-20 bg-gradient-to-br from-primary via-primary/95 to-secondary relative overflow-hidden">
+    <section className="py-20 bg-linear-to-br from-primary via-primary/95 to-secondary relative overflow-hidden">
       {/* Decorative Elements */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-float" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "1s" }} />

@@ -83,7 +83,7 @@ const HowItWorksSection = () => {
   const currentSteps = activeTab === 'customer' ? customerSteps : restaurantSteps;
 
   return (
-    <section id="how-it-works" className="py-16 lg:py-24 bg-gradient-to-br from-orange-50 to-red-50">
+    <section id="how-it-works" className="py-16 lg:py-24 bg-linear-to-br from-orange-50 to-red-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
@@ -155,7 +155,7 @@ const HowItWorksSection = () => {
         <div className="text-center mt-16">
           <div className="bg-white rounded-3xl p-8 lg:p-12 shadow-xl border border-gray-200 max-w-2xl mx-auto">
             <h3 className="text-2xl font-bold text-gray-900 mb-4">Ve TappMesa en acción</h3>
-            <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mb-6">
+            <div className="aspect-video bg-linear-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mb-6">
               <div className="text-center">
                 <div className="w-20 h-20 bg-primary-500 rounded-full flex items-center justify-center text-coffee-900 text-3xl mb-4 mx-auto hover:scale-110 transition-transform duration-300 cursor-pointer">
                   ▶️

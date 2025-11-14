@@ -105,7 +105,7 @@ const HowItWorks = () => {
                   {/* Number Badge */}
                   <div className="shrink-0">
                     <div className="relative">
-                      <div className={`w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-gradient-to-br ${step.gradient} flex items-center justify-center text-xl lg:text-2xl font-bold text-white shadow-lg group-hover:scale-110 transition-transform`}>
+                      <div className={`w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-linear-to-br ${step.gradient} flex items-center justify-center text-xl lg:text-2xl font-bold text-white shadow-lg group-hover:scale-110 transition-transform`}>
                         {step.number}
                       </div>
                       {index < steps.length - 1 && (
@@ -115,7 +115,7 @@ const HowItWorks = () => {
                   </div>
 
                   {/* Icon */}
-                  <div className={`shrink-0 p-4 rounded-xl bg-gradient-to-br ${step.gradient} text-white shadow-lg group-hover:scale-110 transition-transform`}>
+                  <div className={`shrink-0 p-4 rounded-xl bg-linear-to-br ${step.gradient} text-white shadow-lg group-hover:scale-110 transition-transform`}>
                     {step.icon}
                   </div>
 
@@ -147,7 +147,7 @@ const HowItWorks = () => {
               <div className={`absolute inset-0 bg-gradient-to-r ${stat.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity`} />
 
               <div className="relative text-center">
-                <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${stat.gradient} text-white shadow-lg mb-4 group-hover:scale-110 transition-transform`}>
+                <div className={`inline-flex p-3 rounded-xl bg-linear-to-br ${stat.gradient} text-white shadow-lg mb-4 group-hover:scale-110 transition-transform`}>
                   {stat.icon}
                 </div>
                 <div className="text-4xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-2">

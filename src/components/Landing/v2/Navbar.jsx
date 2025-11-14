@@ -12,8 +12,8 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center gap-2.5 group cursor-pointer">
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
-              <div className="relative bg-gradient-to-br from-primary-500 to-secondary-500 p-2.5 rounded-xl shadow-lg transform group-hover:scale-110 transition-transform">
+              <div className="absolute inset-0 bg-linear-to-br from-primary-500 to-secondary-500 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
+              <div className="relative bg-linear-to-br from-primary-500 to-secondary-500 p-2.5 rounded-xl shadow-lg transform group-hover:scale-110 transition-transform">
                 <Coffee className="w-5 h-5 text-white" />
               </div>
             </div>

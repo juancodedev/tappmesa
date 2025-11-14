@@ -63,7 +63,7 @@ const Features = () => {
               className="p-8 hover:shadow-[var(--shadow-elevated)] transition-all duration-300 hover:scale-105 border-2 border-border/50 animate-scale-in group"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className={`inline-flex p-4 rounded-xl bg-gradient-to-br ${feature.color} text-primary-foreground mb-6 group-hover:scale-110 transition-transform`}>
+              <div className={`inline-flex p-4 rounded-xl bg-linear-to-br ${feature.color} text-primary-foreground mb-6 group-hover:scale-110 transition-transform`}>
                 {feature.icon}
               </div>
               <h3 className="text-2xl font-semibold mb-3">{feature.title}</h3>

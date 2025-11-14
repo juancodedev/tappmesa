@@ -373,7 +373,7 @@ const SuperAdminTenantsManager = () => {
                   {/* Tenant Info */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                      <div className="flex-shrink-0 h-10 w-10 bg-linear-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
                         <span className="text-white font-bold text-lg">
                           {tenant.name.charAt(0).toUpperCase()}
                         </span>

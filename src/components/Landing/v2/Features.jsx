@@ -71,7 +71,7 @@ const Features = () => {
 
               {/* Icon */}
               <div className="relative mb-6">
-                <div className={`inline-flex p-4 rounded-xl bg-gradient-to-br ${feature.gradient} text-white shadow-lg group-hover:scale-110 transition-transform`}>
+                <div className={`inline-flex p-4 rounded-xl bg-linear-to-br ${feature.gradient} text-white shadow-lg group-hover:scale-110 transition-transform`}>
                   {feature.icon}
                 </div>
               </div>

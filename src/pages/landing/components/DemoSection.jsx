@@ -384,7 +384,7 @@ const DemoSection = () => {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div className="bg-gradient-to-br from-primary-50 to-primary-100 p-4 rounded-lg border border-primary-200">
+        <div className="bg-linear-to-br from-primary-50 to-primary-100 p-4 rounded-lg border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-coffee-600 text-sm">Órdenes Hoy</p>
@@ -400,7 +400,7 @@ const DemoSection = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
+        <div className="bg-linear-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-coffee-600 text-sm">Ingresos</p>
@@ -416,7 +416,7 @@ const DemoSection = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 rounded-lg border border-yellow-200">
+        <div className="bg-linear-to-br from-yellow-50 to-yellow-100 p-4 rounded-lg border border-yellow-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-coffee-600 text-sm">Producto Top</p>
@@ -431,7 +431,7 @@ const DemoSection = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+        <div className="bg-linear-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-coffee-600 text-sm">Hora Pico</p>
@@ -696,7 +696,7 @@ const DemoSection = () => {
   );
 
   return (
-    <section id="demo-section" className="py-20 bg-gradient-to-br from-cream-200 via-white to-cream-100 relative overflow-hidden">
+    <section id="demo-section" className="py-20 bg-linear-to-br from-cream-200 via-white to-cream-100 relative overflow-hidden">
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">
