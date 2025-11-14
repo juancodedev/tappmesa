@@ -74,13 +74,13 @@ const HowItWorks = () => {
   ];
 
   return (
-    <section id="como-funciona" className="py-24 lg:py-32 bg-linear-to-b from-gray-50 to-white">
+    <section id="como-funciona" className="py-24 lg:py-32 bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16 lg:mb-20 animate-fade-in">
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-gray-900">
             ¿Cómo funciona
-            <span className="block bg-linear-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mt-2">
+            <span className="block bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mt-2">
               TappMesa?
             </span>
           </h2>
@@ -99,23 +99,23 @@ const HowItWorks = () => {
             >
               <div className="group relative bg-white p-6 lg:p-8 rounded-2xl border border-gray-200/50 hover:border-gray-300 shadow-lg hover:shadow-2xl transition-all">
                 {/* Gradient glow effect on hover */}
-                <div className={`absolute inset-0 bg-linear-to-r ${step.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity`} />
+                <div className={`absolute inset-0 bg-gradient-to-r ${step.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity`} />
 
                 <div className="relative flex flex-col sm:flex-row gap-6 items-start">
                   {/* Number Badge */}
                   <div className="shrink-0">
                     <div className="relative">
-                      <div className={`w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-linear-to-br ${step.gradient} flex items-center justify-center text-xl lg:text-2xl font-bold text-white shadow-lg group-hover:scale-110 transition-transform`}>
+                      <div className={`w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-gradient-to-br ${step.gradient} flex items-center justify-center text-xl lg:text-2xl font-bold text-white shadow-lg group-hover:scale-110 transition-transform`}>
                         {step.number}
                       </div>
                       {index < steps.length - 1 && (
-                        <div className="hidden sm:block absolute left-1/2 top-full w-0.5 h-6 bg-linear-to-b from-gray-300 to-transparent -translate-x-1/2" />
+                        <div className="hidden sm:block absolute left-1/2 top-full w-0.5 h-6 bg-gradient-to-b from-gray-300 to-transparent -translate-x-1/2" />
                       )}
                     </div>
                   </div>
 
                   {/* Icon */}
-                  <div className={`shrink-0 p-4 rounded-xl bg-linear-to-br ${step.gradient} text-white shadow-lg group-hover:scale-110 transition-transform`}>
+                  <div className={`shrink-0 p-4 rounded-xl bg-gradient-to-br ${step.gradient} text-white shadow-lg group-hover:scale-110 transition-transform`}>
                     {step.icon}
                   </div>
 
@@ -144,13 +144,13 @@ const HowItWorks = () => {
               style={{ animationDelay: `${0.6 + index * 0.1}s` }}
             >
               {/* Gradient glow effect on hover */}
-              <div className={`absolute inset-0 bg-linear-to-r ${stat.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity`} />
+              <div className={`absolute inset-0 bg-gradient-to-r ${stat.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity`} />
 
               <div className="relative text-center">
-                <div className={`inline-flex p-3 rounded-xl bg-linear-to-br ${stat.gradient} text-white shadow-lg mb-4 group-hover:scale-110 transition-transform`}>
+                <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${stat.gradient} text-white shadow-lg mb-4 group-hover:scale-110 transition-transform`}>
                   {stat.icon}
                 </div>
-                <div className="text-4xl font-bold bg-linear-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-2">
+                <div className="text-4xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-2">
                   {stat.value}
                 </div>
                 <div className="text-sm font-semibold text-gray-600">{stat.label}</div>
