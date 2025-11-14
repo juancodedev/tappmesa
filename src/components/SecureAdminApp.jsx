@@ -264,7 +264,7 @@ const SecureAdminApp = () => {
       {/* Sidebar mobile */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setSidebarOpen(false)} />
+          <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
           <div className="fixed inset-y-0 left-0 w-64 bg-white shadow-lg">
             <SidebarContent
               navigation={navigation}

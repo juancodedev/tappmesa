@@ -32,7 +32,7 @@ const SubdomainDebug = () => {
   const { tenant, loading, error, subdomain, appType } = useTenant();
 
   return (
-    <div className="fixed top-4 right-4 bg-black bg-opacity-75 text-white p-3 rounded-lg text-xs z-50">
+    <div className="fixed top-4 right-4 bg-black/75 text-white p-3 rounded-lg text-xs z-50">
       <div>🌐 Host: {window.location.hostname}</div>
       <div>📍 Subdomain: {subdomain || "none"}</div>
       <div>🎯 App Type: {appType}</div>
@@ -64,7 +64,7 @@ const TenantApp = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-orange-50 to-red-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Cargando cafetería...</p>

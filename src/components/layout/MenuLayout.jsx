@@ -62,7 +62,7 @@ const MenuLayout = ({ children }) => {
 
       {/* Modal de pedidos */}
       {showOrders && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50" onClick={() => setShowOrders(false)}>
+        <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setShowOrders(false)}>
           <div
             className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-lg overflow-y-auto"
             onClick={(e) => e.stopPropagation()}

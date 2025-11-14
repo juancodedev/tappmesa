@@ -257,7 +257,7 @@ const Cart = () => {
   // Si hay un resultado exitoso, mostrar confirmación
   if (orderResult && orderResult.success) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end sm:items-center sm:justify-center">
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center sm:justify-center">
         <div className="bg-white w-full h-auto sm:w-96 sm:rounded-lg overflow-hidden">
           {/* Success Header */}
           <div className="bg-green-50 p-6 text-center border-b border-green-200">
@@ -315,7 +315,7 @@ const Cart = () => {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end sm:items-center sm:justify-center">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center sm:justify-center">
       <div className="bg-white w-full h-5/6 sm:w-96 sm:h-auto sm:max-h-[90vh] sm:rounded-lg overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">

@@ -515,7 +515,7 @@ const StockManager = () => {
 
       {/* Stock Movement Modal */}
       {showMovementModal && selectedProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               {selectedProduct.movementType === 'add' ? 'Agregar Stock' : 'Reducir Stock'}
@@ -609,7 +609,7 @@ const StockManager = () => {
 
       {/* History Modal */}
       {showHistoryModal && selectedProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" onClick={() => setShowHistoryModal(false)}>
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowHistoryModal(false)}>
           <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
             <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
               <div>
@@ -695,7 +695,7 @@ const StockManager = () => {
 
       {/* Edit Modal */}
       {showEditModal && selectedProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" onClick={() => setShowEditModal(false)}>
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowEditModal(false)}>
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0">
               <div>

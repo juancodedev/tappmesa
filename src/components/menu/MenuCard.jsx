@@ -91,7 +91,7 @@ const MenuCard = ({ product }) => {
 
         {/* Badge de no disponible */}
         {!product.is_available && (
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
             <span className="bg-red-500 text-white text-sm font-semibold px-3 py-1 rounded-full">
               No Disponible
             </span>

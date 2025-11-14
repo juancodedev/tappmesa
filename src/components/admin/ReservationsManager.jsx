@@ -385,7 +385,7 @@ const ReservationsManager = () => {
 
       {/* Edit Modal */}
       {showEditModal && editingReservation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" onClick={closeEditModal}>
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={closeEditModal}>
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0">
               <h2 className="text-xl font-bold text-gray-900">Editar Reserva</h2>
