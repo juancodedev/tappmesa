@@ -1,9 +1,11 @@
 // src/components/Landing/v2/Navbar.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Coffee, Menu, X } from 'lucide-react';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const navigate = useNavigate();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-xl border-b border-gray-200/50 shadow-sm">
@@ -52,11 +54,16 @@ const Navbar = () => {
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            <button className="px-5 py-2.5 text-gray-700 hover:text-primary-600 hover:bg-gray-100/50 rounded-xl transition-all font-semibold text-sm">
+            <button
+              onClick={() => navigate('/login')}
+              className="px-5 py-2.5 text-gray-700 hover:text-primary-600 hover:bg-gray-100/50 rounded-xl transition-all font-semibold text-sm"
+            >
               Iniciar Sesión
             </button>
-            <button className="px-6 py-2.5 bg-linear-to-r from-primary-600 to-secondary-600 text-white rounded-xl hover:shadow-xl hover:shadow-primary-500/20 hover:scale-105 transition-all font-semibold text-sm">
-              Prueba Gratis
+            <button
+              onClick={() => navigate('/register')}
+              className="px-6 py-2.5 bg-linear-to-r from-primary-600 to-secondary-600 text-white rounded-xl hover:shadow-xl hover:shadow-primary-500/20 hover:scale-105 transition-all font-semibold text-sm">
+              Registrate
             </button>
           </div>
 
@@ -76,7 +83,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-gray-200/50 animate-fade-in">
+          <div className="lg:hidden py-4 border-t border-gray-200/50 animate-fadeIn">
             <div className="flex flex-col gap-2">
               <a
                 href="#caracteristicas"
@@ -107,7 +114,10 @@ const Navbar = () => {
                 Precios
               </a>
               <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-gray-200/50">
-                <button className="px-4 py-3 text-gray-700 hover:bg-gray-100/50 rounded-lg transition-all font-semibold text-center">
+                <button
+                  onClick={() => navigate('/login')}
+                  className="px-4 py-3 text-gray-700 hover:bg-gray-100/50 rounded-lg transition-all font-semibold text-center"
+                >
                   Iniciar Sesión
                 </button>
                 <button className="px-4 py-3 bg-linear-to-r from-primary-600 to-secondary-600 text-white rounded-lg hover:shadow-lg transition-all font-semibold">
