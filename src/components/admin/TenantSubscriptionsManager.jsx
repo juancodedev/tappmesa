@@ -190,7 +190,7 @@ const TenantSubscriptionsManager = () => {
                 className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden"
               >
                 {/* Header */}
-                <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-4">
+                <div className="bg-linear-to-r from-orange-500 to-red-500 text-white px-6 py-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <Building2 className="h-6 w-6" />

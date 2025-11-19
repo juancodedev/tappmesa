@@ -371,7 +371,7 @@ const SubscriptionPlansManager = () => {
               } overflow-hidden hover:shadow-lg transition-shadow`}
             >
               {/* Header */}
-              <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-3">
+              <div className="bg-linear-to-r from-orange-500 to-red-500 text-white px-4 py-3">
                 {editingPlan === plan.id ? (
                   <input
                     type="text"

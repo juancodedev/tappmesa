@@ -550,7 +550,7 @@ const RegisterPage = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-cream-200 via-white to-cream-100 flex items-center justify-center p-6">
+      <div className="min-h-screen bg-linear-to-br from-cream-200 via-white to-cream-100 flex items-center justify-center p-6">
         <div className="bg-white rounded-2xl p-8 shadow-2xl border text-center max-w-2xl w-full">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="h-12 w-12 text-green-500" />
@@ -591,7 +591,7 @@ const RegisterPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream-200 via-white to-cream-100 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-cream-200 via-white to-cream-100 relative overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute top-20 left-10 text-6xl opacity-10 animate-float">☕</div>
       <div className="absolute bottom-40 right-20 text-4xl opacity-10 animate-float-delay">🚀</div>

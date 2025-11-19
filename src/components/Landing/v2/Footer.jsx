@@ -11,12 +11,12 @@ const Footer = () => {
           <div>
             <div className="flex items-center gap-2.5 mb-6">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl blur-md opacity-50" />
-                <div className="relative bg-gradient-to-br from-primary-500 to-secondary-500 p-2.5 rounded-xl shadow-lg">
+                <div className="absolute inset-0 bg-linear-to-br from-primary-500 to-secondary-500 rounded-xl blur-md opacity-50" />
+                <div className="relative bg-linear-to-br from-primary-500 to-secondary-500 p-2.5 rounded-xl shadow-lg">
                   <Coffee className="w-6 h-6 text-white" />
                 </div>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold bg-linear-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent">
                 TappMesa
               </span>
             </div>
@@ -25,16 +25,16 @@ const Footer = () => {
             </p>
             {/* Social Links */}
             <div className="flex gap-3">
-              <a href="#" className="p-2.5 bg-gray-800 hover:bg-gradient-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
+              <a href="#" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
                 <Facebook className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
               </a>
-              <a href="#" className="p-2.5 bg-gray-800 hover:bg-gradient-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
+              <a href="#" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
                 <Instagram className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
               </a>
-              <a href="#" className="p-2.5 bg-gray-800 hover:bg-gradient-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
+              <a href="#" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
                 <Twitter className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
               </a>
-              <a href="#" className="p-2.5 bg-gray-800 hover:bg-gradient-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
+              <a href="#" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
                 <Linkedin className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
               </a>
             </div>
