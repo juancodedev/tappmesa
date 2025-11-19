@@ -373,7 +373,7 @@ const SuperAdminTenantsManager = () => {
                   {/* Tenant Info */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="shrink-0 h-10 w-10 bg-linear-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                      <div className="shrink-0 h-10 w-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
                         <span className="text-white font-bold text-lg">
                           {tenant.name.charAt(0).toUpperCase()}
                         </span>
@@ -555,7 +555,7 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-linear-to-r from-orange-500 to-red-500 text-white px-6 py-4">
+        <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold">{tenant.name}</h2>

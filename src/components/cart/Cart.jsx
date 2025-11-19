@@ -376,7 +376,7 @@ const Cart = () => {
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                     {!customerInfo.phone && (
-                      <div className="mt-2 bg-linear-to-r from-primary/10 to-red-50 border border-primary/30 rounded-lg p-3">
+                      <div className="mt-2 bg-gradient-to-r from-primary/10 to-red-50 border border-primary/30 rounded-lg p-3">
                         <div className="flex items-start space-x-2">
                           <span className="text-lg">🎁</span>
                           <div>

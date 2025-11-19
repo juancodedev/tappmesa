@@ -109,7 +109,7 @@ const Footer = () => {
   return (
     <footer className="bg-coffee-dark text-coffee-900 relative overflow-hidden">
       {/* Background decorations */}
-      <div className="absolute inset-0 bg-linear-to-br from-coffee-900 via-coffee-800 to-coffee-900"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-coffee-900 via-coffee-800 to-coffee-900"></div>
       <div className="absolute top-10 left-10 text-6xl opacity-5 animate-float">☕</div>
       <div className="absolute bottom-20 right-20 text-4xl opacity-5 animate-float-delay">🥐</div>
       <div className="absolute top-40 right-10 text-5xl opacity-5 animate-float">⭐</div>
@@ -120,7 +120,7 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-14 h-14 bg-linear-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-coffee-900 text-2xl shadow-lg">
+              <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-coffee-900 text-2xl shadow-lg">
                 ☕
               </div>
               <div>
@@ -261,7 +261,7 @@ const Footer = () => {
 
         {/* Newsletter mejorado específico para cafeterías */}
         <div className="border-t border-coffee-700 py-8">
-          <div className="bg-linear-to-r from-coffee-800/50 to-primary-900/20 rounded-2xl p-6 border border-coffee-600">
+          <div className="bg-gradient-to-r from-coffee-800/50 to-primary-900/20 rounded-2xl p-6 border border-coffee-600">
             <div className="grid lg:grid-cols-2 gap-8 items-center">
               <div>
                 <h3 className="text-2xl font-bold text-coffee-900 mb-3 flex items-center gap-3">
@@ -388,7 +388,7 @@ const Footer = () => {
 
       {/* Back to Top Button mejorado */}
       <button 
-        className="fixed bottom-6 right-6 w-14 h-14 bg-linear-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-coffee-900 rounded-full flex items-center justify-center text-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 z-50 hover-glow"
+        className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-coffee-900 rounded-full flex items-center justify-center text-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 z-50 hover-glow"
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         title="Volver arriba con un café ☕"
       >

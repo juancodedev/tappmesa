@@ -196,7 +196,7 @@ const TenantTester = () => {
               className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
             >
               {/* Header */}
-              <div className="bg-linear-to-r from-primary to-red-700 text-white p-4">
+              <div className="bg-gradient-to-r from-primary to-red-700 text-white p-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-xl font-bold">{tenant.name}</h3>

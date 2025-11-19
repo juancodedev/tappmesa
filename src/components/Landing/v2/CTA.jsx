@@ -4,7 +4,7 @@ import { ArrowRight, MessageCircle, Sparkles, CheckCircle2, Zap } from 'lucide-r
 
 const CTA = () => {
   return (
-    <section className="py-24 lg:py-32 bg-linear-to-br from-gray-50 via-primary-50/20 to-gray-50 relative overflow-hidden">
+    <section className="py-24 lg:py-32 bg-gradient-to-br from-gray-50 via-primary-50/20 to-gray-50 relative overflow-hidden">
       {/* Decorative gradient blobs */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-primary-300/20 rounded-full blur-3xl animate-float" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary-300/20 rounded-full blur-3xl animate-float-delay" />
@@ -14,12 +14,12 @@ const CTA = () => {
           {/* Main CTA Card */}
           <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
             {/* Gradient border effect */}
-            <div className="absolute inset-0 bg-linear-to-r from-primary-600 via-secondary-600 to-primary-600 opacity-10" />
+            <div className="absolute inset-0 bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-600 opacity-10" />
 
             <div className="relative p-8 lg:p-16">
               <div className="text-center animate-fade-in">
                 {/* Badge */}
-                <div className="inline-flex items-center gap-2 bg-linear-to-r from-primary-100 to-secondary-100 px-5 py-2.5 rounded-full mb-8 border border-primary-200/50">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-100 to-secondary-100 px-5 py-2.5 rounded-full mb-8 border border-primary-200/50">
                   <Sparkles className="w-5 h-5 text-primary-600" />
                   <span className="text-sm font-bold text-primary-700">Oferta Especial de Lanzamiento</span>
                 </div>
@@ -27,7 +27,7 @@ const CTA = () => {
                 {/* Heading */}
                 <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-gray-900">
                   Comienza Gratis Hoy
-                  <span className="block bg-linear-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mt-3">
+                  <span className="block bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mt-3">
                     Sin Tarjeta de Crédito
                   </span>
                 </h2>
@@ -40,7 +40,7 @@ const CTA = () => {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-                  <button className="group w-full sm:w-auto px-10 py-5 bg-linear-to-r from-primary-600 to-secondary-600 text-white rounded-xl hover:shadow-2xl hover:shadow-primary-500/30 hover:scale-105 transition-all font-bold text-lg flex items-center justify-center gap-3">
+                  <button className="group w-full sm:w-auto px-10 py-5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl hover:shadow-2xl hover:shadow-primary-500/30 hover:scale-105 transition-all font-bold text-lg flex items-center justify-center gap-3">
                     <Zap className="w-5 h-5" />
                     Empezar Prueba Gratuita
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

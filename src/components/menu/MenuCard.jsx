@@ -73,7 +73,7 @@ const MenuCard = ({ product }) => {
             className="w-full h-48 object-cover"
           />
         ) : (
-          <div className="w-full h-48 bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+          <div className="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
             <span className="text-4xl">
               {getBeverageTypeIcon(product.beverage_type)}
             </span>

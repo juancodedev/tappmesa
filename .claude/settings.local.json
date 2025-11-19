@@ -17,7 +17,8 @@
       "Bash(while read file)",
       "Bash(do echo '⚠️  $(basename $file) - Archivo de respaldo (NO actualizado)' if grep -q 'bg-black bg-opacity-' $file)",
       "Bash(then echo '   └─ Contiene sintaxis antigua (esperado para backups)' fi done)",
-      "Bash(npm run lint:*)"
+      "Bash(npm run lint:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []
