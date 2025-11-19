@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
+import { SuperAdminContext } from '../../context/SuperAdminContext'
+import SuperAdminNoTenantMessage from './SuperAdminNoTenantMessage'
 import {
   Plus,
   Edit2,
@@ -40,7 +42,8 @@ const AVAILABLE_ICONS = [
 ]
 
 const TableStatusesManager = () => {
-  const { user } = useAuth()
+  const { user, isSuperAdmin } = useAuth()
+  const superAdminContext = useContext(SuperAdminContext)
   const [statuses, setStatuses] = useState([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(null)
@@ -51,18 +54,27 @@ const TableStatusesManager = () => {
     icon: 'circle'
   })
 
+  const getTenantId = () => {
+    if (isSuperAdmin && superAdminContext?.selectedTenantId) {
+      return superAdminContext.selectedTenantId
+    }
+    return user?.tenant_id || null
+  }
+
+  const tenantId = getTenantId()
+
   useEffect(() => {
-    if (user?.tenant_id) {
+    if (tenantId) {
       loadStatuses()
     }
-  }, [user])
+  }, [tenantId, superAdminContext?.selectedTenantId])
 
   const loadStatuses = async () => {
     try {
       const { data, error } = await supabase
         .from('table_statuses')
         .select('*')
-        .eq('tenant_id', user.tenant_id)
+        .eq('tenant_id', tenantId)
         .order('order_index', { ascending: true })
 
       if (error) throw error
@@ -88,7 +100,7 @@ const TableStatusesManager = () => {
       const { error } = await supabase
         .from('table_statuses')
         .insert({
-          tenant_id: user.tenant_id,
+          tenant_id: tenantId,
           name: formData.name.trim(),
           color: formData.color,
           icon: formData.icon,
@@ -247,6 +259,16 @@ const TableStatusesManager = () => {
           <div className="h-20 bg-gray-200 rounded"></div>
         </div>
       </div>
+    )
+  }
+
+  // Show message if super admin hasn't selected a tenant
+  if (isSuperAdmin && !tenantId) {
+    return (
+      <SuperAdminNoTenantMessage
+        icon={Circle}
+        message='Utiliza el selector en la barra superior para ver los estados de mesa de un tenant específico'
+      />
     )
   }
 

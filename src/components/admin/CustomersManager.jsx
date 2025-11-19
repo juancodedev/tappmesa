@@ -1,6 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { supabase } from "../../lib/supabase";
 import { useTenant } from '../../hooks/useTenant';
+import { useAuth } from '../../hooks/useAuth';
+import { SuperAdminContext } from '../../context/SuperAdminContext';
+import SuperAdminNoTenantMessage from './SuperAdminNoTenantMessage';
 import {
   Users,
   Star,
@@ -18,6 +21,17 @@ import {
 
 const CustomersManager = () => {
   const { tenant: currentTenant } = useTenant();
+  const { isSuperAdmin } = useAuth();
+  const superAdminContext = useContext(SuperAdminContext);
+
+  const getTenantId = () => {
+    if (isSuperAdmin && superAdminContext?.selectedTenantId) {
+      return superAdminContext.selectedTenantId;
+    }
+    return currentTenant?.id || null;
+  };
+
+  const tenantId = getTenantId();
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,13 +39,13 @@ const CustomersManager = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   useEffect(() => {
-    if (currentTenant) {
+    if (tenantId) {
       loadCustomers();
     }
-  }, [currentTenant, customerFilter]);
+  }, [tenantId, customerFilter, superAdminContext?.selectedTenantId]);
 
   const loadCustomers = async () => {
-    if (!currentTenant) return;
+    if (!tenantId) return;
 
     try {
       setLoading(true);
@@ -39,7 +53,7 @@ const CustomersManager = () => {
       let query = supabase
         .from("customers")
         .select("*")
-        .eq("tenant_id", currentTenant.id)
+        .eq("tenant_id", tenantId)
         .order("total_spent", { ascending: false });
 
       // Filtrar por tipo de cliente
@@ -144,7 +158,16 @@ const CustomersManager = () => {
   console.log(currentTenant);
   
 
-  if (!currentTenant) {
+  if (!tenantId) {
+    if (isSuperAdmin) {
+      return (
+        <SuperAdminNoTenantMessage
+          icon={Users}
+          message="Utiliza el selector en la barra superior para ver los clientes de un tenant específico"
+        />
+      );
+    }
+
     return (
       <div className="p-6">
         <div className="text-center py-12">

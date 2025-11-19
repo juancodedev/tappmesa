@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useTenant } from '../../hooks/useTenant'
-import { 
-  Package, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Save, 
+import { useAuth } from '../../hooks/useAuth'
+import { SuperAdminContext } from '../../context/SuperAdminContext'
+import SuperAdminNoTenantMessage from './SuperAdminNoTenantMessage'
+import {
+  Package,
+  Plus,
+  Edit,
+  Trash2,
+  Save,
   X,
   Image as ImageIcon,
   Clock,
@@ -20,6 +23,18 @@ import {
 
 const ProductsManager = () => {
   const { tenant: currentTenant } = useTenant()
+  const { isSuperAdmin } = useAuth()
+  const superAdminContext = useContext(SuperAdminContext)
+
+  // Get tenant ID based on user type
+  const getTenantId = () => {
+    if (isSuperAdmin && superAdminContext?.selectedTenantId) {
+      return superAdminContext.selectedTenantId
+    }
+    return currentTenant?.id || null
+  }
+
+  const tenantId = getTenantId()
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
@@ -44,20 +59,20 @@ const ProductsManager = () => {
   })
 
   useEffect(() => {
-    if (currentTenant) {
+    if (tenantId) {
       loadCategories()
       loadProducts()
     }
-  }, [currentTenant, categoryFilter])
+  }, [tenantId, categoryFilter, superAdminContext?.selectedTenantId])
 
   const loadCategories = async () => {
-    if (!currentTenant) return
+    if (!tenantId) return
 
     try {
       const { data, error } = await supabase
         .from('categories')
         .select('*')
-        .eq('tenant_id', currentTenant.id)
+        .eq('tenant_id', tenantId)
         .eq('is_active', true)
         .order('display_order', { ascending: true })
 
@@ -69,11 +84,11 @@ const ProductsManager = () => {
   }
 
   const loadProducts = async () => {
-    if (!currentTenant) return
+    if (!tenantId) return
 
     try {
       setLoading(true)
-      
+
       let query = supabase
         .from('products')
         .select(`
@@ -83,7 +98,7 @@ const ProductsManager = () => {
             slug
           )
         `)
-        .eq('tenant_id', currentTenant.id)
+        .eq('tenant_id', tenantId)
         .order('display_order', { ascending: true })
 
       if (categoryFilter !== 'all') {
@@ -192,7 +207,7 @@ const ProductsManager = () => {
 
     try {
       const productData = {
-        tenant_id: currentTenant.id,
+        tenant_id: tenantId,
         name: formData.name,
         slug: formData.slug,
         description: formData.description || null,
@@ -307,7 +322,7 @@ const ProductsManager = () => {
       // Generar nombre único para el archivo
       const fileExt = file.name.split('.').pop()
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
-      const filePath = `products/${currentTenant.id}/${fileName}`
+      const filePath = `products/${tenantId}/${fileName}`
 
       // Subir archivo a Supabase Storage
       const { error: uploadError } = await supabase.storage
@@ -346,7 +361,17 @@ const ProductsManager = () => {
            product.description?.toLowerCase().includes(searchTerm.toLowerCase())
   })
 
-  if (!currentTenant) {
+  // Show message if no tenant is available
+  if (!tenantId) {
+    if (isSuperAdmin) {
+      return (
+        <SuperAdminNoTenantMessage
+          icon={Package}
+          message="Utiliza el selector en la barra superior para ver los productos de un tenant específico"
+        />
+      )
+    }
+
     return (
       <div className="p-6">
         <div className="text-center py-12">

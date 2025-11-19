@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useTenant } from '../../hooks/useTenant'
 import { useAuth } from '../../hooks/useAuth'
+import { SuperAdminContext } from '../../context/SuperAdminContext'
+import SuperAdminNoTenantMessage from './SuperAdminNoTenantMessage'
 import {
   Plus,
   Search,
@@ -21,7 +23,9 @@ import {
 
 const UsersManager = () => {
   const { tenant } = useTenant()
-  const { user } = useAuth()
+  const { user, isSuperAdmin } = useAuth()
+  const superAdminContext = useContext(SuperAdminContext)
+
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -42,13 +46,20 @@ const UsersManager = () => {
   })
 
   // Determinar el tenant_id a usar
-  const currentTenantId = tenant?.id || user?.tenant_id
+  const getTenantId = () => {
+    if (isSuperAdmin && superAdminContext?.selectedTenantId) {
+      return superAdminContext.selectedTenantId
+    }
+    return tenant?.id || user?.tenant_id || null
+  }
+
+  const currentTenantId = getTenantId()
 
   useEffect(() => {
     if (currentTenantId) {
       loadUsers()
     }
-  }, [currentTenantId])
+  }, [currentTenantId, superAdminContext?.selectedTenantId])
 
   const loadUsers = async () => {
     try {

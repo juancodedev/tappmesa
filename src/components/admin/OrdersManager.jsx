@@ -1,21 +1,37 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useTenant } from '../../hooks/useTenant'
-import { 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
+import { useAuth } from '../../hooks/useAuth'
+import { SuperAdminContext } from '../../context/SuperAdminContext'
+import SuperAdminNoTenantMessage from './SuperAdminNoTenantMessage'
+import {
+  Clock,
+  CheckCircle,
+  XCircle,
   RefreshCw,
   Eye,
   Phone,
   MapPin,
   DollarSign,
   Filter,
-  Search
+  Search,
+  ShoppingBag
 } from 'lucide-react'
 
 const OrdersManager = () => {
   const { tenant: currentTenant } = useTenant()
+  const { isSuperAdmin } = useAuth()
+  const superAdminContext = useContext(SuperAdminContext)
+
+  // Get tenant ID based on user type
+  const getTenantId = () => {
+    if (isSuperAdmin && superAdminContext?.selectedTenantId) {
+      return superAdminContext.selectedTenantId
+    }
+    return currentTenant?.id || null
+  }
+
+  const tenantId = getTenantId()
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState('all')
@@ -23,20 +39,20 @@ const OrdersManager = () => {
   const [updating, setUpdating] = useState(false)
 
   useEffect(() => {
-    if (currentTenant) {
+    if (tenantId) {
       loadOrders()
       // Configurar polling cada 30 segundos para órdenes en tiempo real
       const interval = setInterval(loadOrders, 30000)
       return () => clearInterval(interval)
     }
-  }, [currentTenant, statusFilter])
+  }, [tenantId, statusFilter, superAdminContext?.selectedTenantId])
 
   const loadOrders = async () => {
-    if (!currentTenant) return
+    if (!tenantId) return
 
     try {
       setLoading(true)
-      
+
       let query = supabase
         .from('orders')
         .select(`
@@ -49,7 +65,7 @@ const OrdersManager = () => {
             )
           )
         `)
-        .eq('tenant_id', currentTenant.id)
+        .eq('tenant_id', tenantId)
         .order('created_at', { ascending: false })
 
       // Filtrar por estado si no es "all"
@@ -85,12 +101,12 @@ const OrdersManager = () => {
 
       const { data, error } = await supabase
         .from('orders')
-        .update({ 
+        .update({
           status: newStatus,
           updated_at: new Date().toISOString()
         })
         .eq('id', orderId)
-        .eq('tenant_id', currentTenant.id) // Asegurar que pertenece al tenant actual
+        .eq('tenant_id', tenantId) // Asegurar que pertenece al tenant actual
         .select()
 
       if (error) {
@@ -191,7 +207,17 @@ const OrdersManager = () => {
     return order.status === statusFilter
   })
 
-  if (!currentTenant) {
+  // Show message if no tenant is available
+  if (!tenantId) {
+    if (isSuperAdmin) {
+      return (
+        <SuperAdminNoTenantMessage
+          icon={ShoppingBag}
+          message="Utiliza el selector en la barra superior para ver los pedidos de un tenant específico"
+        />
+      )
+    }
+
     return (
       <div className="p-6">
         <div className="text-center py-12">
@@ -229,7 +255,10 @@ const OrdersManager = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Gestión de Pedidos</h1>
           <p className="text-gray-600">
-            Administra los pedidos de {currentTenant?.name || 'tu local'}
+            {isSuperAdmin && superAdminContext?.selectedTenant
+              ? `Administra los pedidos de ${superAdminContext.selectedTenant.name}`
+              : `Administra los pedidos de ${currentTenant?.name || 'tu local'}`
+            }
           </p>
         </div>
         <button

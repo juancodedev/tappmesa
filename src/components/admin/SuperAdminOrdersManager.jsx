@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { supabase } from '../../lib/supabase'
+import { SuperAdminContext } from '../../context/SuperAdminContext'
+import SuperAdminNoTenantMessage from './SuperAdminNoTenantMessage'
 import {
   ShoppingBag,
   Search,
@@ -14,14 +16,12 @@ import {
   Eye,
   Package
 } from 'lucide-react'
-import TenantSelector from './TenantSelector'
 
 const SuperAdminOrdersManager = () => {
+  const { selectedTenantId } = useContext(SuperAdminContext)
   const [orders, setOrders] = useState([])
-  const [tenants, setTenants] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedTenantId, setSelectedTenantId] = useState(null) // Changed from tenantFilter
   const [statusFilter, setStatusFilter] = useState('all')
   const [dateFilter, setDateFilter] = useState('today')
 
@@ -86,14 +86,7 @@ const SuperAdminOrdersManager = () => {
 
       if (ordersError) throw ordersError
 
-      // Load tenants for filter
-      const { data: tenantsData } = await supabase
-        .from('tenants')
-        .select('id, name, slug')
-        .order('name', { ascending: true })
-
       setOrders(ordersData || [])
-      setTenants(tenantsData || [])
     } catch (error) {
       console.error('Error loading orders:', error)
       alert(`Error al cargar pedidos: ${error.message}`)
@@ -166,6 +159,16 @@ const SuperAdminOrdersManager = () => {
     )
   }
 
+  // Show message if no tenant is selected
+  if (!selectedTenantId) {
+    return (
+      <SuperAdminNoTenantMessage
+        icon={ShoppingBag}
+        message='Utiliza el selector en la barra superior para ver los pedidos de un tenant específico, o selecciona "Todos los Tenants" para ver una vista global'
+      />
+    )
+  }
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -185,15 +188,6 @@ const SuperAdminOrdersManager = () => {
             <RefreshCw className="h-5 w-5" />
             <span>Actualizar</span>
           </button>
-        </div>
-
-        {/* Tenant Selector */}
-        <div className="mt-4">
-          <TenantSelector
-            tenants={tenants}
-            selectedTenantId={selectedTenantId}
-            onTenantChange={setSelectedTenantId}
-          />
         </div>
 
         {/* Filters */}
