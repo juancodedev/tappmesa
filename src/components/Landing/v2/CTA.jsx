@@ -34,7 +34,7 @@ const CTA = () => {
 
                 {/* Description */}
                 <p className="text-xl lg:text-2xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
-                  Prueba todas las funciones durante 14 días. Si no te encanta, cancela sin compromiso.
+                  Prueba todas las funciones durante 30 dias. Si no te encanta, cancela sin compromiso.
                   <span className="block mt-2 font-semibold text-gray-700">Más de 300 cafeterías ya confían en nosotros.</span>
                 </p>
 
@@ -53,10 +53,10 @@ const CTA = () => {
 
                 {/* Trust Badges */}
                 <div className="flex flex-wrap justify-center gap-6 lg:gap-10">
-                  <div className="flex items-center gap-2.5 text-gray-700">
+                  {/* <div className="flex items-center gap-2.5 text-gray-700">
                     <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
                     <span className="font-semibold">14 días gratis</span>
-                  </div>
+                  </div> */}
                   <div className="flex items-center gap-2.5 text-gray-700">
                     <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
                     <span className="font-semibold">Sin tarjeta requerida</span>

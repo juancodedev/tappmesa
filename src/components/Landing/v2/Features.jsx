@@ -21,18 +21,18 @@ const features = [
     description: "Reduce hasta 60% el tiempo de atención. Tus meseros se enfocan en servicio premium, no en tomar pedidos.",
     gradient: "from-purple-500 to-pink-500",
   },
-  {
-    icon: <Wallet className="w-7 h-7" />,
-    title: "Pago Integrado",
-    description: "Múltiples métodos de pago. Los clientes pagan cuando quieran, directamente desde su mesa.",
-    gradient: "from-green-500 to-emerald-500",
-  },
-  {
-    icon: <TrendingUp className="w-7 h-7" />,
-    title: "Aumenta Ventas",
-    description: "Recomendaciones inteligentes y upselling automático aumentan el ticket promedio hasta un 35%.",
-    gradient: "from-primary-500 to-secondary-500",
-  },
+  // {
+  //   icon: <Wallet className="w-7 h-7" />,
+  //   title: "Pago Integrado",
+  //   description: "Múltiples métodos de pago. Los clientes pagan cuando quieran, directamente desde su mesa.",
+  //   gradient: "from-green-500 to-emerald-500",
+  // },
+  // {
+  //   icon: <TrendingUp className="w-7 h-7" />,
+  //   title: "Aumenta Ventas",
+  //   description: "Recomendaciones inteligentes y upselling automático aumentan el ticket promedio hasta un 35%.",
+  //   gradient: "from-primary-500 to-secondary-500",
+  // },
   {
     icon: <Users className="w-7 h-7" />,
     title: "Clientes Felices",

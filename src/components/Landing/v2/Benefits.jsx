@@ -17,7 +17,7 @@ const Benefits = () => {
     "Menú con fotos y descripciones claras",
     "Personaliza tu pedido fácilmente",
     "Ve el total antes de confirmar",
-    "Paga cuando quieras",
+    // "Paga cuando quieras",
     "Experiencia moderna y cómoda",
   ];
 
