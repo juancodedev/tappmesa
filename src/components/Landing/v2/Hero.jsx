@@ -44,9 +44,9 @@ const Hero = () => {
                 Prueba Gratis 14 Días
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl hover:bg-white/10 transition-all font-semibold text-lg flex items-center justify-center gap-2">
+              {/* <button className="px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl hover:bg-white/10 transition-all font-semibold text-lg flex items-center justify-center gap-2">
                 Ver Demo
-              </button>
+              </button> */}
             </div>
           </div>
 
@@ -96,11 +96,14 @@ const Hero = () => {
 const FeatureCard = ({ icon, title, description, delay = '0s' }) => {
   return (
     <div
-      className="group relative bg-white/95 backdrop-blur-sm p-6 lg:p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 animate-scale-in"
+      className="group relative bg-white/95 backdrop-blur-sm p-6 lg:p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 animate-scale-in"
       style={{ animationDelay: delay }}
     >
+      {/* Gradient glow effect on hover */}
+      <div className="absolute inset-0 bg-linear-to-r from-secondary-400 to-secondary-600 opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity" />
+
       <div className="relative flex items-start gap-4">
-        <div className="shrink-0 p-3 rounded-xl bg-secondary-500 text-white shadow-md">
+        <div className="shrink-0 p-3 rounded-xl bg-linear-to-br from-secondary-500 to-secondary-600 text-white shadow-md group-hover:scale-110 transition-transform">
           {icon}
         </div>
         <div>

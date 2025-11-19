@@ -21,18 +21,18 @@ const features = [
     description: "Reduce hasta 60% el tiempo de atención. Tus meseros se enfocan en servicio premium, no en tomar pedidos.",
     gradient: "from-purple-500 to-pink-500",
   },
-  {
-    icon: <Wallet className="w-7 h-7" />,
-    title: "Pago Integrado",
-    description: "Múltiples métodos de pago. Los clientes pagan cuando quieran, directamente desde su mesa.",
-    gradient: "from-green-500 to-emerald-500",
-  },
-  {
-    icon: <TrendingUp className="w-7 h-7" />,
-    title: "Aumenta Ventas",
-    description: "Recomendaciones inteligentes y upselling automático aumentan el ticket promedio hasta un 35%.",
-    gradient: "from-primary-500 to-secondary-500",
-  },
+  // {
+  //   icon: <Wallet className="w-7 h-7" />,
+  //   title: "Pago Integrado",
+  //   description: "Múltiples métodos de pago. Los clientes pagan cuando quieran, directamente desde su mesa.",
+  //   gradient: "from-green-500 to-emerald-500",
+  // },
+  // {
+  //   icon: <TrendingUp className="w-7 h-7" />,
+  //   title: "Aumenta Ventas",
+  //   description: "Recomendaciones inteligentes y upselling automático aumentan el ticket promedio hasta un 35%.",
+  //   gradient: "from-primary-500 to-secondary-500",
+  // },
   {
     icon: <Users className="w-7 h-7" />,
     title: "Clientes Felices",
@@ -43,7 +43,7 @@ const features = [
 
 const Features = () => {
   return (
-    <section id="caracteristicas" className="py-24 lg:py-32 bg-gradient-to-b from-white via-gray-50 to-white">
+    <section id="caracteristicas" className="py-24 lg:py-32 bg-linear-to-b from-white via-gray-50 to-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16 lg:mb-20 animate-fade-in">

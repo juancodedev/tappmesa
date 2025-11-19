@@ -14,13 +14,12 @@ const LoadingSpinner = ({ message = "Cargando..." }) => (
 const LazyAdminApp = lazy(() => import('./AdminApp'));
 const LazySecureAdminApp = lazy(() => import('./SecureAdminApp'));
 const LazyTableApp = lazy(() => import('./TableApp'));
-const LazyReservationsPage = lazy(() => import('./ReservationsPage'));
-const LazyLoginPage = lazy(() => import('./LoginPage'));
 
 // Lazy load page components
 const LazyLandingPage = lazy(() => import('../pages/landing/LandingPage'));
 const LazyRegisterPage = lazy(() => import('../pages/auth/RegisterPage'));
-const LazyBusinessLoginPage = lazy(() => import('../pages/auth/LoginPage'));
+const LazyLoginPage = lazy(() => import('../pages/auth/LoginPage'));
+const LazyReservationsPage = lazy(() => import('../pages/reservations/ReservationsPage'));
 
 // Lazy load layout components
 const LazyMenuLayout = lazy(() => import('./layout/MenuLayout'));
@@ -40,12 +39,12 @@ const withSuspense = (Component, loadingMessage) => {
 export const AdminApp = withSuspense(LazyAdminApp, "Cargando panel de administración...");
 export const SecureAdminApp = withSuspense(LazySecureAdminApp, "Cargando administrador seguro...");
 export const TableApp = withSuspense(LazyTableApp, "Cargando mesa...");
-export const ReservationsPage = withSuspense(LazyReservationsPage, "Cargando reservas...");
-export const LoginPage = withSuspense(LazyLoginPage, "Cargando inicio de sesión...");
 
 export const LandingPage = withSuspense(LazyLandingPage, "Cargando página principal...");
 export const RegisterPage = withSuspense(LazyRegisterPage, "Cargando registro...");
-export const BusinessLoginPage = withSuspense(LazyBusinessLoginPage, "Cargando inicio de sesión...");
+export const LoginPage = withSuspense(LazyLoginPage, "Cargando inicio de sesión...");
+export const BusinessLoginPage = withSuspense(LazyLoginPage, "Cargando inicio de sesión...");
+export const ReservationsPage = withSuspense(LazyReservationsPage, "Cargando reservas...");
 
 export const MenuLayout = withSuspense(LazyMenuLayout, "Cargando menú...");
 

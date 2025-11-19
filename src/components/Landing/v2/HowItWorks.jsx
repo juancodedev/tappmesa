@@ -74,7 +74,7 @@ const HowItWorks = () => {
   ];
 
   return (
-    <section id="como-funciona" className="py-24 lg:py-32 bg-gradient-to-b from-gray-50 to-white">
+    <section id="como-funciona" className="py-24 lg:py-32 bg-linear-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16 lg:mb-20 animate-fade-in">
@@ -109,7 +109,7 @@ const HowItWorks = () => {
                         {step.number}
                       </div>
                       {index < steps.length - 1 && (
-                        <div className="hidden sm:block absolute left-1/2 top-full w-0.5 h-6 bg-gradient-to-b from-gray-300 to-transparent -translate-x-1/2" />
+                        <div className="hidden sm:block absolute left-1/2 top-full w-0.5 h-6 bg-linear-to-b from-gray-300 to-transparent -translate-x-1/2" />
                       )}
                     </div>
                   </div>

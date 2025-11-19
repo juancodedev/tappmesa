@@ -22,7 +22,7 @@ function getLuminance(r, g, b) {
 }
 
 /**
- * Calcula la relación de contraste entre dos colores
+ * Calcula la relaciï¿½n de contraste entre dos colores
  */
 function getContrastRatio(rgb1, rgb2) {
   const lum1 = getLuminance(rgb1.r, rgb1.g, rgb1.b);
@@ -59,7 +59,7 @@ export function getOptimalTextColor(backgroundColor) {
 }
 
 /**
- * Obtiene las clases de Tailwind para el color de texto óptimo
+ * Obtiene las clases de Tailwind para el color de texto ï¿½ptimo
  */
 export function getOptimalTextClass(backgroundColor) {
   const optimalColor = getOptimalTextColor(backgroundColor);

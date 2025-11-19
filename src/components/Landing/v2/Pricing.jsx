@@ -33,10 +33,10 @@ const Pricing = () => {
         "Menú digital avanzado",
         "Sistema de reservas de mesa",
         "Soporte prioritario 24/7",
-        "Analytics detallados",
+        // "Analytics detallados",
         "Programa de lealtad",
-        "Integración con delivery",
-        "Personalización de marca",
+        // "Integración con delivery",
+        // "Personalización de marca",
         "Reportes semanales automáticos"
       ],
       popular: true,
@@ -54,9 +54,9 @@ const Pricing = () => {
         "API personalizada",
         "Soporte dedicado",
         "Insights avanzados de mercado",
-        "Integración con sistemas POS",
+        // "Integración con sistemas POS",
         "Dashboard ejecutivo",
-        "Análisis predictivo de demanda",
+          // "Análisis predictivo de demanda",
         "Gestión de inventario automática",
         "Reportes personalizados",
         "Capacitación para equipo"
@@ -161,9 +161,9 @@ const Pricing = () => {
             <button className="px-6 py-3 bg-linear-to-r from-primary-500 to-secondary-500 text-cream-50 rounded-lg hover:shadow-coffee-lg transition-all font-medium">
               Contactar Ventas
             </button>
-            <button className="px-6 py-3 border-2 border-cream-300 text-coffee-900 rounded-lg hover:bg-cream-100 transition-all font-medium">
+            {/* <button className="px-6 py-3 border-2 border-cream-300 text-coffee-900 rounded-lg hover:bg-cream-100 transition-all font-medium">
               Agendar Demo Personalizada
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
