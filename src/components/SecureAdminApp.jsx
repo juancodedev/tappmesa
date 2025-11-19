@@ -260,12 +260,12 @@ const SecureAdminApp = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-linear-to-br from-amber-50 via-orange-50/30 to-amber-50">
       {/* Sidebar mobile */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
-          <div className="fixed inset-y-0 left-0 w-64 bg-white shadow-lg">
+          <div className="fixed inset-y-0 left-0 w-64 bg-linear-to-b from-amber-900 to-amber-950 shadow-2xl">
             <SidebarContent
               navigation={navigation}
               user={user}
@@ -290,7 +290,7 @@ const SecureAdminApp = () => {
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Top bar */}
-        <div className="sticky top-0 z-40 flex h-16 bg-white shadow-sm border-b border-gray-200">
+        <div className="sticky top-0 z-40 flex h-16 bg-white/90 backdrop-blur-md shadow-md border-b border-amber-200/50">
           <button
             onClick={() => setSidebarOpen(true)}
             className="px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary lg:hidden"
@@ -301,25 +301,25 @@ const SecureAdminApp = () => {
           <div className="flex flex-1 justify-between px-4 lg:px-6">
             <div className="flex flex-1">
               <div className="flex items-center">
-                <h1 className="text-xl font-semibold text-gray-900">
+                <h1 className="text-xl font-semibold text-amber-900">
                   Panel de Administración
                 </h1>
                 {user?.tenant && (
-                  <span className="ml-3 text-sm text-gray-500">
+                  <span className="ml-3 text-sm text-amber-700 font-medium">
                     • {user.tenant.name}
                   </span>
                 )}
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-4">
-              <div className="text-sm text-gray-700">
-                <div className="font-medium">{user?.full_name}</div>
-                <div className="text-xs text-gray-500 capitalize">{user?.role?.replace('_', ' ')}</div>
+              <div className="text-sm text-amber-900">
+                <div className="font-semibold">{user?.full_name}</div>
+                <div className="text-xs text-amber-700 capitalize">{user?.role?.replace('_', ' ')}</div>
               </div>
-              <button 
+              <button
                 onClick={handleLogout}
-                className="text-gray-400 hover:text-gray-500 transition-colors"
+                className="p-2 text-amber-700 hover:text-amber-900 hover:bg-amber-100 rounded-lg transition-all"
                 title="Cerrar sesión"
               >
                 <LogOut className="h-5 w-5" />
@@ -495,40 +495,40 @@ const SecureAdminApp = () => {
 }
 
 const SidebarContent = ({ navigation, user, onLogout, closeSidebar, isNavigationActive }) => (
-  <div className="flex flex-col h-full bg-white">
+  <div className="flex flex-col h-full bg-linear-to-b from-amber-900 to-amber-950 shadow-2xl">
     {/* Logo */}
-    <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+    <div className="flex items-center justify-between h-16 px-6 border-b border-amber-800/50">
       <div className="flex items-center space-x-3">
-        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold text-sm">T</span>
+        <div className="w-10 h-10 bg-linear-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+          <Coffee className="h-6 w-6 text-white" />
         </div>
         <div>
-          <span className="text-xl font-bold text-gray-900">Tappmesa</span>
+          <span className="text-xl font-bold text-amber-50">Tappmesa</span>
           {user?.role === 'super_admin' && (
-            <div className="text-xs text-primary font-medium">SUPER ADMIN</div>
+            <div className="text-xs text-amber-300 font-semibold">SUPER ADMIN</div>
           )}
         </div>
       </div>
       {closeSidebar && (
-        <button onClick={closeSidebar} className="lg:hidden">
-          <X className="h-6 w-6 text-gray-400" />
+        <button onClick={closeSidebar} className="lg:hidden p-1 hover:bg-amber-800 rounded-lg transition-colors">
+          <X className="h-6 w-6 text-amber-300" />
         </button>
       )}
     </div>
 
     {/* User info */}
-    <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+    <div className="px-6 py-4 border-b border-amber-800/50 bg-amber-950/50">
       <div className="text-sm">
-        <div className="font-medium text-gray-900">{user?.full_name}</div>
-        <div className="text-gray-500">{user?.email}</div>
+        <div className="font-semibold text-amber-50">{user?.full_name}</div>
+        <div className="text-amber-300 text-xs">{user?.email}</div>
         {user?.tenant && (
-          <div className="text-xs text-gray-400 mt-1">{user.tenant.name}</div>
+          <div className="text-xs text-amber-400 mt-2 px-2 py-1 bg-amber-800/30 rounded inline-block">{user.tenant.name}</div>
         )}
       </div>
     </div>
 
     {/* Navigation */}
-    <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+    <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
       {navigation.map((item) => {
         const Icon = item.icon
         const isActive = isNavigationActive(item.href)
@@ -536,10 +536,10 @@ const SidebarContent = ({ navigation, user, onLogout, closeSidebar, isNavigation
           <a
             key={item.name}
             href={item.href}
-            className={`flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+            className={`flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-xl transition-all ${
               isActive
-                ? 'bg-primary text-white'
-                : 'text-gray-700 hover:bg-gray-100'
+                ? 'bg-linear-to-r from-amber-600 to-orange-600 text-white shadow-lg shadow-amber-900/50'
+                : 'text-amber-100 hover:bg-amber-800/50 hover:text-white'
             }`}
             onClick={closeSidebar ? () => closeSidebar() : undefined}
           >
@@ -551,16 +551,16 @@ const SidebarContent = ({ navigation, user, onLogout, closeSidebar, isNavigation
     </nav>
 
     {/* Footer */}
-    <div className="px-4 py-6 border-t border-gray-200">
+    <div className="px-4 py-6 border-t border-amber-800/50">
       <button
         onClick={onLogout}
-        className="w-full flex items-center space-x-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+        className="w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium text-amber-100 rounded-xl hover:bg-amber-800/50 hover:text-white transition-all"
       >
         <LogOut className="h-5 w-5" />
         <span>Cerrar Sesión</span>
       </button>
-      
-      <div className="text-xs text-gray-500 text-center mt-4">
+
+      <div className="text-xs text-amber-500 text-center mt-4">
         Tappmesa Admin v1.0
       </div>
     </div>
