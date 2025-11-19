@@ -23,6 +23,7 @@ import {
 import ReservationsPage from './pages/reservations/ReservationsPage';
 import WaiterDashboard from './pages/waiter/WaiterDashboard';
 import KitchenDashboard from './pages/kitchen/KitchenDashboard';
+import ContactSales from './pages/contact-sales/ContactSales';
 
 // Keep ProtectedRoute as regular import since it's lightweight
 import ProtectedRoute from './components/ProtectedRoute';
@@ -192,6 +193,7 @@ function App() {
 
             {/* Ruta catch-all al final (existente) */}
             <Route path="/*" element={<AppContent />} />
+            <Route path="/contact-sales" element={<ContactSales/>} />
           </Routes>
           {import.meta.env.DEV && <SubdomainDebug />}
         </TenantProvider>
