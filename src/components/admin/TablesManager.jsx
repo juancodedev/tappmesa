@@ -1,6 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useTenant } from '../../hooks/useTenant'
+import { useAuth } from '../../hooks/useAuth'
+import { SuperAdminContext } from '../../context/SuperAdminContext'
+import SuperAdminNoTenantMessage from './SuperAdminNoTenantMessage'
 import {
   Plus,
   Edit,
@@ -17,6 +20,18 @@ import {
 
 const TablesManager = () => {
   const { tenant: currentTenant } = useTenant()
+  const { isSuperAdmin } = useAuth()
+  const superAdminContext = useContext(SuperAdminContext)
+
+  // Get tenant ID based on user type
+  const getTenantId = () => {
+    if (isSuperAdmin && superAdminContext?.selectedTenantId) {
+      return superAdminContext.selectedTenantId
+    }
+    return currentTenant?.id || null
+  }
+
+  const tenantId = getTenantId()
   const [tables, setTables] = useState([])
   const [tableStatuses, setTableStatuses] = useState([])
   const [loading, setLoading] = useState(true)
@@ -34,15 +49,15 @@ const TablesManager = () => {
   })
 
   useEffect(() => {
-    if (currentTenant) {
+    if (tenantId) {
       loadTables()
       loadTableStatuses()
     }
-  }, [currentTenant])
+  }, [tenantId, superAdminContext?.selectedTenantId])
 
   const loadTables = async () => {
-    if (!currentTenant) {
-      console.warn('⚠️ No se puede cargar mesas: currentTenant es null')
+    if (!tenantId) {
+      console.warn('⚠️ No se puede cargar mesas: tenantId es null')
       setLoading(false)
       return
     }
@@ -50,15 +65,12 @@ const TablesManager = () => {
     try {
       setLoading(true)
 
-      console.log('🔍 Cargando mesas para tenant:', {
-        tenant_id: currentTenant.id,
-        tenant_name: currentTenant.name
-      })
+      console.log('🔍 Cargando mesas para tenant:', tenantId)
 
       const { data, error } = await supabase
         .from('tables')
         .select('*')
-        .eq('tenant_id', currentTenant.id)
+        .eq('tenant_id', tenantId)
         .order('number')
 
       if (error) {
@@ -71,11 +83,11 @@ const TablesManager = () => {
           status: table.status || 'available'
         }))
         setTables(tablesWithStatus)
-        console.log('✅ Mesas cargadas para tenant', currentTenant.name + ':', tablesWithStatus.length)
+        console.log('✅ Mesas cargadas:', tablesWithStatus.length)
 
         // VALIDACIÓN: Verificar que todas las mesas pertenecen al tenant correcto
         if (data && data.length > 0) {
-          const wrongTenantTables = data.filter(t => t.tenant_id !== currentTenant.id)
+          const wrongTenantTables = data.filter(t => t.tenant_id !== tenantId)
           if (wrongTenantTables.length > 0) {
             console.error('🚨 ALERTA DE SEGURIDAD: Se cargaron mesas de otros tenants:', wrongTenantTables)
             alert('Error de seguridad: Se detectaron mesas de otros locales. Contacta a soporte.')
@@ -91,13 +103,13 @@ const TablesManager = () => {
   }
 
   const loadTableStatuses = async () => {
-    if (!currentTenant) return
+    if (!tenantId) return
 
     try {
       const { data, error } = await supabase
         .from('table_statuses')
         .select('*')
-        .eq('tenant_id', currentTenant.id)
+        .eq('tenant_id', tenantId)
         .order('order_index', { ascending: true })
 
       if (error) throw error
@@ -179,7 +191,7 @@ const TablesManager = () => {
 
   // Regenerar todos los códigos antiguos
   const handleRegenerateAllOldCodes = async () => {
-    if (!currentTenant) {
+    if (!tenantId) {
       alert('Error: No se ha cargado el tenant')
       return
     }
@@ -191,7 +203,7 @@ const TablesManager = () => {
       const { data: allTables, error: loadError } = await supabase
         .from('tables')
         .select('*')
-        .eq('tenant_id', currentTenant.id)
+        .eq('tenant_id', tenantId)
 
       if (loadError) {
         console.error('Error cargando mesas:', loadError)
@@ -317,7 +329,7 @@ const TablesManager = () => {
   }
 
   const handleSaveTable = async () => {
-    if (!currentTenant) {
+    if (!tenantId) {
       alert('Error: No se ha cargado el tenant. Por favor, recarga la página.')
       return
     }
@@ -361,7 +373,7 @@ const TablesManager = () => {
         const { data: existingTable } = await supabase
           .from('tables')
           .select('id')
-          .eq('tenant_id', currentTenant.id)
+          .eq('tenant_id', tenantId)
           .eq('number', formData.number.trim())
           .single()
 
@@ -372,7 +384,7 @@ const TablesManager = () => {
 
         // Crear nueva mesa (sin código QR - se generará a petición)
         const insertData = {
-          tenant_id: currentTenant.id,
+          tenant_id: tenantId,
           number: formData.number.trim(),
           capacity: parseInt(formData.capacity),
           location: formData.location,
@@ -386,7 +398,6 @@ const TablesManager = () => {
 
         console.log('📝 Creando mesa con datos:', {
           tenant_id: insertData.tenant_id,
-          tenant_name: currentTenant.name,
           number: insertData.number
         })
 
@@ -399,16 +410,16 @@ const TablesManager = () => {
         if (error) throw error
 
         // VALIDACIÓN: Verificar que la mesa creada tiene el tenant_id correcto
-        if (createdTable && createdTable.tenant_id !== currentTenant.id) {
+        if (createdTable && createdTable.tenant_id !== tenantId) {
           console.error('🚨 ALERTA DE SEGURIDAD: Mesa creada con tenant_id incorrecto!', {
-            expected: currentTenant.id,
+            expected: tenantId,
             actual: createdTable.tenant_id,
             table: createdTable
           })
           throw new Error('Error de seguridad: La mesa se creó con un tenant_id incorrecto')
         }
 
-        console.log('✅ Mesa creada exitosamente para tenant:', currentTenant.name)
+        console.log('✅ Mesa creada exitosamente')
       }
 
       // Recargar mesas
@@ -515,7 +526,16 @@ const TablesManager = () => {
     }
   }
 
-  if (!currentTenant) {
+  if (!tenantId) {
+    if (isSuperAdmin) {
+      return (
+        <SuperAdminNoTenantMessage
+          icon={Coffee}
+          message="Utiliza el selector en la barra superior para ver las mesas de un tenant específico"
+        />
+      )
+    }
+
     return (
       <div className="p-6">
         <div className="text-center py-12">
@@ -555,23 +575,28 @@ const TablesManager = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Gestión de Mesas</h1>
           <p className="text-gray-600">
-            Administra las mesas de {currentTenant?.name || 'tu local'}
+            {isSuperAdmin && superAdminContext?.selectedTenant
+              ? `Administra las mesas de ${superAdminContext.selectedTenant.name}`
+              : `Administra las mesas de ${currentTenant?.name || 'tu local'}`
+            }
           </p>
 
           {/* Indicador de tenant */}
-          {currentTenant && (
+          {tenantId && (
             <div className="mt-2 inline-flex items-center space-x-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
               <span className="text-xs font-medium text-blue-900">
-                Local: {currentTenant.name}
+                Local: {isSuperAdmin && superAdminContext?.selectedTenant
+                  ? superAdminContext.selectedTenant.name
+                  : currentTenant?.name || 'Desconocido'}
               </span>
               <span className="text-xs text-blue-600">
-                (ID: {currentTenant.id.substring(0, 8)}...)
+                (ID: {tenantId.substring(0, 8)}...)
               </span>
             </div>
           )}
 
-          {!currentTenant && (
+          {!tenantId && (
             <div className="mt-2 inline-flex items-center space-x-2 px-3 py-1 bg-red-50 border border-red-200 rounded-lg">
               <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
               <span className="text-xs font-medium text-red-900">

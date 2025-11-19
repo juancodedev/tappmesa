@@ -1,5 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { supabase } from "../../lib/supabase";
+import { SuperAdminContext } from "../../context/SuperAdminContext";
+import { useAuth } from "../../hooks/useAuth";
+import SuperAdminNoTenantMessage from "./SuperAdminNoTenantMessage";
 import {
   DollarSign,
   ShoppingBag,
@@ -11,6 +14,9 @@ import {
 } from "lucide-react";
 
 const Dashboard = () => {
+  const { user, isSuperAdmin } = useAuth();
+  const superAdminContext = useContext(SuperAdminContext);
+
   const [stats, setStats] = useState({
     dailySales: 0,
     activeOrders: 0,
@@ -22,63 +28,130 @@ const Dashboard = () => {
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Get the tenant ID based on user type
+  const getTenantId = () => {
+    if (isSuperAdmin && superAdminContext?.selectedTenantId) {
+      return superAdminContext.selectedTenantId;
+    }
+    return user?.tenant_id || null;
+  };
+
   useEffect(() => {
     loadDashboardData();
-  }, []);
+  }, [superAdminContext?.selectedTenantId, user?.tenant_id]);
 
   const loadDashboardData = async () => {
     try {
       setLoading(true);
 
-      // Simular datos por ahora - en producción conectaríamos con Supabase
+      const tenantId = getTenantId();
+
+      // Show message if no tenant is available
+      if (!tenantId) {
+        console.log("No hay tenant disponible para cargar datos");
+        setStats({
+          dailySales: 0,
+          activeOrders: 0,
+          occupiedTables: 0,
+          lowStockItems: 0,
+          totalCustomers: 0,
+          avgOrderTime: 0,
+        });
+        setRecentOrders([]);
+        return;
+      }
+
+      // Get today's date range
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayISO = today.toISOString();
+
+      // Load orders for today
+      const { data: orders, error: ordersError } = await supabase
+        .from("orders")
+        .select("*, order_items(*)")
+        .eq("tenant_id", tenantId)
+        .gte("created_at", todayISO)
+        .order("created_at", { ascending: false });
+
+      if (ordersError) throw ordersError;
+
+      // Calculate stats
+      const dailySales = orders?.reduce((sum, o) => sum + parseFloat(o.total || 0), 0) || 0;
+      const activeOrders = orders?.filter(o => ["pending", "preparing", "ready"].includes(o.status)).length || 0;
+
+      // Load tables
+      const { data: tables, error: tablesError } = await supabase
+        .from("tables")
+        .select("*")
+        .eq("tenant_id", tenantId)
+        .eq("is_active", true);
+
+      if (tablesError) throw tablesError;
+
+      const occupiedTables = tables?.filter(t => t.status === "occupied").length || 0;
+
+      // Load stock items
+      const { data: stockItems, error: stockError } = await supabase
+        .from("stock_inventory")
+        .select("*")
+        .eq("tenant_id", tenantId)
+        .lte("current_quantity", supabase.rpc("min_quantity"));
+
+      if (stockError) console.error("Error loading stock:", stockError);
+
+      const lowStockItems = stockItems?.length || 0;
+
+      // Load customers
+      const { data: customers, error: customersError } = await supabase
+        .from("customers")
+        .select("id")
+        .eq("tenant_id", tenantId);
+
+      if (customersError) console.error("Error loading customers:", customersError);
+
+      const totalCustomers = customers?.length || 0;
+
       setStats({
-        dailySales: 127500,
-        activeOrders: 8,
-        occupiedTables: 6,
-        lowStockItems: 3,
-        totalCustomers: 45,
-        avgOrderTime: 12,
+        dailySales,
+        activeOrders,
+        occupiedTables,
+        lowStockItems,
+        totalCustomers,
+        avgOrderTime: 12, // TODO: Calculate real average
       });
 
-      setRecentOrders([
-        {
-          id: 1,
-          number: "241219-001",
-          table: "Mesa 3",
-          total: 12500,
-          status: "preparing",
-          time: "2 min",
-        },
-        {
-          id: 2,
-          number: "241219-002",
-          table: "Mesa 7",
-          total: 8900,
-          status: "ready",
-          time: "8 min",
-        },
-        {
-          id: 3,
-          number: "241219-003",
-          table: "Mesa 1",
-          total: 15600,
-          status: "delivered",
-          time: "15 min",
-        },
-        {
-          id: 4,
-          number: "241219-004",
-          table: "Mesa 12",
-          total: 22300,
-          status: "preparing",
-          time: "3 min",
-        },
-      ]);
+      // Format recent orders
+      const formattedOrders = orders?.slice(0, 4).map(order => ({
+        id: order.id,
+        number: order.order_number,
+        table: order.table_number ? `Mesa ${order.table_number}` : "Para llevar",
+        total: order.total,
+        status: order.status,
+        time: getTimeAgo(order.created_at),
+      })) || [];
+
+      setRecentOrders(formattedOrders);
     } catch (error) {
       console.error("Error loading dashboard data:", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const getTimeAgo = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMins < 1) return "Ahora";
+    if (diffMins === 1) return "1 min";
+    if (diffMins < 60) return `${diffMins} min`;
+
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours === 1) return "1 hora";
+    return `${diffHours} horas`;
   };
 
   const formatCurrency = (amount) => {
@@ -130,12 +203,27 @@ const Dashboard = () => {
     );
   }
 
+  // Show message if super admin hasn't selected a tenant
+  if (isSuperAdmin && !getTenantId()) {
+    return (
+      <SuperAdminNoTenantMessage
+        icon={Coffee}
+        message="Utiliza el selector en la barra superior para ver el dashboard de un tenant específico"
+      />
+    );
+  }
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-amber-900">Dashboard</h1>
-        <p className="text-amber-700">Resumen de actividad de hoy</p>
+        <p className="text-amber-700">
+          {isSuperAdmin && superAdminContext?.selectedTenant
+            ? `${superAdminContext.selectedTenant.name} - Resumen de actividad de hoy`
+            : "Resumen de actividad de hoy"
+          }
+        </p>
       </div>
 
       {/* Stats Cards */}
@@ -290,11 +378,11 @@ const Dashboard = () => {
               <span className="font-bold text-green-700">+18%</span>
             </div>
 
-            <div className="pt-4">
+            {/* <div className="pt-4">
               <button className="w-full bg-linear-to-r from-amber-600 to-orange-600 text-white py-3 px-4 rounded-xl hover:shadow-lg hover:scale-105 transition-all font-bold">
                 Ver Reporte Completo
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

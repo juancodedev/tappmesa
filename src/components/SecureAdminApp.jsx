@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard,
@@ -22,7 +22,9 @@ import {
 } from 'lucide-react'
 
 import { useAuth } from '../hooks/useAuth'
+import { SuperAdminProvider, SuperAdminContext } from '../context/SuperAdminContext'
 import ProtectedRoute, { SuperAdminRoute, TenantAdminRoute } from './ProtectedRoute'
+import TenantSelector from './admin/TenantSelector'
 
 // Importar componentes
 import Dashboard from './admin/Dashboard'
@@ -53,9 +55,27 @@ import SuperAdminCategoriesManager from './admin/SuperAdminCategoriesManager'
 import SuperAdminStockManager from './admin/SuperAdminStockManager'
 
 const SecureAdminApp = () => {
+  const { isSuperAdmin } = useAuth()
+
+  // Wrap with SuperAdminProvider only for super admins
+  if (isSuperAdmin) {
+    return (
+      <SuperAdminProvider>
+        <SecureAdminAppContent />
+      </SuperAdminProvider>
+    )
+  }
+
+  return <SecureAdminAppContent />
+}
+
+const SecureAdminAppContent = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { user, logout, isSuperAdmin, hasPermission } = useAuth()
   const location = useLocation()
+
+  // Get SuperAdmin context if available (only for super admins)
+  const superAdminContext = useContext(SuperAdminContext)
 
   // Navegación base para todos los usuarios autenticados
   const baseNavigation = [
@@ -299,17 +319,28 @@ const SecureAdminApp = () => {
           </button>
           
           <div className="flex flex-1 justify-between px-4 lg:px-6">
-            <div className="flex flex-1">
+            <div className="flex flex-1 items-center space-x-4">
               <div className="flex items-center">
                 <h1 className="text-xl font-semibold text-amber-900">
                   Panel de Administración
                 </h1>
-                {user?.tenant && (
+                {user?.tenant && !isSuperAdmin && (
                   <span className="ml-3 text-sm text-amber-700 font-medium">
                     • {user.tenant.name}
                   </span>
                 )}
               </div>
+
+              {/* Tenant Selector for Super Admin */}
+              {isSuperAdmin && superAdminContext && (
+                <div className="flex-1 max-w-md">
+                  <TenantSelector
+                    tenants={superAdminContext.tenants}
+                    selectedTenantId={superAdminContext.selectedTenantId}
+                    onTenantChange={superAdminContext.setSelectedTenantId}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="flex items-center space-x-4">
@@ -393,7 +424,7 @@ const SecureAdminApp = () => {
 
             <Route path="/qr" element={
               <TenantAdminRoute requirePermissions={['qr:read']}>
-                <QRGenerator tenantId={user?.tenant_id} />
+                <QRGenerator />
               </TenantAdminRoute>
             } />
             

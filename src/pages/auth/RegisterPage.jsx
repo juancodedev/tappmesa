@@ -577,9 +577,9 @@ const RegisterPage = () => {
             <button className="bg-primary-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors cta-button">
               Ir al Dashboard
             </button>
-            <button className="border-2 border-coffee-300 text-coffee-700 px-6 py-3 rounded-lg font-semibold hover:border-primary-500 hover:text-primary-500 transition-colors">
+            {/* <button className="border-2 border-coffee-300 text-coffee-700 px-6 py-3 rounded-lg font-semibold hover:border-primary-500 hover:text-primary-500 transition-colors">
               Descargar App Móvil
-            </button>
+            </button> */}
           </div>
 
           <p className="text-coffee-500 text-sm mt-4">

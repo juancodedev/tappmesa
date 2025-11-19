@@ -1,6 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useTenant } from '../../hooks/useTenant'
+import { useAuth } from '../../hooks/useAuth'
+import { SuperAdminContext } from '../../context/SuperAdminContext'
+import SuperAdminNoTenantMessage from './SuperAdminNoTenantMessage'
 import logger from '../../utils/logger'
 import {
   Calendar,
@@ -20,6 +23,18 @@ import {
 
 const ReservationsManager = () => {
   const { tenant } = useTenant()
+  const { isSuperAdmin } = useAuth()
+  const superAdminContext = useContext(SuperAdminContext)
+
+  // Get tenant ID based on user type
+  const getTenantId = () => {
+    if (isSuperAdmin && superAdminContext?.selectedTenantId) {
+      return superAdminContext.selectedTenantId
+    }
+    return tenant?.id || null
+  }
+
+  const tenantId = getTenantId()
   const [reservations, setReservations] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
@@ -28,13 +43,13 @@ const ReservationsManager = () => {
   const [showEditModal, setShowEditModal] = useState(false)
 
   useEffect(() => {
-    if (tenant) {
+    if (tenantId) {
       loadReservations()
     }
-  }, [tenant, filter, selectedDate])
+  }, [tenantId, filter, selectedDate, superAdminContext?.selectedTenantId])
 
   const loadReservations = async () => {
-    if (!tenant) return
+    if (!tenantId) return
 
     try {
       setLoading(true)
@@ -42,7 +57,7 @@ const ReservationsManager = () => {
       let query = supabase
         .from('reservations')
         .select('*')
-        .eq('tenant_id', tenant.id)
+        .eq('tenant_id', tenantId)
         .order('reservation_date', { ascending: true })
         .order('reservation_time', { ascending: true })
 
@@ -175,7 +190,17 @@ const ReservationsManager = () => {
     return reservations.filter(r => r.reservation_date === today && r.status !== 'cancelled')
   }
 
-  if (!tenant) {
+  // Show message if no tenant is available
+  if (!tenantId) {
+    if (isSuperAdmin) {
+      return (
+        <SuperAdminNoTenantMessage
+          icon={Calendar}
+          message="Utiliza el selector en la barra superior para ver las reservas de un tenant específico"
+        />
+      )
+    }
+
     return (
       <div className="p-6">
         <div className="text-center py-12">
@@ -213,7 +238,12 @@ const ReservationsManager = () => {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Gestión de Reservas</h1>
-          <p className="text-gray-600">Administra las reservas de {tenant.name}</p>
+          <p className="text-gray-600">
+            {isSuperAdmin && superAdminContext?.selectedTenant
+              ? `Administra las reservas de ${superAdminContext.selectedTenant.name}`
+              : `Administra las reservas de ${tenant?.name || 'tu local'}`
+            }
+          </p>
         </div>
         <button
           onClick={loadReservations}

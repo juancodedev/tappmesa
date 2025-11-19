@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useTenant } from '../../hooks/useTenant'
-import { 
-  Tag, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Save, 
+import { useAuth } from '../../hooks/useAuth'
+import { SuperAdminContext } from '../../context/SuperAdminContext'
+import SuperAdminNoTenantMessage from './SuperAdminNoTenantMessage'
+import {
+  Tag,
+  Plus,
+  Edit,
+  Trash2,
+  Save,
   X,
   ArrowUp,
   ArrowDown,
@@ -15,6 +18,17 @@ import {
 
 const CategoriesManager = () => {
   const { tenant: currentTenant } = useTenant()
+  const { isSuperAdmin } = useAuth()
+  const superAdminContext = useContext(SuperAdminContext)
+
+  const getTenantId = () => {
+    if (isSuperAdmin && superAdminContext?.selectedTenantId) {
+      return superAdminContext.selectedTenantId
+    }
+    return currentTenant?.id || null
+  }
+
+  const tenantId = getTenantId()
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
@@ -27,24 +41,24 @@ const CategoriesManager = () => {
   })
 
   useEffect(() => {
-    if (currentTenant) {
+    if (tenantId) {
       loadCategories()
     }
-  }, [currentTenant])
+  }, [tenantId, superAdminContext?.selectedTenantId])
 
   const loadCategories = async () => {
-    if (!currentTenant) return
+    if (!tenantId) return
 
     try {
       setLoading(true)
-      
+
       const { data, error } = await supabase
         .from('categories')
         .select(`
           *,
           products(count)
         `)
-        .eq('tenant_id', currentTenant.id)
+        .eq('tenant_id', tenantId)
         .order('display_order', { ascending: true })
 
       if (error) {
@@ -141,7 +155,7 @@ const CategoriesManager = () => {
         const { error } = await supabase
           .from('categories')
           .insert({
-            tenant_id: currentTenant.id,
+            tenant_id: tenantId,
             name: formData.name,
             slug: formData.slug,
             display_order: formData.display_order,
@@ -211,7 +225,16 @@ const CategoriesManager = () => {
     })
   }
 
-  if (!currentTenant) {
+  if (!tenantId) {
+    if (isSuperAdmin) {
+      return (
+        <SuperAdminNoTenantMessage
+          icon={Tag}
+          message="Utiliza el selector en la barra superior para ver las categorías de un tenant específico"
+        />
+      )
+    }
+
     return (
       <div className="p-6">
         <div className="text-center py-12">
