@@ -16,7 +16,7 @@ Las credenciales de desarrollo/prueba están **únicamente** en:
 - Archivos de configuración
 - Base de datos (están hasheadas con bcrypt)
 - Repositorio público
-
+ 
 ### 🚨 Acción Requerida para Producción
 
 **ANTES de desplegar a producción, DEBES:**

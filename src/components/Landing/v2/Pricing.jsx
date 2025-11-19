@@ -1,5 +1,6 @@
 // src/components/Landing/v2/Pricing.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Coffee, Check, TrendingUp } from 'lucide-react';
 
 const Pricing = () => {
@@ -65,6 +66,7 @@ const Pricing = () => {
       icon: <Coffee className="w-6 h-6" />
     }
   ];
+  const navigate = useNavigate();
 
   return (
     <section id="precios" className="py-20 bg-cream-50">
@@ -141,6 +143,8 @@ const Pricing = () => {
                     ? "bg-linear-to-r from-primary-500 to-secondary-500 text-cream-50 hover:shadow-coffee-lg"
                     : "border-2 border-cream-300 text-coffee-900 hover:bg-cream-100"
                 }`}
+                onClick={() => navigate('/register')}
+                
               >
                 {plan.popular ? "Comenzar Ahora" : "Prueba Gratuita"}
               </button>
@@ -158,7 +162,9 @@ const Pricing = () => {
             el plan perfecto para tu negocio cafetero.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <button className="px-6 py-3 bg-linear-to-r from-primary-500 to-secondary-500 text-cream-50 rounded-lg hover:shadow-coffee-lg transition-all font-medium">
+            <button 
+            onClick={() => navigate('/contact-sales')}
+            className="px-6 py-3 bg-linear-to-r from-primary-500 to-secondary-500 text-cream-50 rounded-lg hover:shadow-coffee-lg transition-all font-medium">
               Contactar Ventas
             </button>
             {/* <button className="px-6 py-3 border-2 border-cream-300 text-coffee-900 rounded-lg hover:bg-cream-100 transition-all font-medium">

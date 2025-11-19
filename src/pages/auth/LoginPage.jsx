@@ -4,13 +4,14 @@ import { useState } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 
 import { useNavigate, useLocation } from 'react-router-dom'
-import { 
-  Lock, 
-  Mail, 
-  Eye, 
-  EyeOff, 
+import {
+  Lock,
+  Mail,
+  Eye,
+  EyeOff,
   AlertCircle,
-  Coffee
+  Coffee,
+  ArrowLeft
 } from 'lucide-react'
 
 const LoginPage = () => {
@@ -216,30 +217,43 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-primary-50/20 to-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Decorative gradient blobs */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-primary-300/20 rounded-full blur-3xl animate-float pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary-300/20 rounded-full blur-3xl animate-float-delay pointer-events-none" />
+
+      {/* Botón volver al inicio */}
+      <button
+        onClick={() => navigate('/')}
+        className="absolute top-8 left-8 flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-primary-600 bg-white/80 backdrop-blur-sm hover:bg-white rounded-xl transition-all font-medium text-sm shadow-md hover:shadow-lg z-20"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Volver al Inicio
+      </button>
+
+      <div className="max-w-md w-full space-y-8 relative z-10">
         {/* Logo y título */}
         <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-primary rounded-xl flex items-center justify-center mb-4">
-            <Coffee className="h-8 w-8 text-white" />
+          <div className="mx-auto h-20 w-20 bg-linear-to-br from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center mb-6 shadow-xl group hover:scale-110 transition-transform">
+            <Coffee className="h-10 w-10 text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">
+          <h2 className="text-4xl font-bold text-gray-900 mb-3">
             Panel de Administración
           </h2>
-          <p className="mt-2 text-gray-600">
+          <p className="text-lg text-gray-600">
             Ingresa a tu cuenta para gestionar tu local
           </p>
         </div>
 
         {/* Formulario */}
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 lg:p-10 border border-gray-100">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Error general */}
             {errors.form && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start space-x-3 animate-fade-in">
                 <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 shrink-0" />
                 <div>
-                  <h3 className="text-sm font-medium text-red-800">Error de autenticación</h3>
+                  <h3 className="text-sm font-semibold text-red-800">Error de autenticación</h3>
                   <p className="text-sm text-red-700 mt-1">{errors.form}</p>
                 </div>
               </div>
@@ -247,11 +261,11 @@ const LoginPage = () => {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
                 Email
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
@@ -261,24 +275,24 @@ const LoginPage = () => {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`block w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${
-                    errors.email ? 'border-red-300' : 'border-gray-300'
+                  className={`block w-full pl-12 pr-4 py-3.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all ${
+                    errors.email ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="tu@email.com"
                 />
               </div>
               {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                <p className="mt-1.5 text-sm text-red-600">{errors.email}</p>
               )}
             </div>
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
                 Contraseña
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
@@ -288,25 +302,25 @@ const LoginPage = () => {
                   autoComplete="current-password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`block w-full pl-10 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${
-                    errors.password ? 'border-red-300' : 'border-gray-300'
+                  className={`block w-full pl-12 pr-12 py-3.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all ${
+                    errors.password ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center"
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
                   ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
                   )}
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                <p className="mt-1.5 text-sm text-red-600">{errors.password}</p>
               )}
             </div>
 
@@ -314,11 +328,11 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={loginLoading || loading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full flex justify-center py-4 px-8 border border-transparent rounded-xl shadow-lg text-lg font-bold text-white bg-linear-to-r from-primary-600 to-secondary-600 hover:shadow-2xl hover:shadow-primary-500/30 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all"
             >
               {loginLoading || loading ? (
                 <div className="flex items-center space-x-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
                   <span>Iniciando sesión...</span>
                 </div>
               ) : (
@@ -329,9 +343,9 @@ const LoginPage = () => {
 
           {/* Credenciales de prueba - SOLO EN DESARROLLO */}
           {import.meta.env.DEV && (
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h4 className="text-sm font-medium text-blue-900 mb-2">Credenciales de prueba:</h4>
-              <div className="text-xs text-blue-800 space-y-1">
+            <div className="mt-8 p-5 bg-blue-50/80 backdrop-blur-sm rounded-xl border border-blue-200/50">
+              <h4 className="text-sm font-semibold text-blue-900 mb-3">Credenciales de prueba:</h4>
+              <div className="text-xs text-blue-800 space-y-2">
                 <p><strong>Super Admin:</strong> admin@tappmesa.com / admin123</p>
                 <p><strong>Café Central:</strong> cafe-central@cafe-central.com / admin123</p>
                 <p><strong>Tetería Luna:</strong> teteria-luna@teteria-luna.com / admin123</p>
@@ -343,12 +357,21 @@ const LoginPage = () => {
         </div>
 
         {/* Footer */}
-        <div className="text-center">
-          <p className="text-sm text-gray-500">
+        <div className="text-center space-y-4">
+          <p className="text-sm text-gray-600">
             ¿Problemas para acceder?{' '}
-            <a href="mailto:soporte@tappmesa.com" className="text-primary hover:text-red-700">
+            <a href="mailto:soporte@tappmesa.com" className="text-primary-600 hover:text-primary-700 font-semibold transition-colors">
               Contacta soporte
             </a>
+          </p>
+          <p className="text-sm text-gray-500">
+            ¿No tienes una cuenta?{' '}
+            <button
+              onClick={() => navigate('/register')}
+              className="text-secondary-600 hover:text-secondary-700 font-semibold transition-colors"
+            >
+              Regístrate gratis
+            </button>
           </p>
         </div>
       </div>

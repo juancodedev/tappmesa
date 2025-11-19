@@ -1,8 +1,10 @@
 // src/components/Landing/v2/Hero.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Coffee, QrCode, Smartphone, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const Hero = () => {
+  const navigate = useNavigate();
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden pt-20" style={{
       backgroundImage: 'linear-gradient(rgba(139, 69, 19, 0.85), rgba(92, 64, 51, 0.9)), url("https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=2000")',
@@ -40,8 +42,9 @@ const Hero = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mb-12 justify-start">
-              <button className="group px-8 py-4 bg-secondary-500 text-white rounded-xl hover:bg-secondary-600 hover:shadow-2xl hover:scale-105 transition-all font-semibold text-lg flex items-center justify-center gap-2">
-                Prueba Gratis 14 Días
+              <button onClick={() => navigate('/register')}
+                className="group px-8 py-4 bg-secondary-500 text-white rounded-xl hover:bg-secondary-600 hover:shadow-2xl hover:scale-105 transition-all font-semibold text-lg flex items-center justify-center gap-2">
+                Inscribete Gratis
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               {/* <button className="px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl hover:bg-white/10 transition-all font-semibold text-lg flex items-center justify-center gap-2">
