@@ -20,7 +20,8 @@
       "Bash(npm run lint:*)",
       "Bash(rm:*)",
       "Bash(xargs sed:*)",
-      "Bash(export LC_ALL=C:*)"
+      "Bash(export LC_ALL=C:*)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "ask": []
