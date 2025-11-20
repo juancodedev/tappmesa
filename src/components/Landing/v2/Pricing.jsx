@@ -1,72 +1,94 @@
 // src/components/Landing/v2/Pricing.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Coffee, Check, TrendingUp } from 'lucide-react';
+import { Coffee, Check, TrendingUp, Package, Users, Table, ShoppingBag, FileText, BarChart3, ClipboardList } from 'lucide-react';
+import { supabase } from '../../../lib/supabase';
 
 const Pricing = () => {
-  const plans = [
-    {
-      name: "Café Express",
-      description: "Perfecto para cafeterías pequeñas y acogedoras",
-      price: "$29.990",
-      period: "/mes",
-      features: [
-        "Hasta 50 productos en menú",
-        "1 cafetería registrada",
-        "Menú digital básico",
-        "Órdenes directas al barista",
-        "Soporte por email",
-        "Estadísticas básicas de ventas",
-        "Personalización de bebidas",
-        "Dashboard básico"
-      ],
-      popular: false,
-      icon: <Coffee className="w-6 h-6" />
-    },
-    {
-      name: "Café Premium",
-      description: "Ideal para cafeterías en crecimiento",
-      price: "$49.990",
-      period: "/mes",
-      features: [
-        "Productos ilimitados",
-        "Hasta 3 sucursales",
-        "Menú digital avanzado",
-        "Sistema de reservas de mesa",
-        "Soporte prioritario 24/7",
-        // "Analytics detallados",
-        "Programa de lealtad",
-        // "Integración con delivery",
-        // "Personalización de marca",
-        "Reportes semanales automáticos"
-      ],
-      popular: true,
-      icon: <TrendingUp className="w-6 h-6" />
-    },
-    {
-      name: "Café Enterprise",
-      description: "Para cadenas de cafeterías y operaciones grandes",
-      price: "$89.990",
-      period: "/mes",
-      features: [
-        "Todo de Café Premium",
-        "Sucursales ilimitadas",
-        "Multi-administrador",
-        "API personalizada",
-        "Soporte dedicado",
-        "Insights avanzados de mercado",
-        // "Integración con sistemas POS",
-        "Dashboard ejecutivo",
-          // "Análisis predictivo de demanda",
-        "Gestión de inventario automática",
-        "Reportes personalizados",
-        "Capacitación para equipo"
-      ],
-      popular: false,
-      icon: <Coffee className="w-6 h-6" />
-    }
-  ];
   const navigate = useNavigate();
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadPlans();
+  }, []);
+
+  const loadPlans = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('subscription_plans')
+        .select('*')
+        .eq('is_active', true)
+        .order('price', { ascending: true });
+
+      if (error) throw error;
+
+      // Transform database plans to component format
+      const transformedPlans = (data || []).map((plan, index) => ({
+        id: plan.id,
+        name: plan.name,
+        description: plan.description || 'Plan completo para tu negocio',
+        price: formatCurrency(plan.price),
+        period: '/mes',
+        features: buildFeatures(plan),
+        popular: index === 1, // Mark middle plan as popular
+        icon: index === 1 ? <TrendingUp className="w-6 h-6" /> : <Coffee className="w-6 h-6" />
+      }));
+
+      setPlans(transformedPlans);
+    } catch (error) {
+      console.error('Error loading plans:', error);
+      // Fallback to empty array if error
+      setPlans([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+      minimumFractionDigits: 0
+    }).format(amount);
+  };
+
+  const buildFeatures = (plan) => {
+    const features = [];
+
+    // Add limits
+    if (plan.max_products) {
+      features.push(`Hasta ${plan.max_products} productos en menú`);
+    }
+    if (plan.max_tables) {
+      features.push(`Hasta ${plan.max_tables} mesas`);
+    }
+    if (plan.max_people_per_table) {
+      features.push(`${plan.max_people_per_table} personas por mesa`);
+    }
+
+    // Add features based on booleans
+    if (plan.has_paper_prebill) {
+      features.push('Pre-cuentas en papel');
+    }
+    if (plan.has_paper_command) {
+      features.push('Comandas en papel');
+    }
+    if (plan.has_surveys) {
+      features.push('Sistema de encuestas');
+    }
+    if (plan.has_analytics) {
+      features.push('Analíticas avanzadas');
+    }
+
+    // Add standard features
+    features.push('Menú digital personalizado');
+    features.push('Códigos QR para mesas');
+    features.push('Dashboard de gestión');
+    features.push('Soporte técnico');
+
+    return features;
+  };
 
   return (
     <section id="precios" className="py-20 bg-cream-50">
@@ -86,8 +108,27 @@ const Pricing = () => {
           </p>
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="flex justify-center items-center py-20">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-terracotta-500 mx-auto mb-4"></div>
+              <p className="text-coffee-600">Cargando planes...</p>
+            </div>
+          </div>
+        )}
+
+        {/* No Plans Message */}
+        {!loading && plans.length === 0 && (
+          <div className="text-center py-20">
+            <Package className="h-16 w-16 text-coffee-400 mx-auto mb-4" />
+            <p className="text-coffee-600">No hay planes disponibles en este momento.</p>
+          </div>
+        )}
+
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto mb-12">
+        {!loading && plans.length > 0 && (
+          <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto mb-12">
           {plans.map((plan, index) => (
             <div
               key={plan.name}
@@ -150,10 +191,12 @@ const Pricing = () => {
               </button>
             </div>
           ))}
-        </div>
+          </div>
+        )}
 
         {/* Bottom CTA */}
-        <div className="text-center max-w-3xl mx-auto p-8 bg-linear-to-r from-terracotta-500/10 to-secondary-500/10 rounded-2xl border-2 border-cream-300/50 animate-fade-in">
+        {!loading && (
+          <div className="text-center max-w-3xl mx-auto p-8 bg-linear-to-r from-terracotta-500/10 to-secondary-500/10 rounded-2xl border-2 border-cream-300/50 animate-fade-in">
           <h3 className="text-2xl font-bold mb-3 text-coffee-900">
             ¿Necesitas un plan personalizado? ☕
           </h3>
@@ -171,7 +214,8 @@ const Pricing = () => {
               Agendar Demo Personalizada
             </button> */}
           </div>
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );
