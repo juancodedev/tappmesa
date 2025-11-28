@@ -287,7 +287,7 @@ const TableStatusesManager = () => {
           </div>
           <button
             onClick={() => setCreating(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-red-700 transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-amber-700 transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span>Nuevo Estado</span>
@@ -429,7 +429,7 @@ const TableStatusesManager = () => {
                     <button
                       onClick={() => startEdit(status)}
                       className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="Editar"
+                      title="Editar-----"
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
@@ -514,7 +514,7 @@ const TableStatusesManager = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={handleCreate}
-                  className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-red-700 transition-colors"
+                  className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-amber-700 transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Crear Estado</span>

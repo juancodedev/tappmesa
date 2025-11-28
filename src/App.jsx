@@ -87,7 +87,7 @@ const TenantApp = () => {
           </p>
           <a
             href="http://tappmesa.local:5173"
-            className="inline-block bg-primary text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
+            className="inline-block bg-primary text-white px-6 py-2 rounded-lg hover:bg-amber-700 transition-colors"
           >
             Volver al inicio
           </a>
@@ -114,7 +114,7 @@ const TenantError = ({ error }) => (
       <p className="text-red-600 mb-4">{error}</p>
       <button
         onClick={() => window.location.reload()}
-        className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
+        className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-amber-700 transition-colors"
       >
         Reintentar
       </button>

@@ -545,7 +545,7 @@ const CustomersManager = () => {
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => setSelectedCustomer(null)}
-                className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                className="bg-primary text-gray-700 border border-gray-300 px-6 py-2 rounded-lg hover:text-white hover:bg-amber-700 transition-colors"
               >
                 Cerrar
               </button>

@@ -621,7 +621,7 @@ const TablesManager = () => {
         </div>
         <button
           onClick={handleAddTable}
-          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+          className="flex items-center space-x-2 bg-primary border border-gray-300  text-gray-700 px-4 py-2 rounded-lg hover:text-white hover:bg-amber-700 transition-colors"
         >
           <Plus className="w-4 h-4" />
           <span>Agregar Mesa</span>
@@ -766,7 +766,7 @@ const TablesManager = () => {
                 </button>
                 <button
                   onClick={() => handleEditTable(table)}
-                  className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-red-700 transition-colors"
+                  className="flex-1 flex items-center border border-gray-300 justify-center space-x-1 px-3 py-2 text-sm font-medium text-gray-700 bg-primary rounded-lg  hover:text-white hover:bg-amber-700 transition-colors"
                 >
                   <Edit className="w-4 h-4" />
                   <span>Editar</span>
@@ -874,7 +874,7 @@ const TablesManager = () => {
               <button
                 onClick={handleSaveTable}
                 disabled={saving || !formData.number.trim()}
-                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
                 {saving ? (
                   <>

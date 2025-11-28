@@ -89,47 +89,57 @@ const QRGenerator = () => {
     const port = window.location.port
     const tenantSlug = currentTenant.subdomain || currentTenant.slug
 
+    // En desarrollo local con .localhost (método recomendado)
+    if (hostname.endsWith('.localhost')) {
+      // Si ya estamos en el subdominio correcto, usar hostname actual
+      if (hostname.startsWith(tenantSlug)) {
+        return `${protocol}//${hostname}${port ? ':' + port : ''}/${table.unique_code}/menu`
+      }
+      const baseUrl = `http://${tenantSlug}.localhost${port ? ':' + port : ''}`
+      return `${baseUrl}/${table.unique_code}/menu`
+    }
+
     // En desarrollo local con .local
     if (hostname.endsWith('.local')) {
       // Si ya estamos en el subdominio correcto, usar hostname actual
       if (hostname.startsWith(tenantSlug)) {
-        return `${protocol}//${hostname}${port ? ':' + port : ''}/${table.unique_code}/`
+        return `${protocol}//${hostname}${port ? ':' + port : ''}/${table.unique_code}/menu`
       }
       const baseUrl = `http://${tenantSlug}.tappmesa.local${port ? ':' + port : ''}`
-      return `${baseUrl}/${table.unique_code}/`
+      return `${baseUrl}/${table.unique_code}/menu`
     }
 
-    // En desarrollo con localhost
+    // En desarrollo con localhost (fallback con query params)
     if (hostname === 'localhost' || hostname.match(/^\d/)) {
-      const baseUrl = `${protocol}//${hostname}${port ? ':' + port : ''}?cafe=${tenantSlug}`
-      return `${baseUrl}&table=${table.unique_code}`
+      const baseUrl = `${protocol}//${hostname}${port ? ':' + port : ''}`
+      return `${baseUrl}?cafe=${tenantSlug}&table=${table.unique_code}`
     }
 
     // En producción con Vercel: formato [nombre]-tappmesa.vercel.app
     if (hostname.includes('.vercel.app')) {
       // Si ya estamos en el subdominio correcto del tenant, usar hostname actual
       if (hostname.startsWith(tenantSlug)) {
-        return `${protocol}//${hostname}/${table.unique_code}/`
+        return `${protocol}//${hostname}/${table.unique_code}/menu`
       }
       // Si no, construir la URL con el formato correcto
-      return `${protocol}//${tenantSlug}.vercel.app/${table.unique_code}/`
+      return `${protocol}//${tenantSlug}.vercel.app/${table.unique_code}/menu`
     }
 
     // En producción con dominio personalizado tappmesa.com
     if (hostname.includes('tappmesa.com')) {
       // Si ya estamos en el subdominio correcto, usar hostname actual
       if (hostname.startsWith(tenantSlug)) {
-        return `${protocol}//${hostname}/${table.unique_code}/`
+        return `${protocol}//${hostname}/${table.unique_code}/menu`
       }
-      return `https://${tenantSlug}.tappmesa.com/${table.unique_code}/`
+      return `https://${tenantSlug}.tappmesa.com/${table.unique_code}/menu`
     }
 
     // Otros dominios personalizados
     // Si ya estamos en el subdominio correcto, usar hostname actual
     if (hostname.startsWith(tenantSlug)) {
-      return `${protocol}//${hostname}/${table.unique_code}/`
+      return `${protocol}//${hostname}/${table.unique_code}/menu`
     }
-    return `${protocol}//${tenantSlug}.${hostname}/${table.unique_code}/`
+    return `${protocol}//${tenantSlug}.${hostname}/${table.unique_code}/menu`
   }
 
   const copyToClipboard = async (text, tableId) => {
@@ -277,14 +287,14 @@ const QRGenerator = () => {
                 <div className="flex space-x-2">
                   <button
                     onClick={() => previewQR(table)}
-                    className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                    className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700  hover:text-white hover:bg-amber-700 transition-colors"
                   >
                     <Eye className="w-4 h-4" />
                     <span>Vista previa</span>
                   </button>
                   <button
                     onClick={() => downloadQR(table)}
-                    className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
+                    className="flex-1 border border-gray-300 flex items-center justify-center space-x-2 px-3 py-2 bg-primary text-gray-700 rounded-lg text-sm font-medium hover:text-white hover:bg-amber-700 transition-colors"
                   >
                     <Download className="w-4 h-4" />
                     <span>Descargar</span>
@@ -321,7 +331,7 @@ const QRGenerator = () => {
               <div className="flex space-x-3">
                 <button
                   onClick={() => downloadQR(selectedTable)}
-                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                  className="flex-1 border border-gray-300 bg-primary text-gray-700 px-4 py-2 rounded-lg hover:text-white hover:bg-amber-700 transition-colors"
                 >
                   Descargar QR
                 </button>
