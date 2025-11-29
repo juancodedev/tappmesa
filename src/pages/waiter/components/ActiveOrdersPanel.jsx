@@ -146,7 +146,7 @@ const ActiveOrdersPanel = ({ activeSessions, onRefresh }) => {
                     <button
                       onClick={() => handleUpdateStatus(order.id, statusInfo.nextStatus)}
                       disabled={updatingOrder === order.id}
-                      className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                      className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
                     >
                       {updatingOrder === order.id ? 'Actualizando...' : statusInfo.nextLabel}
                     </button>

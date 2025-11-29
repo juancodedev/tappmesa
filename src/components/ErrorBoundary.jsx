@@ -48,7 +48,7 @@ class ErrorBoundaryFallback extends React.Component {
             <div className="flex flex-col space-y-3">
               <button
                 onClick={resetError}
-                className="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-amber-700 transition-colors"
               >
                 <RefreshCw className="h-5 w-5" />
                 <span>Intentar de nuevo</span>

@@ -388,7 +388,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full bg-primary text-white font-medium py-3 px-4 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+          className="w-full bg-primary text-white font-medium py-3 px-4 rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
         >
           {submitting ? (
             <>

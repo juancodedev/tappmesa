@@ -467,7 +467,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
                 <button
                   onClick={handleSubmit}
                   disabled={cart.length === 0 || submitting}
-                  className="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {submitting ? 'Creando pedido...' : 'Crear Pedido'}
                 </button>

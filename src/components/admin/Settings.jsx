@@ -153,7 +153,7 @@ const Settings = () => {
           className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
             saved
               ? "bg-green-600 text-white"
-              : "bg-primary text-white hover:bg-red-700"
+              : "bg-primary text-white hover:bg-amber-700"
           } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
         >
           <Save className="w-4 h-4" />
