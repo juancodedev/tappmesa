@@ -27,7 +27,7 @@ module.exports = async function handler(req, res) {
 
   // Rate limiting
   const rateLimit = rateLimiter('auth/signin');
-  if (rateLimit(req, res)) {
+  if (await rateLimit(req, res)) {
     return; // Rate limit exceeded
   }
 
@@ -73,7 +73,8 @@ module.exports = async function handler(req, res) {
       .eq('id', admin.id);
 
     // Crear nueva sesión
-    const sessionToken = generateSessionToken();
+    const sessionToken = generateToken();
+    const refreshToken = generateToken();
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7); // 7 días (reducido de 30 para mejor seguridad)
 
@@ -83,6 +84,7 @@ module.exports = async function handler(req, res) {
         {
           user_id: admin.id,
           session_token: sessionToken,
+          refresh_token: refreshToken,
           expires_at: expiresAt.toISOString(),
           ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
           user_agent: req.headers['user-agent']
@@ -114,7 +116,8 @@ module.exports = async function handler(req, res) {
         last_login: admin.last_login
       },
       tenant: admin.tenant,
-      sessionToken
+      sessionToken,
+      refreshToken
     };
 
     res.status(200).json(response);
@@ -127,7 +130,7 @@ module.exports = async function handler(req, res) {
   }
 }
 
-function generateSessionToken() {
+function generateToken() {
   return Array.from(crypto.getRandomValues(new Uint8Array(32)))
     .map(b => b.toString(16).padStart(2, '0'))
     .join('');

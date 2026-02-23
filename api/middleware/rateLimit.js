@@ -1,43 +1,42 @@
-/**
- * Rate Limiting Middleware
- *
- * Simple in-memory rate limiter for serverless functions
- * Para producción, se recomienda usar Redis (Upstash) o Vercel Rate Limiting
- */
-
+const { Redis } = require('@upstash/redis');
 const logger = require('../utils/logger');
 
-// Store en memoria (se resetea en cada deploy en serverless)
-// Para producción: usar Redis/Upstash
+// Cliente de Redis (Upstash)
+let redis = null;
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  redis = new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN,
+  });
+}
+
+// Store en memoria (fallback si no hay Redis)
 const requestStore = new Map();
 
 // Configuración por endpoint
 const RATE_LIMITS = {
   'auth/signin': {
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    maxRequests: 5, // 5 intentos
+    windowMs: 15 * 60 * 1000,
+    maxRequests: 5,
     message: 'Demasiados intentos de inicio de sesión. Por favor intenta en 15 minutos.'
   },
   'auth/signup': {
-    windowMs: 60 * 60 * 1000, // 1 hora
-    maxRequests: 3, // 3 registros por hora
+    windowMs: 60 * 60 * 1000,
+    maxRequests: 3,
     message: 'Demasiados intentos de registro. Por favor intenta en 1 hora.'
   },
   'auth/reset-password/request': {
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    maxRequests: 3, // 3 intentos
+    windowMs: 15 * 60 * 1000,
+    maxRequests: 3,
     message: 'Demasiadas solicitudes de reset. Por favor intenta en 15 minutos.'
   },
   'default': {
-    windowMs: 60 * 1000, // 1 minuto
-    maxRequests: 30, // 30 requests por minuto
+    windowMs: 60 * 1000,
+    maxRequests: 30,
     message: 'Demasiadas solicitudes. Por favor intenta más tarde.'
   }
 };
 
-/**
- * Obtener IP del cliente
- */
 function getClientIp(req) {
   return (
     req.headers['x-forwarded-for']?.split(',')[0].trim() ||
@@ -49,87 +48,73 @@ function getClientIp(req) {
 }
 
 /**
- * Limpiar entradas antiguas del store
- */
-function cleanupStore() {
-  const now = Date.now();
-  for (const [key, data] of requestStore.entries()) {
-    if (now > data.resetTime) {
-      requestStore.delete(key);
-    }
-  }
-}
-
-/**
- * Rate limiter middleware
- *
- * @param {string} endpoint - Nombre del endpoint (ej: 'auth/signin')
- * @returns {Function} Middleware function
+ * Rate limiter middleware (Async para soporte de Redis)
  */
 function rateLimiter(endpoint = 'default') {
-  return function(req, res) {
+  return async function(req, res) {
     const config = RATE_LIMITS[endpoint] || RATE_LIMITS.default;
     const ip = getClientIp(req);
-    const key = `${endpoint}:${ip}`;
+    const key = `ratelimit:${endpoint}:${ip}`;
     const now = Date.now();
 
-    // Limpiar store periódicamente (cada 100 requests)
-    if (Math.random() < 0.01) {
-      cleanupStore();
+    if (redis) {
+      try {
+        const count = await redis.incr(key);
+        if (count === 1) {
+          await redis.pexpire(key, config.windowMs);
+        }
+
+        const remaining = Math.max(0, config.maxRequests - count);
+        res.setHeader('X-RateLimit-Limit', config.maxRequests);
+        res.setHeader('X-RateLimit-Remaining', remaining);
+
+        if (count > config.maxRequests) {
+          const ttl = await redis.pttl(key);
+          const retryAfter = Math.ceil(ttl / 1000);
+          res.setHeader('Retry-After', retryAfter);
+
+          logger.security('rate_limit_exceeded', { endpoint, ip, count, limit: config.maxRequests });
+
+          res.status(429).json({
+            error: config.message,
+            retryAfter,
+            limit: config.maxRequests
+          });
+          return true;
+        }
+        return false;
+      } catch (error) {
+        logger.error('Redis Rate Limit Error', error);
+        // Fallback a memoria si Redis falla
+      }
     }
 
-    // Obtener o crear entrada en el store
+    // Lógica en memoria (enriquecida)
     let requestData = requestStore.get(key);
-
     if (!requestData || now > requestData.resetTime) {
-      // Primera request o ventana expirada
-      requestData = {
-        count: 1,
-        resetTime: now + config.windowMs,
-        firstRequestTime: now
-      };
+      requestData = { count: 1, resetTime: now + config.windowMs };
       requestStore.set(key, requestData);
-
-      // Headers informativos
-      res.setHeader('X-RateLimit-Limit', config.maxRequests);
-      res.setHeader('X-RateLimit-Remaining', config.maxRequests - 1);
-      res.setHeader('X-RateLimit-Reset', new Date(requestData.resetTime).toISOString());
-
-      return false; // No bloqueado
+    } else {
+      requestData.count++;
     }
 
-    // Incrementar contador
-    requestData.count++;
-
-    // Headers informativos
     const remaining = Math.max(0, config.maxRequests - requestData.count);
     res.setHeader('X-RateLimit-Limit', config.maxRequests);
     res.setHeader('X-RateLimit-Remaining', remaining);
     res.setHeader('X-RateLimit-Reset', new Date(requestData.resetTime).toISOString());
 
-    // Verificar si excede el límite
     if (requestData.count > config.maxRequests) {
       const retryAfter = Math.ceil((requestData.resetTime - now) / 1000);
       res.setHeader('Retry-After', retryAfter);
-
-      // Log de seguridad
-      logger.security('rate_limit_exceeded', {
-        endpoint,
-        ip,
-        count: requestData.count,
-        limit: config.maxRequests
-      });
-
       res.status(429).json({
         error: config.message,
-        retryAfter: retryAfter,
+        retryAfter,
         limit: config.maxRequests
       });
-
-      return true; // Bloqueado
+      return true;
     }
 
-    return false; // No bloqueado
+    return false;
   };
 }
 

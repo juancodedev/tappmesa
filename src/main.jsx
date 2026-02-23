@@ -4,6 +4,19 @@ import { BrowserRouter } from 'react-router-dom'
 import * as Sentry from '@sentry/react'
 import App from './App.jsx'
 import './index.css'
+import { registerSW } from 'virtual:pwa-register'
+
+// Register PWA Service Worker
+const updateSW = registerSW({
+  onNeedRefresh() {
+    if (confirm('Nueva versión disponible. ¿Deseas actualizar?')) {
+      updateSW(true)
+    }
+  },
+  onOfflineReady() {
+    console.log('App lista para trabajar offline')
+  },
+})
 
 // Configurar Sentry solo en producción
 if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {

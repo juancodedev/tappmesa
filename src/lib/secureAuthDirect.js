@@ -5,6 +5,18 @@ import { supabase } from './supabase.js';
 class DirectAuthService {
   constructor() {
     this.sessionToken = localStorage.getItem('tappmesa-session');
+    this.refreshToken = localStorage.getItem('tappmesa-refresh');
+    this.isRefreshing = false;
+    this.refreshSubscribers = [];
+  }
+
+  onRefreshed(token) {
+    this.refreshSubscribers.map(cb => cb(token));
+    this.refreshSubscribers = [];
+  }
+
+  addRefreshSubscriber(cb) {
+    this.refreshSubscribers.push(cb);
   }
 
   // Hash con crypto.subtle (SHA-256)
@@ -186,13 +198,16 @@ class DirectAuthService {
         ]);
 
       localStorage.setItem('tappmesa-session', sessionToken);
+      localStorage.setItem('tappmesa-refresh', refreshToken);
       this.sessionToken = sessionToken;
+      this.refreshToken = refreshToken;
 
       return {
         success: true,
         tenant: tenantData,
         admin: adminData,
         sessionToken,
+        refreshToken,
         warning: 'Usando autenticación temporal. Se requiere migración a bcrypt.'
       };
 
@@ -282,13 +297,16 @@ class DirectAuthService {
         ]);
 
       localStorage.setItem('tappmesa-session', sessionToken);
+      localStorage.setItem('tappmesa-refresh', refreshToken);
       this.sessionToken = sessionToken;
+      this.refreshToken = refreshToken;
 
       return {
         success: true,
         admin,
         tenant: admin.tenant,
         sessionToken,
+        refreshToken,
         warning: admin.needs_password_reset ? 'Se requiere actualizar contraseña a bcrypt' : null
       };
 
@@ -389,15 +407,95 @@ class DirectAuthService {
   }
 
   async authenticatedFetch(url, options = {}) {
+    let token = this.getSessionToken();
+    
     const headers = {
-      ...this.getAuthHeaders(),
-      ...options.headers
+      ...options.headers,
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     };
 
-    return await fetch(url, {
-      ...options,
-      headers
-    });
+    try {
+      let response = await fetch(url, { ...options, headers });
+
+      // Si el error es 401 (No autorizado), intentar refresh
+      if (response.status === 401) {
+        if (!this.isRefreshing) {
+          this.isRefreshing = true;
+          try {
+            const refreshResult = await this.refreshAccessToken();
+            this.isRefreshing = false;
+            
+            if (refreshResult.success) {
+              const newToken = refreshResult.sessionToken;
+              this.onRefreshed(newToken);
+              
+              // Reintentar la petición original con el nuevo token
+              const retryHeaders = {
+                ...options.headers,
+                'Authorization': `Bearer ${newToken}`,
+                'Content-Type': 'application/json'
+              };
+              return await fetch(url, { ...options, headers: retryHeaders });
+            } else {
+              // Si el refresh falla, desloguear
+              this.signOut();
+              window.location.href = '/login';
+              return response;
+            }
+          } catch (refreshError) {
+            this.isRefreshing = false;
+            this.signOut();
+            window.location.href = '/login';
+            return response;
+          }
+        } else {
+          // Si ya hay un refresh en curso, encolar la petición
+          return new Promise(resolve => {
+            this.addRefreshSubscriber(newToken => {
+              const retryHeaders = {
+                ...options.headers,
+                'Authorization': `Bearer ${newToken}`,
+                'Content-Type': 'application/json'
+              };
+              resolve(fetch(url, { ...options, headers: retryHeaders }));
+            });
+          });
+        }
+      }
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async refreshAccessToken() {
+    const refreshToken = localStorage.getItem('tappmesa-refresh');
+    if (!refreshToken) return { success: false };
+
+    try {
+      const response = await fetch('/api/auth/refresh', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        localStorage.setItem('tappmesa-session', data.sessionToken);
+        localStorage.setItem('tappmesa-refresh', data.refreshToken);
+        this.sessionToken = data.sessionToken;
+        this.refreshToken = data.refreshToken;
+        return { success: true, sessionToken: data.sessionToken };
+      }
+
+      return { success: false };
+    } catch (error) {
+      console.error('Refresh token error:', error);
+      return { success: false };
+    }
   }
 }
 

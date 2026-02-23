@@ -27,6 +27,7 @@ import ContactSales from './pages/contact-sales/ContactSales';
 
 // Keep ProtectedRoute as regular import since it's lightweight
 import ProtectedRoute from './components/ProtectedRoute';
+import OfflineStatus from './components/common/OfflineStatus';
 
 // Componente para debugging
 const SubdomainDebug = () => {
@@ -195,6 +196,7 @@ function App() {
             <Route path="/*" element={<AppContent />} />
             <Route path="/contact-sales" element={<ContactSales/>} />
           </Routes>
+          <OfflineStatus />
           {import.meta.env.DEV && <SubdomainDebug />}
         </TenantProvider>
         <Analytics />
