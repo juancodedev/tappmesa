@@ -3,6 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "pnpm": {
+    "overrides": {
+      "lodash": "4.17.23",
+      "hono": "4.11.10",
+      "diff": "8.0.3"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -57,3 +64,5 @@
     "vitest": "^4.0.18"
   }
 }
+
+
