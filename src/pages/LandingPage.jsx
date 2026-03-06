@@ -1,12 +1,12 @@
-import Navbar from "@/components/landing/Navbar";
-import Hero from "@/components/landing/Hero";
-import Features from "@/components/landing/Features";
-import HowItWorks from "@/components/landing/HowItWorks";
-import Benefits from "@/components/landing/Benefits";
-import Testimonials from "@/components/landing/Testimonials";
-import Pricing from "@/components/landing/Pricing";
-import CTA from "@/components/landing/CTA";
-import Footer from "@/components/landing/Footer";
+import Navbar from "../components/Landing/Navbar";
+import Hero from "../components/Landing/Hero";
+import Features from "../components/Landing/Features";
+import HowItWorks from "../components/Landing/HowItWorks";
+import Benefits from "../components/Landing/Benefits";
+import Testimonials from "../components/Landing/Testimonials";
+import Pricing from "../components/Landing/Pricing";
+import CTA from "../components/Landing/CTA";
+import Footer from "../components/Landing/Footer";
 
 const LandingPage = () => {
   return (
