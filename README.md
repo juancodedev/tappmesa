@@ -1,36 +1,37 @@
-# 🍽️ Tappmesa - Sistema de Gestión para Restaurantes Multi-Tenant
+# ☕ Tappmesa - Sistema de Gestión para Cafeterías Premium
 
-Sistema completo de gestión para cafeterías y restaurantes con soporte multi-tenant, menús digitales, códigos QR, gestión de pedidos y más.
+Sistema multi-tenant de gestión para cafeterías y pequeños restaurantes. Diseñado para ofrecer una experiencia digital fluida con una estética **Modern Cafe** acogedora y profesional.
 
 ## 📋 Tabla de Contenidos
 
+- [Identidad Visual](#identidad-visual)
 - [Características](#características)
 - [Tech Stack](#tech-stack)
 - [Instalación](#instalación)
-- [Desarrollo Local](#desarrollo-local)
-- [Credenciales de Prueba](#credenciales-de-prueba)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Arquitectura Multi-Tenant](#arquitectura-multi-tenant)
-- [Testing](#testing)
-- [Deployment](#deployment)
+- [Arquitectura](#arquitectura)
+
+## 🎨 Identidad Visual (Modern Cafe)
+El sistema utiliza una paleta de colores cuidadosamente seleccionada para evocar la calidez de una cafetería de especialidad:
+- **Primary (Coffee)**: Tonos tierra profundos para una legibilidad premium.
+- **Secondary (Sage)**: Verdes orgánicos para una sensación de calma y frescura.
+- **Background (Cream)**: Fondos crema suaves que reducen la fatiga visual en dispositivos móviles.
 
 ## ✨ Características
 
-### Para Clientes
-- 📱 Menú digital accesible vía QR
-- 🛒 Carrito de compras con variantes (temperatura, notas)
-- 📋 Historial de pedidos por mesa
-- 💳 Pre-cuenta digital
-- ⭐ Sistema de encuestas de satisfacción
+### Para Clientes (Mesas)
+- 📱 **Menú Digital Intuitivo**: Optimizado para lectura rápida y antojo visual.
+- 🛒 **Gestión de Carrito Inteligente**: Personalización de pedidos (notas, temperatura).
+- 📜 **Historial Local**: Seguimiento de pedidos realizados en la sesión actual.
 
-### Para Administradores de Tenant
-- 📊 Dashboard con métricas en tiempo real
-- 🍕 Gestión de productos y categorías
-- 🪑 Administración de mesas y códigos QR
-- 📦 Control de stock e inventario
-- 👥 Gestión de usuarios y permisos
-- 📈 Analytics y reportes de ventas
-- 📅 Sistema de reservas
+### Para Administradores
+- 📊 **Dashboard Holístico**: Métricas clave en tiempo real con diseño limpio.
+- 🛠️ **Gestión de Menú**: Edición rápida de productos, categorías y disponibilidad.
+- 🪑 **Control de Mesas**: Generación dinámica de QR y estados de mesa.
+
+### Utilidades Core (Novedades)
+- 🔔 **Sistema de Notificaciones**: Feedback instantáneo mediante Toasts.
+- 💾 **Persistencia Inteligente**: Gestión de estado con LocalStorage robusto.
+- 🔌 **API Hooking**: Capa de abstracción para comunicaciones Supabase simplificadas.
 
 ### Para Super Admin
 - 🌍 Vista global de todos los tenants
