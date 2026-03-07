@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- archivo de contexto que exporta Provider */
 import { createContext, useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import logger from '../utils/logger'

@@ -33,7 +33,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 // Componente para debugging
 const SubdomainDebug = () => {
-  const { tenant, loading, error, subdomain, appType } = useTenant();
+  const { tenant, error, subdomain, appType } = useTenant();
 
   return (
     <div className="fixed top-4 right-4 bg-black/75 text-white p-3 rounded-lg text-xs z-50">

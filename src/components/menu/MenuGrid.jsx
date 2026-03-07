@@ -73,7 +73,7 @@ const MenuGrid = ({ activeCategory, searchTerm }) => {
     )
   })
 
-  const handleAddToCart = (product, quantity, temperature) => {
+  const _handleAddToCart = (product, quantity, temperature) => {
     // Ya no es necesario - MenuCard maneja esto directamente
     console.log('Add to cart:', {
       product: product.name,

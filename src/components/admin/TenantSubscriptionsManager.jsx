@@ -128,7 +128,7 @@ const TenantSubscriptionsManager = () => {
     })
   }
 
-  const getPlanName = (planId) => {
+  const _getPlanName = (planId) => {
     const plan = plans.find(p => p.id === planId)
     return plan?.name || 'Sin plan'
   }

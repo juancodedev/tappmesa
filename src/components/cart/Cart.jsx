@@ -150,7 +150,7 @@ const CartItem = ({ item }) => {
 }
 
 const Cart = () => {
-  const { tenant, table, tableSession } = useTenant()
+  const { tenant, table } = useTenant()
   const { 
     items, 
     isOpen, 
@@ -210,7 +210,7 @@ const Cart = () => {
         } else {
           setIsReturningCustomer(false)
         }
-      } catch (error) {
+      } catch {
         console.log('No customer found, treating as new customer')
         setIsReturningCustomer(false)
       } finally {

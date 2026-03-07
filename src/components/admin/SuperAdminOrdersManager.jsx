@@ -41,14 +41,16 @@ const SuperAdminOrdersManager = () => {
         case 'today':
           dateQuery = new Date(now.setHours(0, 0, 0, 0)).toISOString()
           break
-        case 'week':
+        case 'week': {
           const weekAgo = new Date(now.setDate(now.getDate() - 7))
           dateQuery = weekAgo.toISOString()
           break
-        case 'month':
+        }
+        case 'month': {
           const monthAgo = new Date(now.setMonth(now.getMonth() - 1))
           dateQuery = monthAgo.toISOString()
           break
+        }
       }
 
       // Load orders

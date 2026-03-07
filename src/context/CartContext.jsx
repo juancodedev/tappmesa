@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+/* eslint-disable react-refresh/only-export-components -- archivo de contexto que exporta Provider y utilidades */
+import { createContext, useState, useEffect } from 'react'
 import { useTenant } from '../hooks/useTenant'
 import { supabase } from '../lib/supabase'
 import logger from '../utils/logger'

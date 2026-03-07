@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- archivo de contexto que exporta Provider y utilidades */
 import { createContext, useState, useEffect, useContext } from 'react'
 import { supabase } from '../lib/supabase'
 import { AuthContext } from './AuthContext'

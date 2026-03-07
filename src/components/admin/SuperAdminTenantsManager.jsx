@@ -25,14 +25,14 @@ import {
 } from 'lucide-react'
 
 const SuperAdminTenantsManager = () => {
-  const navigate = useNavigate()
+  const _navigate = useNavigate()
   const [tenants, setTenants] = useState([])
   const [plans, setPlans] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all') // all, active, inactive
   const [selectedTenant, setSelectedTenant] = useState(null)
-  const [showActionsMenu, setShowActionsMenu] = useState(null)
+  const [_showActionsMenu, _setShowActionsMenu] = useState(null)
 
   useEffect(() => {
     loadData()

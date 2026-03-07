@@ -1,7 +1,5 @@
 // Nuevo servicio de autenticación seguro
 // Nota: Mientras Vercel tenga protección habilitada, usaremos el cliente de Supabase directamente
-import { supabase } from './supabase.js';
-import bcrypt from 'bcryptjs';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (
   import.meta.env.PROD
@@ -200,7 +198,7 @@ export const authService = {
     return password; // El hash se hace en el servidor
   },
 
-  async verifyPassword(password, hash) {
+  async verifyPassword() {
     console.warn('⚠️  verifyPassword is deprecated. Server-side verification is now used.');
     return false; // No verificar en el cliente
   }

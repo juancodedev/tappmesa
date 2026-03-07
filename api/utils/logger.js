@@ -6,7 +6,6 @@
  */
 
 const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
-const isProd = process.env.NODE_ENV === 'production';
 
 /**
  * Logger para serverless functions

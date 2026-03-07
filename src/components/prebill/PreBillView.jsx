@@ -7,7 +7,7 @@ import { Printer, Download, Edit2, QrCode, ArrowLeft, CheckCircle } from 'lucide
 const PreBillView = () => {
   const { preBillId } = useParams()
   const navigate = useNavigate()
-  const { tenant } = useTenant()
+  const { tenant: _tenant } = useTenant()
   const printRef = useRef()
 
   const [preBill, setPreBill] = useState(null)
@@ -62,7 +62,7 @@ const PreBillView = () => {
     }
   }
 
-  const formatCurrency = (amount) => {
+  const _formatCurrency = (amount) => {
     return new Intl.NumberFormat('es-CL', {
       style: 'currency',
       currency: 'CLP',
@@ -70,7 +70,7 @@ const PreBillView = () => {
     }).format(amount)
   }
 
-  const formatDate = (dateString) => {
+  const _formatDate = (dateString) => {
     const date = new Date(dateString)
     return new Intl.DateTimeFormat('es-CL', {
       dateStyle: 'short',

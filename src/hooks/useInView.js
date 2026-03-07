@@ -17,10 +17,12 @@ export function useInView(options = {}) {
     const element = ref.current;
     if (!element) return;
 
-    // Fallback para navegadores que no soportan IntersectionObserver
+    // Fallback para navegadores que no soportan IntersectionObserver (defer para evitar setState síncrono en effect)
     if (!window.IntersectionObserver) {
-      setIsInView(true);
-      setHasBeenInView(true);
+      queueMicrotask(() => {
+        setIsInView(true);
+        setHasBeenInView(true);
+      });
       return;
     }
 
@@ -77,12 +79,11 @@ export function useInViewMultiple(options = {}) {
 
   useEffect(() => {
     if (!window.IntersectionObserver) {
-      // Fallback: marcar todos como visibles
       const allVisible = new Map();
       refs.current.forEach((ref, id) => {
         allVisible.set(id, true);
       });
-      setElements(allVisible);
+      queueMicrotask(() => setElements(allVisible));
       return;
     }
 

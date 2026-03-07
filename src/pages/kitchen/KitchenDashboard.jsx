@@ -102,7 +102,7 @@ const KitchenDashboard = () => {
 
       // Reload orders
       loadOrders()
-    } catch (error) {
+    } catch {
       alert('Error al actualizar el pedido')
     }
   }

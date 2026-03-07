@@ -1,4 +1,3 @@
-/* eslint-env node */
 // API Route: /api/auth/reset-password.js
 import bcrypt from 'bcryptjs';
 import { createClient } from '@supabase/supabase-js';

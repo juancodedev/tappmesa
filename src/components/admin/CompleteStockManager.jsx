@@ -27,7 +27,7 @@ const CompleteStockManager = () => {
   const [inventory, setInventory] = useState([]);
   const [movements, setMovements] = useState([]);
   const [alerts, setAlerts] = useState([]);
-  const [suppliers, setSuppliers] = useState([]);
+  const [, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Filtros y búsqueda

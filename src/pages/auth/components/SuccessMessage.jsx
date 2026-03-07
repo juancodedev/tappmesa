@@ -1,5 +1,5 @@
 // src/pages/auth/components/SuccessMessage.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../../components/ui/Button';
 import Card from '../../../components/ui/Card';
@@ -8,6 +8,14 @@ const SuccessMessage = ({ formData }) => {
   const [countdown, setCountdown] = useState(10);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const navigate = useNavigate();
+
+  const handleGoToDashboard = useCallback(() => {
+    if (showOnboarding) {
+      navigate('/dashboard/onboarding/welcome');
+    } else {
+      navigate('/dashboard');
+    }
+  }, [navigate, showOnboarding]);
 
   useEffect(() => {
     // Countdown para redirección automática
@@ -25,16 +33,7 @@ const SuccessMessage = ({ formData }) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [showOnboarding]);
-
-  const handleGoToDashboard = () => {
-    // Redirigir al dashboard o al onboarding
-    if (showOnboarding) {
-      navigate('/dashboard/onboarding/welcome');
-    } else {
-      navigate('/dashboard');
-    }
-  };
+  }, [showOnboarding, handleGoToDashboard]);
 
   const handleStartOnboarding = () => {
     setShowOnboarding(true);

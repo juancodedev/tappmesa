@@ -192,8 +192,7 @@ const LoginPage = () => {
       } else {
         setErrors({ form: result.error })
       }
-    } catch (error) {
-      // console.error('Login error:', error)
+    } catch {
       setErrors({ form: 'Error inesperado. Intenta nuevamente.' })
     } finally {
       setLoginLoading(false)

@@ -77,8 +77,8 @@ const WaiterDashboard = () => {
 
       setTables(tablesData || [])
       setActiveSessions(sessionsData || [])
-    } catch (error) {
-      // console.error('Error loading waiter data:', error)
+    } catch {
+      // Error loading waiter data
     } finally {
       setLoading(false)
     }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { Plus, Minus, Clock, Thermometer } from 'lucide-react'
 import { useTenant } from '../../hooks/useTenant'
 import { useCart } from '../../hooks/useCart'
@@ -7,20 +7,19 @@ import { getOptimalTextClass } from '../../utils/helpers'
 const MenuCard = ({ product }) => {
   const { tenant } = useTenant()
   const { addItem, items } = useCart()
-  const [quantity, setQuantity] = useState(0)
   const [selectedTemp, setSelectedTemp] = useState(product.temperature_options?.[0] || 'hot')
 
   // Calcular color de texto óptimo basado en el color principal del tenant
   const primaryColor = tenant?.primary_color || '#dc2626'
   const textClass = getOptimalTextClass(primaryColor)
 
-  // Sincronizar cantidad con el carrito
-  useEffect(() => {
-    const cartItem = items.find(item => 
-      item.product.id === product.id && 
+  // Cantidad derivada del carrito (evita setState en effect)
+  const quantity = useMemo(() => {
+    const cartItem = items.find(item =>
+      item.product.id === product.id &&
       item.temperature === selectedTemp
     )
-    setQuantity(cartItem ? cartItem.quantity : 0)
+    return cartItem ? cartItem.quantity : 0
   }, [items, product.id, selectedTemp])
 
   const handleAdd = () => {

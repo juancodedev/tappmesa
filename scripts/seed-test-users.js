@@ -207,7 +207,7 @@ async function createUser(userData) {
   }
 
   // Crear usuario admin
-  const { data: admin, error: adminError } = await supabase
+  const { error: adminError } = await supabase
     .from('admin_users')
     .insert([
       {
@@ -244,7 +244,7 @@ async function seedTestUsers() {
 
   try {
     // Verificar conexión a Supabase
-    const { data, error } = await supabase.from('tenants').select('count').limit(1)
+    const { error } = await supabase.from('tenants').select('count').limit(1)
     if (error) {
       throw new Error('Error de conexión a Supabase: ' + error.message)
     }

@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, memo } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import {
   Coffee,
   User,

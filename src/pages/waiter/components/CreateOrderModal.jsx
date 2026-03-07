@@ -74,8 +74,8 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
 
       if (error) throw error
       setCategories(data || [])
-    } catch (error) {
-      // console.error('Error loading categories:', error)
+    } catch {
+      // Error loading categories
     }
   }
 

@@ -68,7 +68,6 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
       if (tablesError) throw tablesError
 
       // Obtener reservas existentes para la fecha/hora seleccionada
-      const reservationDateTime = `${formData.reservation_date} ${formData.reservation_time}`
       const { data: existingReservations, error: reservationsError } = await supabase
         .from('reservations')
         .select('table_id')

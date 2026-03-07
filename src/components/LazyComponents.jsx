@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- archivo de lazy loading que exporta HOC y componentes */
 import { lazy, Suspense } from 'react';
 
 // Loading component for better UX during chunk loading
