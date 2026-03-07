@@ -44,6 +44,7 @@ const CategoriesManager = () => {
     if (tenantId) {
       loadCategories()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo recargar cuando cambie tenant
   }, [tenantId, superAdminContext?.selectedTenantId])
 
   const loadCategories = async () => {

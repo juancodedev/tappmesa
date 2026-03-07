@@ -34,6 +34,7 @@ const KitchenDashboard = () => {
       // Si no hay tenant y ya terminó de cargar, detener loading
       setLoading(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- polling cuando hay tenant
   }, [tenant, tenantLoading, filter])
 
   const loadOrders = async () => {

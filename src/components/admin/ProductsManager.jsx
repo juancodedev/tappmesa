@@ -63,6 +63,7 @@ const ProductsManager = () => {
       loadCategories()
       loadProducts()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [tenantId, categoryFilter, superAdminContext?.selectedTenantId])
 
   const loadCategories = async () => {

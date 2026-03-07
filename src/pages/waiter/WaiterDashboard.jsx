@@ -38,6 +38,7 @@ const WaiterDashboard = () => {
 
       return () => clearInterval(interval)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- polling cuando hay tenant
   }, [tenant])
 
   const loadData = async () => {

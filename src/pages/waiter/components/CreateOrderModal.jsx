@@ -18,6 +18,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
       loadProducts()
       loadCategories()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [tenant])
 
   const loadProducts = async () => {

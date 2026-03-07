@@ -38,6 +38,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     loadDashboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [superAdminContext?.selectedTenantId, user?.tenant_id]);
 
   const loadDashboardData = async () => {

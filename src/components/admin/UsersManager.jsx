@@ -59,6 +59,7 @@ const UsersManager = () => {
     if (currentTenantId) {
       loadUsers()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [currentTenantId, superAdminContext?.selectedTenantId])
 
   const loadUsers = async () => {

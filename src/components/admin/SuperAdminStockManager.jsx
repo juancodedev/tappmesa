@@ -24,6 +24,7 @@ const SuperAdminStockManager = () => {
 
   useEffect(() => {
     loadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recargar al cambiar tenant/filtro
   }, [selectedTenantId, stockFilter])
 
   const loadData = async () => {

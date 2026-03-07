@@ -23,6 +23,7 @@ const SuperAdminTablesManager = () => {
 
   useEffect(() => {
     loadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recargar al cambiar tenant/filtro
   }, [selectedTenantId, statusFilter])
 
   const loadData = async () => {

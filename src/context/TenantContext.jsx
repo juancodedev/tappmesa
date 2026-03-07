@@ -363,6 +363,7 @@ export const TenantProvider = ({ children }) => {
   // Cargar tenant inicial
   useEffect(() => {
     loadTenant()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga inicial al montar
   }, [])
 
   // Recargar tenant cuando cambie el usuario autenticado
@@ -371,6 +372,7 @@ export const TenantProvider = ({ children }) => {
       logger.dev('👤 User authenticated with tenant_id:', authContext.user.tenant_id)
       loadTenant(authContext.user.tenant_id)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recargar cuando cambie usuario
   }, [authContext?.user?.tenant_id])
 
   const value = {

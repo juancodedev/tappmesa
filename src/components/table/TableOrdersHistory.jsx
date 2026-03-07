@@ -21,6 +21,7 @@ const TableOrdersHistory = () => {
 
       return () => clearInterval(interval)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- polling cuando hay tableSession
   }, [tableSession])
 
   const loadSessionOrders = async () => {

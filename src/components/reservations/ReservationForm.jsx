@@ -25,6 +25,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
     if (tenantId) {
       loadTables()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [tenantId])
 
   // Recargar mesas cuando cambia party_size, date o time
@@ -32,6 +33,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
     if (tenantId && formData.party_size && formData.reservation_date && formData.reservation_time) {
       loadAvailableTables()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recargar al cambiar fecha/hora/personas
   }, [formData.party_size, formData.reservation_date, formData.reservation_time])
 
   const loadTables = async () => {

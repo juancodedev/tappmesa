@@ -396,6 +396,7 @@ const TenantUsageStats = ({ tenantId }) => {
 
   useEffect(() => {
     loadStats()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [tenantId])
 
   const loadStats = async () => {

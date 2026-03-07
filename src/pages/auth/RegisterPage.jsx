@@ -46,23 +46,23 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const steps = [
+  const steps = useMemo(() => [
     { number: 1, title: 'Tu Información', icon: User, desc: 'Datos del propietario' },
     { number: 2, title: 'Tu Cafetería', icon: Store, desc: 'Información del negocio' },
     { number: 3, title: 'Configuración', icon: Zap, desc: 'Personalización inicial' },
     { number: 4, title: 'Plan & Listo', icon: CheckCircle, desc: 'Selección final' }
-  ];
+  ], []);
 
-  const cafeTypes = [
+  const cafeTypes = useMemo(() => [
     { id: 'traditional', name: 'Cafetería Tradicional', desc: 'Ambiente clásico y acogedor', icon: '☕' },
     { id: 'specialty', name: 'Café de Especialidad', desc: 'Enfoque en calidad y origen', icon: '🌟' },
     { id: 'coworking', name: 'Café + Coworking', desc: 'Espacio de trabajo', icon: '💻' },
     { id: 'bakery', name: 'Café + Panadería', desc: 'Con productos horneados', icon: '🥐' },
     { id: 'chain', name: 'Cadena/Franquicia', desc: 'Múltiples ubicaciones', icon: '🏢' },
     { id: 'other', name: 'Otro Concepto', desc: 'Modelo personalizado', icon: '🎯' }
-  ];
+  ], []);
 
-  const plans = [
+  const plans = useMemo(() => [
     {
       id: 'express',
       name: 'Café Express',
@@ -93,7 +93,7 @@ const RegisterPage = () => {
       color: 'border-coffee-400',
       textColor: 'text-coffee-700'
     }
-  ];
+  ], []);
 
   const handleInputChange = useCallback((field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));

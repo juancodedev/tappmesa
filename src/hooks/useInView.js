@@ -114,6 +114,7 @@ export function useInViewMultiple(options = {}) {
     return () => {
       observer.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- observer usa refs, no elements en deps
   }, [threshold, rootMargin]);
 
   const getRef = (id) => {

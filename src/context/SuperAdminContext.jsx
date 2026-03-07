@@ -28,6 +28,7 @@ export const SuperAdminProvider = ({ children }) => {
     } else {
       setSelectedTenant(null)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recargar al cambiar tenant seleccionado
   }, [selectedTenantId])
 
   const loadTenants = async () => {

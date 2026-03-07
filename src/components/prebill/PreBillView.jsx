@@ -20,6 +20,7 @@ const PreBillView = () => {
     if (preBillId) {
       loadPreBill()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recargar cuando cambie preBillId
   }, [preBillId])
 
   const loadPreBill = async () => {

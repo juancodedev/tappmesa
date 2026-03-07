@@ -68,6 +68,7 @@ const CompleteStockManager = () => {
     if (currentTenant) {
       loadAllData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [currentTenant]);
 
   const loadAllData = async () => {

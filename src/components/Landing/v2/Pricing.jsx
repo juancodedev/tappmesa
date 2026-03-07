@@ -13,6 +13,7 @@ const Pricing = () => {
 
   useEffect(() => {
     loadPlans();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- carga inicial al montar
   }, []);
 
   const loadPlans = async () => {

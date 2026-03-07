@@ -46,6 +46,7 @@ const ReservationsManager = () => {
     if (tenantId) {
       loadReservations()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [tenantId, filter, selectedDate, superAdminContext?.selectedTenantId])
 
   const loadReservations = async () => {

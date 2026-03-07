@@ -45,6 +45,7 @@ const OrdersManager = () => {
       const interval = setInterval(loadOrders, 30000)
       return () => clearInterval(interval)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [tenantId, statusFilter, superAdminContext?.selectedTenantId])
 
   const loadOrders = async () => {

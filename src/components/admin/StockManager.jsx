@@ -49,6 +49,7 @@ const StockManager = () => {
     if (tenant) {
       loadInventory()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [tenant])
 
   const loadInventory = async () => {

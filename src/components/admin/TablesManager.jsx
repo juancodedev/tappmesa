@@ -53,6 +53,7 @@ const TablesManager = () => {
       loadTables()
       loadTableStatuses()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [tenantId, superAdminContext?.selectedTenantId])
 
   const loadTables = async () => {
