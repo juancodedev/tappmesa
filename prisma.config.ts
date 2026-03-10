@@ -8,6 +8,6 @@ export default defineConfig({
     path: path.join("prisma", "migrations"),
   },
   datasource: {
-    url: env("DATABASE_URL"),
+    url: env("DIRECT_URL"), // ← puerto 5432, conexión directa
   },
 });
