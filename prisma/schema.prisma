@@ -1,12 +1,459 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client-js"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  schemas  = ["auth", "public"]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model audit_log_entries {
+  instance_id String?   @db.Uuid
+  id          String    @id @db.Uuid
+  payload     Json?     @db.Json
+  created_at  DateTime? @db.Timestamptz(6)
+  ip_address  String    @default("") @db.VarChar(64)
+
+  @@index([instance_id], map: "audit_logs_instance_id_idx")
+  @@schema("auth")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model custom_oauth_providers {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  provider_type         String
+  identifier            String    @unique
+  name                  String
+  client_id             String
+  client_secret         String
+  acceptable_client_ids String[]  @default([])
+  scopes                String[]  @default([])
+  pkce_enabled          Boolean   @default(true)
+  attribute_mapping     Json      @default("{}")
+  authorization_params  Json      @default("{}")
+  enabled               Boolean   @default(true)
+  email_optional        Boolean   @default(false)
+  issuer                String?
+  discovery_url         String?
+  skip_nonce_check      Boolean   @default(false)
+  cached_discovery      Json?
+  discovery_cached_at   DateTime? @db.Timestamptz(6)
+  authorization_url     String?
+  token_url             String?
+  userinfo_url          String?
+  jwks_uri              String?
+  created_at            DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([created_at])
+  @@index([enabled])
+  @@index([identifier])
+  @@index([provider_type])
+  @@schema("auth")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model flow_state {
+  id                     String                 @id @db.Uuid
+  user_id                String?                @db.Uuid
+  auth_code              String?
+  code_challenge_method  code_challenge_method?
+  code_challenge         String?
+  provider_type          String
+  provider_access_token  String?
+  provider_refresh_token String?
+  created_at             DateTime?              @db.Timestamptz(6)
+  updated_at             DateTime?              @db.Timestamptz(6)
+  authentication_method  String
+  auth_code_issued_at    DateTime?              @db.Timestamptz(6)
+  invite_token           String?
+  referrer               String?
+  oauth_client_state_id  String?                @db.Uuid
+  linking_target_id      String?                @db.Uuid
+  email_optional         Boolean                @default(false)
+  saml_relay_states      saml_relay_states[]
+
+  @@index([created_at(sort: Desc)])
+  @@index([auth_code], map: "idx_auth_code")
+  @@index([user_id, authentication_method], map: "idx_user_id_auth_method")
+  @@schema("auth")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model identities {
+  provider_id     String
+  user_id         String    @db.Uuid
+  identity_data   Json
+  provider        String
+  last_sign_in_at DateTime? @db.Timestamptz(6)
+  created_at      DateTime? @db.Timestamptz(6)
+  updated_at      DateTime? @db.Timestamptz(6)
+  email           String?   @default(dbgenerated("lower((identity_data ->> 'email'::text))"))
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  users           users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([provider_id, provider], map: "identities_provider_id_provider_unique")
+  @@index([email])
+  @@index([user_id])
+  @@schema("auth")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model instances {
+  id              String    @id @db.Uuid
+  uuid            String?   @db.Uuid
+  raw_base_config String?
+  created_at      DateTime? @db.Timestamptz(6)
+  updated_at      DateTime? @db.Timestamptz(6)
+
+  @@schema("auth")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model mfa_amr_claims {
+  session_id            String   @db.Uuid
+  created_at            DateTime @db.Timestamptz(6)
+  updated_at            DateTime @db.Timestamptz(6)
+  authentication_method String
+  id                    String   @id(map: "amr_id_pk") @db.Uuid
+  sessions              sessions @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([session_id, authentication_method], map: "mfa_amr_claims_session_id_authentication_method_pkey")
+  @@schema("auth")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model mfa_challenges {
+  id                     String      @id @db.Uuid
+  factor_id              String      @db.Uuid
+  created_at             DateTime    @db.Timestamptz(6)
+  verified_at            DateTime?   @db.Timestamptz(6)
+  ip_address             String      @db.Inet
+  otp_code               String?
+  web_authn_session_data Json?
+  mfa_factors            mfa_factors @relation(fields: [factor_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "mfa_challenges_auth_factor_id_fkey")
+
+  @@index([created_at(sort: Desc)], map: "mfa_challenge_created_at_idx")
+  @@schema("auth")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model mfa_factors {
+  id                           String           @id @db.Uuid
+  user_id                      String           @db.Uuid
+  friendly_name                String?
+  factor_type                  factor_type
+  status                       factor_status
+  created_at                   DateTime         @db.Timestamptz(6)
+  updated_at                   DateTime         @db.Timestamptz(6)
+  secret                       String?
+  phone                        String?
+  last_challenged_at           DateTime?        @unique @db.Timestamptz(6)
+  web_authn_credential         Json?
+  web_authn_aaguid             String?          @db.Uuid
+  last_webauthn_challenge_data Json?
+  mfa_challenges               mfa_challenges[]
+  users                        users            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([friendly_name, user_id], map: "mfa_factors_user_friendly_name_unique", where: raw("(TRIM(BOTH FROM friendly_name) <> ''::text)"))
+  @@unique([user_id, phone], map: "unique_phone_factor_per_user")
+  @@index([user_id, created_at], map: "factor_id_created_at_idx")
+  @@index([user_id])
+  @@schema("auth")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model oauth_authorizations {
+  id                    String                     @id @db.Uuid
+  authorization_id      String                     @unique
+  client_id             String                     @db.Uuid
+  user_id               String?                    @db.Uuid
+  redirect_uri          String
+  scope                 String
+  state                 String?
+  resource              String?
+  code_challenge        String?
+  code_challenge_method code_challenge_method?
+  response_type         oauth_response_type        @default(code)
+  status                oauth_authorization_status @default(pending)
+  authorization_code    String?                    @unique
+  created_at            DateTime                   @default(now()) @db.Timestamptz(6)
+  expires_at            DateTime                   @default(dbgenerated("(now() + '00:03:00'::interval)")) @db.Timestamptz(6)
+  approved_at           DateTime?                  @db.Timestamptz(6)
+  nonce                 String?
+  oauth_clients         oauth_clients              @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users                 users?                     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([expires_at], map: "oauth_auth_pending_exp_idx", where: raw("(status = 'pending'::auth.oauth_authorization_status)"))
+  @@schema("auth")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model oauth_client_states {
+  id            String   @id @db.Uuid
+  provider_type String
+  code_verifier String?
+  created_at    DateTime @db.Timestamptz(6)
+
+  @@index([created_at], map: "idx_oauth_client_states_created_at")
+  @@schema("auth")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model oauth_clients {
+  id                         String                  @id @db.Uuid
+  client_secret_hash         String?
+  registration_type          oauth_registration_type
+  redirect_uris              String
+  grant_types                String
+  client_name                String?
+  client_uri                 String?
+  logo_uri                   String?
+  created_at                 DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at                 DateTime                @default(now()) @db.Timestamptz(6)
+  deleted_at                 DateTime?               @db.Timestamptz(6)
+  client_type                oauth_client_type       @default(confidential)
+  token_endpoint_auth_method String
+  oauth_authorizations       oauth_authorizations[]
+  oauth_consents             oauth_consents[]
+  sessions                   sessions[]
+
+  @@index([deleted_at])
+  @@schema("auth")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model oauth_consents {
+  id            String        @id @db.Uuid
+  user_id       String        @db.Uuid
+  client_id     String        @db.Uuid
+  scopes        String
+  granted_at    DateTime      @default(now()) @db.Timestamptz(6)
+  revoked_at    DateTime?     @db.Timestamptz(6)
+  oauth_clients oauth_clients @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users         users         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, client_id], map: "oauth_consents_user_client_unique")
+  @@index([client_id], map: "oauth_consents_active_client_idx", where: raw("(revoked_at IS NULL)"))
+  @@index([user_id, client_id], map: "oauth_consents_active_user_client_idx", where: raw("(revoked_at IS NULL)"))
+  @@index([user_id, granted_at(sort: Desc)], map: "oauth_consents_user_order_idx")
+  @@schema("auth")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model one_time_tokens {
+  id         String              @id @db.Uuid
+  user_id    String              @db.Uuid
+  token_type one_time_token_type
+  token_hash String
+  relates_to String
+  created_at DateTime            @default(now()) @db.Timestamp(6)
+  updated_at DateTime            @default(now()) @db.Timestamp(6)
+  users      users               @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, token_type])
+  @@index([relates_to], map: "one_time_tokens_relates_to_hash_idx", type: Hash)
+  @@index([token_hash], map: "one_time_tokens_token_hash_hash_idx", type: Hash)
+  @@schema("auth")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model refresh_tokens {
+  instance_id String?   @db.Uuid
+  id          BigInt    @id @default(autoincrement())
+  token       String?   @unique(map: "refresh_tokens_token_unique") @db.VarChar(255)
+  user_id     String?   @db.VarChar(255)
+  revoked     Boolean?
+  created_at  DateTime? @db.Timestamptz(6)
+  updated_at  DateTime? @db.Timestamptz(6)
+  parent      String?   @db.VarChar(255)
+  session_id  String?   @db.Uuid
+  sessions    sessions? @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([instance_id])
+  @@index([instance_id, user_id])
+  @@index([parent])
+  @@index([session_id, revoked])
+  @@index([updated_at(sort: Desc)])
+  @@schema("auth")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model saml_providers {
+  id                String        @id @db.Uuid
+  sso_provider_id   String        @db.Uuid
+  entity_id         String        @unique
+  metadata_xml      String
+  metadata_url      String?
+  attribute_mapping Json?
+  created_at        DateTime?     @db.Timestamptz(6)
+  updated_at        DateTime?     @db.Timestamptz(6)
+  name_id_format    String?
+  sso_providers     sso_providers @relation(fields: [sso_provider_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([sso_provider_id])
+  @@schema("auth")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model saml_relay_states {
+  id              String        @id @db.Uuid
+  sso_provider_id String        @db.Uuid
+  request_id      String
+  for_email       String?
+  redirect_to     String?
+  created_at      DateTime?     @db.Timestamptz(6)
+  updated_at      DateTime?     @db.Timestamptz(6)
+  flow_state_id   String?       @db.Uuid
+  flow_state      flow_state?   @relation(fields: [flow_state_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  sso_providers   sso_providers @relation(fields: [sso_provider_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([created_at(sort: Desc)])
+  @@index([for_email])
+  @@index([sso_provider_id])
+  @@schema("auth")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model schema_migrations {
+  version String @id @db.VarChar(255)
+
+  @@schema("auth")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model sessions {
+  id                     String           @id @db.Uuid
+  user_id                String           @db.Uuid
+  created_at             DateTime?        @db.Timestamptz(6)
+  updated_at             DateTime?        @db.Timestamptz(6)
+  factor_id              String?          @db.Uuid
+  aal                    aal_level?
+  not_after              DateTime?        @db.Timestamptz(6)
+  refreshed_at           DateTime?        @db.Timestamp(6)
+  user_agent             String?
+  ip                     String?          @db.Inet
+  tag                    String?
+  oauth_client_id        String?          @db.Uuid
+  refresh_token_hmac_key String?
+  refresh_token_counter  BigInt?
+  scopes                 String?
+  mfa_amr_claims         mfa_amr_claims[]
+  refresh_tokens         refresh_tokens[]
+  oauth_clients          oauth_clients?   @relation(fields: [oauth_client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users                  users            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([not_after(sort: Desc)])
+  @@index([oauth_client_id])
+  @@index([user_id])
+  @@index([user_id, created_at], map: "user_id_created_at_idx")
+  @@schema("auth")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model sso_domains {
+  id              String        @id @db.Uuid
+  sso_provider_id String        @db.Uuid
+  domain          String
+  created_at      DateTime?     @db.Timestamptz(6)
+  updated_at      DateTime?     @db.Timestamptz(6)
+  sso_providers   sso_providers @relation(fields: [sso_provider_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([sso_provider_id])
+  @@schema("auth")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model sso_providers {
+  id                String              @id @db.Uuid
+  resource_id       String?
+  created_at        DateTime?           @db.Timestamptz(6)
+  updated_at        DateTime?           @db.Timestamptz(6)
+  disabled          Boolean?
+  saml_providers    saml_providers[]
+  saml_relay_states saml_relay_states[]
+  sso_domains       sso_domains[]
+
+  @@index([resource_id], map: "sso_providers_resource_id_pattern_idx")
+  @@schema("auth")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model users {
+  instance_id                 String?                @db.Uuid
+  id                          String                 @id @db.Uuid
+  aud                         String?                @db.VarChar(255)
+  role                        String?                @db.VarChar(255)
+  email                       String?                @unique(map: "users_email_partial_key", where: raw("(is_sso_user = false)")) @db.VarChar(255)
+  encrypted_password          String?                @db.VarChar(255)
+  email_confirmed_at          DateTime?              @db.Timestamptz(6)
+  invited_at                  DateTime?              @db.Timestamptz(6)
+  confirmation_token          String?                @unique(map: "confirmation_token_idx", where: raw("((confirmation_token)::text !~ '^[0-9 ]*$'::text)")) @db.VarChar(255)
+  confirmation_sent_at        DateTime?              @db.Timestamptz(6)
+  recovery_token              String?                @unique(map: "recovery_token_idx", where: raw("((recovery_token)::text !~ '^[0-9 ]*$'::text)")) @db.VarChar(255)
+  recovery_sent_at            DateTime?              @db.Timestamptz(6)
+  email_change_token_new      String?                @unique(map: "email_change_token_new_idx", where: raw("((email_change_token_new)::text !~ '^[0-9 ]*$'::text)")) @db.VarChar(255)
+  email_change                String?                @db.VarChar(255)
+  email_change_sent_at        DateTime?              @db.Timestamptz(6)
+  last_sign_in_at             DateTime?              @db.Timestamptz(6)
+  raw_app_meta_data           Json?
+  raw_user_meta_data          Json?
+  is_super_admin              Boolean?
+  created_at                  DateTime?              @db.Timestamptz(6)
+  updated_at                  DateTime?              @db.Timestamptz(6)
+  phone                       String?                @unique
+  phone_confirmed_at          DateTime?              @db.Timestamptz(6)
+  phone_change                String?                @default("")
+  phone_change_token          String?                @default("") @db.VarChar(255)
+  phone_change_sent_at        DateTime?              @db.Timestamptz(6)
+  confirmed_at                DateTime?              @default(dbgenerated("LEAST(email_confirmed_at, phone_confirmed_at)")) @db.Timestamptz(6)
+  email_change_token_current  String?                @unique(map: "email_change_token_current_idx", where: raw("((email_change_token_current)::text !~ '^[0-9 ]*$'::text)")) @default("") @db.VarChar(255)
+  email_change_confirm_status Int?                   @default(0) @db.SmallInt
+  banned_until                DateTime?              @db.Timestamptz(6)
+  reauthentication_token      String?                @unique(map: "reauthentication_token_idx", where: raw("((reauthentication_token)::text !~ '^[0-9 ]*$'::text)")) @default("") @db.VarChar(255)
+  reauthentication_sent_at    DateTime?              @db.Timestamptz(6)
+  is_sso_user                 Boolean                @default(false)
+  deleted_at                  DateTime?              @db.Timestamptz(6)
+  is_anonymous                Boolean                @default(false)
+  identities                  identities[]
+  mfa_factors                 mfa_factors[]
+  oauth_authorizations        oauth_authorizations[]
+  oauth_consents              oauth_consents[]
+  one_time_tokens             one_time_tokens[]
+  sessions                    sessions[]
+  admin_users                 admin_users?
+
+  @@index([instance_id])
+  @@index([is_anonymous])
+  @@schema("auth")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -28,6 +475,7 @@ model admin_audit_logs {
   @@index([created_at], map: "idx_audit_logs_created")
   @@index([tenant_id], map: "idx_audit_logs_tenant")
   @@index([user_id], map: "idx_audit_logs_user")
+  @@schema("public")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -39,15 +487,17 @@ model admin_sessions {
   ip_address    String?      @db.Inet
   user_agent    String?
   created_at    DateTime?    @default(now()) @db.Timestamptz(6)
+  refresh_token String?      @unique @db.VarChar
   admin_users   admin_users? @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([expires_at], map: "idx_admin_sessions_expires")
+  @@index([refresh_token], map: "idx_admin_sessions_refresh")
   @@index([session_token], map: "idx_admin_sessions_token")
   @@index([user_id], map: "idx_admin_sessions_user")
+  @@schema("public")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model admin_users {
   id                    String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email                 String                  @unique @db.VarChar
@@ -60,18 +510,33 @@ model admin_users {
   created_at            DateTime?               @default(now()) @db.Timestamptz(6)
   updated_at            DateTime?               @default(now()) @db.Timestamptz(6)
   needs_password_reset  Boolean?                @default(false)
+  supabase_user_id      String?                 @unique(map: "unique_supabase_user_id") @db.Uuid
   admin_audit_logs      admin_audit_logs[]
   admin_sessions        admin_sessions[]
+  users                 users?                  @relation(fields: [supabase_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   tenants               tenants?                @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   marketing_campaigns   marketing_campaigns[]
   password_reset_tokens password_reset_tokens[]
+  user_migration_status user_migration_status[]
 
   @@index([email], map: "idx_admin_users_email")
+  @@index([supabase_user_id], map: "idx_admin_users_supabase_id")
   @@index([tenant_id], map: "idx_admin_users_tenant")
   @@index([tenant_id, is_active], map: "idx_admin_users_tenant_active")
+  @@schema("public")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model admin_users_backup_insecure {
+  id                String?   @db.Uuid
+  email             String?   @db.VarChar
+  old_password_hash String?   @db.VarChar
+  created_at        DateTime? @db.Timestamptz(6)
+
+  @@ignore
+  @@schema("public")
+}
+
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model business_hours {
   id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -85,436 +550,7 @@ model business_hours {
 
   @@unique([tenant_id, day_of_week])
   @@index([tenant_id], map: "idx_business_hours_tenant")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model categories {
-  id            String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id     String?    @db.Uuid
-  name          String     @db.VarChar
-  slug          String     @db.VarChar
-  display_order Int?       @default(0)
-  icon          String?    @db.VarChar
-  is_active     Boolean?   @default(true)
-  created_at    DateTime?  @default(now()) @db.Timestamptz(6)
-  tenants       tenants?   @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  products      products[]
-
-  @@unique([tenant_id, slug])
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model customer_order_history {
-  id                    String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  customer_id           String?    @db.Uuid
-  order_id              String?    @db.Uuid
-  order_total           Decimal?   @db.Decimal(10, 2)
-  loyalty_points_earned Int?       @default(0)
-  created_at            DateTime?  @default(now()) @db.Timestamptz(6)
-  customers             customers? @relation(fields: [customer_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  orders                orders?    @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@index([customer_id], map: "idx_customer_history_customer")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model customers {
-  id                       String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id                String?                  @db.Uuid
-  phone                    String                   @unique @db.VarChar
-  name                     String?                  @db.VarChar
-  email                    String?                  @db.VarChar
-  total_orders             Int?                     @default(0)
-  total_spent              Decimal?                 @default(0) @db.Decimal(10, 2)
-  loyalty_points           Int?                     @default(0)
-  preferred_payment_method String?                  @db.VarChar
-  notes                    String?
-  is_vip                   Boolean?                 @default(false)
-  last_order_date          DateTime?                @db.Timestamptz(6)
-  created_at               DateTime?                @default(now()) @db.Timestamptz(6)
-  updated_at               DateTime?                @default(now()) @db.Timestamptz(6)
-  campaign_recipients      campaign_recipients[]
-  customer_coupons         customer_coupons[]
-  customer_loyalty         customer_loyalty[]
-  customer_order_history   customer_order_history[]
-  tenants                  tenants?                 @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@index([tenant_id, phone], map: "idx_customers_tenant_phone")
-  @@index([tenant_id], map: "idx_customers_tenant_active")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model inventory {
-  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id     String?   @db.Uuid
-  product_id    String?   @db.Uuid
-  current_stock Int?      @default(0)
-  min_stock     Int?      @default(0)
-  max_stock     Int?      @default(100)
-  unit          String?   @default("unidad") @db.VarChar
-  cost_per_unit Decimal?  @db.Decimal(10, 2)
-  last_updated  DateTime? @default(now()) @db.Timestamptz(6)
-  products      products? @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  tenants       tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@unique([tenant_id, product_id])
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model inventory_movements {
-  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id      String?   @db.Uuid
-  product_id     String?   @db.Uuid
-  movement_type  String    @db.VarChar
-  quantity       Int
-  previous_stock Int?
-  new_stock      Int?
-  reference_id   String?   @db.Uuid
-  notes          String?
-  created_by     String?   @db.Uuid
-  created_at     DateTime? @default(now()) @db.Timestamptz(6)
-  products       products? @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  tenants        tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model order_items {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  order_id    String?   @db.Uuid
-  product_id  String?   @db.Uuid
-  quantity    Int
-  unit_price  Decimal   @db.Decimal(10, 2)
-  total_price Decimal   @db.Decimal(10, 2)
-  notes       String?
-  orders      orders?   @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  products    products? @relation(fields: [product_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model orders {
-  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id              String?                  @db.Uuid
-  table_number           String?                  @db.VarChar
-  customer_name          String?                  @db.VarChar
-  customer_phone         String?                  @db.VarChar
-  status                 String?                  @default("pending") @db.VarChar
-  subtotal               Decimal                  @db.Decimal(10, 2)
-  tax                    Decimal?                 @default(0) @db.Decimal(10, 2)
-  total                  Decimal                  @db.Decimal(10, 2)
-  notes                  String?
-  order_number           String?                  @db.VarChar
-  estimated_time         Int?
-  created_at             DateTime?                @default(now()) @db.Timestamptz(6)
-  table_session_id       String?                  @db.Uuid
-  updated_at             DateTime?                @default(now()) @db.Timestamptz(6)
-  customer_coupons       customer_coupons[]
-  customer_order_history customer_order_history[]
-  loyalty_transactions   loyalty_transactions[]
-  order_items            order_items[]
-  pre_bills              pre_bills[]
-  table_sessions         table_sessions?          @relation(fields: [table_session_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  tenants                tenants?                 @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@index([tenant_id, status], map: "idx_orders_tenant_status")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model products {
-  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id           String?               @db.Uuid
-  category_id         String?               @db.Uuid
-  name                String                @db.VarChar
-  slug                String                @db.VarChar
-  description         String?
-  price               Decimal               @db.Decimal(10, 2)
-  image_url           String?
-  preparation_time    Int?
-  beverage_type       String?               @db.VarChar
-  temperature_options String[]              @default(["hot"])
-  is_available        Boolean?              @default(true)
-  is_featured         Boolean?              @default(false)
-  display_order       Int?                  @default(0)
-  created_at          DateTime?             @default(now()) @db.Timestamptz(6)
-  inventory           inventory[]
-  inventory_movements inventory_movements[]
-  order_items         order_items[]
-  categories          categories?           @relation(fields: [category_id], references: [id], onUpdate: NoAction)
-  tenants             tenants?              @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  stock_alerts        stock_alerts[]
-  stock_inventory     stock_inventory[]
-  stock_movements     stock_movements[]
-
-  @@unique([tenant_id, slug])
-  @@index([tenant_id, is_available], map: "idx_products_tenant_available")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model profiles {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id  String?   @db.Uuid
-  email      String?   @db.VarChar
-  full_name  String?   @db.VarChar
-  phone      String?   @db.VarChar
-  role       String?   @default("customer") @db.VarChar
-  avatar_url String?
-  is_active  Boolean?  @default(true)
-  last_login DateTime? @db.Timestamptz(6)
-  created_at DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at DateTime? @default(now()) @db.Timestamptz(6)
-  tenants    tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model reservations {
-  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id        String?   @db.Uuid
-  customer_name    String    @db.VarChar
-  customer_phone   String    @db.VarChar
-  customer_email   String?   @db.VarChar
-  reservation_date DateTime  @db.Date
-  reservation_time DateTime  @db.Time(6)
-  party_size       Int
-  table_number     String?   @db.VarChar
-  status           String?   @default("confirmed") @db.VarChar
-  special_requests String?
-  created_at       DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at       DateTime? @default(now()) @db.Timestamptz(6)
-  tenants          tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model restaurant_tables {
-  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id    String?   @db.Uuid
-  table_number String    @db.VarChar
-  capacity     Int
-  is_available Boolean?  @default(true)
-  created_at   DateTime? @default(now()) @db.Timestamptz(6)
-  tenants      tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@unique([tenant_id, table_number])
-  @@index([tenant_id], map: "idx_restaurant_tables_tenant")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model role_permissions {
-  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  role     String @db.VarChar
-  resource String @db.VarChar
-  action   String @db.VarChar
-
-  @@unique([role, resource, action])
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model stock_alerts {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id   String?   @db.Uuid
-  product_id  String?   @db.Uuid
-  alert_type  String    @db.VarChar
-  message     String
-  is_resolved Boolean?  @default(false)
-  resolved_at DateTime? @db.Timestamptz(6)
-  created_at  DateTime? @default(now()) @db.Timestamptz(6)
-  products    products? @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  tenants     tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@index([is_resolved], map: "idx_stock_alerts_resolved")
-  @@index([tenant_id], map: "idx_stock_alerts_tenant")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model stock_inventory {
-  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id       String?           @db.Uuid
-  product_id      String?           @db.Uuid
-  current_stock   Decimal           @default(0) @db.Decimal(10, 2)
-  min_stock       Decimal           @default(0) @db.Decimal(10, 2)
-  max_stock       Decimal           @default(100) @db.Decimal(10, 2)
-  unit            String            @default("unidad") @db.VarChar
-  cost_per_unit   Decimal           @default(0) @db.Decimal(10, 2)
-  supplier        String?           @db.VarChar
-  location        String?           @db.VarChar
-  expiry_date     DateTime?         @db.Date
-  notes           String?
-  last_updated    DateTime?         @default(now()) @db.Timestamptz(6)
-  created_at      DateTime?         @default(now()) @db.Timestamptz(6)
-  products        products?         @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  tenants         tenants?          @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  stock_movements stock_movements[]
-
-  @@unique([tenant_id, product_id])
-  @@index([tenant_id, product_id], map: "idx_stock_inventory_tenant_product")
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model stock_movements {
-  id                 String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id          String?          @db.Uuid
-  product_id         String?          @db.Uuid
-  stock_inventory_id String?          @db.Uuid
-  movement_type      String           @db.VarChar
-  quantity           Decimal          @db.Decimal(10, 2)
-  unit_cost          Decimal?         @db.Decimal(10, 2)
-  total_cost         Decimal?         @db.Decimal(10, 2)
-  reason             String           @db.VarChar
-  reference_id       String?          @db.Uuid
-  reference_type     String?          @db.VarChar
-  notes              String?
-  created_by         String?          @db.VarChar
-  created_at         DateTime?        @default(now()) @db.Timestamptz(6)
-  products           products?        @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  stock_inventory    stock_inventory? @relation(fields: [stock_inventory_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  tenants            tenants?         @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@index([created_at], map: "idx_stock_movements_created")
-  @@index([stock_inventory_id], map: "idx_stock_movements_inventory")
-  @@index([tenant_id], map: "idx_stock_movements_tenant")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model suppliers {
-  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id      String?   @db.Uuid
-  name           String    @db.VarChar
-  contact_person String?   @db.VarChar
-  email          String?   @db.VarChar
-  phone          String?   @db.VarChar
-  address        String?
-  tax_id         String?   @db.VarChar
-  payment_terms  String?   @db.VarChar
-  notes          String?
-  is_active      Boolean?  @default(true)
-  created_at     DateTime? @default(now()) @db.Timestamptz(6)
-  tenants        tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@index([tenant_id], map: "idx_suppliers_tenant")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model table_sessions {
-  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id      String?     @db.Uuid
-  table_id       String?     @db.Uuid
-  session_code   String      @db.VarChar
-  customer_name  String?     @db.VarChar
-  customer_phone String?     @db.VarChar
-  waiter_name    String?     @db.VarChar(100)
-  guest_count    Int?        @default(1)
-  started_at     DateTime?   @default(now()) @db.Timestamptz(6)
-  opened_at      DateTime?   @default(now()) @db.Timestamptz(6)
-  ended_at       DateTime?   @db.Timestamptz(6)
-  status         String?     @default("active") @db.VarChar
-  total_orders   Int?        @default(0)
-  total_amount   Decimal?    @default(0) @db.Decimal(10, 2)
-  orders         orders[]
-  pre_bills      pre_bills[]
-  tables         tables?     @relation(fields: [table_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  tenants        tenants?    @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model tables {
-  id                   String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id            String?          @db.Uuid
-  number               String           @db.VarChar
-  capacity             Int
-  max_capacity         Int?             @default(4)
-  location             String?          @db.VarChar
-  unique_code          String?          @unique @db.VarChar
-  qr_code_url          String?
-  status               String?          @default("available") @db.VarChar
-  is_active            Boolean?         @default(true)
-  created_at           DateTime?        @default(now()) @db.Timestamptz(6)
-  qr_code_generated_at DateTime?        @default(now()) @db.Timestamptz(6)
-  qr_code_expires_at   DateTime?        @db.Timestamptz(6)
-  table_sessions       table_sessions[]
-  tenants              tenants?         @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@unique([tenant_id, number])
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model tenant_settings {
-  id                      String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id               String?   @unique @db.Uuid
-  business_hours          Json?     @default("{\"friday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"monday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"sunday\": {\"open\": \"09:00\", \"close\": \"18:00\", \"closed\": false}, \"tuesday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"saturday\": {\"open\": \"09:00\", \"close\": \"21:00\", \"closed\": false}, \"thursday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"wednesday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}}")
-  tax_rate                Decimal?  @default(0.19) @db.Decimal(5, 4)
-  currency                String?   @default("CLP") @db.VarChar
-  order_auto_print        Boolean?  @default(false)
-  table_service_enabled   Boolean?  @default(true)
-  takeaway_enabled        Boolean?  @default(true)
-  delivery_enabled        Boolean?  @default(false)
-  notifications           Json?     @default("{\"sms\": false, \"push\": true, \"email\": true}")
-  created_at              DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at              DateTime? @default(now()) @db.Timestamptz(6)
-  qr_code_expiration_days Int?
-  tenants                 tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model tenants {
-  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name                 String                 @db.VarChar
-  slug                 String                 @unique @db.VarChar
-  subdomain            String?                @unique @db.VarChar
-  business_type        String?                @default("cafe") @db.VarChar
-  logo_url             String?
-  primary_color        String?                @default("#dc2626") @db.VarChar(7)
-  secondary_color      String?                @default("#f97316") @db.VarChar(7)
-  phone                String?                @db.VarChar
-  email                String?                @db.VarChar
-  address              String?
-  description          String?
-  timezone             String?                @default("America/Santiago") @db.VarChar
-  is_active            Boolean?               @default(true)
-  tip_percentage       Decimal?               @default(10.0) @db.Decimal(5, 2)
-  show_survey          Boolean?               @default(false)
-  created_at           DateTime?              @default(now()) @db.Timestamptz(6)
-  updated_at           DateTime?              @default(now()) @db.Timestamptz(6)
-  admin_audit_logs     admin_audit_logs[]
-  admin_users          admin_users[]
-  business_hours       business_hours[]
-  categories           categories[]
-  coupons              coupons[]
-  customer_coupons     customer_coupons[]
-  customer_loyalty     customer_loyalty[]
-  customers            customers[]
-  inventory            inventory[]
-  inventory_movements  inventory_movements[]
-  loyalty_programs     loyalty_programs[]
-  loyalty_transactions loyalty_transactions[]
-  marketing_campaigns  marketing_campaigns[]
-  orders               orders[]
-  products             products[]
-  profiles             profiles[]
-  reservations         reservations[]
-  restaurant_tables    restaurant_tables[]
-  stock_alerts         stock_alerts[]
-  stock_inventory      stock_inventory[]
-  stock_movements      stock_movements[]
-  suppliers            suppliers[]
-  table_sessions       table_sessions[]
-  tables               tables[]
-  tenant_settings      tenant_settings?
-  tenant_subscription  tenant_subscriptions?
-  pre_bills            pre_bills[]
-  surveys              surveys[]
-  survey_responses     survey_responses[]
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model admin_users_backup_insecure {
-  id                String?   @db.Uuid
-  email             String?   @db.VarChar
-  old_password_hash String?   @db.VarChar
-  created_at        DateTime? @db.Timestamptz(6)
-
-  @@ignore
+  @@schema("public")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -537,6 +573,24 @@ model campaign_recipients {
   @@unique([campaign_id, customer_id], map: "campaign_recipients_unique")
   @@index([campaign_id], map: "idx_campaign_recipients_campaign")
   @@index([customer_id], map: "idx_campaign_recipients_customer")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model categories {
+  id            String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id     String?    @db.Uuid
+  name          String     @db.VarChar
+  slug          String     @db.VarChar
+  display_order Int?       @default(0)
+  icon          String?    @db.VarChar
+  is_active     Boolean?   @default(true)
+  created_at    DateTime?  @default(now()) @db.Timestamptz(6)
+  tenants       tenants?   @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  products      products[]
+
+  @@unique([tenant_id, slug])
+  @@schema("public")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -570,6 +624,7 @@ model coupons {
   @@index([tenant_id, is_active], map: "idx_coupons_active")
   @@index([code], map: "idx_coupons_code")
   @@index([tenant_id], map: "idx_coupons_tenant")
+  @@schema("public")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -596,6 +651,7 @@ model customer_coupons {
   @@index([coupon_id], map: "idx_customer_coupons_coupon")
   @@index([customer_id], map: "idx_customer_coupons_customer")
   @@index([customer_id, is_used], map: "idx_customer_coupons_unused")
+  @@schema("public")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -627,6 +683,86 @@ model customer_loyalty {
   @@index([customer_id], map: "idx_customer_loyalty_customer")
   @@index([program_id], map: "idx_customer_loyalty_program")
   @@index([tenant_id], map: "idx_customer_loyalty_tenant")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model customer_order_history {
+  id                    String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id           String?    @db.Uuid
+  order_id              String?    @db.Uuid
+  order_total           Decimal?   @db.Decimal(10, 2)
+  loyalty_points_earned Int?       @default(0)
+  created_at            DateTime?  @default(now()) @db.Timestamptz(6)
+  customers             customers? @relation(fields: [customer_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  orders                orders?    @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([customer_id], map: "idx_customer_history_customer")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model customers {
+  id                       String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id                String?                  @db.Uuid
+  phone                    String                   @unique @db.VarChar
+  name                     String?                  @db.VarChar
+  email                    String?                  @db.VarChar
+  total_orders             Int?                     @default(0)
+  total_spent              Decimal?                 @default(0) @db.Decimal(10, 2)
+  loyalty_points           Int?                     @default(0)
+  preferred_payment_method String?                  @db.VarChar
+  notes                    String?
+  is_vip                   Boolean?                 @default(false)
+  last_order_date          DateTime?                @db.Timestamptz(6)
+  created_at               DateTime?                @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime?                @default(now()) @db.Timestamptz(6)
+  campaign_recipients      campaign_recipients[]
+  customer_coupons         customer_coupons[]
+  customer_loyalty         customer_loyalty[]
+  customer_order_history   customer_order_history[]
+  tenants                  tenants?                 @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([tenant_id], map: "idx_customers_tenant_active")
+  @@index([tenant_id, phone], map: "idx_customers_tenant_phone")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model inventory {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id     String?   @db.Uuid
+  product_id    String?   @db.Uuid
+  current_stock Int?      @default(0)
+  min_stock     Int?      @default(0)
+  max_stock     Int?      @default(100)
+  unit          String?   @default("unidad") @db.VarChar
+  cost_per_unit Decimal?  @db.Decimal(10, 2)
+  last_updated  DateTime? @default(now()) @db.Timestamptz(6)
+  products      products? @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tenants       tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([tenant_id, product_id])
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model inventory_movements {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id      String?   @db.Uuid
+  product_id     String?   @db.Uuid
+  movement_type  String    @db.VarChar
+  quantity       Int
+  previous_stock Int?
+  new_stock      Int?
+  reference_id   String?   @db.Uuid
+  notes          String?
+  created_by     String?   @db.Uuid
+  created_at     DateTime? @default(now()) @db.Timestamptz(6)
+  products       products? @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tenants        tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("public")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -656,6 +792,7 @@ model loyalty_programs {
   @@unique([tenant_id, name], map: "loyalty_programs_tenant_name_unique")
   @@index([tenant_id, is_active], map: "idx_loyalty_programs_active")
   @@index([tenant_id], map: "idx_loyalty_programs_tenant")
+  @@schema("public")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -682,6 +819,7 @@ model loyalty_transactions {
 
   @@index([created_at], map: "idx_loyalty_transactions_created")
   @@index([customer_loyalty_id], map: "idx_loyalty_transactions_customer_loyalty")
+  @@schema("public")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -716,6 +854,51 @@ model marketing_campaigns {
 
   @@index([status, scheduled_at], map: "idx_campaigns_status")
   @@index([tenant_id], map: "idx_campaigns_tenant")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model order_items {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id    String?   @db.Uuid
+  product_id  String?   @db.Uuid
+  quantity    Int
+  unit_price  Decimal   @db.Decimal(10, 2)
+  total_price Decimal   @db.Decimal(10, 2)
+  notes       String?
+  orders      orders?   @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  products    products? @relation(fields: [product_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model orders {
+  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id              String?                  @db.Uuid
+  table_number           String?                  @db.VarChar
+  customer_name          String?                  @db.VarChar
+  customer_phone         String?                  @db.VarChar
+  status                 String?                  @default("pending") @db.VarChar
+  subtotal               Decimal                  @db.Decimal(10, 2)
+  tax                    Decimal?                 @default(0) @db.Decimal(10, 2)
+  total                  Decimal                  @db.Decimal(10, 2)
+  notes                  String?
+  order_number           String?                  @db.VarChar
+  estimated_time         Int?
+  created_at             DateTime?                @default(now()) @db.Timestamptz(6)
+  table_session_id       String?                  @db.Uuid
+  updated_at             DateTime?                @default(now()) @db.Timestamptz(6)
+  customer_coupons       customer_coupons[]
+  customer_order_history customer_order_history[]
+  loyalty_transactions   loyalty_transactions[]
+  order_items            order_items[]
+  table_sessions         table_sessions?          @relation(fields: [table_session_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tenants                tenants?                 @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  pre_bills              pre_bills[]
+
+  @@index([tenant_id, status], map: "idx_orders_tenant_status")
+  @@schema("public")
 }
 
 model password_reset_tokens {
@@ -730,105 +913,521 @@ model password_reset_tokens {
   @@index([expires_at], map: "idx_password_reset_tokens_expires")
   @@index([token], map: "idx_password_reset_tokens_token")
   @@index([user_id], map: "idx_password_reset_tokens_user")
+  @@schema("public")
 }
 
-/// Subscription plans managed by super admin
-model subscription_plans {
-  id                    String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name                  String                 @db.VarChar(100)
-  description           String?
-  price                 Decimal                @db.Decimal(10, 2)
-  max_tables            Int?                   @default(10)
-  max_products          Int?                   @default(50)
-  max_people_per_table  Int?                   @default(4)
-  has_paper_prebill     Boolean?               @default(true)
-  has_paper_command     Boolean?               @default(true)
-  has_surveys           Boolean?               @default(false)
-  has_analytics         Boolean?               @default(false)
-  is_active             Boolean?               @default(true)
-  display_order         Int?                   @default(0)
-  created_at            DateTime?              @default(now()) @db.Timestamptz(6)
-  updated_at            DateTime?              @default(now()) @db.Timestamptz(6)
-  tenant_subscriptions  tenant_subscriptions[]
-
-  @@index([is_active], map: "idx_subscription_plans_active")
-}
-
-/// Tenant subscription with custom limits
-model tenant_subscriptions {
-  id                     String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id              String              @unique @db.Uuid
-  plan_id                String              @db.Uuid
-  custom_max_tables      Int?
-  custom_max_products    Int?
-  custom_max_people      Int?
-  subscription_status    String?             @default("active") @db.VarChar(20)
-  started_at             DateTime?           @default(now()) @db.Timestamptz(6)
-  expires_at             DateTime?           @db.Timestamptz(6)
-  created_at             DateTime?           @default(now()) @db.Timestamptz(6)
-  updated_at             DateTime?           @default(now()) @db.Timestamptz(6)
-  tenant                 tenants             @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  plan                   subscription_plans  @relation(fields: [plan_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@index([tenant_id], map: "idx_tenant_subscriptions_tenant")
-  @@index([plan_id], map: "idx_tenant_subscriptions_plan")
-}
-
-/// Pre-bills/Pre-cuentas for tables
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model pre_bills {
-  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id         String          @db.Uuid
-  order_id          String          @db.Uuid
-  table_session_id  String?         @db.Uuid
-  table_number      String?         @db.VarChar(20)
-  waiter_name       String?         @db.VarChar(100)
-  guest_count       Int?            @default(1)
-  subtotal          Decimal         @db.Decimal(10, 2)
-  tip_percentage    Decimal         @db.Decimal(5, 2)
-  tip_amount        Decimal         @db.Decimal(10, 2)
-  tax               Decimal?        @default(0) @db.Decimal(10, 2)
-  total             Decimal         @db.Decimal(10, 2)
-  generated_at      DateTime?       @default(now()) @db.Timestamptz(6)
-  tenant            tenants         @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  order             orders          @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  table_session     table_sessions? @relation(fields: [table_session_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
-  survey_responses  survey_responses[]
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id        String             @db.Uuid
+  order_id         String             @db.Uuid
+  table_session_id String?            @db.Uuid
+  table_number     String?            @db.VarChar(20)
+  waiter_name      String?            @db.VarChar(100)
+  guest_count      Int?               @default(1)
+  subtotal         Decimal            @db.Decimal(10, 2)
+  tip_percentage   Decimal            @db.Decimal(5, 2)
+  tip_amount       Decimal            @db.Decimal(10, 2)
+  tax              Decimal?           @default(0) @db.Decimal(10, 2)
+  total            Decimal            @db.Decimal(10, 2)
+  generated_at     DateTime?          @default(now()) @db.Timestamptz(6)
+  created_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  orders           orders             @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  table_sessions   table_sessions?    @relation(fields: [table_session_id], references: [id], onUpdate: NoAction)
+  tenants          tenants            @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  survey_responses survey_responses[]
 
-  @@index([tenant_id], map: "idx_pre_bills_tenant")
-  @@index([order_id], map: "idx_pre_bills_order")
-  @@index([generated_at], map: "idx_pre_bills_generated")
+  @@index([generated_at(sort: Desc)], map: "idx_pre_bills_generated_at")
+  @@index([order_id], map: "idx_pre_bills_order_id")
+  @@index([tenant_id], map: "idx_pre_bills_tenant_id")
+  @@schema("public")
 }
 
-/// Survey configuration per tenant
-model surveys {
-  id                String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id         String             @unique @db.Uuid
-  survey_url        String?            @db.VarChar(500)
-  benefit_text      String?            @db.VarChar(200)
-  qr_code_url       String?            @db.VarChar(500)
-  is_active         Boolean?           @default(true)
-  created_at        DateTime?          @default(now()) @db.Timestamptz(6)
-  updated_at        DateTime?          @default(now()) @db.Timestamptz(6)
-  tenant            tenants            @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  survey_responses  survey_responses[]
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model products {
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id           String?               @db.Uuid
+  category_id         String?               @db.Uuid
+  name                String                @db.VarChar
+  slug                String                @db.VarChar
+  description         String?
+  price               Decimal               @db.Decimal(10, 2)
+  image_url           String?
+  preparation_time    Int?
+  beverage_type       String?               @db.VarChar
+  temperature_options String[]              @default(["hot"])
+  is_available        Boolean?              @default(true)
+  is_featured         Boolean?              @default(false)
+  display_order       Int?                  @default(0)
+  created_at          DateTime?             @default(now()) @db.Timestamptz(6)
+  inventory           inventory[]
+  inventory_movements inventory_movements[]
+  order_items         order_items[]
+  categories          categories?           @relation(fields: [category_id], references: [id], onUpdate: NoAction)
+  tenants             tenants?              @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  stock_alerts        stock_alerts[]
+  stock_inventory     stock_inventory[]
+  stock_movements     stock_movements[]
 
-  @@index([tenant_id], map: "idx_surveys_tenant")
+  @@unique([tenant_id, slug])
+  @@index([tenant_id, is_available], map: "idx_products_tenant_available")
+  @@schema("public")
 }
 
-/// Survey responses from customers
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model profiles {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id  String?   @db.Uuid
+  email      String?   @db.VarChar
+  full_name  String?   @db.VarChar
+  phone      String?   @db.VarChar
+  role       String?   @default("customer") @db.VarChar
+  avatar_url String?
+  is_active  Boolean?  @default(true)
+  last_login DateTime? @db.Timestamptz(6)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  tenants    tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model reservations {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id        String?   @db.Uuid
+  customer_name    String    @db.VarChar
+  customer_phone   String    @db.VarChar
+  customer_email   String?   @db.VarChar
+  reservation_date DateTime  @db.Date
+  reservation_time DateTime  @db.Time(6)
+  party_size       Int
+  table_number     String?   @db.VarChar
+  status           String?   @default("confirmed") @db.VarChar
+  special_requests String?
+  created_at       DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime? @default(now()) @db.Timestamptz(6)
+  tenants          tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model restaurant_tables {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id    String?   @db.Uuid
+  table_number String    @db.VarChar
+  capacity     Int
+  is_available Boolean?  @default(true)
+  created_at   DateTime? @default(now()) @db.Timestamptz(6)
+  tenants      tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([tenant_id, table_number])
+  @@index([tenant_id], map: "idx_restaurant_tables_tenant")
+  @@schema("public")
+}
+
+model role_permissions {
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  role       String    @db.VarChar(50)
+  resource   String    @db.VarChar(50)
+  actions    String[]
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@unique([role, resource])
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model stock_alerts {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id   String?   @db.Uuid
+  product_id  String?   @db.Uuid
+  alert_type  String    @db.VarChar
+  message     String
+  is_resolved Boolean?  @default(false)
+  resolved_at DateTime? @db.Timestamptz(6)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  products    products? @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tenants     tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([is_resolved], map: "idx_stock_alerts_resolved")
+  @@index([tenant_id], map: "idx_stock_alerts_tenant")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model stock_inventory {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id       String?           @db.Uuid
+  product_id      String?           @db.Uuid
+  current_stock   Decimal           @default(0) @db.Decimal(10, 2)
+  min_stock       Decimal           @default(0) @db.Decimal(10, 2)
+  max_stock       Decimal           @default(100) @db.Decimal(10, 2)
+  unit            String            @default("unidad") @db.VarChar
+  cost_per_unit   Decimal           @default(0) @db.Decimal(10, 2)
+  supplier        String?           @db.VarChar
+  location        String?           @db.VarChar
+  expiry_date     DateTime?         @db.Date
+  notes           String?
+  last_updated    DateTime?         @default(now()) @db.Timestamptz(6)
+  created_at      DateTime?         @default(now()) @db.Timestamptz(6)
+  products        products?         @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tenants         tenants?          @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  stock_movements stock_movements[]
+
+  @@unique([tenant_id, product_id])
+  @@index([tenant_id, product_id], map: "idx_stock_inventory_tenant_product")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model stock_movements {
+  id                 String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id          String?          @db.Uuid
+  product_id         String?          @db.Uuid
+  stock_inventory_id String?          @db.Uuid
+  movement_type      String           @db.VarChar
+  quantity           Decimal          @db.Decimal(10, 2)
+  unit_cost          Decimal?         @db.Decimal(10, 2)
+  total_cost         Decimal?         @db.Decimal(10, 2)
+  reason             String           @db.VarChar
+  reference_id       String?          @db.Uuid
+  reference_type     String?          @db.VarChar
+  notes              String?
+  created_by         String?          @db.VarChar
+  created_at         DateTime?        @default(now()) @db.Timestamptz(6)
+  products           products?        @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  stock_inventory    stock_inventory? @relation(fields: [stock_inventory_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tenants            tenants?         @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([created_at], map: "idx_stock_movements_created")
+  @@index([stock_inventory_id], map: "idx_stock_movements_inventory")
+  @@index([tenant_id], map: "idx_stock_movements_tenant")
+  @@schema("public")
+}
+
+model subscription_plans {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                 String                 @db.VarChar(100)
+  description          String?
+  price                Decimal                @db.Decimal(10, 2)
+  max_tables           Int?                   @default(10)
+  max_products         Int?                   @default(50)
+  max_people_per_table Int?                   @default(4)
+  has_paper_prebill    Boolean?               @default(true)
+  has_paper_command    Boolean?               @default(true)
+  has_surveys          Boolean?               @default(false)
+  has_analytics        Boolean?               @default(false)
+  is_active            Boolean?               @default(true)
+  created_at           DateTime?              @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?              @default(now()) @db.Timestamptz(6)
+  tenant_subscriptions tenant_subscriptions[]
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model suppliers {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id      String?   @db.Uuid
+  name           String    @db.VarChar
+  contact_person String?   @db.VarChar
+  email          String?   @db.VarChar
+  phone          String?   @db.VarChar
+  address        String?
+  tax_id         String?   @db.VarChar
+  payment_terms  String?   @db.VarChar
+  notes          String?
+  is_active      Boolean?  @default(true)
+  created_at     DateTime? @default(now()) @db.Timestamptz(6)
+  tenants        tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([tenant_id], map: "idx_suppliers_tenant")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model survey_responses {
-  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  survey_id     String      @db.Uuid
-  tenant_id     String      @db.Uuid
-  pre_bill_id   String?     @db.Uuid
+  id            String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  survey_id     String     @db.Uuid
+  tenant_id     String     @db.Uuid
+  pre_bill_id   String?    @db.Uuid
   response_data Json?
-  customer_name String?     @db.VarChar(100)
-  submitted_at  DateTime?   @default(now()) @db.Timestamptz(6)
-  survey        surveys     @relation(fields: [survey_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  tenant        tenants     @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  pre_bill      pre_bills?  @relation(fields: [pre_bill_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  customer_name String?    @db.VarChar(200)
+  submitted_at  DateTime?  @default(now()) @db.Timestamptz(6)
+  pre_bills     pre_bills? @relation(fields: [pre_bill_id], references: [id], onUpdate: NoAction)
+  surveys       surveys    @relation(fields: [survey_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tenants       tenants    @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@index([survey_id], map: "idx_survey_responses_survey")
-  @@index([tenant_id], map: "idx_survey_responses_tenant")
-  @@index([submitted_at], map: "idx_survey_responses_submitted")
+  @@index([submitted_at(sort: Desc)], map: "idx_survey_responses_submitted_at")
+  @@index([survey_id], map: "idx_survey_responses_survey_id")
+  @@index([tenant_id], map: "idx_survey_responses_tenant_id")
+  @@schema("public")
+}
+
+model surveys {
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id        String             @unique @db.Uuid
+  survey_url       String?
+  benefit_text     String?
+  qr_code_url      String?
+  is_active        Boolean?           @default(true)
+  created_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  survey_responses survey_responses[]
+  tenants          tenants            @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([tenant_id], map: "idx_surveys_tenant_id")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model table_sessions {
+  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id      String?     @db.Uuid
+  table_id       String?     @db.Uuid
+  session_code   String      @db.VarChar
+  customer_name  String?     @db.VarChar
+  customer_phone String?     @db.VarChar
+  started_at     DateTime?   @default(now()) @db.Timestamptz(6)
+  ended_at       DateTime?   @db.Timestamptz(6)
+  status         String?     @default("active") @db.VarChar
+  total_orders   Int?        @default(0)
+  total_amount   Decimal?    @default(0) @db.Decimal(10, 2)
+  waiter_name    String?     @db.VarChar(100)
+  guest_count    Int?        @default(1)
+  opened_at      DateTime?   @default(now()) @db.Timestamptz(6)
+  orders         orders[]
+  pre_bills      pre_bills[]
+  tables         tables?     @relation(fields: [table_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tenants        tenants?    @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model table_statuses {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  tenant_id   String    @db.Uuid
+  name        String    @db.VarChar(50)
+  color       String    @default("#gray") @db.VarChar(20)
+  icon        String?   @default("circle") @db.VarChar(50)
+  order_index Int       @default(0)
+  is_system   Boolean?  @default(false)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime? @default(now()) @db.Timestamptz(6)
+  tenants     tenants   @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tables      tables[]
+
+  @@unique([tenant_id, name])
+  @@index([tenant_id, order_index], map: "idx_table_statuses_order")
+  @@index([tenant_id], map: "idx_table_statuses_tenant")
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model tables {
+  id                   String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id            String?          @db.Uuid
+  number               String           @db.VarChar
+  capacity             Int
+  location             String?          @db.VarChar
+  unique_code          String?          @unique @db.VarChar
+  qr_code_url          String?
+  status               String?          @default("available") @db.VarChar
+  is_active            Boolean?         @default(true)
+  created_at           DateTime?        @default(now()) @db.Timestamptz(6)
+  qr_code_generated_at DateTime?        @default(now()) @db.Timestamptz(6)
+  qr_code_expires_at   DateTime?        @db.Timestamptz(6)
+  updated_at           DateTime?        @default(now()) @db.Timestamptz(6)
+  status_id            String?          @db.Uuid
+  max_capacity         Int?             @default(4)
+  table_sessions       table_sessions[]
+  table_statuses       table_statuses?  @relation(fields: [status_id], references: [id], onUpdate: NoAction)
+  tenants              tenants?         @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([tenant_id, number])
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tenant_settings {
+  id                      String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id               String?   @unique @db.Uuid
+  business_hours          Json?     @default("{\"friday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"monday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"sunday\": {\"open\": \"09:00\", \"close\": \"18:00\", \"closed\": false}, \"tuesday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"saturday\": {\"open\": \"09:00\", \"close\": \"21:00\", \"closed\": false}, \"thursday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}, \"wednesday\": {\"open\": \"08:00\", \"close\": \"20:00\", \"closed\": false}}")
+  tax_rate                Decimal?  @default(0.19) @db.Decimal(5, 4)
+  currency                String?   @default("CLP") @db.VarChar
+  order_auto_print        Boolean?  @default(false)
+  table_service_enabled   Boolean?  @default(true)
+  takeaway_enabled        Boolean?  @default(true)
+  delivery_enabled        Boolean?  @default(false)
+  notifications           Json?     @default("{\"sms\": false, \"push\": true, \"email\": true}")
+  created_at              DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime? @default(now()) @db.Timestamptz(6)
+  qr_code_expiration_days Int?
+  tenants                 tenants?  @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model tenant_subscriptions {
+  id                  String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id           String             @unique @db.Uuid
+  plan_id             String             @db.Uuid
+  custom_max_tables   Int?
+  custom_max_products Int?
+  custom_max_people   Int?
+  subscription_status String?            @default("active") @db.VarChar(50)
+  created_at          DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime?          @default(now()) @db.Timestamptz(6)
+  subscription_plans  subscription_plans @relation(fields: [plan_id], references: [id], onUpdate: NoAction)
+  tenants             tenants            @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([plan_id], map: "idx_tenant_subscriptions_plan_id")
+  @@index([tenant_id], map: "idx_tenant_subscriptions_tenant_id")
+  @@schema("public")
+}
+
+model tenants {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                 String                 @db.VarChar
+  slug                 String                 @unique @db.VarChar
+  subdomain            String?                @unique @db.VarChar
+  business_type        String?                @default("cafe") @db.VarChar
+  logo_url             String?
+  primary_color        String?                @default("#dc2626") @db.VarChar(7)
+  secondary_color      String?                @default("#f97316") @db.VarChar(7)
+  phone                String?                @db.VarChar
+  email                String?                @db.VarChar
+  address              String?
+  description          String?
+  timezone             String?                @default("America/Santiago") @db.VarChar
+  is_active            Boolean?               @default(true)
+  created_at           DateTime?              @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?              @default(now()) @db.Timestamptz(6)
+  tip_percentage       Decimal?               @default(10.0) @db.Decimal(5, 2)
+  show_survey          Boolean?               @default(false)
+  admin_audit_logs     admin_audit_logs[]
+  admin_users          admin_users[]
+  business_hours       business_hours[]
+  categories           categories[]
+  coupons              coupons[]
+  customer_coupons     customer_coupons[]
+  customer_loyalty     customer_loyalty[]
+  customers            customers[]
+  inventory            inventory[]
+  inventory_movements  inventory_movements[]
+  loyalty_programs     loyalty_programs[]
+  loyalty_transactions loyalty_transactions[]
+  marketing_campaigns  marketing_campaigns[]
+  orders               orders[]
+  pre_bills            pre_bills[]
+  products             products[]
+  profiles             profiles[]
+  reservations         reservations[]
+  restaurant_tables    restaurant_tables[]
+  stock_alerts         stock_alerts[]
+  stock_inventory      stock_inventory[]
+  stock_movements      stock_movements[]
+  suppliers            suppliers[]
+  survey_responses     survey_responses[]
+  surveys              surveys?
+  table_sessions       table_sessions[]
+  table_statuses       table_statuses[]
+  tables               tables[]
+  tenant_settings      tenant_settings?
+  tenant_subscriptions tenant_subscriptions?
+
+  @@schema("public")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model user_migration_status {
+  id                  String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  admin_user_id       String      @db.Uuid
+  email               String
+  migration_status    String
+  reset_email_sent_at DateTime?   @db.Timestamptz(6)
+  completed_at        DateTime?   @db.Timestamptz(6)
+  error_message       String?
+  created_at          DateTime?   @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime?   @default(now()) @db.Timestamptz(6)
+  admin_users         admin_users @relation(fields: [admin_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([admin_user_id], map: "idx_user_migration_status_admin_user_id")
+  @@index([email], map: "idx_user_migration_status_email")
+  @@schema("public")
+}
+
+enum aal_level {
+  aal1
+  aal2
+  aal3
+
+  @@schema("auth")
+}
+
+enum code_challenge_method {
+  s256
+  plain
+
+  @@schema("auth")
+}
+
+enum factor_status {
+  unverified
+  verified
+
+  @@schema("auth")
+}
+
+enum factor_type {
+  totp
+  webauthn
+  phone
+
+  @@schema("auth")
+}
+
+enum oauth_authorization_status {
+  pending
+  approved
+  denied
+  expired
+
+  @@schema("auth")
+}
+
+enum oauth_client_type {
+  public
+  confidential
+
+  @@schema("auth")
+}
+
+enum oauth_registration_type {
+  dynamic
+  manual
+
+  @@schema("auth")
+}
+
+enum oauth_response_type {
+  code
+
+  @@schema("auth")
+}
+
+enum one_time_token_type {
+  confirmation_token
+  reauthentication_token
+  recovery_token
+  email_change_token_new
+  email_change_token_current
+  phone_change_token
+
+  @@schema("auth")
 }
