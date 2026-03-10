@@ -95,13 +95,14 @@ const Dashboard = () => {
       // Load stock items
       const { data: stockItems, error: stockError } = await supabase
         .from("stock_inventory")
-        .select("*")
-        .eq("tenant_id", tenantId)
-        .lte("current_quantity", supabase.rpc("min_quantity"));
+        .select("current_stock, min_stock")
+        .eq("tenant_id", tenantId);
 
       if (stockError) console.error("Error loading stock:", stockError);
 
-      const lowStockItems = stockItems?.length || 0;
+      const lowStockItems = stockItems?.filter(item => 
+        parseFloat(item.current_stock) <= parseFloat(item.min_stock)
+      ).length || 0;
 
       // Load customers
       const { data: customers, error: customersError } = await supabase

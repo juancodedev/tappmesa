@@ -273,7 +273,7 @@ const PreBillSettings = () => {
           className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
             saved
               ? 'bg-green-600 text-white'
-              : 'bg-orange-600 hover:bg-orange-700 text-white'
+              : 'bg-orange-600 hover:bg-primary-700 text-white'
           } ${loading || !effectiveTenant ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <Save className="h-4 w-4" />

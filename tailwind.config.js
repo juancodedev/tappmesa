@@ -17,6 +17,7 @@ export default {
     extend: {
       colors: {
         primary: {
+          DEFAULT: '#8b5e3c',
           50: '#f7f3f0',
           100: '#eee0d5',
           200: '#d6bda9',
@@ -31,6 +32,7 @@ export default {
 
         // Alias for primary to support semantic 'coffee' classes
         coffee: {
+          DEFAULT: '#8b5e3c',
           50: '#f7f3f0',
           100: '#eee0d5',
           200: '#d6bda9',

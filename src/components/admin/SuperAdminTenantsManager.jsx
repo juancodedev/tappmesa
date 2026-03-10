@@ -593,7 +593,7 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
             <button
               onClick={handleAssignPlan}
               disabled={loading || !selectedPlanId}
-              className="mt-2 w-full px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
+              className="mt-2 w-full px-4 py-2 bg-orange-600 hover:bg-primary-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
             >
               {loading ? 'Asignando...' : 'Asignar Plan'}
             </button>
