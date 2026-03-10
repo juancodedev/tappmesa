@@ -177,7 +177,7 @@ const SystemUsersManager = () => {
 
           <button
             onClick={loadData}
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
           >
             <RefreshCw className="h-5 w-5" />
             <span>Actualizar</span>
@@ -327,7 +327,7 @@ const SystemUsersManager = () => {
                   {/* User Info */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="shrink-0 h-10 w-10 bg-linear-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+                      <div className="shrink-0 h-10 w-10 bg-primary rounded-full flex items-center justify-center">
                         <span className="text-white font-bold text-lg">
                           {user.full_name?.charAt(0).toUpperCase() || 'U'}
                         </span>

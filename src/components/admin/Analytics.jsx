@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { supabase } from '../../lib/supabase'
+import { useTenant } from '../../hooks/useTenant'
 import { 
   Package, 
   AlertTriangle, 
@@ -9,68 +11,71 @@ import {
   Search,
   Filter,
   Edit,
-  History
+  History,
+  X,
+  Save
 } from 'lucide-react'
 
-const StockManager = () => {
+const Analytics = () => {
+  const { tenant } = useTenant()
   const [inventory, setInventory] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [stockFilter, setStockFilter] = useState('all')
   const [showMovementModal, setShowMovementModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
+  const [saving, setSaving] = useState(false)
+  
+  const [movementForm, setMovementForm] = useState({
+    quantity: '',
+    reason: 'purchase',
+    notes: ''
+  })
+  
+  const [editForm, setEditForm] = useState({
+    min_stock: '',
+    max_stock: '',
+    unit: '',
+    cost_per_unit: ''
+  })
 
   useEffect(() => {
-    loadInventory()
-  }, [])
+    if (tenant) {
+      loadInventory()
+    }
+  }, [tenant])
 
   const loadInventory = async () => {
+    if (!tenant) return
+
     try {
       setLoading(true)
-      
-      // Datos de ejemplo - en producción cargaríamos desde Supabase
-      setInventory([
-        {
-          id: 1,
-          product: { id: 1, name: 'Café Espresso', category: 'Bebidas' },
-          current_stock: 50,
-          min_stock: 20,
-          max_stock: 100,
-          unit: 'kg',
-          cost_per_unit: 8500,
-          last_updated: '2024-12-19T08:00:00Z'
-        },
-        {
-          id: 2,
-          product: { id: 2, name: 'Leche Entera', category: 'Bebidas' },
-          current_stock: 15,
-          min_stock: 20,
-          max_stock: 80,
-          unit: 'litros',
-          cost_per_unit: 1200,
-          last_updated: '2024-12-19T07:30:00Z'
-        },
-        {
-          id: 3,
-          product: { id: 3, name: 'Croissant', category: 'Panadería' },
-          current_stock: 5,
-          min_stock: 10,
-          max_stock: 50,
-          unit: 'unidad',
-          cost_per_unit: 800,
-          last_updated: '2024-12-19T06:00:00Z'
-        },
-        {
-          id: 4,
-          product: { id: 4, name: 'Azúcar', category: 'Insumos' },
-          current_stock: 25,
-          min_stock: 15,
-          max_stock: 60,
-          unit: 'kg',
-          cost_per_unit: 1500,
-          last_updated: '2024-12-18T15:00:00Z'
+      const { data, error } = await supabase
+        .from('stock_inventory')
+        .select(`
+          *,
+          product:products(id, name, category:categories(name))
+        `)
+        .eq('tenant_id', tenant.id)
+        .order('last_updated', { ascending: false })
+
+      if (error) throw error
+
+      const transformedData = (data || []).map(item => ({
+        ...item,
+        current_stock: parseFloat(item.current_stock),
+        min_stock: parseFloat(item.min_stock),
+        max_stock: parseFloat(item.max_stock),
+        cost_per_unit: parseFloat(item.cost_per_unit),
+        product: {
+          id: item.product?.id,
+          name: item.product?.name || 'Producto sin nombre',
+          category: item.product?.category?.name || 'Sin categoría'
         }
-      ])
+      }))
+
+      setInventory(transformedData)
     } catch (error) {
       console.error('Error loading inventory:', error)
     } finally {
@@ -125,9 +130,105 @@ const StockManager = () => {
     })
   }
 
-  const handleStockMovement = (product, type) => {
-    setSelectedProduct({ ...product, movementType: type })
+  const handleStockMovement = (item, type) => {
+    setSelectedProduct({ ...item, movementType: type })
+    setMovementForm({ quantity: '', reason: type === 'add' ? 'purchase' : 'adjustment', notes: '' })
     setShowMovementModal(true)
+  }
+
+  const handleOpenEdit = (item) => {
+    setSelectedProduct(item)
+    setEditForm({
+      min_stock: item.min_stock,
+      max_stock: item.max_stock,
+      unit: item.unit,
+      cost_per_unit: item.cost_per_unit
+    })
+    setShowEditModal(true)
+  }
+
+  const handleSubmitEdit = async (e) => {
+    e.preventDefault()
+    if (!selectedProduct) return
+
+    try {
+      setSaving(true)
+      const { error } = await supabase
+        .from('stock_inventory')
+        .update({
+          min_stock: parseFloat(editForm.min_stock),
+          max_stock: parseFloat(editForm.max_stock),
+          unit: editForm.unit,
+          cost_per_unit: parseFloat(editForm.cost_per_unit),
+          last_updated: new Date().toISOString()
+        })
+        .eq('id', selectedProduct.id)
+
+      if (error) throw error
+
+      setShowEditModal(false)
+      await loadInventory()
+    } catch (error) {
+      console.error('Error updating inventory:', error)
+      alert('Error updating inventory: ' + error.message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleSubmitMovement = async (e) => {
+    e.preventDefault()
+    if (!selectedProduct || !movementForm.quantity) return
+
+    try {
+      setSaving(true)
+      const quantity = parseFloat(movementForm.quantity)
+      const movementType = selectedProduct.movementType === 'add' ? 'in' : 'out'
+      const newStock = selectedProduct.movementType === 'add'
+        ? selectedProduct.current_stock + quantity
+        : selectedProduct.current_stock - quantity
+
+      if (newStock < 0) {
+        alert('Insufficient stock')
+        return
+      }
+
+      // Record movement
+      const { error: movementError } = await supabase
+        .from('stock_movements')
+        .insert({
+          tenant_id: tenant.id,
+          product_id: selectedProduct.product_id,
+          stock_inventory_id: selectedProduct.id,
+          movement_type: movementType,
+          quantity: quantity,
+          unit_cost: selectedProduct.cost_per_unit,
+          total_cost: quantity * selectedProduct.cost_per_unit,
+          reason: movementForm.reason,
+          notes: movementForm.notes || null
+        })
+
+      if (movementError) throw movementError
+
+      // Update inventory
+      const { error: updateError } = await supabase
+        .from('stock_inventory')
+        .update({
+          current_stock: newStock,
+          last_updated: new Date().toISOString()
+        })
+        .eq('id', selectedProduct.id)
+
+      if (updateError) throw updateError
+
+      setShowMovementModal(false)
+      await loadInventory()
+    } catch (error) {
+      console.error('Error processing movement:', error)
+      alert('Error processing movement: ' + error.message)
+    } finally {
+      setSaving(false)
+    }
   }
 
   const lowStockCount = inventory.filter(item => item.current_stock <= item.min_stock).length
@@ -330,20 +431,21 @@ const StockManager = () => {
                         >
                           <History className="w-4 h-4" />
                         </button>
-                        <button
-                          className="text-indigo-600 hover:text-indigo-900 p-1 rounded transition-colors"
-                          title="Editar"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
+                          <button
+                            onClick={() => handleOpenEdit(item)}
+                            className="text-indigo-600 hover:text-indigo-900 p-1 rounded transition-colors"
+                            title="Editar"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
 
         {filteredInventory.length === 0 && (
           <div className="text-center py-12">
@@ -369,14 +471,18 @@ const StockManager = () => {
                 Stock actual: <span className="font-medium">{selectedProduct.current_stock} {selectedProduct.unit}</span>
               </p>
               
-              <div className="space-y-4">
+              <form onSubmit={handleSubmitMovement} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Cantidad
                   </label>
                   <input
                     type="number"
-                    min="1"
+                    min="0.01"
+                    step="0.01"
+                    required
+                    value={movementForm.quantity}
+                    onChange={(e) => setMovementForm({...movementForm, quantity: e.target.value})}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="Ingresa la cantidad"
                   />
@@ -386,7 +492,11 @@ const StockManager = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Motivo
                   </label>
-                  <select className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                  <select 
+                    value={movementForm.reason}
+                    onChange={(e) => setMovementForm({...movementForm, reason: e.target.value})}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  >
                     {selectedProduct.movementType === 'add' ? (
                       <>
                         <option value="purchase">Compra</option>
@@ -409,34 +519,142 @@ const StockManager = () => {
                   </label>
                   <textarea
                     rows={3}
+                    value={movementForm.notes}
+                    onChange={(e) => setMovementForm({...movementForm, notes: e.target.value})}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                     placeholder="Agregar notas sobre este movimiento..."
                   />
                 </div>
-              </div>
+
+                <div className="flex space-x-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowMovementModal(false)}
+                    className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className={`flex-1 px-4 py-2 rounded-lg transition-colors text-white shadow-sm flex items-center justify-center space-x-2 ${
+                      selectedProduct.movementType === 'add'
+                        ? 'bg-green-600 hover:bg-green-700'
+                        : 'bg-red-600 hover:bg-red-700'
+                    }`}
+                  >
+                    {saving ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                    ) : null}
+                    <span>{saving ? 'Procesando...' : (selectedProduct.movementType === 'add' ? 'Agregar Stock' : 'Reducir Stock')}</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {showEditModal && selectedProduct && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Editar Configuración de Stock
+              </h3>
+              <button 
+                onClick={() => setShowEditModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-6 h-6" />
+              </button>
             </div>
             
-            <div className="flex space-x-3">
-              <button
-                onClick={() => setShowMovementModal(false)}
-                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={() => {
-                  console.log('Processing stock movement...')
-                  setShowMovementModal(false)
-                }}
-                className={`flex-1 px-4 py-2 rounded-lg transition-colors text-white ${
-                  selectedProduct.movementType === 'add'
-                    ? 'bg-green-600 hover:bg-green-700'
-                    : 'bg-red-600 hover:bg-red-700'
-                }`}
-              >
-                {selectedProduct.movementType === 'add' ? 'Agregar Stock' : 'Reducir Stock'}
-              </button>
-            </div>
+            <p className="text-sm text-gray-600 mb-4">
+              Producto: <span className="font-medium">{selectedProduct.product.name}</span>
+            </p>
+
+            <form onSubmit={handleSubmitEdit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Stock Mínimo
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    value={editForm.min_stock}
+                    onChange={(e) => setEditForm({...editForm, min_stock: e.target.value})}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Stock Máximo
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    value={editForm.max_stock}
+                    onChange={(e) => setEditForm({...editForm, max_stock: e.target.value})}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Unidad
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editForm.unit}
+                  onChange={(e) => setEditForm({...editForm, unit: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="ej: kg, litros, unidad"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Costo por Unidad
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  required
+                  value={editForm.cost_per_unit}
+                  onChange={(e) => setEditForm({...editForm, cost_per_unit: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(false)}
+                  className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
+                >
+                  {saving ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                  ) : (
+                    <Save className="w-4 h-4" />
+                  )}
+                  <span>{saving ? 'Guardando...' : 'Guardar'}</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -444,4 +662,4 @@ const StockManager = () => {
   )
 }
 
-export default StockManager
+export default Analytics

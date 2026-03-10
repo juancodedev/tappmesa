@@ -153,18 +153,27 @@ const QRGenerator = () => {
     }
   }
 
-  const downloadQR = (table) => {
+  const downloadQR = async (table) => {
     // Crear URL del QR usando un servicio externo
     const qrUrl = generateQRUrl(table)
     const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrUrl)}`
     
-    // Crear link de descarga
-    const link = document.createElement('a')
-    link.href = qrApiUrl
-    link.download = `QR-${table.number.replace(/\s+/g, '_')}-${table.unique_code}.png`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    try {
+      const response = await fetch(qrApiUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `QR-${table.number.replace(/\s+/g, '_')}-${table.unique_code}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading QR:', error);
+      // Fallback a apertura en nueva pestaña si falla el fetch
+      window.open(qrApiUrl, '_blank');
+    }
   }
 
   const previewQR = (table) => {
@@ -288,14 +297,14 @@ const QRGenerator = () => {
                 <div className="flex space-x-2">
                   <button
                     onClick={() => previewQR(table)}
-                    className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700  hover:text-white hover:bg-primary-700 transition-colors"
+                    className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
                   >
                     <Eye className="w-4 h-4" />
                     <span>Vista previa</span>
                   </button>
                   <button
                     onClick={() => downloadQR(table)}
-                    className="flex-1 border border-gray-300 flex items-center justify-center space-x-2 px-3 py-2 bg-primary text-gray-700 rounded-lg text-sm font-medium hover:text-white hover:bg-primary-700 transition-colors"
+                    className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors shadow-sm"
                   >
                     <Download className="w-4 h-4" />
                     <span>Descargar</span>
@@ -332,7 +341,7 @@ const QRGenerator = () => {
               <div className="flex space-x-3">
                 <button
                   onClick={() => downloadQR(selectedTable)}
-                  className="flex-1 border border-gray-300 bg-primary text-gray-700 px-4 py-2 rounded-lg hover:text-white hover:bg-primary-700 transition-colors"
+                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
                 >
                   Descargar QR
                 </button>

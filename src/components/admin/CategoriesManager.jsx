@@ -294,7 +294,7 @@ const CategoriesManager = () => {
             </p>
             <button
               onClick={() => openModal()}
-              className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+              className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
             >
               Crear Categoría
             </button>
@@ -489,7 +489,7 @@ const CategoriesManager = () => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2"
+                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
                 >
                   <Save className="w-4 h-4" />
                   <span>{editingCategory ? 'Actualizar' : 'Crear'}</span>

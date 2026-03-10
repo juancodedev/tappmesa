@@ -121,6 +121,15 @@ const OrdersManager = () => {
       
       console.log('✅ Estado del pedido actualizado:', data[0])
       
+      // Automatización: Si el pedido pasa a 'preparing', poner la mesa como 'occupied'
+      if (newStatus === 'preparing' && data[0].table_id) {
+        console.log(` Automatizando mesa ${data[0].table_id} -> occupied`)
+        await supabase
+          .from('tables')
+          .update({ status: 'occupied' })
+          .eq('id', data[0].table_id)
+      }
+      
       // Actualizar el estado local inmediatamente
       setOrders(prevOrders => 
         prevOrders.map(order => 
@@ -265,7 +274,7 @@ const OrdersManager = () => {
         <button
           onClick={loadOrders}
           disabled={loading}
-          className="flex items-center space-x-2 bg-primary text-gray-700 px-4 py-2 rounded-lg border border-gray-300 hover:text-white hover:bg-primary-700 transition-colors disabled:opacity-50"
+          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm disabled:opacity-50"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           <span>Actualizar</span>

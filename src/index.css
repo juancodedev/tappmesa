@@ -13,6 +13,7 @@
   --color-primary-300: #bf957a;
   --color-primary-400: #a97253;
   --color-primary-500: #8b5e3c;
+  --color-primary: #8b5e3c;
   /* Coffee signature */
   --color-primary-600: #6f4a30;
   --color-primary-700: #543724;
@@ -83,6 +84,7 @@
   --color-coffee-300: #bf957a;
   --color-coffee-400: #a97253;
   --color-coffee-500: #8b5e3c;
+  --color-coffee: #8b5e3c;
   --color-coffee-600: #6f4a30;
   --color-coffee-700: #543724;
   --color-coffee-800: #3a2619;
