@@ -598,7 +598,7 @@ const StockManager = () => {
                 className={`flex-1 px-4 py-2 rounded-lg transition-colors text-white ${
                   selectedProduct.movementType === 'add'
                     ? 'bg-green-600 hover:bg-green-700'
-                    : 'bg-red-600 hover:bg-amber-700'
+                    : 'bg-red-600 hover:bg-red-700'
                 }`}
               >
                 {selectedProduct.movementType === 'add' ? 'Agregar Stock' : 'Reducir Stock'}

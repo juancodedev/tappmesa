@@ -441,7 +441,7 @@ const CompleteStockManager = () => {
         </div>
         <button
           onClick={loadAllData}
-          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors"
+          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
         >
           <RefreshCw className="w-4 h-4" />
           <span>Actualizar</span>
@@ -867,7 +867,7 @@ const CompleteStockManager = () => {
                     movementForm.type === "in"
                       ? "bg-green-600 hover:bg-green-700"
                       : movementForm.type === "out"
-                      ? "bg-red-600 hover:bg-amber-700"
+                      ? "bg-red-600 hover:bg-primary-700"
                       : "bg-blue-600 hover:bg-blue-700"
                   }`}
                 >
@@ -1061,7 +1061,7 @@ const CompleteStockManager = () => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors flex items-center justify-center space-x-2"
+                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2"
                 >
                   <Save className="w-4 h-4" />
                   <span>Guardar Cambios</span>
@@ -1164,7 +1164,7 @@ const CompleteStockManager = () => {
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => setShowHistoryModal(false)}
-                className="bg-primary text-gray-700 px-6 py-2 rounded-lg border border-gray-300 bg-primary hover:text-white hover:bg-amber-700 transition-colors"
+                className="bg-primary text-gray-700 px-6 py-2 rounded-lg border border-gray-300 bg-primary hover:text-white hover:bg-primary-700 transition-colors"
               >
                 Cerrar
               </button>

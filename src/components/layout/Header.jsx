@@ -62,9 +62,9 @@ const Header = ({ onOpenLogin, onOpenRegister }) => {
           <div className="flex items-center">
             <button 
               onClick={() => navigate('/')}
-              className="flex items-center gap-3 text-xl font-bold text-coffee-900 hover:text-primary-500 transition-colors"
+              className="flex items-center gap-3 text-xl font-bold text-primary-900 hover:text-primary-600 transition-colors"
             >
-              <div className="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center text-white text-xl">
+              <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center text-white text-xl">
                 ☕
               </div>
               <span>TappMesa</span>
@@ -77,7 +77,7 @@ const Header = ({ onOpenLogin, onOpenRegister }) => {
               <button
                 key={index}
                 onClick={() => handleNavClick(item)}
-                className="text-coffee-600 hover:text-primary-500 font-medium transition-colors"
+                className="text-primary-600 hover:text-primary-800 font-medium transition-colors"
               >
                 {item.label}
               </button>
@@ -88,13 +88,13 @@ const Header = ({ onOpenLogin, onOpenRegister }) => {
           <div className="hidden lg:flex items-center space-x-4">
             <button
               onClick={handleLogin}
-              className="text-coffee-600 hover:text-primary-500 font-medium px-4 py-2 transition-colors"
+              className="text-primary-600 hover:text-primary-800 font-medium px-4 py-2 transition-colors"
             >
               Iniciar Sesión
             </button>
             <button
               onClick={handleRegister}
-              className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 touch-target"
+              className="bg-primary hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 touch-target"
             >
               Comenzar Gratis
             </button>
@@ -107,13 +107,13 @@ const Header = ({ onOpenLogin, onOpenRegister }) => {
             aria-label="Toggle mobile menu"
           >
             <div className="w-6 h-6 flex flex-col justify-center items-center">
-              <span className={`w-5 h-0.5 bg-coffee-600 transition-all duration-300 ${
+              <span className={`w-5 h-0.5 bg-primary-600 transition-all duration-300 ${
                 isMobileMenuOpen ? 'rotate-45 translate-y-1' : ''
               }`}></span>
-              <span className={`w-5 h-0.5 bg-coffee-600 my-1 transition-opacity duration-300 ${
+              <span className={`w-5 h-0.5 bg-primary-600 my-1 transition-opacity duration-300 ${
                 isMobileMenuOpen ? 'opacity-0' : ''
               }`}></span>
-              <span className={`w-5 h-0.5 bg-coffee-600 transition-all duration-300 ${
+              <span className={`w-5 h-0.5 bg-primary-600 transition-all duration-300 ${
                 isMobileMenuOpen ? '-rotate-45 -translate-y-1' : ''
               }`}></span>
             </div>
@@ -130,7 +130,7 @@ const Header = ({ onOpenLogin, onOpenRegister }) => {
                 <button
                   key={index}
                   onClick={() => handleNavClick(item)}
-                  className="text-left text-coffee-600 hover:text-primary-500 font-medium py-2 transition-colors touch-target"
+                  className="text-left text-primary-600 hover:text-primary-800 font-medium py-2 transition-colors touch-target"
                 >
                   {item.label}
                 </button>
@@ -153,8 +153,8 @@ const Header = ({ onOpenLogin, onOpenRegister }) => {
             </div>
 
             <div className="mt-4 pt-4 border-t border-cream-200 text-center">
-              <p className="text-sm text-coffee-500 mb-2">¿Necesitas ayuda?</p>
-              <a href="tel:+56912345678" className="text-primary-500 font-medium text-sm">
+              <p className="text-sm text-primary-500 mb-2">¿Necesitas ayuda?</p>
+              <a href="tel:+56912345678" className="text-primary-700 font-medium text-sm">
                 ☕ +56 9 1234 5678
               </a>
             </div>

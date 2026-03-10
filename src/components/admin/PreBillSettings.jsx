@@ -240,7 +240,7 @@ const PreBillSettings = () => {
               </p>
               <button
                 onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-red-600 hover:bg-amber-700 text-white rounded-lg text-sm transition-colors"
+                className="mt-4 px-4 py-2 bg-red-600 hover:bg-primary-700 text-white rounded-lg text-sm transition-colors"
               >
                 Recargar página
               </button>
