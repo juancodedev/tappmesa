@@ -199,6 +199,17 @@ export function AuthProvider({ children }) {
       return tenantAdminPermissions.includes(`${resource}:${action}`);
     }
 
+    // Permisos delegados para el personal (staff)
+    if (state.user.role === 'staff') {
+      const staffPermissions = [
+        'orders:read', 'orders:write',
+        'reservations:read', 'reservations:write',
+        'customers:read',
+        'tables:read'
+      ];
+      return staffPermissions.includes(`${resource}:${action}`);
+    }
+
     // Default: no permissions for other roles
     return false;
   };
