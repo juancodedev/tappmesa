@@ -355,7 +355,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
               <p className="text-xs text-gray-500 mt-1">Cargando mesas disponibles...</p>
             )}
             {!loadingTables && availableTables.length === 0 && (
-              <p className="text-xs text-amber-600 mt-1">
+              <p className="text-xs text-primary-600 mt-1">
                 ⚠️ No hay mesas disponibles para la fecha y hora seleccionadas con capacidad para {formData.party_size} personas
               </p>
             )}

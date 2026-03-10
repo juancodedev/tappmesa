@@ -278,7 +278,7 @@ const Dashboard = () => {
               <p className="text-2xl font-bold text-primary-900 mt-1">
                 {stats.occupiedTables}/12
               </p>
-              <p className="text-sm text-orange-700 font-medium mt-1">50% ocupación</p>
+              <p className="text-sm text-primary-700 font-medium mt-1">50% ocupación</p>
             </div>
             <div className="p-3 bg-linear-to-br from-primary-500 to-primary-600 rounded-2xl shadow-lg">
               <Coffee className="w-6 h-6 text-white" />
