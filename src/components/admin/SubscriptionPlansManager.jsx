@@ -177,7 +177,7 @@ const SubscriptionPlansManager = () => {
         </div>
         <button
           onClick={() => setShowNewPlanForm(true)}
-          className="flex items-center space-x-2 px-4 py-2 bg-orange-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+          className="flex items-center space-x-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors"
         >
           <Plus className="h-5 w-5" />
           <span>Nuevo Plan</span>
@@ -340,7 +340,7 @@ const SubscriptionPlansManager = () => {
               </button>
               <button
                 type="submit"
-                className="flex items-center space-x-2 px-4 py-2 bg-orange-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors"
               >
                 <Save className="h-4 w-4" />
                 <span>Crear Plan</span>

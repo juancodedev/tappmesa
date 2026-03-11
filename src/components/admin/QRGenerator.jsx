@@ -160,6 +160,10 @@ const QRGenerator = () => {
     
     try {
       const response = await fetch(qrApiUrl);
+      const contentType = response.headers.get('content-type') || '';
+      if (!response.ok || !contentType.toLowerCase().includes('image')) {
+        throw new Error(`Unexpected response when fetching QR code: ${response.status} ${response.statusText}`);
+      }
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
