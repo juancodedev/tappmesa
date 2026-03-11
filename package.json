@@ -6,7 +6,7 @@
   "pnpm": {
     "overrides": {
       "lodash": "4.17.23",
-      "hono": "4.11.10",
+      "hono": "4.12.7",
       "diff": "8.0.3",
       "esbuild": "0.21.5"
     }
