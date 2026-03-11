@@ -117,28 +117,43 @@ const ReservationsManager = () => {
     if (!editingReservation) return
 
     try {
-      const { error } = await supabase
-        .from('reservations')
-        .update({
-          customer_name: editingReservation.customer_name,
-          customer_phone: editingReservation.customer_phone,
-          customer_email: editingReservation.customer_email || null,
-          reservation_date: editingReservation.reservation_date,
-          reservation_time: editingReservation.reservation_time,
-          party_size: parseInt(editingReservation.party_size),
-          table_number: editingReservation.table_number || null,
-          special_requests: editingReservation.special_requests || null,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', editingReservation.id)
+      const reservationData = {
+        tenant_id: tenantId,
+        customer_name: editingReservation.customer_name,
+        customer_phone: editingReservation.customer_phone,
+        customer_email: editingReservation.customer_email || null,
+        reservation_date: editingReservation.reservation_date,
+        reservation_time: editingReservation.reservation_time,
+        party_size: parseInt(editingReservation.party_size),
+        table_number: editingReservation.table_number || null,
+        special_requests: editingReservation.special_requests || null,
+        status: editingReservation.status || 'confirmed',
+        updated_at: new Date().toISOString()
+      }
 
-      if (error) throw error
+      if (editingReservation.id) {
+        // Actualizar existente
+        const { error } = await supabase
+          .from('reservations')
+          .update(reservationData)
+          .eq('id', editingReservation.id)
+          .eq('tenant_id', tenantId)
+
+        if (error) throw error
+      } else {
+        // Crear nueva
+        const { error } = await supabase
+          .from('reservations')
+          .insert([reservationData])
+
+        if (error) throw error
+      }
 
       await loadReservations()
       closeEditModal()
     } catch (error) {
-      logger.error('Error updating reservation:', error)
-      alert('Error al actualizar la reserva: ' + error.message)
+      logger.error('Error saving reservation:', error)
+      alert('Error al guardar la reserva: ' + error.message)
     }
   }
 
@@ -246,13 +261,34 @@ const ReservationsManager = () => {
             }
           </p>
         </div>
-        <button
-          onClick={loadReservations}
-          className="flex items-center space-x-2 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          <RefreshCw className="w-4 h-4" />
-          <span>Actualizar</span>
-        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => {
+              const today = new Date().toISOString().split('T')[0]
+              setEditingReservation({
+                customer_name: '',
+                customer_phone: '',
+                customer_email: '',
+                reservation_date: today,
+                reservation_time: '12:00',
+                party_size: 2,
+                status: 'confirmed'
+              })
+              setShowEditModal(true)
+            }}
+            className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
+          >
+            <Calendar className="w-4 h-4" />
+            <span>Nueva Reserva</span>
+          </button>
+          <button
+            onClick={loadReservations}
+            className="flex items-center space-x-2 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>Actualizar</span>
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -419,7 +455,9 @@ const ReservationsManager = () => {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={closeEditModal}>
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0">
-              <h2 className="text-xl font-bold text-gray-900">Editar Reserva</h2>
+              <h2 className="text-xl font-bold text-gray-900">
+                {editingReservation.id ? 'Editar Reserva' : 'Nueva Reserva'}
+              </h2>
               <button onClick={closeEditModal} className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
                 <X className="w-5 h-5" />
               </button>
@@ -543,7 +581,7 @@ const ReservationsManager = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-amber-700 transition-colors"
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
                 >
                   Guardar Cambios
                 </button>

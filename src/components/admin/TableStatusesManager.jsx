@@ -288,7 +288,7 @@ const TableStatusesManager = () => {
           </div>
           <button
             onClick={() => setCreating(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-amber-700 transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span>Nuevo Estado</span>
@@ -329,7 +329,7 @@ const TableStatusesManager = () => {
                           onClick={() => setFormData({ ...formData, color: color.value })}
                           className={`flex items-center space-x-2 px-3 py-2 rounded-lg border-2 transition-all ${
                             formData.color === color.value
-                              ? 'border-primary bg-red-50'
+                              ? 'border-primary bg-primary-50'
                               : 'border-gray-200 hover:border-gray-300'
                           }`}
                         >
@@ -351,7 +351,7 @@ const TableStatusesManager = () => {
                           onClick={() => setFormData({ ...formData, icon: icon.value })}
                           className={`flex items-center space-x-2 px-3 py-2 rounded-lg border-2 transition-all ${
                             formData.icon === icon.value
-                              ? 'border-primary bg-red-50'
+                              ? 'border-primary bg-primary-50'
                               : 'border-gray-200 hover:border-gray-300'
                           }`}
                         >
@@ -479,7 +479,7 @@ const TableStatusesManager = () => {
                       onClick={() => setFormData({ ...formData, color: color.value })}
                       className={`flex items-center space-x-2 px-3 py-2 rounded-lg border-2 transition-all ${
                         formData.color === color.value
-                          ? 'border-primary bg-red-50'
+                          ? 'border-primary bg-primary-50'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
@@ -501,7 +501,7 @@ const TableStatusesManager = () => {
                       onClick={() => setFormData({ ...formData, icon: icon.value })}
                       className={`flex items-center space-x-2 px-3 py-2 rounded-lg border-2 transition-all ${
                         formData.icon === icon.value
-                          ? 'border-primary bg-red-50'
+                          ? 'border-primary bg-primary-50'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
@@ -515,7 +515,7 @@ const TableStatusesManager = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={handleCreate}
-                  className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-amber-700 transition-colors"
+                  className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Crear Estado</span>

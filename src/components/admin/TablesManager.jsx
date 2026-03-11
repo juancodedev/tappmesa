@@ -608,12 +608,12 @@ const TablesManager = () => {
 
           {oldCodesCount > 0 && (
             <div className="mt-2 flex items-center space-x-2">
-              <span className="text-sm text-orange-600">
+              <span className="text-sm text-primary-600">
                 ⚠️ {oldCodesCount} mesa{oldCodesCount !== 1 ? 's' : ''} con código antiguo
               </span>
               <button
                 onClick={handleRegenerateAllOldCodes}
-                className="text-sm text-primary hover:text-red-700 underline"
+                className="text-sm text-primary hover:text-primary-800 underline"
               >
                 Actualizar todas
               </button>
@@ -622,7 +622,7 @@ const TablesManager = () => {
         </div>
         <button
           onClick={handleAddTable}
-          className="flex items-center space-x-2 bg-primary border border-gray-300  text-gray-700 px-4 py-2 rounded-lg hover:text-white hover:bg-amber-700 transition-colors"
+          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" />
           <span>Agregar Mesa</span>
@@ -739,7 +739,7 @@ const TablesManager = () => {
                     {table.unique_code}
                   </code>
                   {isOldCodeFormat(table.unique_code) && (
-                    <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">
+                    <span className="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded">
                       Antiguo
                     </span>
                   )}
@@ -747,7 +747,7 @@ const TablesManager = () => {
                 {isOldCodeFormat(table.unique_code) && (
                   <button
                     onClick={() => handleRegenerateCode(table.id)}
-                    className="mt-1 text-xs text-primary hover:text-red-700 underline"
+                    className="mt-1 text-xs text-primary hover:text-primary-800 underline"
                   >
                     Actualizar a nuevo formato
                   </button>
@@ -767,7 +767,7 @@ const TablesManager = () => {
                 </button>
                 <button
                   onClick={() => handleEditTable(table)}
-                  className="flex-1 flex items-center border border-gray-300 justify-center space-x-1 px-3 py-2 text-sm font-medium text-gray-700 bg-primary rounded-lg  hover:text-white hover:bg-amber-700 transition-colors"
+                  className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
                 >
                   <Edit className="w-4 h-4" />
                   <span>Editar</span>
@@ -875,7 +875,7 @@ const TablesManager = () => {
               <button
                 onClick={handleSaveTable}
                 disabled={saving || !formData.number.trim()}
-                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-sm"
               >
                 {saving ? (
                   <>

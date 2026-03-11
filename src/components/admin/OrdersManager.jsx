@@ -121,6 +121,20 @@ const OrdersManager = () => {
       
       console.log('✅ Estado del pedido actualizado:', data[0])
       
+      // Automatización: Si el pedido pasa a 'preparing', poner la mesa como 'occupied'
+      if (newStatus === 'preparing' && data[0].table_id) {
+        console.log(` Automatizando mesa ${data[0].table_id} -> occupied`)
+        const { error: tableUpdateError } = await supabase
+          .from('tables')
+          .update({ status: 'occupied' })
+          .eq('id', data[0].table_id)
+          .eq('tenant_id', tenantId)
+
+        if (tableUpdateError) {
+          console.error('Error al actualizar el estado de la mesa en Supabase:', tableUpdateError)
+        }
+      }
+      
       // Actualizar el estado local inmediatamente
       setOrders(prevOrders => 
         prevOrders.map(order => 
@@ -265,7 +279,7 @@ const OrdersManager = () => {
         <button
           onClick={loadOrders}
           disabled={loading}
-          className="flex items-center space-x-2 bg-primary text-gray-700 px-4 py-2 rounded-lg border border-gray-300 hover:text-white hover:bg-amber-700 transition-colors disabled:opacity-50"
+          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm disabled:opacity-50"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           <span>Actualizar</span>
@@ -411,7 +425,7 @@ const OrdersManager = () => {
                       <button
                         onClick={() => updateOrderStatus(order.id, 'cancelled')}
                         disabled={updating}
-                        className="bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-amber-700 transition-colors disabled:opacity-50"
+                        className="bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
                       >
                         {updating ? 'Actualizando...' : 'Cancelar'}
                       </button>
@@ -430,7 +444,7 @@ const OrdersManager = () => {
                       <button
                         onClick={() => updateOrderStatus(order.id, 'cancelled')}
                         disabled={updating}
-                        className="bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-amber-700 transition-colors disabled:opacity-50"
+                        className="bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
                       >
                         {updating ? 'Actualizando...' : 'Cancelar'}
                       </button>
@@ -540,7 +554,7 @@ const OrdersManager = () => {
 
             <button
               onClick={() => setSelectedOrder(null)}
-              className="w-full mt-6 bg-primary text-gray-700 border  border-gray-300 py-2 rounded-lg hover:text-white hover:bg-amber-700  transition-colors"
+              className="w-full mt-6 bg-primary text-white py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
             >
               Cerrar
             </button>

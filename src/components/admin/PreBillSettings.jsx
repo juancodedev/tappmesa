@@ -240,7 +240,7 @@ const PreBillSettings = () => {
               </p>
               <button
                 onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-red-600 hover:bg-amber-700 text-white rounded-lg text-sm transition-colors"
+                className="mt-4 px-4 py-2 bg-red-600 hover:bg-primary-700 text-white rounded-lg text-sm transition-colors"
               >
                 Recargar página
               </button>
@@ -273,7 +273,7 @@ const PreBillSettings = () => {
           className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
             saved
               ? 'bg-green-600 text-white'
-              : 'bg-orange-600 hover:bg-orange-700 text-white'
+              : 'bg-orange-600 hover:bg-primary-700 text-white'
           } ${loading || !effectiveTenant ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <Save className="h-4 w-4" />

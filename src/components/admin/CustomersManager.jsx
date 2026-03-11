@@ -37,6 +37,15 @@ const CustomersManager = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [customerFilter, setCustomerFilter] = useState("all");
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    is_vip: false,
+    notes: ''
+  });
 
   useEffect(() => {
     if (tenantId) {
@@ -84,6 +93,51 @@ const CustomersManager = () => {
       setCustomers([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleEditCustomer = (customer) => {
+    setEditFormData({
+      name: customer.name || '',
+      phone: customer.phone || '',
+      email: customer.email || '',
+      is_vip: customer.is_vip || false,
+      notes: customer.notes || ''
+    });
+    setSelectedCustomer(customer);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateCustomer = async (e) => {
+    e.preventDefault();
+    if (!selectedCustomer) return;
+
+    try {
+      setSaving(true);
+      const { error } = await supabase
+        .from("customers")
+        .update({
+          name: editFormData.name,
+          phone: editFormData.phone,
+          email: editFormData.email,
+          is_vip: editFormData.is_vip,
+          notes: editFormData.notes,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", selectedCustomer.id)
+        .eq("tenant_id", tenantId);
+
+      if (error) throw error;
+
+      console.log("✅ Cliente actualizado");
+      setShowEditModal(false);
+      setSelectedCustomer(null);
+      await loadCustomers();
+    } catch (error) {
+      console.error("Error actualizando cliente:", error);
+      alert("Error al actualizar cliente: " + error.message);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -414,6 +468,7 @@ const CustomersManager = () => {
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
+                          onClick={() => handleEditCustomer(customer)}
                           className="text-gray-600 hover:text-gray-900 p-1 rounded transition-colors"
                           title="Editar"
                         >
@@ -546,11 +601,125 @@ const CustomersManager = () => {
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => setSelectedCustomer(null)}
-                className="bg-primary text-gray-700 border border-gray-300 px-6 py-2 rounded-lg hover:text-white hover:bg-amber-700 transition-colors"
+                className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
               >
                 Cerrar
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de edición del cliente */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Editar Cliente
+              </h3>
+              <button
+                onClick={() => {
+                  setShowEditModal(false);
+                  setSelectedCustomer(null);
+                }}
+                className="text-gray-400 hover:text-gray-600 transition-colors text-2xl"
+              >
+                ×
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateCustomer} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nombre
+                </label>
+                <input
+                  type="text"
+                  value={editFormData.name}
+                  onChange={(e) => setEditFormData({...editFormData, name: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  placeholder="Nombre del cliente"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Teléfono
+                </label>
+                <input
+                  type="tel"
+                  value={editFormData.phone}
+                  onChange={(e) => setEditFormData({...editFormData, phone: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  placeholder="+569..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={editFormData.email}
+                  onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  placeholder="email@ejemplo.com"
+                />
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="is_vip"
+                  checked={editFormData.is_vip}
+                  onChange={(e) => setEditFormData({...editFormData, is_vip: e.target.checked})}
+                  className="rounded border-gray-300 text-primary focus:ring-primary"
+                />
+                <label htmlFor="is_vip" className="ml-2 text-sm text-gray-700 font-medium">
+                  Cliente VIP
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Notas
+                </label>
+                <textarea
+                  value={editFormData.notes}
+                  onChange={(e) => setEditFormData({...editFormData, notes: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  rows="3"
+                  placeholder="Notas adicionales sobre el cliente..."
+                ></textarea>
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowEditModal(false);
+                    setSelectedCustomer(null);
+                  }}
+                  className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
+                >
+                  {saving ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                  ) : (
+                    <Save className="w-4 h-4" />
+                  )}
+                  <span>{saving ? 'Guardando...' : 'Guardar Cambios'}</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

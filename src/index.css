@@ -13,6 +13,7 @@
   --color-primary-300: #bf957a;
   --color-primary-400: #a97253;
   --color-primary-500: #8b5e3c;
+  --color-primary: #8b5e3c;
   /* Coffee signature */
   --color-primary-600: #6f4a30;
   --color-primary-700: #543724;
@@ -76,7 +77,18 @@
   --color-cream-600: #8c7d62;
   --color-cream-700: #6b604b;
   --color-cream-800: #4a4334;
-  --color-cream-900: #29251d;
+  /* Coffee: Alias of Primary */
+  --color-coffee-50: #f7f3f0;
+  --color-coffee-100: #eee0d5;
+  --color-coffee-200: #d6bda9;
+  --color-coffee-300: #bf957a;
+  --color-coffee-400: #a97253;
+  --color-coffee-500: #8b5e3c;
+  --color-coffee: #8b5e3c;
+  --color-coffee-600: #6f4a30;
+  --color-coffee-700: #543724;
+  --color-coffee-800: #3a2619;
+  --color-coffee-900: #20150d;
 
   /* Custom Box Shadows */
   --shadow-cafe-sm: 0 2px 4px rgba(74, 55, 40, 0.05);

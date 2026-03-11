@@ -130,7 +130,7 @@ const CartItem = ({ item }) => {
               <div className="flex space-x-2">
                 <button
                   onClick={handleNotesSubmit}
-                  className="text-xs bg-primary text-white px-3 py-1 rounded-lg hover:bg-amber-700 transition-colors"
+                  className="text-xs bg-primary text-white px-3 py-1 rounded-lg hover:bg-primary-700 transition-colors"
                 >
                   Guardar
                 </button>
@@ -302,7 +302,7 @@ const Cart = () => {
                 setOrderResult(null)
                 closeCart()
               }}
-              className="w-full bg-primary text-gray-700 py-3 border border-gray-500 rounded-lg font-semibold hover:text-white hover:bg-amber-700 transition-colors"
+              className="w-full bg-primary text-gray-700 py-3 border border-gray-500 rounded-lg font-semibold hover:text-white hover:bg-primary-700 transition-colors"
             >
               Continuar
             </button>
@@ -474,7 +474,7 @@ const Cart = () => {
               <button
                 onClick={handlePlaceOrder}
                 disabled={!customerInfo.name || !customerInfo.phone || placingOrder}
-                className="flex-2 bg-primary text-gray-700 border border-gray-700 py-3 rounded-lg font-medium hover:bg-amber-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                className="flex-2 bg-primary text-gray-700 border border-gray-700 py-3 rounded-lg font-medium hover:bg-primary-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
                 {placingOrder ? (
                   <>

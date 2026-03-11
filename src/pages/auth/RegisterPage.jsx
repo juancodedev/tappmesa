@@ -90,8 +90,8 @@ const RegisterPage = () => {
       period: '/mes',
       recommended: false,
       features: ['Todo ilimitado', 'Multi-administrador', 'API personalizada', 'Soporte dedicado'],
-      color: 'border-coffee-400',
-      textColor: 'text-coffee-700'
+      color: 'border-primary-400',
+      textColor: 'text-primary-700'
     }
   ], []);
 
@@ -163,13 +163,13 @@ const RegisterPage = () => {
   const Step1 = useMemo(() => (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h3 className="text-2xl font-bold text-coffee-900 mb-2">¡Hola! Cuéntanos sobre ti</h3>
-        <p className="text-coffee-600">Información básica para configurar tu cuenta</p>
+        <h3 className="text-2xl font-bold text-primary-900 mb-2">¡Hola! Cuéntanos sobre ti</h3>
+        <p className="text-primary-600">Información básica para configurar tu cuenta</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+          <label className="block text-sm font-semibold text-primary-900 mb-2">
             <User className="inline h-4 w-4 mr-2" />
             Nombre Completo *
           </label>
@@ -183,7 +183,7 @@ const RegisterPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+          <label className="block text-sm font-semibold text-primary-900 mb-2">
             <Phone className="inline h-4 w-4 mr-2" />
             Teléfono *
           </label>
@@ -197,7 +197,7 @@ const RegisterPage = () => {
         </div>
 
         <div className="md:col-span-2">
-          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+          <label className="block text-sm font-semibold text-primary-900 mb-2">
             <Mail className="inline h-4 w-4 mr-2" />
             Email *
           </label>
@@ -208,13 +208,13 @@ const RegisterPage = () => {
             placeholder="tu@email.com"
             className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
           />
-          <p className="text-xs text-coffee-500 mt-1">
+          <p className="text-xs text-primary-500 mt-1">
             Este será tu usuario para acceder a TappMesa
           </p>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+          <label className="block text-sm font-semibold text-primary-900 mb-2">
             🔒 Contraseña *
           </label>
           <input
@@ -224,13 +224,13 @@ const RegisterPage = () => {
             placeholder="Mínimo 8 caracteres"
             className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
           />
-          <div className="text-xs text-coffee-500 mt-1">
+          <div className="text-xs text-primary-500 mt-1">
             Debe contener al menos 8 caracteres, una mayúscula y un número
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+          <label className="block text-sm font-semibold text-primary-900 mb-2">
             🔒 Confirmar Contraseña *
           </label>
           <input
@@ -268,13 +268,13 @@ const RegisterPage = () => {
   const Step2 = useMemo(() => (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h3 className="text-2xl font-bold text-coffee-900 mb-2">Cuéntanos sobre tu cafetería</h3>
-        <p className="text-coffee-600">Información para personalizar tu experiencia</p>
+        <h3 className="text-2xl font-bold text-primary-900 mb-2">Cuéntanos sobre tu cafetería</h3>
+        <p className="text-primary-600">Información para personalizar tu experiencia</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="md:col-span-2">
-          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+          <label className="block text-sm font-semibold text-primary-900 mb-2">
             <Store className="inline h-4 w-4 mr-2" />
             Nombre de la Cafetería *
           </label>
@@ -288,7 +288,7 @@ const RegisterPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+          <label className="block text-sm font-semibold text-primary-900 mb-2">
             <MapPin className="inline h-4 w-4 mr-2" />
             Dirección *
           </label>
@@ -302,7 +302,7 @@ const RegisterPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+          <label className="block text-sm font-semibold text-primary-900 mb-2">
             Ciudad *
           </label>
           <select
@@ -323,7 +323,7 @@ const RegisterPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-coffee-900 mb-2">
+          <label className="block text-sm font-semibold text-primary-900 mb-2">
             <Users className="inline h-4 w-4 mr-2" />
             Capacidad de Asientos
           </label>
@@ -342,7 +342,7 @@ const RegisterPage = () => {
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-coffee-900 mb-4">
+        <label className="block text-sm font-semibold text-primary-900 mb-4">
           Tipo de Cafetería *
         </label>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -350,7 +350,7 @@ const RegisterPage = () => {
             <div
               key={type.id}
               onClick={() => handleInputChange('cafeType', type.id)}
-              className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover:shadow-md hover-coffee ${
+              className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover:shadow-md hover:bg-primary-50 ${
                 formData.cafeType === type.id
                   ? 'border-primary-500 bg-primary-50'
                   : 'border-gray-200 hover:border-primary-300'
@@ -358,8 +358,8 @@ const RegisterPage = () => {
             >
               <div className="text-center">
                 <div className="text-3xl mb-2">{type.icon}</div>
-                <h4 className="font-semibold text-coffee-900 text-sm mb-1">{type.name}</h4>
-                <p className="text-coffee-600 text-xs">{type.desc}</p>
+                <h4 className="font-semibold text-primary-900 text-sm mb-1">{type.name}</h4>
+                <p className="text-primary-600 text-xs">{type.desc}</p>
               </div>
             </div>
           ))}
@@ -371,13 +371,13 @@ const RegisterPage = () => {
   const Step3 = useMemo(() => (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h3 className="text-2xl font-bold text-coffee-900 mb-2">Configuración inicial</h3>
-        <p className="text-coffee-600">Esto nos ayuda a preparar TappMesa perfectamente para ti</p>
+        <h3 className="text-2xl font-bold text-primary-900 mb-2">Configuración inicial</h3>
+        <p className="text-primary-600">Esto nos ayuda a preparar TappMesa perfectamente para ti</p>
       </div>
 
       <div className="space-y-6">
         <div>
-          <label className="block text-sm font-semibold text-coffee-900 mb-4">
+          <label className="block text-sm font-semibold text-primary-900 mb-4">
             ¿Cuántos productos tienes aproximadamente en tu menú?
           </label>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -390,21 +390,21 @@ const RegisterPage = () => {
               <div
                 key={option.value}
                 onClick={() => handleInputChange('menuSize', option.value)}
-                className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 text-center hover-coffee ${
+                className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 text-center hover:bg-primary-50 ${
                   formData.menuSize === option.value
                     ? 'border-primary-500 bg-primary-50'
                     : 'border-gray-200 hover:border-primary-300'
                 }`}
               >
-                <div className="font-semibold text-coffee-900 text-sm mb-1">{option.label}</div>
-                <div className="text-coffee-600 text-xs">{option.desc}</div>
+                <div className="font-semibold text-primary-900 text-sm mb-1">{option.label}</div>
+                <div className="text-primary-600 text-xs">{option.desc}</div>
               </div>
             ))}
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-coffee-900 mb-4">
+          <label className="block text-sm font-semibold text-primary-900 mb-4">
             ¿Qué sistema usas actualmente para tomar pedidos?
           </label>
           <div className="grid md:grid-cols-2 gap-3">
@@ -417,23 +417,23 @@ const RegisterPage = () => {
               <div
                 key={option.value}
                 onClick={() => handleInputChange('currentSystem', option.value)}
-                className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover-coffee ${
+                className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover:bg-primary-50 ${
                   formData.currentSystem === option.value
                     ? 'border-primary-500 bg-primary-50'
                     : 'border-gray-200 hover:border-primary-300'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="font-semibold text-coffee-900">{option.label}</div>
+                  <div className="font-semibold text-primary-900">{option.label}</div>
                 </div>
-                <div className="text-coffee-600 text-sm mt-1">{option.desc}</div>
+                <div className="text-primary-600 text-sm mt-1">{option.desc}</div>
               </div>
             ))}
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-coffee-900 mb-4">
+          <label className="block text-sm font-semibold text-primary-900 mb-4">
             ¿Cuál es tu prioridad principal?
           </label>
           <div className="grid md:grid-cols-2 gap-3">
@@ -446,16 +446,16 @@ const RegisterPage = () => {
               <div
                 key={option.value}
                 onClick={() => handleInputChange('priority', option.value)}
-                className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover-coffee ${
+                className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover:bg-primary-50 ${
                   formData.priority === option.value
                     ? 'border-primary-500 bg-primary-50'
                     : 'border-gray-200 hover:border-primary-300'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="font-semibold text-coffee-900">{option.label}</div>
+                  <div className="font-semibold text-primary-900">{option.label}</div>
                 </div>
-                <div className="text-coffee-600 text-sm mt-1">{option.desc}</div>
+                <div className="text-primary-600 text-sm mt-1">{option.desc}</div>
               </div>
             ))}
           </div>
@@ -467,8 +467,8 @@ const RegisterPage = () => {
   const Step4 = useMemo(() => (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h3 className="text-2xl font-bold text-coffee-900 mb-2">Selecciona tu plan</h3>
-        <p className="text-coffee-600">Puedes cambiar o cancelar en cualquier momento</p>
+        <h3 className="text-2xl font-bold text-primary-900 mb-2">Selecciona tu plan</h3>
+        <p className="text-primary-600">Puedes cambiar o cancelar en cualquier momento</p>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
@@ -493,14 +493,14 @@ const RegisterPage = () => {
               <h4 className={`text-xl font-bold mb-2 ${plan.textColor}`}>{plan.name}</h4>
               <div className="mb-4">
                 <span className={`text-3xl font-bold ${plan.textColor}`}>{plan.price}</span>
-                <span className="text-coffee-600">{plan.period}</span>
+                <span className="text-primary-600">{plan.period}</span>
               </div>
               
               <div className="space-y-2 mb-6">
                 {plan.features.map((feature, index) => (
                   <div key={index} className="flex items-center gap-2 text-sm">
                     <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span className="text-coffee-700">{feature}</span>
+                    <span className="text-primary-700">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -517,7 +517,7 @@ const RegisterPage = () => {
       </div>
 
       <div className="bg-cream-100 p-6 rounded-lg border border-cream-200">
-        <h4 className="font-bold text-coffee-900 mb-3 flex items-center gap-2">
+        <h4 className="font-bold text-primary-900 mb-3 flex items-center gap-2">
           <Clock className="h-5 w-5 text-primary-500" />
           ¿Qué pasa después del registro?
         </h4>
@@ -525,22 +525,22 @@ const RegisterPage = () => {
           <div className="flex items-start gap-2">
             <div className="w-6 h-6 bg-primary-500 text-white rounded-full flex items-center justify-center text-xs font-bold">1</div>
             <div>
-              <div className="font-semibold text-coffee-900">Configuración Automática</div>
-              <div className="text-coffee-600">TappMesa se configura según tus respuestas (5 min)</div>
+              <div className="font-semibold text-primary-900">Configuración Automática</div>
+              <div className="text-primary-600">TappMesa se configura según tus respuestas (5 min)</div>
             </div>
           </div>
           <div className="flex items-start gap-2">
             <div className="w-6 h-6 bg-primary-500 text-white rounded-full flex items-center justify-center text-xs font-bold">2</div>
             <div>
-              <div className="font-semibold text-coffee-900">Llamada de Bienvenida</div>
-              <div className="text-coffee-600">Un especialista te ayuda a optimizar todo (15 min)</div>
+              <div className="font-semibold text-primary-900">Llamada de Bienvenida</div>
+              <div className="text-primary-600">Un especialista te ayuda a optimizar todo (15 min)</div>
             </div>
           </div>
           <div className="flex items-start gap-2">
             <div className="w-6 h-6 bg-primary-500 text-white rounded-full flex items-center justify-center text-xs font-bold">3</div>
             <div>
-              <div className="font-semibold text-coffee-900">¡Listo para Servir!</div>
-              <div className="text-coffee-600">Tu cafetería digital funcionando perfectamente</div>
+              <div className="font-semibold text-primary-900">¡Listo para Servir!</div>
+              <div className="text-primary-600">Tu cafetería digital funcionando perfectamente</div>
             </div>
           </div>
         </div>
@@ -555,10 +555,10 @@ const RegisterPage = () => {
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="h-12 w-12 text-green-500" />
           </div>
-          <h3 className="text-3xl font-bold text-coffee-900 mb-4">
+          <h3 className="text-3xl font-bold text-primary-900 mb-4">
             ¡Bienvenido a TappMesa! ☕
           </h3>
-          <p className="text-coffee-600 mb-6 text-lg">
+          <p className="text-primary-600 mb-6 text-lg">
             <strong>{formData.cafeName}</strong> está siendo configurado con amor. 
             Recibirás un email con los próximos pasos en menos de 5 minutos.
           </p>
@@ -577,12 +577,12 @@ const RegisterPage = () => {
             <button className="bg-primary-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors cta-button">
               Ir al Dashboard
             </button>
-            {/* <button className="border-2 border-coffee-300 text-coffee-700 px-6 py-3 rounded-lg font-semibold hover:border-primary-500 hover:text-primary-500 transition-colors">
+            {/* <button className="border-2 border-coffee-300 text-primary-700 px-6 py-3 rounded-lg font-semibold hover:border-primary-500 hover:text-primary-500 transition-colors">
               Descargar App Móvil
             </button> */}
           </div>
 
-          <p className="text-coffee-500 text-sm mt-4">
+          <p className="text-primary-500 text-sm mt-4">
             Un especialista de TappMesa te contactará en las próximas 2 horas para ayudarte con la configuración inicial.
           </p>
         </div>
@@ -603,7 +603,7 @@ const RegisterPage = () => {
           <div className="flex items-center justify-center gap-4 mb-8">
             <button 
               onClick={goToLogin}
-              className="flex items-center gap-2 text-coffee-600 hover:text-primary-500 transition-colors"
+              className="flex items-center gap-2 text-primary-600 hover:text-primary-500 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               Volver al Inicio
@@ -611,14 +611,14 @@ const RegisterPage = () => {
             
             <div className="flex items-center gap-2">
               <Coffee className="text-primary-500 h-8 w-8" />
-              <span className="text-2xl font-bold text-coffee-900">TappMesa</span>
+              <span className="text-2xl font-bold text-primary-900">TappMesa</span>
             </div>
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-bold text-coffee-900 mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-primary-900 mb-6">
             Registra tu <span className="text-primary-500">Cafetería</span>
           </h1>
-          <p className="text-xl text-coffee-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-primary-600 max-w-3xl mx-auto leading-relaxed">
             Configuración personalizada en 4 pasos simples. Sin tarjeta de crédito, 
             soporte en español, listo en 15 minutos.
           </p>
@@ -642,14 +642,14 @@ const RegisterPage = () => {
                   className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
                     currentStep === 1
                       ? 'text-gray-400 cursor-not-allowed'
-                      : 'text-coffee-600 hover:text-primary-500 hover:bg-primary-50'
+                      : 'text-primary-600 hover:text-primary-500 hover:bg-primary-50'
                   }`}
                 >
                   ← Anterior
                 </button>
 
                 <div className="text-center">
-                  <div className="text-sm text-coffee-600 mb-1">
+                  <div className="text-sm text-primary-600 mb-1">
                     Paso {currentStep} de {steps.length}
                   </div>
                   <div className="w-48 bg-gray-200 rounded-full h-2">
@@ -709,25 +709,25 @@ const RegisterPage = () => {
           <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div className="bg-white p-4 rounded-lg shadow-md border border-cream-200 hover-lift">
               <div className="text-2xl font-bold text-primary-500 mb-1">15 min</div>
-              <div className="text-coffee-600 text-sm">Configuración Total</div>
+              <div className="text-primary-600 text-sm">Configuración Total</div>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-md border border-cream-200 hover-lift">
               <div className="text-2xl font-bold text-primary-500 mb-1">250+</div>
-              <div className="text-coffee-600 text-sm">Cafeterías Activas</div>
+              <div className="text-primary-600 text-sm">Cafeterías Activas</div>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-md border border-cream-200 hover-lift">
               <div className="text-2xl font-bold text-primary-500 mb-1">4.9★</div>
-              <div className="text-coffee-600 text-sm">Satisfacción</div>
+              <div className="text-primary-600 text-sm">Satisfacción</div>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-md border border-cream-200 hover-lift">
               <div className="text-2xl font-bold text-primary-500 mb-1">24/7</div>
-              <div className="text-coffee-600 text-sm">Soporte Técnico</div>
+              <div className="text-primary-600 text-sm">Soporte Técnico</div>
             </div>
           </div>
 
           {/* Security & Trust */}
           <div className="mt-8 text-center">
-            <div className="flex justify-center items-center gap-6 text-sm text-coffee-500">
+            <div className="flex justify-center items-center gap-6 text-sm text-primary-500">
               <div className="flex items-center gap-2">
                 <Shield className="h-4 w-4 text-green-500" />
                 <span>Datos Encriptados SSL</span>

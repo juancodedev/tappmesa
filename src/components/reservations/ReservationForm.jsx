@@ -355,7 +355,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
               <p className="text-xs text-gray-500 mt-1">Cargando mesas disponibles...</p>
             )}
             {!loadingTables && availableTables.length === 0 && (
-              <p className="text-xs text-amber-600 mt-1">
+              <p className="text-xs text-primary-600 mt-1">
                 ⚠️ No hay mesas disponibles para la fecha y hora seleccionadas con capacidad para {formData.party_size} personas
               </p>
             )}
@@ -389,7 +389,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full bg-primary text-white font-medium py-3 px-4 rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+          className="w-full bg-primary text-white font-medium py-3 px-4 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
         >
           {submitting ? (
             <>

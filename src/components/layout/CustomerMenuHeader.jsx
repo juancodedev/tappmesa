@@ -90,6 +90,11 @@ const CustomerMenuHeader = ({ onOrdersClick }) => {
         icon: CheckCircle,
         color: 'bg-green-500 text-white',
         pulse: true
+      },
+      delivered: {
+        icon: CheckCircle,
+        color: 'bg-gray-100 text-gray-800',
+        pulse: false
       }
     }
 

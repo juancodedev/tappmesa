@@ -189,7 +189,7 @@ const WaiterDashboard = () => {
 
               <button
                 onClick={() => setShowCreateOrder(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-amber-700 transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 <span>Nuevo Pedido</span>
