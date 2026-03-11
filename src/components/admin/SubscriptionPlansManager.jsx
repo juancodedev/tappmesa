@@ -161,7 +161,7 @@ const SubscriptionPlansManager = () => {
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
         <p className="mt-4 text-gray-600">Cargando planes...</p>
       </div>
     )
@@ -177,7 +177,7 @@ const SubscriptionPlansManager = () => {
         </div>
         <button
           onClick={() => setShowNewPlanForm(true)}
-          className="flex items-center space-x-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors"
+          className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
         >
           <Plus className="h-5 w-5" />
           <span>Nuevo Plan</span>
@@ -186,7 +186,7 @@ const SubscriptionPlansManager = () => {
 
       {/* Nuevo Plan Form */}
       {showNewPlanForm && (
-        <div className="mb-6 bg-white border-2 border-orange-500 rounded-lg p-6 shadow-lg">
+        <div className="mb-6 bg-white border-2 border-primary-500 rounded-lg p-6 shadow-lg">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Crear Nuevo Plan</h3>
             <button
@@ -211,7 +211,7 @@ const SubscriptionPlansManager = () => {
                   required
                   value={newPlan.name}
                   onChange={(e) => setNewPlan({ ...newPlan, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="Ej: Plan Básico"
                 />
               </div>
@@ -226,7 +226,7 @@ const SubscriptionPlansManager = () => {
                   min="0"
                   value={newPlan.price}
                   onChange={(e) => setNewPlan({ ...newPlan, price: parseFloat(e.target.value) })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 />
               </div>
             </div>
@@ -239,7 +239,7 @@ const SubscriptionPlansManager = () => {
                 value={newPlan.description}
                 onChange={(e) => setNewPlan({ ...newPlan, description: e.target.value })}
                 rows={2}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 placeholder="Descripción del plan..."
               />
             </div>
@@ -254,7 +254,7 @@ const SubscriptionPlansManager = () => {
                   min="1"
                   value={newPlan.max_tables}
                   onChange={(e) => setNewPlan({ ...newPlan, max_tables: parseInt(e.target.value) })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 />
               </div>
 
@@ -267,7 +267,7 @@ const SubscriptionPlansManager = () => {
                   min="1"
                   value={newPlan.max_products}
                   onChange={(e) => setNewPlan({ ...newPlan, max_products: parseInt(e.target.value) })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 />
               </div>
 
@@ -280,7 +280,7 @@ const SubscriptionPlansManager = () => {
                   min="1"
                   value={newPlan.max_people_per_table}
                   onChange={(e) => setNewPlan({ ...newPlan, max_people_per_table: parseInt(e.target.value) })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 />
               </div>
             </div>
@@ -291,7 +291,7 @@ const SubscriptionPlansManager = () => {
                   type="checkbox"
                   checked={newPlan.has_paper_prebill}
                   onChange={(e) => setNewPlan({ ...newPlan, has_paper_prebill: e.target.checked })}
-                  className="w-4 h-4 text-orange-600 rounded focus:ring-orange-500"
+                  className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
                 />
                 <span className="text-sm text-gray-700">Pre-cuentas en papel</span>
               </label>
@@ -301,7 +301,7 @@ const SubscriptionPlansManager = () => {
                   type="checkbox"
                   checked={newPlan.has_paper_command}
                   onChange={(e) => setNewPlan({ ...newPlan, has_paper_command: e.target.checked })}
-                  className="w-4 h-4 text-orange-600 rounded focus:ring-orange-500"
+                  className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
                 />
                 <span className="text-sm text-gray-700">Comandas en papel</span>
               </label>
@@ -311,7 +311,7 @@ const SubscriptionPlansManager = () => {
                   type="checkbox"
                   checked={newPlan.has_surveys}
                   onChange={(e) => setNewPlan({ ...newPlan, has_surveys: e.target.checked })}
-                  className="w-4 h-4 text-orange-600 rounded focus:ring-orange-500"
+                  className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
                 />
                 <span className="text-sm text-gray-700">Encuestas</span>
               </label>
@@ -321,7 +321,7 @@ const SubscriptionPlansManager = () => {
                   type="checkbox"
                   checked={newPlan.has_analytics}
                   onChange={(e) => setNewPlan({ ...newPlan, has_analytics: e.target.checked })}
-                  className="w-4 h-4 text-orange-600 rounded focus:ring-orange-500"
+                  className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
                 />
                 <span className="text-sm text-gray-700">Analíticas avanzadas</span>
               </label>
@@ -340,7 +340,7 @@ const SubscriptionPlansManager = () => {
               </button>
               <button
                 type="submit"
-                className="flex items-center space-x-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
               >
                 <Save className="h-4 w-4" />
                 <span>Crear Plan</span>
@@ -371,7 +371,7 @@ const SubscriptionPlansManager = () => {
               } overflow-hidden hover:shadow-lg transition-shadow`}
             >
               {/* Header */}
-              <div className="bg-linear-to-r from-orange-500 to-red-500 text-white px-4 py-3">
+              <div className="bg-linear-to-r from-primary-600 to-primary-800 text-white px-4 py-3">
                 {editingPlan === plan.id ? (
                   <input
                     type="text"
@@ -487,7 +487,7 @@ const SubscriptionPlansManager = () => {
                           type="checkbox"
                           checked={plan.has_paper_prebill}
                           onChange={(e) => updatePlanField(plan.id, 'has_paper_prebill', e.target.checked)}
-                          className="w-4 h-4 text-orange-600 rounded"
+                          className="w-4 h-4 text-primary-600 rounded"
                         />
                         <span className="text-xs">Pre-cuentas en papel</span>
                       </label>
@@ -496,7 +496,7 @@ const SubscriptionPlansManager = () => {
                           type="checkbox"
                           checked={plan.has_paper_command}
                           onChange={(e) => updatePlanField(plan.id, 'has_paper_command', e.target.checked)}
-                          className="w-4 h-4 text-orange-600 rounded"
+                          className="w-4 h-4 text-primary-600 rounded"
                         />
                         <span className="text-xs">Comandas en papel</span>
                       </label>
@@ -505,7 +505,7 @@ const SubscriptionPlansManager = () => {
                           type="checkbox"
                           checked={plan.has_surveys}
                           onChange={(e) => updatePlanField(plan.id, 'has_surveys', e.target.checked)}
-                          className="w-4 h-4 text-orange-600 rounded"
+                          className="w-4 h-4 text-primary-600 rounded"
                         />
                         <span className="text-xs">Encuestas</span>
                       </label>
@@ -514,7 +514,7 @@ const SubscriptionPlansManager = () => {
                           type="checkbox"
                           checked={plan.has_analytics}
                           onChange={(e) => updatePlanField(plan.id, 'has_analytics', e.target.checked)}
-                          className="w-4 h-4 text-orange-600 rounded"
+                          className="w-4 h-4 text-primary-600 rounded"
                         />
                         <span className="text-xs">Analíticas avanzadas</span>
                       </label>
