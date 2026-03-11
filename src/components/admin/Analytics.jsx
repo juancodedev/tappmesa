@@ -163,6 +163,7 @@ const Analytics = () => {
           last_updated: new Date().toISOString()
         })
         .eq('id', selectedProduct.id)
+        .eq('tenant_id', tenant.id)
 
       if (error) throw error
 
@@ -189,7 +190,7 @@ const Analytics = () => {
         : selectedProduct.current_stock - quantity
 
       if (newStock < 0) {
-        alert('Insufficient stock')
+        alert('Stock insuficiente')
         return
       }
 
@@ -218,6 +219,7 @@ const Analytics = () => {
           last_updated: new Date().toISOString()
         })
         .eq('id', selectedProduct.id)
+        .eq('tenant_id', tenant.id)
 
       if (updateError) throw updateError
 

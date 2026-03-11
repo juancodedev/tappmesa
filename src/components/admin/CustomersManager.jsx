@@ -124,7 +124,8 @@ const CustomersManager = () => {
           notes: editFormData.notes,
           updated_at: new Date().toISOString()
         })
-        .eq("id", selectedCustomer.id);
+        .eq("id", selectedCustomer.id)
+        .eq("tenant_id", tenantId);
 
       if (error) throw error;
 

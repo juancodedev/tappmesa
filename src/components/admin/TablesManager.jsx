@@ -872,7 +872,7 @@ const TablesManager = () => {
               >
                 Cancelar
               </button>
-               <button
+              <button
                 onClick={handleSaveTable}
                 disabled={saving || !formData.number.trim()}
                 className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-sm"

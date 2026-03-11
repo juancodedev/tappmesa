@@ -137,6 +137,7 @@ const ReservationsManager = () => {
           .from('reservations')
           .update(reservationData)
           .eq('id', editingReservation.id)
+          .eq('tenant_id', tenantId)
 
         if (error) throw error
       } else {

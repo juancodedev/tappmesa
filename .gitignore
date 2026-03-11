@@ -30,3 +30,4 @@ dist-ssr
 .env.local
 .env.production
 DEPLOYMENT_GUIDE.md
+package-lock.json
