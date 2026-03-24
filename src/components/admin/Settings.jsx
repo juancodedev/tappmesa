@@ -26,8 +26,8 @@ const Settings = () => {
     website: "https://cafecentral.cl",
 
     // Branding
-    primary_color: "#dc2626",
-    secondary_color: "#f97316",
+    primary_color: "#8b5e3c",
+    secondary_color: "#6b8263",
     logo_url: "",
 
     // Horarios

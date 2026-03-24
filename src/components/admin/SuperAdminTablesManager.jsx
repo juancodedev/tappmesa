@@ -9,7 +9,9 @@ import {
   CheckCircle,
   XCircle,
   RefreshCw,
-  Calendar
+  Calendar,
+  MapPin,
+  Layers
 } from 'lucide-react'
 import TenantSelector from './TenantSelector'
 
@@ -20,6 +22,8 @@ const SuperAdminTablesManager = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedTenantId, setSelectedTenantId] = useState(null)
   const [statusFilter, setStatusFilter] = useState('all')
+  const [zoneFilter, setZoneFilter] = useState('all')
+  const [zones, setZones] = useState([])
 
   useEffect(() => {
     loadData()
@@ -39,6 +43,11 @@ const SuperAdminTablesManager = () => {
             id,
             name,
             slug
+          ),
+          zone:table_zones (
+            id,
+            name,
+            color
           )
         `)
         .order('created_at', { ascending: false })
@@ -51,7 +60,34 @@ const SuperAdminTablesManager = () => {
         query = query.eq('is_active', statusFilter === 'active')
       }
 
-      const { data: tablesData, error: tablesError } = await query
+      let { data: tablesData, error: tablesError } = await query
+
+      // Compatibilidad si la relación zone aún no existe en el entorno
+      if (tablesError && String(tablesError.message || '').includes('table_zones')) {
+        query = supabase
+          .from('tables')
+          .select(`
+            *,
+            tenant:tenants (
+              id,
+              name,
+              slug
+            )
+          `)
+          .order('created_at', { ascending: false })
+
+        if (selectedTenantId) {
+          query = query.eq('tenant_id', selectedTenantId)
+        }
+
+        if (statusFilter !== 'all') {
+          query = query.eq('is_active', statusFilter === 'active')
+        }
+
+        const fallbackResult = await query
+        tablesData = fallbackResult.data
+        tablesError = fallbackResult.error
+      }
 
       if (tablesError) throw tablesError
 
@@ -60,6 +96,23 @@ const SuperAdminTablesManager = () => {
         .from('tenants')
         .select('id, name, slug')
         .order('name', { ascending: true })
+
+      // Load zones only when one tenant is selected, so labels are unambiguous
+      if (selectedTenantId) {
+        const { data: zonesData } = await supabase
+          .from('table_zones')
+          .select('id, name, color')
+          .eq('tenant_id', selectedTenantId)
+          .order('order_index', { ascending: true })
+        setZones(zonesData || [])
+      } else {
+        setZones([])
+        setZoneFilter((current) => (
+          current === 'all' || current === 'with-zone' || current === 'no-zone'
+            ? current
+            : 'all'
+        ))
+      }
 
       setTables(tablesData || [])
       setTenants(tenantsData || [])
@@ -76,9 +129,19 @@ const SuperAdminTablesManager = () => {
       table.number?.toString().includes(searchTerm) ||
       table.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       table.unique_code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      table.tenant?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      table.tenant?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      table.zone?.name?.toLowerCase().includes(searchTerm.toLowerCase())
 
-    return matchesSearch
+    const matchesZone =
+      zoneFilter === 'all'
+        ? true
+        : zoneFilter === 'with-zone'
+          ? Boolean(table.zone_id)
+          : zoneFilter === 'no-zone'
+            ? !table.zone_id
+            : table.zone_id === zoneFilter
+
+    return matchesSearch && matchesZone
   })
 
   const formatDate = (dateString) => {
@@ -95,13 +158,14 @@ const SuperAdminTablesManager = () => {
     total: filteredTables.length,
     active: filteredTables.filter(t => t.is_active).length,
     withQR: filteredTables.filter(t => t.unique_code).length,
-    tenantCount: new Set(filteredTables.map(t => t.tenant_id)).size
+    tenantCount: new Set(filteredTables.map(t => t.tenant_id)).size,
+    withZone: filteredTables.filter(t => t.zone_id).length
   }
 
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
         <p className="mt-4 text-gray-600">Cargando mesas...</p>
       </div>
     )
@@ -146,31 +210,54 @@ const SuperAdminTablesManager = () => {
               placeholder="Buscar mesas..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
           >
             <option value="all">Todos los estados</option>
             <option value="active">Activas</option>
             <option value="inactive">Inactivas</option>
           </select>
         </div>
+
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <select
+            value={zoneFilter}
+            onChange={(e) => setZoneFilter(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
+          >
+            <option value="all">Todas las zonas</option>
+            <option value="with-zone">Solo con zona</option>
+            <option value="no-zone">Solo sin zona</option>
+            {zones.length > 0 && <option disabled>──────────</option>}
+            {zones.map(zone => (
+              <option key={zone.id} value={zone.id}>{zone.name}</option>
+            ))}
+          </select>
+
+          <div className="flex items-center rounded-lg border border-secondary-200 bg-secondary-50 px-3 py-2 text-sm text-secondary-800">
+            <Layers className="h-4 w-4 mr-2" />
+            {selectedTenantId
+              ? 'Filtrado por ambientes del tenant seleccionado'
+              : 'Selecciona un tenant para filtrar por ambiente específico'}
+          </div>
+        </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
         <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Mesas</p>
               <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
             </div>
-            <Coffee className="h-8 w-8 text-blue-600" />
+            <Coffee className="h-8 w-8 text-primary" />
           </div>
         </div>
 
@@ -188,9 +275,9 @@ const SuperAdminTablesManager = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Con Código QR</p>
-              <p className="text-2xl font-bold text-orange-600">{stats.withQR}</p>
+              <p className="text-2xl font-bold text-warm-600">{stats.withQR}</p>
             </div>
-            <QrCode className="h-8 w-8 text-orange-600" />
+            <QrCode className="h-8 w-8 text-warm-600" />
           </div>
         </div>
 
@@ -198,9 +285,19 @@ const SuperAdminTablesManager = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Tenants</p>
-              <p className="text-2xl font-bold text-purple-600">{stats.tenantCount}</p>
+              <p className="text-2xl font-bold text-secondary-700">{stats.tenantCount}</p>
             </div>
-            <Building2 className="h-8 w-8 text-purple-600" />
+            <Building2 className="h-8 w-8 text-secondary-700" />
+          </div>
+        </div>
+
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Con Ambiente</p>
+              <p className="text-2xl font-bold text-primary-700">{stats.withZone}</p>
+            </div>
+            <MapPin className="h-8 w-8 text-primary-700" />
           </div>
         </div>
       </div>
@@ -221,7 +318,7 @@ const SuperAdminTablesManager = () => {
               }`}
             >
               {/* Header */}
-              <div className="bg-linear-to-r from-orange-500 to-red-500 text-white px-4 py-3">
+              <div className="bg-linear-to-r from-primary-600 to-warm-600 text-white px-4 py-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Coffee className="h-5 w-5" />
@@ -254,6 +351,24 @@ const SuperAdminTablesManager = () => {
                   <div className="flex items-center text-sm text-gray-700">
                     <Users className="h-4 w-4 text-gray-400 mr-2" />
                     <span>Capacidad: {table.max_capacity} personas</span>
+                  </div>
+                )}
+
+                {/* Zone */}
+                {table.zone ? (
+                  <div className="flex items-center text-sm text-gray-700">
+                    <MapPin className="h-4 w-4 text-gray-400 mr-2" />
+                    <span
+                      className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium text-white"
+                      style={{ backgroundColor: table.zone.color || '#8b5e3c' }}
+                    >
+                      {table.zone.name}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center text-sm text-gray-500">
+                    <MapPin className="h-4 w-4 text-gray-300 mr-2" />
+                    <span>Sin ambiente</span>
                   </div>
                 )}
 

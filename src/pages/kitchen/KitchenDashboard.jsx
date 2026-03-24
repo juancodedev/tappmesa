@@ -111,11 +111,11 @@ const KitchenDashboard = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-300'
+        return 'bg-warm-100 text-warm-800 border-warm-300'
       case 'preparing':
-        return 'bg-blue-100 text-blue-800 border-blue-300'
+        return 'bg-secondary-100 text-secondary-800 border-secondary-300'
       case 'ready':
-        return 'bg-green-100 text-green-800 border-green-300'
+        return 'bg-primary-100 text-primary-800 border-primary-300'
       case 'completed':
         return 'bg-gray-100 text-gray-800 border-gray-300'
       default:
@@ -225,13 +225,13 @@ const KitchenDashboard = () => {
   const prioritizedOrders = getPriorityOrders()
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-orange-50 to-red-50">
+    <div className="min-h-screen bg-linear-to-br from-cream-50 to-cream-100">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="bg-orange-600 p-2 rounded-lg">
+              <div className="bg-primary p-2 rounded-lg">
                 <ChefHat className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -255,7 +255,7 @@ const KitchenDashboard = () => {
 
               <button
                 onClick={logout}
-                className="flex items-center space-x-2 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-cream-200 hover:bg-cream-300 text-primary-800 rounded-lg transition-colors"
               >
                 <LogOut className="h-4 w-4" />
                 <span className="hidden sm:inline">Salir</span>
@@ -276,7 +276,7 @@ const KitchenDashboard = () => {
                 onClick={() => setFilter(filterOption.value)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
                   filter === filterOption.value
-                    ? 'bg-orange-600 text-white'
+                    ? 'bg-primary text-white'
                     : 'bg-white text-gray-700 hover:bg-gray-50'
                 }`}
               >
@@ -367,7 +367,7 @@ const KitchenDashboard = () => {
                   {order.status === 'pending' && (
                     <button
                       onClick={() => updateOrderStatus(order.id, 'preparing')}
-                      className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                      className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-secondary-600 hover:bg-secondary-700 text-white rounded-lg transition-colors"
                     >
                       <Flame className="h-4 w-4" />
                       <span>Comenzar</span>
@@ -377,7 +377,7 @@ const KitchenDashboard = () => {
                   {order.status === 'preparing' && (
                     <button
                       onClick={() => updateOrderStatus(order.id, 'ready')}
-                      className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                      className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-primary hover:bg-primary-700 text-white rounded-lg transition-colors"
                     >
                       <CheckCircle className="h-4 w-4" />
                       <span>Marcar Listo</span>
@@ -385,7 +385,7 @@ const KitchenDashboard = () => {
                   )}
 
                   {order.status === 'ready' && (
-                    <div className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-green-100 text-green-800 rounded-lg">
+                    <div className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-primary-100 text-primary-800 rounded-lg">
                       <CheckCircle className="h-4 w-4" />
                       <span className="font-medium">Listo para servir</span>
                     </div>
@@ -398,7 +398,7 @@ const KitchenDashboard = () => {
                           updateOrderStatus(order.id, 'cancelled')
                         }
                       }}
-                      className="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-colors"
+                      className="px-3 py-2 bg-accent-100 hover:bg-accent-200 text-accent-700 rounded-lg transition-colors"
                     >
                       <XCircle className="h-4 w-4" />
                     </button>

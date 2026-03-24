@@ -9,12 +9,12 @@ const SuperAdminNoTenantMessage = ({ icon: Icon = Building2, title = "Selecciona
 
   return (
     <div className="p-6">
-      <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-8 text-center">
-        <Icon className="h-16 w-16 text-blue-400 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-blue-900 mb-2">
+      <div className="bg-cream-100 border-2 border-primary-200 rounded-2xl p-8 text-center">
+        <Icon className="h-16 w-16 text-primary-500 mx-auto mb-4" />
+        <h2 className="text-2xl font-bold text-primary-900 mb-2">
           {title}
         </h2>
-        <p className="text-blue-700">
+        <p className="text-primary-700">
           {message || defaultMessage}
         </p>
       </div>

@@ -10,7 +10,7 @@ const HowItWorks = () => {
       title: "Escanea el QR",
       description: "El cliente escanea el código QR en la mesa con su celular",
       detail: "Sin necesidad de descargar apps. Funciona directamente en el navegador del celular.",
-      gradient: "from-blue-500 to-cyan-500"
+      gradient: "from-primary-500 to-secondary-500"
     },
     {
       number: 2,
@@ -18,7 +18,7 @@ const HowItWorks = () => {
       title: "Explora el Menú",
       description: "Navega por el menú digital con fotos, descripciones y precios",
       detail: "Menú categorizado, buscador, filtros por alérgenos y preferencias dietéticas.",
-      gradient: "from-purple-500 to-pink-500"
+      gradient: "from-secondary-500 to-primary-500"
     },
     {
       number: 3,
@@ -26,7 +26,7 @@ const HowItWorks = () => {
       title: "Personaliza y Agrega",
       description: "Personaliza los productos y agrégalos al carrito",
       detail: "Modifica ingredientes, elige tamaños, agrega notas especiales para la cocina.",
-      gradient: "from-orange-500 to-red-500"
+      gradient: "from-warm-500 to-accent-500"
     },
     {
       number: 4,
@@ -34,7 +34,7 @@ const HowItWorks = () => {
       title: "Envía tu Orden",
       description: "Revisa y confirma tu pedido. Se envía directo a cocina",
       detail: "La orden llega inmediatamente a la cocina con todos los detalles necesarios.",
-      gradient: "from-green-500 to-emerald-500"
+      gradient: "from-secondary-500 to-warm-600"
     },
     {
       number: 5,
@@ -63,13 +63,13 @@ const HowItWorks = () => {
       icon: <TrendingUp className="w-6 h-6" />,
       value: "+35%",
       label: "Más Ventas",
-      gradient: "from-blue-500 to-cyan-500"
+      gradient: "from-primary-500 to-warm-500"
     },
     {
       icon: <Smile className="w-6 h-6" />,
       value: "98%",
       label: "Satisfacción",
-      gradient: "from-purple-500 to-pink-500"
+      gradient: "from-accent-500 to-secondary-500"
     }
   ];
 

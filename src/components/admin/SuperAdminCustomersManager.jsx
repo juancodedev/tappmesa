@@ -114,7 +114,7 @@ const SuperAdminCustomersManager = () => {
     if (customer.is_vip) {
       return {
         text: 'VIP',
-        color: 'bg-purple-100 text-purple-800',
+        color: 'bg-primary-100 text-primary-800',
         icon: Star
       }
     } else if (customer.total_orders >= 5) {
@@ -154,7 +154,7 @@ const SuperAdminCustomersManager = () => {
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
         <p className="text-gray-600">Cargando clientes...</p>
       </div>
     )
@@ -199,14 +199,14 @@ const SuperAdminCustomersManager = () => {
               placeholder="Buscar por nombre, teléfono, email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <select
             value={customerFilter}
             onChange={(e) => setCustomerFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
           >
             <option value="all">Todos los clientes</option>
             <option value="vip">Solo VIP</option>
@@ -232,9 +232,9 @@ const SuperAdminCustomersManager = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Clientes VIP</p>
-              <p className="text-2xl font-bold text-purple-600 mt-1">{stats.vip}</p>
+              <p className="text-2xl font-bold text-primary-700 mt-1">{stats.vip}</p>
             </div>
-            <Star className="h-8 w-8 text-purple-500" />
+            <Star className="h-8 w-8 text-primary-600" />
           </div>
         </div>
 
@@ -252,11 +252,11 @@ const SuperAdminCustomersManager = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Ingresos Totales</p>
-              <p className="text-2xl font-bold text-blue-600 mt-1">
+              <p className="text-2xl font-bold text-secondary-700 mt-1">
                 {formatCurrency(stats.totalRevenue)}
               </p>
             </div>
-            <DollarSign className="h-8 w-8 text-blue-500" />
+            <DollarSign className="h-8 w-8 text-secondary-600" />
           </div>
         </div>
       </div>

@@ -18,6 +18,9 @@ import {
   X
 } from 'lucide-react'
 
+const ZONE_ALL = '__all__'
+const ZONE_NONE = '__none__'
+
 const TablesManager = () => {
   const { tenant: currentTenant } = useTenant()
   const { isSuperAdmin } = useAuth()
@@ -40,18 +43,35 @@ const TablesManager = () => {
   const [showActionsMenu, setShowActionsMenu] = useState(null)
   const [saving, setSaving] = useState(false)
 
+  const [zones, setZones]       = useState([])
+  const [activeZone, setActiveZone] = useState(ZONE_ALL)
+
   // Form state
   const [formData, setFormData] = useState({
     number: '',
     capacity: 2,
     location: 'interior',
-    status_id: ''
+    status_id: '',
+    zone_id: ''
   })
+
+  const filteredTables = activeZone === ZONE_ALL
+    ? tables
+    : activeZone === ZONE_NONE
+      ? tables.filter(table => !table.zone_id)
+      : tables.filter(table => table.zone_id === activeZone)
 
   useEffect(() => {
     if (tenantId) {
       loadTables()
       loadTableStatuses()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
+  }, [tenantId, superAdminContext?.selectedTenantId])
+
+  useEffect(() => {
+    if (tenantId) {
+      loadZones()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [tenantId, superAdminContext?.selectedTenantId])
@@ -126,6 +146,25 @@ const TablesManager = () => {
       }
     } catch (error) {
       console.error('Error loading table statuses:', error)
+    }
+  }
+
+  const loadZones = async () => {
+    if (!tenantId) return
+
+    try {
+      const { data, error } = await supabase
+        .from('table_zones')
+        .select('*')
+        .eq('tenant_id', tenantId)
+        .order('order_index', { ascending: true })
+
+      if (error) throw error
+
+      setZones(data || [])
+    } catch (error) {
+      console.error('Error loading zones:', error)
+      setZones([])
     }
   }
 
@@ -305,6 +344,8 @@ const TablesManager = () => {
   const handleAddTable = () => {
     setSelectedTable(null)
 
+    const defaultZoneId = activeZone !== ZONE_ALL && activeZone !== ZONE_NONE ? activeZone : ''
+
     // Obtener el estado "Disponible" por defecto si existe
     const availableStatus = tableStatuses.find(s => s.name === 'Disponible')
 
@@ -312,7 +353,8 @@ const TablesManager = () => {
       number: `Mesa ${tables.length + 1}`,
       capacity: 2,
       location: 'interior',
-      status_id: availableStatus?.id || tableStatuses[0]?.id || ''
+      status_id: availableStatus?.id || tableStatuses[0]?.id || '',
+      zone_id: defaultZoneId
     })
     setShowAddModal(true)
   }
@@ -323,7 +365,8 @@ const TablesManager = () => {
       number: table.number,
       capacity: table.capacity,
       location: table.location,
-      status_id: table.status_id || ''
+      status_id: table.status_id || '',
+      zone_id: table.zone_id || ''
     })
     setShowAddModal(true)
     setShowActionsMenu(null)
@@ -354,7 +397,8 @@ const TablesManager = () => {
         const updateData = {
           number: formData.number.trim(),
           capacity: parseInt(formData.capacity),
-          location: formData.location
+          location: formData.location,
+          zone_id: formData.zone_id || null
         }
 
         // Solo agregar status_id si está definido
@@ -395,6 +439,10 @@ const TablesManager = () => {
         // Agregar status_id si está definido
         if (formData.status_id) {
           insertData.status_id = formData.status_id
+        }
+
+        if (formData.zone_id) {
+          insertData.zone_id = formData.zone_id
         }
 
         console.log('📝 Creando mesa con datos:', {
@@ -501,9 +549,9 @@ const TablesManager = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'available': return 'bg-green-100 text-green-800'
-      case 'occupied': return 'bg-yellow-100 text-yellow-800'
-      case 'reserved': return 'bg-blue-100 text-blue-800'
-      case 'maintenance': return 'bg-red-100 text-red-800'
+      case 'occupied': return 'bg-warm-100 text-warm-800'
+      case 'reserved': return 'bg-secondary-100 text-secondary-800'
+      case 'maintenance': return 'bg-accent-100 text-accent-800'
       default: return 'bg-gray-100 text-gray-800'
     }
   }
@@ -526,6 +574,8 @@ const TablesManager = () => {
       default: return location
     }
   }
+
+  const getZone = (zoneId) => zones.find(zone => zone.id === zoneId)
 
   if (!tenantId) {
     if (isSuperAdmin) {
@@ -584,23 +634,23 @@ const TablesManager = () => {
 
           {/* Indicador de tenant */}
           {tenantId && (
-            <div className="mt-2 inline-flex items-center space-x-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span className="text-xs font-medium text-blue-900">
+            <div className="mt-2 inline-flex items-center space-x-2 px-3 py-1 bg-cream-100 border border-primary-200 rounded-lg">
+              <div className="w-2 h-2 bg-primary rounded-full"></div>
+              <span className="text-xs font-medium text-primary-900">
                 Local: {isSuperAdmin && superAdminContext?.selectedTenant
                   ? superAdminContext.selectedTenant.name
                   : currentTenant?.name || 'Desconocido'}
               </span>
-              <span className="text-xs text-blue-600">
+              <span className="text-xs text-primary-700">
                 (ID: {tenantId.substring(0, 8)}...)
               </span>
             </div>
           )}
 
           {!tenantId && (
-            <div className="mt-2 inline-flex items-center space-x-2 px-3 py-1 bg-red-50 border border-red-200 rounded-lg">
-              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-              <span className="text-xs font-medium text-red-900">
+            <div className="mt-2 inline-flex items-center space-x-2 px-3 py-1 bg-accent-50 border border-accent-200 rounded-lg">
+              <div className="w-2 h-2 bg-accent-500 rounded-full animate-pulse"></div>
+              <span className="text-xs font-medium text-accent-900">
                 ⚠️ Local no identificado - No se pueden gestionar mesas
               </span>
             </div>
@@ -630,6 +680,48 @@ const TablesManager = () => {
       </div>
 
       {/* Stats */}
+      {zones.length > 0 && (
+        <div className="mb-5 flex items-center space-x-2 overflow-x-auto pb-1">
+          <button
+            onClick={() => setActiveZone(ZONE_ALL)}
+            className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors border ${
+              activeZone === ZONE_ALL
+                ? 'bg-primary text-white border-primary'
+                : 'text-gray-600 border-gray-300 hover:border-gray-400'
+            }`}
+          >
+            Todas ({tables.length})
+          </button>
+
+          {zones.map(zone => (
+            <button
+              key={zone.id}
+              onClick={() => setActiveZone(zone.id)}
+              className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors border ${
+                activeZone === zone.id
+                  ? 'text-white border-transparent'
+                  : 'text-gray-600 border-gray-300 hover:border-gray-400'
+              }`}
+              style={activeZone === zone.id ? { backgroundColor: zone.color, borderColor: zone.color } : {}}
+            >
+              {zone.name} ({tables.filter(table => table.zone_id === zone.id).length})
+            </button>
+          ))}
+
+          <button
+            onClick={() => setActiveZone(ZONE_NONE)}
+            className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors border ${
+              activeZone === ZONE_NONE
+                ? 'bg-gray-700 text-white border-gray-700'
+                : 'text-gray-600 border-gray-300 hover:border-gray-400'
+            }`}
+          >
+            Sin zona ({tables.filter(table => !table.zone_id).length})
+          </button>
+        </div>
+      )}
+
+      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
           <div className="text-center">
@@ -647,7 +739,7 @@ const TablesManager = () => {
         </div>
         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
           <div className="text-center">
-            <p className="text-2xl font-bold text-yellow-600">
+            <p className="text-2xl font-bold text-warm-700">
               {tables.filter(t => t.status === 'occupied').length}
             </p>
             <p className="text-sm text-gray-600">Ocupadas</p>
@@ -655,7 +747,7 @@ const TablesManager = () => {
         </div>
         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
           <div className="text-center">
-            <p className="text-2xl font-bold text-blue-600">
+            <p className="text-2xl font-bold text-secondary-700">
               {tables.filter(t => t.status === 'reserved').length}
             </p>
             <p className="text-sm text-gray-600">Reservadas</p>
@@ -665,7 +757,7 @@ const TablesManager = () => {
 
       {/* Tables Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {tables.map((table) => (
+        {filteredTables.map((table) => (
           <div key={table.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             {/* Header */}
             <div className="p-4 border-b border-gray-100">
@@ -699,7 +791,7 @@ const TablesManager = () => {
                         </button>
                         <button
                           onClick={() => handleDeleteTable(table.id)}
-                          className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                          className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-accent-700 hover:bg-accent-50"
                         >
                           <Trash2 className="w-4 h-4" />
                           <span>Eliminar</span>
@@ -731,6 +823,17 @@ const TablesManager = () => {
                 <MapPin className="w-4 h-4" />
                 <span>{getLocationText(table.location)}</span>
               </div>
+
+              {table.zone_id && getZone(table.zone_id) && (
+                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                  <span
+                    className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white"
+                    style={{ backgroundColor: getZone(table.zone_id).color || '#6b7280' }}
+                  >
+                    {getZone(table.zone_id).name}
+                  </span>
+                </div>
+              )}
               
               <div className="pt-2 border-t border-gray-100">
                 <p className="text-xs text-gray-500 mb-1">Código único:</p>
@@ -854,10 +957,31 @@ const TablesManager = () => {
                 </div>
               )}
 
+              {/* Zona */}
+              {zones.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Zona / Ambiente
+                  </label>
+                  <select
+                    value={formData.zone_id}
+                    onChange={(e) => setFormData({ ...formData, zone_id: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  >
+                    <option value="">Sin zona asignada</option>
+                    {zones.map((zone) => (
+                      <option key={zone.id} value={zone.id}>
+                        {zone.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               {/* Información adicional */}
               {!selectedTable && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <p className="text-sm text-blue-700">
+                <div className="bg-cream-100 border border-primary-200 rounded-lg p-3">
+                  <p className="text-sm text-primary-700">
                     <strong>📝 Nota:</strong> Podrás generar un código QR para esta mesa después de crearla usando el botón "Ver QR".
                   </p>
                 </div>

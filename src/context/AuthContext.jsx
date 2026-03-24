@@ -179,10 +179,9 @@ export function AuthProvider({ children }) {
     // Super admins have all permissions
     if (isSuperAdmin) return true;
 
-    // Tenant admins have full permissions within their tenant
-    if (state.user.role === 'tenant_admin') {
-      // Define tenant admin permissions
-      const tenantAdminPermissions = [
+    const rolePermissions = {
+      // Tenant admins: control operativo completo en su tenant
+      tenant_admin: [
         'tables:read', 'tables:write', 'tables:delete',
         'products:read', 'products:write', 'products:delete',
         'orders:read', 'orders:write', 'orders:delete',
@@ -190,28 +189,45 @@ export function AuthProvider({ children }) {
         'settings:read', 'settings:write',
         'customers:read', 'customers:write',
         'inventory:read', 'inventory:write',
+        'stock:read', 'stock:write',
         'qr:read', 'qr:write',
         'categories:read', 'categories:write', 'categories:delete',
         'reservations:read', 'reservations:write', 'reservations:delete',
-        'users:read', 'users:write', 'users:delete'
-      ];
+        'users:read', 'users:write', 'users:delete',
+        'waiter:read',
+        'kitchen:read'
+      ],
 
-      return tenantAdminPermissions.includes(`${resource}:${action}`);
-    }
+      // Staff general: operación diaria
+      staff: [
+        'orders:read', 'orders:write',
+        'reservations:read', 'reservations:write',
+        'customers:read',
+        'tables:read',
+        'waiter:read',
+        'kitchen:read'
+      ],
 
-    // Permisos delegados para el personal (staff)
-    if (state.user.role === 'staff') {
-      const staffPermissions = [
+      // Mesero: foco en salón, pedidos y reservas
+      waiter: [
+        'waiter:read',
         'orders:read', 'orders:write',
         'reservations:read', 'reservations:write',
         'customers:read',
         'tables:read'
-      ];
-      return staffPermissions.includes(`${resource}:${action}`);
-    }
+      ],
+
+      // Cocina: foco en comandas y estados de pedido
+      kitchen: [
+        'kitchen:read',
+        'orders:read', 'orders:write'
+      ]
+    };
+
+    const userPermissions = rolePermissions[state.user.role] || [];
+    return userPermissions.includes(`${resource}:${action}`);
 
     // Default: no permissions for other roles
-    return false;
   };
 
   const value = {

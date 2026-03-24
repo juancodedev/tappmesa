@@ -262,9 +262,9 @@ const Dashboard = () => {
               <p className="text-2xl font-bold text-primary-900 mt-1">
                 {stats.activeOrders}
               </p>
-              <p className="text-sm text-blue-700 font-medium mt-1">3 preparando</p>
+              <p className="text-sm text-secondary-700 font-medium mt-1">3 preparando</p>
             </div>
-            <div className="p-3 bg-linear-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg">
+            <div className="p-3 bg-linear-to-br from-secondary-500 to-secondary-600 rounded-2xl shadow-lg">
               <ShoppingBag className="w-6 h-6 text-white" />
             </div>
           </div>
@@ -294,9 +294,9 @@ const Dashboard = () => {
               <p className="text-2xl font-bold text-primary-900 mt-1">
                 {stats.lowStockItems}
               </p>
-              <p className="text-sm text-red-700 font-medium mt-1">Requiere atención</p>
+              <p className="text-sm text-accent-700 font-medium mt-1">Requiere atención</p>
             </div>
-            <div className="p-3 bg-linear-to-br from-red-500 to-red-600 rounded-2xl shadow-lg">
+            <div className="p-3 bg-linear-to-br from-accent-500 to-accent-600 rounded-2xl shadow-lg">
               <AlertTriangle className="w-6 h-6 text-white" />
             </div>
           </div>

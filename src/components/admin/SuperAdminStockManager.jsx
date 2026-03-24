@@ -87,9 +87,9 @@ const SuperAdminStockManager = () => {
 
   const getStockStatus = (item) => {
     if (item.current_stock <= item.min_stock) {
-      return { status: 'low', color: 'bg-red-100 text-red-800', text: 'Stock Bajo', icon: AlertTriangle }
+      return { status: 'low', color: 'bg-accent-100 text-accent-800', text: 'Stock Bajo', icon: AlertTriangle }
     } else if (item.current_stock >= item.max_stock) {
-      return { status: 'full', color: 'bg-blue-100 text-blue-800', text: 'Stock Lleno', icon: CheckCircle }
+      return { status: 'full', color: 'bg-secondary-100 text-secondary-800', text: 'Stock Lleno', icon: CheckCircle }
     } else {
       return { status: 'ok', color: 'bg-green-100 text-green-800', text: 'Stock OK', icon: CheckCircle }
     }
@@ -152,7 +152,7 @@ const SuperAdminStockManager = () => {
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
         <p className="text-gray-600">Cargando inventario...</p>
       </div>
     )
@@ -197,14 +197,14 @@ const SuperAdminStockManager = () => {
               placeholder="Buscar productos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <select
             value={stockFilter}
             onChange={(e) => setStockFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
           >
             <option value="all">Todos los estados</option>
             <option value="low">Stock Bajo</option>
@@ -240,9 +240,9 @@ const SuperAdminStockManager = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Sin Stock</p>
-              <p className="text-2xl font-bold text-red-600 mt-1">{stats.outOfStock}</p>
+              <p className="text-2xl font-bold text-accent-700 mt-1">{stats.outOfStock}</p>
             </div>
-            <XCircle className="h-8 w-8 text-red-500" />
+            <XCircle className="h-8 w-8 text-accent-600" />
           </div>
         </div>
 
@@ -331,8 +331,8 @@ const SuperAdminStockManager = () => {
                             <div className="bg-gray-200 rounded-full h-2">
                               <div
                                 className={`h-2 rounded-full ${
-                                  stockStatus.status === 'low' ? 'bg-red-500' :
-                                  stockStatus.status === 'full' ? 'bg-blue-500' :
+                                  stockStatus.status === 'low' ? 'bg-accent-500' :
+                                  stockStatus.status === 'full' ? 'bg-secondary-500' :
                                   'bg-green-500'
                                 }`}
                                 style={{ width: `${Math.min(percentage, 100)}%` }}

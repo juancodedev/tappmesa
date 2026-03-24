@@ -100,11 +100,11 @@ const Analytics = () => {
 
   const getStockStatus = (item) => {
     if (item.current_stock <= item.min_stock) {
-      return { status: 'low', color: 'bg-red-100 text-red-800', text: 'Stock Bajo' }
+      return { status: 'low', color: 'bg-accent-100 text-accent-800', text: 'Stock Bajo' }
     } else if (item.current_stock >= item.max_stock) {
-      return { status: 'full', color: 'bg-blue-100 text-blue-800', text: 'Stock Lleno' }
+      return { status: 'full', color: 'bg-secondary-100 text-secondary-800', text: 'Stock Lleno' }
     } else {
-      return { status: 'ok', color: 'bg-green-100 text-green-800', text: 'Stock OK' }
+      return { status: 'ok', color: 'bg-primary-100 text-primary-800', text: 'Stock OK' }
     }
   }
 
@@ -268,8 +268,8 @@ const Analytics = () => {
               <p className="text-sm font-medium text-gray-500">Total Items</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">{inventory.length}</p>
             </div>
-            <div className="p-3 bg-blue-100 rounded-full">
-              <Package className="w-6 h-6 text-blue-600" />
+            <div className="p-3 bg-primary-100 rounded-full">
+              <Package className="w-6 h-6 text-primary-700" />
             </div>
           </div>
         </div>
@@ -279,10 +279,10 @@ const Analytics = () => {
             <div>
               <p className="text-sm font-medium text-gray-500">Stock Bajo</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">{lowStockCount}</p>
-              <p className="text-sm text-red-600 mt-1">Requiere atención</p>
+              <p className="text-sm text-accent-700 mt-1">Requiere atención</p>
             </div>
-            <div className="p-3 bg-red-100 rounded-full">
-              <AlertTriangle className="w-6 h-6 text-red-600" />
+            <div className="p-3 bg-accent-100 rounded-full">
+              <AlertTriangle className="w-6 h-6 text-accent-700" />
             </div>
           </div>
         </div>
@@ -295,8 +295,8 @@ const Analytics = () => {
                 {formatCurrency(totalValue)}
               </p>
             </div>
-            <div className="p-3 bg-green-100 rounded-full">
-              <TrendingUp className="w-6 h-6 text-green-600" />
+            <div className="p-3 bg-secondary-100 rounded-full">
+              <TrendingUp className="w-6 h-6 text-secondary-700" />
             </div>
           </div>
         </div>
@@ -386,8 +386,8 @@ const Analytics = () => {
                         <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
                           <div 
                             className={`h-2 rounded-full ${
-                              stockStatus.status === 'low' ? 'bg-red-500' :
-                              stockStatus.status === 'full' ? 'bg-blue-500' : 'bg-green-500'
+                              stockStatus.status === 'low' ? 'bg-accent-500' :
+                              stockStatus.status === 'full' ? 'bg-secondary-500' : 'bg-primary'
                             }`}
                             style={{ width: `${Math.min(stockPercentage, 100)}%` }}
                           ></div>
@@ -415,14 +415,14 @@ const Analytics = () => {
                       <div className="flex items-center justify-end space-x-2">
                         <button
                           onClick={() => handleStockMovement(item, 'add')}
-                          className="text-green-600 hover:text-green-900 p-1 rounded transition-colors"
+                          className="text-primary-700 hover:text-primary-900 p-1 rounded transition-colors"
                           title="Agregar stock"
                         >
                           <Plus className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleStockMovement(item, 'remove')}
-                          className="text-red-600 hover:text-red-900 p-1 rounded transition-colors"
+                          className="text-accent-700 hover:text-accent-900 p-1 rounded transition-colors"
                           title="Reducir stock"
                         >
                           <Minus className="w-4 h-4" />
@@ -435,7 +435,7 @@ const Analytics = () => {
                         </button>
                           <button
                             onClick={() => handleOpenEdit(item)}
-                            className="text-indigo-600 hover:text-indigo-900 p-1 rounded transition-colors"
+                            className="text-warm-700 hover:text-warm-900 p-1 rounded transition-colors"
                             title="Editar"
                           >
                             <Edit className="w-4 h-4" />
@@ -541,8 +541,8 @@ const Analytics = () => {
                     disabled={saving}
                     className={`flex-1 px-4 py-2 rounded-lg transition-colors text-white shadow-sm flex items-center justify-center space-x-2 ${
                       selectedProduct.movementType === 'add'
-                        ? 'bg-green-600 hover:bg-green-700'
-                        : 'bg-red-600 hover:bg-red-700'
+                        ? 'bg-primary hover:bg-primary-700'
+                        : 'bg-accent hover:bg-accent-700'
                     }`}
                   >
                     {saving ? (

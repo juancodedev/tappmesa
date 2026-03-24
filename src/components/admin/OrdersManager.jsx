@@ -158,10 +158,10 @@ const OrdersManager = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-      case 'preparing': return 'bg-blue-100 text-blue-800 border-blue-200'
-      case 'ready': return 'bg-green-100 text-green-800 border-green-200'
+      case 'preparing': return 'bg-secondary-100 text-secondary-800 border-secondary-200'
+      case 'ready': return 'bg-primary-100 text-primary-800 border-primary-200'
       case 'delivered': return 'bg-gray-100 text-gray-800 border-gray-200'
-      case 'cancelled': return 'bg-red-100 text-red-800 border-red-200'
+      case 'cancelled': return 'bg-accent-100 text-accent-800 border-accent-200'
       default: return 'bg-gray-100 text-gray-800 border-gray-200'
     }
   }
@@ -317,7 +317,7 @@ const OrdersManager = () => {
         </div>
         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
           <div className="text-center">
-            <p className="text-2xl font-bold text-blue-600">
+            <p className="text-2xl font-bold text-secondary-700">
               {orders.filter(o => o.status === 'preparing').length}
             </p>
             <p className="text-sm text-gray-600">Preparando</p>
@@ -418,14 +418,14 @@ const OrdersManager = () => {
                       <button
                         onClick={() => updateOrderStatus(order.id, 'preparing')}
                         disabled={updating}
-                        className="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+                        className="bg-secondary-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-secondary-700 transition-colors disabled:opacity-50"
                       >
                         {updating ? 'Actualizando...' : 'Preparar'}
                       </button>
                       <button
                         onClick={() => updateOrderStatus(order.id, 'cancelled')}
                         disabled={updating}
-                        className="bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
+                        className="bg-accent-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-accent-700 transition-colors disabled:opacity-50"
                       >
                         {updating ? 'Actualizando...' : 'Cancelar'}
                       </button>
@@ -437,14 +437,14 @@ const OrdersManager = () => {
                       <button
                         onClick={() => updateOrderStatus(order.id, 'ready')}
                         disabled={updating}
-                        className="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
+                        className="bg-primary text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors disabled:opacity-50"
                       >
                         {updating ? 'Actualizando...' : 'Marcar Listo'}
                       </button>
                       <button
                         onClick={() => updateOrderStatus(order.id, 'cancelled')}
                         disabled={updating}
-                        className="bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
+                        className="bg-accent-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-accent-700 transition-colors disabled:opacity-50"
                       >
                         {updating ? 'Actualizando...' : 'Cancelar'}
                       </button>

@@ -173,15 +173,15 @@ const ReservationsManager = () => {
       },
       cancelled: {
         icon: XCircle,
-        color: 'bg-red-100 text-red-800 border-red-200',
+        color: 'bg-accent-100 text-accent-800 border-accent-200',
         text: 'Cancelada',
-        dotColor: 'bg-red-500'
+        dotColor: 'bg-accent-500'
       },
       completed: {
         icon: CheckCircle,
-        color: 'bg-blue-100 text-blue-800 border-blue-200',
+        color: 'bg-primary-100 text-primary-800 border-primary-200',
         text: 'Completada',
-        dotColor: 'bg-blue-500'
+        dotColor: 'bg-primary-500'
       }
     }
     return statusMap[status] || statusMap.pending
@@ -300,7 +300,7 @@ const ReservationsManager = () => {
         </div>
         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
           <div className="text-center">
-            <p className="text-2xl font-bold text-blue-600">{todayReservations.length}</p>
+            <p className="text-2xl font-bold text-secondary-700">{todayReservations.length}</p>
             <p className="text-sm text-gray-600">Hoy</p>
           </div>
         </div>
@@ -332,8 +332,8 @@ const ReservationsManager = () => {
           <div className="flex flex-wrap gap-2">
             <button onClick={() => setFilter('all')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'all' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>Todas</button>
             <button onClick={() => setFilter('pending')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'pending' ? 'bg-yellow-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>Pendientes</button>
-            <button onClick={() => setFilter('confirmed')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'confirmed' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>Confirmadas</button>
-            <button onClick={() => setFilter('cancelled')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'cancelled' ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>Canceladas</button>
+            <button onClick={() => setFilter('confirmed')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'confirmed' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>Confirmadas</button>
+            <button onClick={() => setFilter('cancelled')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'cancelled' ? 'bg-accent-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>Canceladas</button>
           </div>
 
           <div className="md:ml-auto">
@@ -428,16 +428,16 @@ const ReservationsManager = () => {
                       </button>
                     )}
                     {reservation.status === 'pending' && (
-                      <button onClick={() => updateReservationStatus(reservation.id, 'confirmed')} className="px-3 py-1.5 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 transition-colors flex items-center space-x-1">
+                      <button onClick={() => updateReservationStatus(reservation.id, 'confirmed')} className="px-3 py-1.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center space-x-1">
                         <CheckCircle className="w-4 h-4" />
                         <span>Confirmar</span>
                       </button>
                     )}
                     {reservation.status === 'confirmed' && (
-                      <button onClick={() => updateReservationStatus(reservation.id, 'completed')} className="px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors">Completar</button>
+                      <button onClick={() => updateReservationStatus(reservation.id, 'completed')} className="px-3 py-1.5 bg-secondary-600 text-white text-sm font-medium rounded-lg hover:bg-secondary-700 transition-colors">Completar</button>
                     )}
                     {reservation.status !== 'cancelled' && (
-                      <button onClick={() => updateReservationStatus(reservation.id, 'cancelled')} className="px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-colors flex items-center space-x-1">
+                      <button onClick={() => updateReservationStatus(reservation.id, 'cancelled')} className="px-3 py-1.5 bg-accent-600 text-white text-sm font-medium rounded-lg hover:bg-accent-700 transition-colors flex items-center space-x-1">
                         <XCircle className="w-4 h-4" />
                         <span>Cancelar</span>
                       </button>

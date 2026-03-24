@@ -18,7 +18,9 @@ import {
   Shield,
   Circle,
   DollarSign,
-  FileText
+  FileText,
+  MapPin,
+  ChefHat
 } from 'lucide-react'
 
 import { useAuth } from '../hooks/useAuth'
@@ -30,6 +32,7 @@ import TenantSelector from './admin/TenantSelector'
 import Dashboard from './admin/Dashboard'
 import TablesManagerComponent from './admin/TablesManager'
 import TableStatusesManager from './admin/TableStatusesManager'
+import ZonesManager from './admin/ZonesManager'
 import QRGenerator from './admin/QRGenerator'
 import UsersManagerComponent from './admin/UsersManager'
 import AnalyticsComponent from './admin/Analytics'
@@ -53,6 +56,8 @@ import SuperAdminReservationsManager from './admin/SuperAdminReservationsManager
 import SuperAdminCustomersManager from './admin/SuperAdminCustomersManager'
 import SuperAdminCategoriesManager from './admin/SuperAdminCategoriesManager'
 import SuperAdminStockManager from './admin/SuperAdminStockManager'
+import KitchenDashboard from '../pages/kitchen/KitchenDashboard'
+import WaiterDashboard from '../pages/waiter/WaiterDashboard'
 
 const SecureAdminApp = () => {
   const { isSuperAdmin } = useAuth()
@@ -96,6 +101,18 @@ const SecureAdminAppContent = () => {
       requiredPermissions: ['orders:read']
     },
     {
+      name: 'Comanda Cocina',
+      href: '/admin/kitchen',
+      icon: ChefHat,
+      requiredPermissions: ['kitchen:read']
+    },
+    {
+      name: 'Panel Garzón',
+      href: '/admin/waiter',
+      icon: Users,
+      requiredPermissions: ['waiter:read']
+    },
+    {
       name: 'Reservas',
       href: '/admin/reservations',
       icon: Calendar,
@@ -135,6 +152,12 @@ const SecureAdminAppContent = () => {
       name: 'Mesas',
       href: '/admin/tables',
       icon: Coffee,
+      requiredPermissions: ['tables:read']
+    },
+    {
+      name: 'Zonas / Ambientes',
+      href: '/admin/table-zones',
+      icon: MapPin,
       requiredPermissions: ['tables:read']
     },
     {
@@ -373,6 +396,18 @@ const SecureAdminAppContent = () => {
                 <OrdersManagerComponent />
               </TenantAdminRoute>
             } />
+
+            <Route path="/kitchen" element={
+              <TenantAdminRoute requirePermissions={['kitchen:read']}>
+                <KitchenDashboard />
+              </TenantAdminRoute>
+            } />
+
+            <Route path="/waiter" element={
+              <TenantAdminRoute requirePermissions={['waiter:read']}>
+                <WaiterDashboard />
+              </TenantAdminRoute>
+            } />
             
             <Route path="/reservations" element={
               <TenantAdminRoute requirePermissions={['reservations:read']}>
@@ -422,6 +457,12 @@ const SecureAdminAppContent = () => {
               </TenantAdminRoute>
             } />
 
+            <Route path="/table-zones" element={
+              <TenantAdminRoute requirePermissions={['tables:read']}>
+                <ZonesManager />
+              </TenantAdminRoute>
+            } />
+
             <Route path="/qr" element={
               <TenantAdminRoute requirePermissions={['qr:read']}>
                 <QRGenerator />
@@ -459,7 +500,19 @@ const SecureAdminAppContent = () => {
               </SuperAdminRoute>
             } />
 
+            <Route path="/plans" element={
+              <SuperAdminRoute>
+                <SubscriptionPlansManager />
+              </SuperAdminRoute>
+            } />
+
             <Route path="/tenant-subscriptions" element={
+              <SuperAdminRoute>
+                <TenantSubscriptionsManager />
+              </SuperAdminRoute>
+            } />
+
+            <Route path="/subscriptions" element={
               <SuperAdminRoute>
                 <TenantSubscriptionsManager />
               </SuperAdminRoute>
