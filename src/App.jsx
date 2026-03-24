@@ -104,7 +104,7 @@ function App() {
       <AuthProvider>
         <TenantProvider>
           <Routes>
-            {/* Nuevas rutas de de autenticación y registro */}
+            {/* Nuevas rutas de autenticación y registro */}
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
 
