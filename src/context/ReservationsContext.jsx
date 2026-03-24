@@ -363,7 +363,7 @@ export function useReservation() {
 
 // src/components/Reservations/ReservationWidget.jsx
 import { useState, useMemo } from 'react';
-import { useAuth } from '../AuthContext';
+import { useAuth } from './AuthContext';
 
 export default function ReservationWidget() {
   const { tenant } = useAuth();
