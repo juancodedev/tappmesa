@@ -29,23 +29,60 @@ CREATE INDEX IF NOT EXISTS idx_tables_zone_id            ON tables(zone_id);
 -- 4. Row Level Security
 ALTER TABLE table_zones ENABLE ROW LEVEL SECURITY;
 
--- Política: lectura pública por tenant (para menus de clientes)
+-- Política: lectura solo para admins del mismo tenant
 DROP POLICY IF EXISTS "table_zones_select_tenant" ON table_zones;
 CREATE POLICY "table_zones_select_tenant" ON table_zones
-  FOR SELECT USING (true);
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1
+      FROM admin_users au
+      WHERE au.user_id = auth.uid()
+        AND au.tenant_id = table_zones.tenant_id
+    )
+  );
 
 -- Política: escritura solo para admins del mismo tenant
 DROP POLICY IF EXISTS "table_zones_insert_tenant" ON table_zones;
 CREATE POLICY "table_zones_insert_tenant" ON table_zones
-  FOR INSERT WITH CHECK (true);
+  FOR INSERT WITH CHECK (
+    EXISTS (
+      SELECT 1
+      FROM admin_users au
+      WHERE au.user_id = auth.uid()
+        AND au.tenant_id = table_zones.tenant_id
+    )
+  );
 
 DROP POLICY IF EXISTS "table_zones_update_tenant" ON table_zones;
 CREATE POLICY "table_zones_update_tenant" ON table_zones
-  FOR UPDATE USING (true);
+  FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1
+      FROM admin_users au
+      WHERE au.user_id = auth.uid()
+        AND au.tenant_id = table_zones.tenant_id
+    )
+  )
+  WITH CHECK (
+    EXISTS (
+      SELECT 1
+      FROM admin_users au
+      WHERE au.user_id = auth.uid()
+        AND au.tenant_id = table_zones.tenant_id
+    )
+  );
 
 DROP POLICY IF EXISTS "table_zones_delete_tenant" ON table_zones;
 CREATE POLICY "table_zones_delete_tenant" ON table_zones
-  FOR DELETE USING (true);
+  FOR DELETE USING (
+    EXISTS (
+      SELECT 1
+      FROM admin_users au
+      WHERE au.user_id = auth.uid()
+        AND au.tenant_id = table_zones.tenant_id
+    )
+  );
 
 -- 5. Función para actualizar updated_at automáticamente
 CREATE OR REPLACE FUNCTION update_table_zones_updated_at()
