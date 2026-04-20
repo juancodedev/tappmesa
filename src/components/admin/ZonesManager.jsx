@@ -145,6 +145,7 @@ const ZonesManager = () => {
           updated_at: new Date().toISOString()
         })
         .eq('id', id)
+        .eq('tenant_id', tenantId)
 
       if (error) throw error
 
@@ -167,7 +168,7 @@ const ZonesManager = () => {
     if (!confirm(`¿Eliminar la zona "${zone.name}"?`)) return
 
     try {
-      const { error } = await supabase.from('table_zones').delete().eq('id', zone.id)
+      const { error } = await supabase.from('table_zones').delete().eq('id', zone.id).eq('tenant_id', tenantId)
       if (error) throw error
       await loadZones()
     } catch (err) {
@@ -182,8 +183,8 @@ const ZonesManager = () => {
     const above = zones[idx - 1]
     try {
       await Promise.all([
-        supabase.from('table_zones').update({ order_index: above.order_index }).eq('id', zone.id),
-        supabase.from('table_zones').update({ order_index: zone.order_index }).eq('id', above.id)
+        supabase.from('table_zones').update({ order_index: above.order_index }).eq('id', zone.id).eq('tenant_id', tenantId),
+        supabase.from('table_zones').update({ order_index: zone.order_index }).eq('id', above.id).eq('tenant_id', tenantId)
       ])
       await loadZones()
     } catch (err) {
@@ -197,8 +198,8 @@ const ZonesManager = () => {
     const below = zones[idx + 1]
     try {
       await Promise.all([
-        supabase.from('table_zones').update({ order_index: below.order_index }).eq('id', zone.id),
-        supabase.from('table_zones').update({ order_index: zone.order_index }).eq('id', below.id)
+        supabase.from('table_zones').update({ order_index: below.order_index }).eq('id', zone.id).eq('tenant_id', tenantId),
+        supabase.from('table_zones').update({ order_index: zone.order_index }).eq('id', below.id).eq('tenant_id', tenantId)
       ])
       await loadZones()
     } catch (err) {
