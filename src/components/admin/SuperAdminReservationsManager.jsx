@@ -28,6 +28,7 @@ const SuperAdminReservationsManager = () => {
 
   useEffect(() => {
     loadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recargar al cambiar tenant/filtro
   }, [selectedTenantId, statusFilter, selectedDate])
 
   const loadData = async () => {

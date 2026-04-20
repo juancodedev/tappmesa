@@ -124,7 +124,7 @@ const Testimonials = () => {
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${currentIndex * (100 / 2)}%)` }}
             >
-              {testimonials.map((testimonial, index) => (
+              {testimonials.map((testimonial) => (
                 <div
                   key={testimonial.name}
                   className="min-w-full md:min-w-[50%] px-3 md:px-4"

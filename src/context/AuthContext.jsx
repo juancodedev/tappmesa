@@ -1,5 +1,6 @@
+/* eslint-disable react-refresh/only-export-components -- archivo de contexto que exporta Provider y hook */
 // src/context/AuthContext.jsx
-import { createContext, useContext, useReducer, useEffect } from "react";
+import { createContext, useReducer, useEffect, useCallback } from "react";
 import { authService } from "../lib/supabase";
 import logger from "../utils/logger";
 
@@ -57,25 +58,18 @@ function authReducer(state, action) {
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Verificar autenticación al cargar
-  useEffect(() => {
-    // Capturar token de la URL si existe (viene de redirección de login)
-    const urlParams = new URLSearchParams(window.location.search)
-    const tokenFromUrl = urlParams.get('token')
-
-    if (tokenFromUrl) {
-      logger.dev('🔑 Token capturado de URL, guardando en localStorage')
-      localStorage.setItem('tappmesa-session', tokenFromUrl)
-
-      // Limpiar el token de la URL por seguridad
-      const cleanUrl = window.location.pathname
-      window.history.replaceState({}, document.title, cleanUrl)
+  const checkTrialStatus = useCallback(async (tenantId) => {
+    try {
+      const trialData = await authService.getTrialStatus(tenantId);
+      if (trialData) {
+        dispatch({ type: authActions.SET_TRIAL_INFO, payload: trialData });
+      }
+    } catch (err) {
+      logger.error("Error checking trial status:", err);
     }
-
-    checkAuthStatus();
   }, []);
 
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = useCallback(async () => {
     try {
       const session = await authService.getCurrentSession();
 
@@ -85,29 +79,32 @@ export function AuthProvider({ children }) {
           tenant: session.tenant
         }});
 
-        // Verificar estado del trial si es necesario
         if (session.tenant) {
           await checkTrialStatus(session.tenant.id);
         }
       } else {
         dispatch({ type: authActions.SET_LOADING, payload: false });
       }
-    } catch (error) {
-      logger.error("Error checking auth status:", error);
+    } catch (err) {
+      logger.error("Error checking auth status:", err);
       dispatch({ type: authActions.SET_LOADING, payload: false });
     }
-  };
+  }, [checkTrialStatus]);
 
-  const checkTrialStatus = async (tenantId) => {
-    try {
-      const trialData = await authService.getTrialStatus(tenantId);
-      if (trialData) {
-        dispatch({ type: authActions.SET_TRIAL_INFO, payload: trialData });
-      }
-    } catch (error) {
-      logger.error("Error checking trial status:", error);
+  // Verificar autenticación al cargar
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const tokenFromUrl = urlParams.get('token')
+
+    if (tokenFromUrl) {
+      logger.dev('🔑 Token capturado de URL, guardando en localStorage')
+      localStorage.setItem('tappmesa-session', tokenFromUrl)
+      const cleanUrl = window.location.pathname
+      window.history.replaceState({}, document.title, cleanUrl)
     }
-  };
+
+    checkAuthStatus();
+  }, [checkAuthStatus]);
 
   const register = async (registrationData) => {
     dispatch({ type: authActions.SET_LOADING, payload: true });
@@ -127,7 +124,7 @@ export function AuthProvider({ children }) {
         dispatch({ type: authActions.SET_ERROR, payload: result.error });
         return { success: false, error: result.error };
       }
-    } catch (error) {
+    } catch {
       const errorMessage = "Error al registrar. Intenta nuevamente.";
       dispatch({ type: authActions.SET_ERROR, payload: errorMessage });
       return { success: false, error: errorMessage };
@@ -156,7 +153,7 @@ export function AuthProvider({ children }) {
         dispatch({ type: authActions.SET_ERROR, payload: result.error });
         return { success: false, error: result.error };
       }
-    } catch (error) {
+    } catch {
       const errorMessage = "Error al iniciar sesión. Intenta nuevamente.";
       dispatch({ type: authActions.SET_ERROR, payload: errorMessage });
       return { success: false, error: errorMessage };
@@ -182,10 +179,9 @@ export function AuthProvider({ children }) {
     // Super admins have all permissions
     if (isSuperAdmin) return true;
 
-    // Tenant admins have full permissions within their tenant
-    if (state.user.role === 'tenant_admin') {
-      // Define tenant admin permissions
-      const tenantAdminPermissions = [
+    const rolePermissions = {
+      // Tenant admins: control operativo completo en su tenant
+      tenant_admin: [
         'tables:read', 'tables:write', 'tables:delete',
         'products:read', 'products:write', 'products:delete',
         'orders:read', 'orders:write', 'orders:delete',
@@ -193,17 +189,45 @@ export function AuthProvider({ children }) {
         'settings:read', 'settings:write',
         'customers:read', 'customers:write',
         'inventory:read', 'inventory:write',
+        'stock:read', 'stock:write',
         'qr:read', 'qr:write',
         'categories:read', 'categories:write', 'categories:delete',
         'reservations:read', 'reservations:write', 'reservations:delete',
-        'users:read', 'users:write', 'users:delete'
-      ];
+        'users:read', 'users:write', 'users:delete',
+        'waiter:read',
+        'kitchen:read'
+      ],
 
-      return tenantAdminPermissions.includes(`${resource}:${action}`);
-    }
+      // Staff general: operación diaria
+      staff: [
+        'orders:read', 'orders:write',
+        'reservations:read', 'reservations:write',
+        'customers:read',
+        'tables:read',
+        'waiter:read',
+        'kitchen:read'
+      ],
+
+      // Mesero: foco en salón, pedidos y reservas
+      waiter: [
+        'waiter:read',
+        'orders:read', 'orders:write',
+        'reservations:read', 'reservations:write',
+        'customers:read',
+        'tables:read'
+      ],
+
+      // Cocina: foco en comandas y estados de pedido
+      kitchen: [
+        'kitchen:read',
+        'orders:read', 'orders:write'
+      ]
+    };
+
+    const userPermissions = rolePermissions[state.user.role] || [];
+    return userPermissions.includes(`${resource}:${action}`);
 
     // Default: no permissions for other roles
-    return false;
   };
 
   const value = {

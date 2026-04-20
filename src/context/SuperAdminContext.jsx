@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- archivo de contexto que exporta Provider */
 import { createContext, useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import logger from '../utils/logger'
@@ -27,6 +28,7 @@ export const SuperAdminProvider = ({ children }) => {
     } else {
       setSelectedTenant(null)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recargar al cambiar tenant seleccionado
   }, [selectedTenantId])
 
   const loadTenants = async () => {

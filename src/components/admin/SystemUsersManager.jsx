@@ -68,7 +68,12 @@ const SystemUsersManager = () => {
     }
   }
 
-  const handleToggleActive = async (userId, currentStatus) => {
+  const handleToggleActive = async (userId, currentStatus, role) => {
+    if (role === 'super_admin' && currentStatus) {
+      alert('No se puede desactivar una cuenta Super Admin desde este panel.')
+      return
+    }
+
     if (!confirm(`¿Está seguro de ${currentStatus ? 'desactivar' : 'activar'} este usuario?`)) {
       return
     }
@@ -105,11 +110,11 @@ const SystemUsersManager = () => {
 
   const getRoleBadgeColor = (role) => {
     const colors = {
-      'super_admin': 'bg-purple-100 text-purple-800 border-purple-300',
-      'tenant_admin': 'bg-blue-100 text-blue-800 border-blue-300',
-      'staff': 'bg-green-100 text-green-800 border-green-300',
-      'waiter': 'bg-yellow-100 text-yellow-800 border-yellow-300',
-      'kitchen': 'bg-orange-100 text-orange-800 border-orange-300'
+      'super_admin': 'bg-primary-100 text-primary-800 border-primary-300',
+      'tenant_admin': 'bg-secondary-100 text-secondary-800 border-secondary-300',
+      'staff': 'bg-cream-200 text-primary-800 border-cream-300',
+      'waiter': 'bg-warm-100 text-warm-800 border-warm-300',
+      'kitchen': 'bg-accent-100 text-accent-800 border-accent-300'
     }
     return colors[role] || 'bg-gray-100 text-gray-800 border-gray-300'
   }
@@ -157,7 +162,7 @@ const SystemUsersManager = () => {
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
         <p className="mt-4 text-gray-600">Cargando usuarios del sistema...</p>
       </div>
     )
@@ -177,7 +182,7 @@ const SystemUsersManager = () => {
 
           <button
             onClick={loadData}
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
           >
             <RefreshCw className="h-5 w-5" />
             <span>Actualizar</span>
@@ -194,7 +199,7 @@ const SystemUsersManager = () => {
               placeholder="Buscar usuarios..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
 
@@ -202,7 +207,7 @@ const SystemUsersManager = () => {
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
           >
             <option value="all">Todos los roles</option>
             <option value="super_admin">Super Admin</option>
@@ -216,7 +221,7 @@ const SystemUsersManager = () => {
           <select
             value={tenantFilter}
             onChange={(e) => setTenantFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
           >
             <option value="all">Todos los tenants</option>
             {tenants.map((tenant) => (
@@ -230,7 +235,7 @@ const SystemUsersManager = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
           >
             <option value="all">Todos los estados</option>
             <option value="active">Activos</option>
@@ -247,7 +252,7 @@ const SystemUsersManager = () => {
               <p className="text-sm text-gray-600">Total Usuarios</p>
               <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
             </div>
-            <Users className="h-8 w-8 text-blue-600" />
+            <Users className="h-8 w-8 text-primary" />
           </div>
         </div>
 
@@ -265,9 +270,9 @@ const SystemUsersManager = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Super Admins</p>
-              <p className="text-2xl font-bold text-purple-600">{stats.superAdmins}</p>
+              <p className="text-2xl font-bold text-primary-700">{stats.superAdmins}</p>
             </div>
-            <Shield className="h-8 w-8 text-purple-600" />
+            <Shield className="h-8 w-8 text-primary-700" />
           </div>
         </div>
 
@@ -275,9 +280,9 @@ const SystemUsersManager = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Admins de Tenant</p>
-              <p className="text-2xl font-bold text-blue-600">{stats.tenantAdmins}</p>
+              <p className="text-2xl font-bold text-secondary-700">{stats.tenantAdmins}</p>
             </div>
-            <Building2 className="h-8 w-8 text-blue-600" />
+            <Building2 className="h-8 w-8 text-secondary-700" />
           </div>
         </div>
       </div>
@@ -327,7 +332,7 @@ const SystemUsersManager = () => {
                   {/* User Info */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="shrink-0 h-10 w-10 bg-linear-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+                      <div className="shrink-0 h-10 w-10 bg-primary rounded-full flex items-center justify-center">
                         <span className="text-white font-bold text-lg">
                           {user.full_name?.charAt(0).toUpperCase() || 'U'}
                         </span>
@@ -402,7 +407,7 @@ const SystemUsersManager = () => {
                   {/* Actions */}
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
-                      onClick={() => handleToggleActive(user.id, user.is_active)}
+                      onClick={() => handleToggleActive(user.id, user.is_active, user.role)}
                       className={`${
                         user.is_active
                           ? 'text-red-600 hover:text-red-900'
@@ -421,10 +426,10 @@ const SystemUsersManager = () => {
       )}
 
       {/* Info Box */}
-      <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <div className="mt-6 p-4 bg-cream-100 border border-primary-200 rounded-lg">
         <div className="flex items-start space-x-3">
-          <Shield className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
-          <div className="text-sm text-blue-900">
+          <Shield className="h-5 w-5 text-primary-700 shrink-0 mt-0.5" />
+          <div className="text-sm text-primary-900">
             <p className="font-medium">Panel de Usuarios del Sistema</p>
             <p className="mt-1">
               Aquí puedes ver todos los usuarios registrados en la plataforma, sin importar a qué tenant pertenezcan.

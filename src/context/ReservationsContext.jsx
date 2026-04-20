@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- exporta contexto, hook useReservation y ReservationWidget */
 // src/components/Reservations/ReservationContext.jsx
 import { createContext, useContext, useReducer } from 'react';
 import { reservationService } from '../../lib/supabase';
@@ -361,9 +362,8 @@ export function useReservation() {
 }
 
 // src/components/Reservations/ReservationWidget.jsx
-import { useState, useEffect } from 'react';
-import { useReservation } from './ReservationContext';
-import { useAuth } from '../../contexts/AuthContext';
+import { useState, useMemo } from 'react';
+import { useAuth } from '../AuthContext';
 
 export default function ReservationWidget() {
   const { tenant } = useAuth();
@@ -392,6 +392,12 @@ export default function ReservationWidget() {
 
   const [showSuccess, setShowSuccess] = useState(false);
   const [createdReservation, setCreatedReservation] = useState(null);
+
+  const dateRange = useMemo(() => ({
+    min: new Date().toISOString().split('T')[0],
+    // eslint-disable-next-line react-hooks/purity -- valor estable dentro de useMemo
+    max: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  }), []);
 
   const timeSlots = generateTimeSlots();
 
@@ -463,8 +469,8 @@ export default function ReservationWidget() {
           type="date"
           value={selectedDate || ''}
           onChange={(e) => handleDateChange(e.target.value)}
-          min={new Date().toISOString().split('T')[0]}
-          max={new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+          min={dateRange.min}
+          max={dateRange.max}
           className="form-control"
         />
       </div>

@@ -74,10 +74,7 @@ export default defineConfig({
           }
         },
         // Optional: Control chunk size and naming
-        chunkFileNames: (chunkInfo) => {
-          const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop().replace(/\.[^.]*$/, '') : 'chunk';
-          return `assets/[name]-[hash].js`;
-        }
+        chunkFileNames: () => `assets/[name]-[hash].js`
       }
     },
     // Increase chunk size warning limit slightly since we're splitting appropriately

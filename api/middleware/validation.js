@@ -28,6 +28,7 @@ function sanitizeString(str, options = {}) {
   let sanitized = str;
 
   // Remover caracteres de control
+  // eslint-disable-next-line no-control-regex -- intencional: eliminar caracteres de control
   sanitized = sanitized.replace(/[\x00-\x1F\x7F]/g, '');
 
   // Trim
@@ -119,6 +120,7 @@ function validatePassword(password, options = {}) {
     return { valid: false, error: 'La contraseña debe contener al menos un número' };
   }
 
+  // eslint-disable-next-line no-useless-escape -- [ y ] deben escaparse en la clase de caracteres
   if (requireSpecial && !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
     return { valid: false, error: 'La contraseña debe contener al menos un caracter especial' };
   }
@@ -154,7 +156,7 @@ function validateName(name, options = {}) {
   }
 
   // Solo letras, espacios, y algunos caracteres especiales
-  if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-'\.]+$/.test(sanitized)) {
+  if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-'.]+$/.test(sanitized)) {
     return { valid: false, error: 'Nombre contiene caracteres inválidos' };
   }
 

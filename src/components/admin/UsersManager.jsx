@@ -59,6 +59,7 @@ const UsersManager = () => {
     if (currentTenantId) {
       loadUsers()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [currentTenantId, superAdminContext?.selectedTenantId])
 
   const loadUsers = async () => {
@@ -386,7 +387,7 @@ const UsersManager = () => {
         </div>
         <button
           onClick={handleAddUser}
-          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" />
           <span>Agregar Usuario</span>
@@ -705,11 +706,11 @@ const UsersManager = () => {
                 <button
                   onClick={handleSaveUser}
                   disabled={saving || !formData.full_name.trim() || !formData.email.trim() || (!selectedUser && !formData.password.trim())}
-                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-sm"
                 >
                   {saving ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                       <span>Guardando...</span>
                     </>
                   ) : (

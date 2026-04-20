@@ -38,6 +38,7 @@ const WaiterDashboard = () => {
 
       return () => clearInterval(interval)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- polling cuando hay tenant
   }, [tenant])
 
   const loadData = async () => {
@@ -77,8 +78,8 @@ const WaiterDashboard = () => {
 
       setTables(tablesData || [])
       setActiveSessions(sessionsData || [])
-    } catch (error) {
-      // console.error('Error loading waiter data:', error)
+    } catch {
+      // Error loading waiter data
     } finally {
       setLoading(false)
     }
@@ -180,7 +181,7 @@ const WaiterDashboard = () => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => setShowCreateReservation(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-secondary-600 text-white rounded-lg hover:bg-secondary-700 transition-colors"
               >
                 <Calendar className="w-4 h-4" />
                 <span>Nueva Reserva</span>
@@ -188,7 +189,7 @@ const WaiterDashboard = () => {
 
               <button
                 onClick={() => setShowCreateOrder(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 <span>Nuevo Pedido</span>
@@ -236,10 +237,10 @@ const WaiterDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Sesiones Activas</p>
-                <p className="text-2xl font-bold text-blue-600">{activeSessions.length}</p>
+                <p className="text-2xl font-bold text-secondary-700">{activeSessions.length}</p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-secondary-100 rounded-lg flex items-center justify-center">
+                <Users className="w-6 h-6 text-secondary-700" />
               </div>
             </div>
           </div>

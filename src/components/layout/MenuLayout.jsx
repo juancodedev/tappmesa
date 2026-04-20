@@ -13,7 +13,7 @@ const MenuLayout = ({ children }) => {
   const [activeCategory, setActiveCategory] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
 
-  const handleSearchToggle = () => {
+  const _handleSearchToggle = () => {
     setShowSearch(!showSearch)
     if (showSearch) {
       setSearchTerm('')

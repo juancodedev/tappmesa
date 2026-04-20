@@ -230,7 +230,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       await migrateUsersToBcrypt();
       break;
 
-    case 'verify':
+    case 'verify': {
       const email = process.argv[3];
       const password = process.argv[4];
       if (!email || !password) {
@@ -240,8 +240,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       const result = await verifyCurrentPassword(email, password);
       console.log(result.success ? '✅ Password verified' : `❌ ${result.error}`);
       break;
+    }
 
-    case 'reset':
+    case 'reset': {
       const token = process.argv[3];
       const newPass = process.argv[4];
       if (!token || !newPass) {
@@ -251,6 +252,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       const resetResult = await completePasswordReset(token, newPass);
       console.log(resetResult.success ? '✅ Password reset successful' : `❌ ${resetResult.error}`);
       break;
+    }
 
     default:
       console.log('Usage:');

@@ -5,103 +5,95 @@
 
 /* Tailwind 4 Theme Configuration */
 @theme {
-  /* Primary Colors */
-  --color-primary-50: #FAF0E6;
-  --color-primary-100: #F5E6D3;
-  --color-primary-200: #E8CBB0;
-  --color-primary-300: #DBAF8D;
-  --color-primary-400: #CE946A;
-  --color-primary-500: #C07947;
-  --color-primary-600: #9A6239;
-  --color-primary-700: #734A2B;
-  --color-primary-800: #4D321D;
-  --color-primary-900: #2C1810;
+  /* Modern Cafe Color Palette */
+  /* Primary: Coffee Brown */
+  --color-primary-50: #f7f3f0;
+  --color-primary-100: #eee0d5;
+  --color-primary-200: #d6bda9;
+  --color-primary-300: #bf957a;
+  --color-primary-400: #a97253;
+  --color-primary-500: #8b5e3c;
+  --color-primary: #8b5e3c;
+  /* Coffee signature */
+  --color-primary-600: #6f4a30;
+  --color-primary-700: #543724;
+  --color-primary-800: #3a2619;
+  --color-primary-900: #20150d;
 
-  /* Secondary Colors */
-  --color-secondary-50: #EEF7F8;
-  --color-secondary-100: #DCEFF2;
-  --color-secondary-200: #B9E0E5;
-  --color-secondary-300: #95D0D9;
-  --color-secondary-400: #71C1CC;
-  --color-secondary-500: #4DB2C0;
-  --color-secondary-600: #3E8E99;
-  --color-secondary-700: #2E6B73;
-  --color-secondary-800: #1F474C;
-  --color-secondary-900: #0F2426;
+  /* Secondary: Sage / Olive (Calm & Organic) */
+  --color-secondary-50: #f4f6f3;
+  --color-secondary-100: #e2e8df;
+  --color-secondary-200: #c5d1c0;
+  --color-secondary-300: #a4b79e;
+  --color-secondary-400: #869d7f;
+  --color-secondary-500: #6b8263;
+  --color-secondary-600: #54664e;
+  --color-secondary-700: #42503d;
+  --color-secondary-800: #2f392b;
+  --color-secondary-900: #1b2119;
 
-  /* Warm Colors */
-  --color-warm-50: #FFF8F3;
-  --color-warm-100: #FEEBDD;
-  --color-warm-200: #FFD0B8;
-  --color-warm-300: #FDB68F;
-  --color-warm-400: #FC9B66;
-  --color-warm-500: #FA812E;
-  --color-warm-600: #C46525;
-  --color-warm-700: #8D491C;
-  --color-warm-800: #573012;
-  --color-warm-900: #211707;
+  /* Warm: Muted Gold/Honey */
+  --color-warm-50: #fef9ed;
+  --color-warm-100: #fdefcd;
+  --color-warm-200: #fbdc9b;
+  --color-warm-300: #f8c564;
+  --color-warm-400: #f4ab34;
+  --color-warm-500: #e98b11;
+  --color-warm-600: #c46d0a;
+  --color-warm-700: #934e0a;
+  --color-warm-800: #62340b;
+  --color-warm-900: #311a05;
 
-  /* Neutral Colors */
-  --color-neutral-100: #F5F5F5;
-  --color-neutral-200: #E5E5E5;
-  --color-neutral-300: #D4D4D4;
-  --color-neutral-400: #A3A3A3;
+  /* Neutral: Warm Grays */
+  --color-neutral-100: #f9f9f9;
+  --color-neutral-200: #f0f0f0;
+  --color-neutral-300: #e5e5e5;
+  --color-neutral-400: #a3a3a3;
   --color-neutral-500: #737373;
   --color-neutral-600: #525252;
   --color-neutral-700: #404040;
   --color-neutral-800: #262626;
   --color-neutral-900: #171717;
 
-  /* Accent Colors */
-  --color-accent-100: #F0F7FF;
-  --color-accent-200: #D6EAFF;
-  --color-accent-300: #A8D4FF;
-  --color-accent-400: #7BBEFF;
-  --color-accent-500: #4EA8FF;
-  --color-accent-600: #3E86CC;
-  --color-accent-700: #2F6599;
-  --color-accent-800: #1F4366;
-  --color-accent-900: #102233;
+  /* Accent: Terracotta */
+  --color-accent-100: #fdf3f0;
+  --color-accent-200: #fbe4db;
+  --color-accent-300: #f6c4b2;
+  --color-accent-400: #f09a83;
+  --color-accent-500: #e66a50;
+  --color-accent-600: #c45240;
+  --color-accent-700: #943d30;
+  --color-accent-800: #632920;
+  --color-accent-900: #321410;
 
-  /* Cream Colors (beige/cream tones) */
-  --color-cream-50: #FDFCFB;
-  --color-cream-100: #F8F6F3;
-  --color-cream-200: #F0EBE3;
-  --color-cream-300: #E8DFD3;
-  --color-cream-400: #DFD3C3;
-  --color-cream-500: #C9B8A0;
-  --color-cream-600: #B09D7E;
-  --color-cream-700: #8B7A5E;
-  --color-cream-800: #6B5D47;
-  --color-cream-900: #4A3F30;
-
-  /* Coffee Colors (brown/coffee tones) */
-  --color-coffee-50: #F8F5F2;
-  --color-coffee-100: #EDE7E0;
-  --color-coffee-200: #D9CAB8;
-  --color-coffee-300: #C5AD90;
-  --color-coffee-400: #B09068;
-  --color-coffee-500: #8B6F47;
-  --color-coffee-600: #6F5838;
-  --color-coffee-700: #574429;
-  --color-coffee-800: #3F311E;
-  --color-coffee-900: #2B2014;
-
-  /* Terracotta Colors (terracotta/clay tones) */
-  --color-terracotta-50: #FDF6F3;
-  --color-terracotta-100: #FAEBE3;
-  --color-terracotta-200: #F4D4C4;
-  --color-terracotta-300: #EEBBA1;
-  --color-terracotta-400: #E89F7D;
-  --color-terracotta-500: #D97848;
-  --color-terracotta-600: #C55F2F;
-  --color-terracotta-700: #9E4B24;
-  --color-terracotta-800: #77381B;
-  --color-terracotta-900: #502713;
+  /* Cream: Natural Beige */
+  --color-cream-50: #faf9f6;
+  /* Paper/Cream background */
+  --color-cream-100: #f3f1eb;
+  --color-cream-200: #e9e5d9;
+  --color-cream-300: #d8d0bc;
+  --color-cream-400: #c6ba9f;
+  --color-cream-500: #b09e7c;
+  --color-cream-600: #8c7d62;
+  --color-cream-700: #6b604b;
+  --color-cream-800: #4a4334;
+  /* Coffee: Alias of Primary */
+  --color-coffee-50: #f7f3f0;
+  --color-coffee-100: #eee0d5;
+  --color-coffee-200: #d6bda9;
+  --color-coffee-300: #bf957a;
+  --color-coffee-400: #a97253;
+  --color-coffee-500: #8b5e3c;
+  --color-coffee: #8b5e3c;
+  --color-coffee-600: #6f4a30;
+  --color-coffee-700: #543724;
+  --color-coffee-800: #3a2619;
+  --color-coffee-900: #20150d;
 
   /* Custom Box Shadows */
-  --shadow-coffee-lg: 0 10px 25px rgba(43, 32, 20, 0.15);
-  --shadow-coffee-xl: 0 20px 40px rgba(43, 32, 20, 0.2);
+  --shadow-cafe-sm: 0 2px 4px rgba(74, 55, 40, 0.05);
+  --shadow-cafe-md: 0 4px 12px rgba(74, 55, 40, 0.08);
+  --shadow-cafe-lg: 0 10px 25px rgba(74, 55, 40, 0.12);
 }
 
 /* Variables CSS para Landing Page */
@@ -120,54 +112,57 @@
 /* Landing page design system */
 @layer base {
   :root {
-    --background: 32 40% 97%;
-    --foreground: 25 47% 15%;
+    --background: 30 20% 98%;
+    --foreground: 25 30% 15%;
 
-    --card: 30 45% 98%;
-    --card-foreground: 25 47% 15%;
+    --card: 30 20% 99%;
+    --card-foreground: 25 30% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 25 47% 15%;
+    --popover-foreground: 25 30% 15%;
 
-    --primary: 25 60% 35%;
-    --primary-foreground: 30 45% 98%;
+    --primary: 25 40% 30%;
+    /* Deep Coffee */
+    --primary-foreground: 30 20% 98%;
 
-    --secondary: 27 60% 60%;
-    --secondary-foreground: 30 45% 98%;
+    --secondary: 100 20% 45%;
+    /* Sage Green */
+    --secondary-foreground: 30 20% 98%;
 
-    --muted: 32 30% 92%;
-    --muted-foreground: 25 20% 45%;
+    --muted: 30 15% 94%;
+    --muted-foreground: 25 15% 45%;
 
-    --accent: 30 80% 65%;
-    --accent-foreground: 25 47% 15%;
+    --accent: 35 70% 50%;
+    /* Golden Honey */
+    --accent-foreground: 25 30% 15%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 32 20% 88%;
-    --input: 32 20% 88%;
-    --ring: 25 60% 35%;
+    --border: 30 15% 90%;
+    --input: 30 15% 90%;
+    --ring: 25 40% 30%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
     /* Sidebar variables for admin dashboard */
-    --sidebar-background: 30 45% 98%;
-    --sidebar-foreground: 25 47% 15%;
-    --sidebar-primary: 25 60% 35%;
-    --sidebar-primary-foreground: 30 45% 98%;
-    --sidebar-accent: 32 30% 92%;
-    --sidebar-accent-foreground: 25 47% 15%;
-    --sidebar-border: 32 20% 88%;
-    --sidebar-ring: 25 60% 35%;
+    --sidebar-background: 30 20% 99%;
+    --sidebar-foreground: 25 30% 15%;
+    --sidebar-primary: 25 40% 30%;
+    --sidebar-primary-foreground: 30 20% 98%;
+    --sidebar-accent: 30 15% 94%;
+    --sidebar-accent-foreground: 25 30% 15%;
+    --sidebar-border: 30 15% 90%;
+    --sidebar-ring: 25 40% 30%;
 
     /* Gradients for cafe theme */
-    --gradient-warm: linear-gradient(135deg, hsl(25 60% 35%), hsl(30 70% 50%));
-    --gradient-cream: linear-gradient(180deg, hsl(32 40% 97%), hsl(30 45% 94%));
-    --gradient-hero: linear-gradient(135deg, hsl(25 60% 35% / 0.95), hsl(30 70% 45% / 0.9));
+    --gradient-warm: linear-gradient(135deg, hsl(25 40% 30%), hsl(35 60% 45%));
+    --gradient-cream: linear-gradient(180deg, hsl(30 20% 98%), hsl(30 20% 95%));
+    --gradient-hero: linear-gradient(135deg, hsl(25 40% 30% / 0.95), hsl(25 30% 20% / 0.9));
 
     /* Shadows */
-    --shadow-soft: 0 4px 20px hsl(25 60% 35% / 0.1);
-    --shadow-elevated: 0 10px 40px hsl(25 60% 35% / 0.15);
+    --shadow-soft: 0 4px 20px hsl(25 40% 30% / 0.08);
+    --shadow-elevated: 0 10px 40px hsl(25 40% 30% / 0.12);
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -220,6 +215,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -231,6 +227,7 @@
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -238,9 +235,12 @@
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-20px);
   }
@@ -284,6 +284,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -295,6 +296,7 @@
     opacity: 0;
     transform: scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -302,9 +304,12 @@
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-20px);
   }

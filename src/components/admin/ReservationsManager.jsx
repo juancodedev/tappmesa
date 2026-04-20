@@ -46,6 +46,7 @@ const ReservationsManager = () => {
     if (tenantId) {
       loadReservations()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [tenantId, filter, selectedDate, superAdminContext?.selectedTenantId])
 
   const loadReservations = async () => {
@@ -116,28 +117,43 @@ const ReservationsManager = () => {
     if (!editingReservation) return
 
     try {
-      const { error } = await supabase
-        .from('reservations')
-        .update({
-          customer_name: editingReservation.customer_name,
-          customer_phone: editingReservation.customer_phone,
-          customer_email: editingReservation.customer_email || null,
-          reservation_date: editingReservation.reservation_date,
-          reservation_time: editingReservation.reservation_time,
-          party_size: parseInt(editingReservation.party_size),
-          table_number: editingReservation.table_number || null,
-          special_requests: editingReservation.special_requests || null,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', editingReservation.id)
+      const reservationData = {
+        tenant_id: tenantId,
+        customer_name: editingReservation.customer_name,
+        customer_phone: editingReservation.customer_phone,
+        customer_email: editingReservation.customer_email || null,
+        reservation_date: editingReservation.reservation_date,
+        reservation_time: editingReservation.reservation_time,
+        party_size: parseInt(editingReservation.party_size),
+        table_number: editingReservation.table_number || null,
+        special_requests: editingReservation.special_requests || null,
+        status: editingReservation.status || 'confirmed',
+        updated_at: new Date().toISOString()
+      }
 
-      if (error) throw error
+      if (editingReservation.id) {
+        // Actualizar existente
+        const { error } = await supabase
+          .from('reservations')
+          .update(reservationData)
+          .eq('id', editingReservation.id)
+          .eq('tenant_id', tenantId)
+
+        if (error) throw error
+      } else {
+        // Crear nueva
+        const { error } = await supabase
+          .from('reservations')
+          .insert([reservationData])
+
+        if (error) throw error
+      }
 
       await loadReservations()
       closeEditModal()
     } catch (error) {
-      logger.error('Error updating reservation:', error)
-      alert('Error al actualizar la reserva: ' + error.message)
+      logger.error('Error saving reservation:', error)
+      alert('Error al guardar la reserva: ' + error.message)
     }
   }
 
@@ -157,15 +173,15 @@ const ReservationsManager = () => {
       },
       cancelled: {
         icon: XCircle,
-        color: 'bg-red-100 text-red-800 border-red-200',
+        color: 'bg-accent-100 text-accent-800 border-accent-200',
         text: 'Cancelada',
-        dotColor: 'bg-red-500'
+        dotColor: 'bg-accent-500'
       },
       completed: {
         icon: CheckCircle,
-        color: 'bg-blue-100 text-blue-800 border-blue-200',
+        color: 'bg-primary-100 text-primary-800 border-primary-200',
         text: 'Completada',
-        dotColor: 'bg-blue-500'
+        dotColor: 'bg-primary-500'
       }
     }
     return statusMap[status] || statusMap.pending
@@ -245,13 +261,34 @@ const ReservationsManager = () => {
             }
           </p>
         </div>
-        <button
-          onClick={loadReservations}
-          className="flex items-center space-x-2 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          <RefreshCw className="w-4 h-4" />
-          <span>Actualizar</span>
-        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => {
+              const today = new Date().toISOString().split('T')[0]
+              setEditingReservation({
+                customer_name: '',
+                customer_phone: '',
+                customer_email: '',
+                reservation_date: today,
+                reservation_time: '12:00',
+                party_size: 2,
+                status: 'confirmed'
+              })
+              setShowEditModal(true)
+            }}
+            className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
+          >
+            <Calendar className="w-4 h-4" />
+            <span>Nueva Reserva</span>
+          </button>
+          <button
+            onClick={loadReservations}
+            className="flex items-center space-x-2 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>Actualizar</span>
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -263,7 +300,7 @@ const ReservationsManager = () => {
         </div>
         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
           <div className="text-center">
-            <p className="text-2xl font-bold text-blue-600">{todayReservations.length}</p>
+            <p className="text-2xl font-bold text-secondary-700">{todayReservations.length}</p>
             <p className="text-sm text-gray-600">Hoy</p>
           </div>
         </div>
@@ -295,8 +332,8 @@ const ReservationsManager = () => {
           <div className="flex flex-wrap gap-2">
             <button onClick={() => setFilter('all')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'all' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>Todas</button>
             <button onClick={() => setFilter('pending')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'pending' ? 'bg-yellow-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>Pendientes</button>
-            <button onClick={() => setFilter('confirmed')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'confirmed' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>Confirmadas</button>
-            <button onClick={() => setFilter('cancelled')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'cancelled' ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>Canceladas</button>
+            <button onClick={() => setFilter('confirmed')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'confirmed' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>Confirmadas</button>
+            <button onClick={() => setFilter('cancelled')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'cancelled' ? 'bg-accent-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>Canceladas</button>
           </div>
 
           <div className="md:ml-auto">
@@ -391,16 +428,16 @@ const ReservationsManager = () => {
                       </button>
                     )}
                     {reservation.status === 'pending' && (
-                      <button onClick={() => updateReservationStatus(reservation.id, 'confirmed')} className="px-3 py-1.5 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 transition-colors flex items-center space-x-1">
+                      <button onClick={() => updateReservationStatus(reservation.id, 'confirmed')} className="px-3 py-1.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center space-x-1">
                         <CheckCircle className="w-4 h-4" />
                         <span>Confirmar</span>
                       </button>
                     )}
                     {reservation.status === 'confirmed' && (
-                      <button onClick={() => updateReservationStatus(reservation.id, 'completed')} className="px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors">Completar</button>
+                      <button onClick={() => updateReservationStatus(reservation.id, 'completed')} className="px-3 py-1.5 bg-secondary-600 text-white text-sm font-medium rounded-lg hover:bg-secondary-700 transition-colors">Completar</button>
                     )}
                     {reservation.status !== 'cancelled' && (
-                      <button onClick={() => updateReservationStatus(reservation.id, 'cancelled')} className="px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-colors flex items-center space-x-1">
+                      <button onClick={() => updateReservationStatus(reservation.id, 'cancelled')} className="px-3 py-1.5 bg-accent-600 text-white text-sm font-medium rounded-lg hover:bg-accent-700 transition-colors flex items-center space-x-1">
                         <XCircle className="w-4 h-4" />
                         <span>Cancelar</span>
                       </button>
@@ -418,7 +455,9 @@ const ReservationsManager = () => {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={closeEditModal}>
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0">
-              <h2 className="text-xl font-bold text-gray-900">Editar Reserva</h2>
+              <h2 className="text-xl font-bold text-gray-900">
+                {editingReservation.id ? 'Editar Reserva' : 'Nueva Reserva'}
+              </h2>
               <button onClick={closeEditModal} className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
                 <X className="w-5 h-5" />
               </button>
@@ -542,7 +581,7 @@ const ReservationsManager = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-red-700 transition-colors"
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
                 >
                   Guardar Cambios
                 </button>

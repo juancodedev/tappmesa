@@ -251,7 +251,7 @@ const TenantTester = () => {
                 <div className="space-y-2">
                   <button
                     onClick={() => openTenantUrl(tenant.slug)}
-                    className="w-full flex items-center justify-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm"
+                    className="w-full flex items-center justify-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors text-sm"
                   >
                     <Coffee className="w-4 h-4" />
                     <span>Ver Menú</span>
@@ -301,7 +301,7 @@ const TenantTester = () => {
           </p>
           <button
             onClick={loadTenants}
-            className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
+            className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
           >
             Recargar
           </button>

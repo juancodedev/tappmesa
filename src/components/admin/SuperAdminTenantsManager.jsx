@@ -25,14 +25,14 @@ import {
 } from 'lucide-react'
 
 const SuperAdminTenantsManager = () => {
-  const navigate = useNavigate()
+  const _navigate = useNavigate()
   const [tenants, setTenants] = useState([])
   const [plans, setPlans] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all') // all, active, inactive
   const [selectedTenant, setSelectedTenant] = useState(null)
-  const [showActionsMenu, setShowActionsMenu] = useState(null)
+  const [_showActionsMenu, _setShowActionsMenu] = useState(null)
 
   useEffect(() => {
     loadData()
@@ -225,7 +225,7 @@ const SuperAdminTenantsManager = () => {
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
         <p className="mt-4 text-gray-600">Cargando tenants...</p>
       </div>
     )
@@ -262,7 +262,7 @@ const SuperAdminTenantsManager = () => {
               placeholder="Buscar por nombre, slug o subdomain..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
 
@@ -272,7 +272,7 @@ const SuperAdminTenantsManager = () => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
               <option value="all">Todos los estados</option>
               <option value="active">Activos</option>
@@ -322,11 +322,11 @@ const SuperAdminTenantsManager = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Con Plan</p>
-              <p className="text-2xl font-bold text-orange-600">
+              <p className="text-2xl font-bold text-primary-600">
                 {tenants.filter(t => t.tenant_subscriptions?.length > 0).length}
               </p>
             </div>
-            <Package className="h-8 w-8 text-orange-600" />
+            <Package className="h-8 w-8 text-primary-600" />
           </div>
         </div>
       </div>
@@ -373,7 +373,7 @@ const SuperAdminTenantsManager = () => {
                   {/* Tenant Info */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="shrink-0 h-10 w-10 bg-linear-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                      <div className="shrink-0 h-10 w-10 bg-linear-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">
                         <span className="text-white font-bold text-lg">
                           {tenant.name.charAt(0).toUpperCase()}
                         </span>
@@ -460,7 +460,7 @@ const SuperAdminTenantsManager = () => {
                       </button>
                       <button
                         onClick={() => handleManageSubscription(tenant)}
-                        className="text-orange-600 hover:text-orange-900"
+                        className="text-primary-600 hover:text-primary-900"
                         title="Gestionar suscripción"
                       >
                         <Package className="h-5 w-5" />
@@ -555,7 +555,7 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-linear-to-r from-orange-500 to-red-500 text-white px-6 py-4">
+        <div className="bg-linear-to-r from-primary-600 to-primary-800 text-white px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold">{tenant.name}</h2>
@@ -577,7 +577,7 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
             <select
               value={selectedPlanId}
               onChange={(e) => setSelectedPlanId(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             >
               <option value="">Sin plan asignado</option>
               {plans.filter(p => p.is_active).map((plan) => (
@@ -593,7 +593,7 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
             <button
               onClick={handleAssignPlan}
               disabled={loading || !selectedPlanId}
-              className="mt-2 w-full px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
+              className="mt-2 w-full px-4 py-2 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
             >
               {loading ? 'Asignando...' : 'Asignar Plan'}
             </button>
@@ -616,7 +616,7 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
                     custom_max_tables: e.target.value ? parseInt(e.target.value) : null
                   })}
                   placeholder="Dejar vacío para usar límite del plan"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <div>
@@ -630,7 +630,7 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
                     custom_max_products: e.target.value ? parseInt(e.target.value) : null
                   })}
                   placeholder="Dejar vacío para usar límite del plan"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <div>
@@ -644,7 +644,7 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
                     custom_max_people: e.target.value ? parseInt(e.target.value) : null
                   })}
                   placeholder="Dejar vacío para usar límite del plan"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 />
               </div>
             </div>

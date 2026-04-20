@@ -24,8 +24,7 @@ const CreateReservationModal = ({ tenant, onClose, onSuccess }) => {
           <ReservationForm
             tenantId={tenant.id}
             tenantName={tenant.name}
-            onSuccess={(reservation) => {
-              // console.log('Reserva creada:', reservation)
+            onSuccess={() => {
               onSuccess()
             }}
           />

@@ -27,6 +27,7 @@ const SuperAdminOrdersManager = () => {
 
   useEffect(() => {
     loadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recargar al cambiar tenant/filtro
   }, [dateFilter, statusFilter, selectedTenantId])
 
   const loadData = async () => {
@@ -41,14 +42,16 @@ const SuperAdminOrdersManager = () => {
         case 'today':
           dateQuery = new Date(now.setHours(0, 0, 0, 0)).toISOString()
           break
-        case 'week':
+        case 'week': {
           const weekAgo = new Date(now.setDate(now.getDate() - 7))
           dateQuery = weekAgo.toISOString()
           break
-        case 'month':
+        }
+        case 'month': {
           const monthAgo = new Date(now.setMonth(now.getMonth() - 1))
           dateQuery = monthAgo.toISOString()
           break
+        }
       }
 
       // Load orders
@@ -98,10 +101,10 @@ const SuperAdminOrdersManager = () => {
   const getStatusColor = (status) => {
     const colors = {
       'pending': 'bg-yellow-100 text-yellow-800 border-yellow-300',
-      'preparing': 'bg-blue-100 text-blue-800 border-blue-300',
+      'preparing': 'bg-secondary-100 text-secondary-800 border-secondary-300',
       'ready': 'bg-green-100 text-green-800 border-green-300',
       'completed': 'bg-gray-100 text-gray-800 border-gray-300',
-      'cancelled': 'bg-red-100 text-red-800 border-red-300'
+      'cancelled': 'bg-accent-100 text-accent-800 border-accent-300'
     }
     return colors[status] || 'bg-gray-100 text-gray-800 border-gray-300'
   }
@@ -153,7 +156,7 @@ const SuperAdminOrdersManager = () => {
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
         <p className="mt-4 text-gray-600">Cargando pedidos...</p>
       </div>
     )
@@ -199,14 +202,14 @@ const SuperAdminOrdersManager = () => {
               placeholder="Buscar pedidos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
           >
             <option value="all">Todos los estados</option>
             <option value="pending">Pendientes</option>
@@ -219,7 +222,7 @@ const SuperAdminOrdersManager = () => {
           <select
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
           >
             <option value="today">Hoy</option>
             <option value="week">Última semana</option>
@@ -237,7 +240,7 @@ const SuperAdminOrdersManager = () => {
               <p className="text-sm text-gray-600">Total Pedidos</p>
               <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
             </div>
-            <ShoppingBag className="h-8 w-8 text-blue-600" />
+            <ShoppingBag className="h-8 w-8 text-primary" />
           </div>
         </div>
 

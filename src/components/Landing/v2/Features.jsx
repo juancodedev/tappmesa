@@ -7,7 +7,7 @@ const features = [
     icon: <ClipboardList className="w-7 h-7" />,
     title: "Menú Digital Completo",
     description: "Carta digital con fotos, descripciones y precios actualizados en tiempo real. Personalización de productos al instante.",
-    gradient: "from-blue-500 to-cyan-500",
+    gradient: "from-primary-500 to-secondary-500",
   },
   {
     icon: <Zap className="w-7 h-7" />,
@@ -19,7 +19,7 @@ const features = [
     icon: <Clock className="w-7 h-7" />,
     title: "Ahorra Tiempo",
     description: "Reduce hasta 60% el tiempo de atención. Tus meseros se enfocan en servicio premium, no en tomar pedidos.",
-    gradient: "from-purple-500 to-pink-500",
+    gradient: "from-secondary-500 to-primary-500",
   },
   // {
   //   icon: <Wallet className="w-7 h-7" />,
@@ -37,7 +37,7 @@ const features = [
     icon: <Users className="w-7 h-7" />,
     title: "Clientes Felices",
     description: "Experiencia moderna y sin esperas. Tus clientes ordenan a su ritmo y vuelven más seguido.",
-    gradient: "from-indigo-500 to-purple-500",
+    gradient: "from-accent-500 to-warm-500",
   },
 ];
 

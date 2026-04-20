@@ -110,6 +110,7 @@ export const TenantAdminRoute = ({ children, requirePermissions = [] }) => {
   );
 };
 
+/* eslint-disable react-refresh/only-export-components -- HOC withPermissions se exporta junto al componente */
 // HOC para proteger componentes con permisos específicos
 export const withPermissions = (WrappedComponent, permissions = []) => {
   return function ProtectedComponent(props) {

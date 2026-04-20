@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Save,
   Upload,
@@ -26,8 +26,8 @@ const Settings = () => {
     website: "https://cafecentral.cl",
 
     // Branding
-    primary_color: "#dc2626",
-    secondary_color: "#f97316",
+    primary_color: "#8b5e3c",
+    secondary_color: "#6b8263",
     logo_url: "",
 
     // Horarios
@@ -153,7 +153,7 @@ const Settings = () => {
           className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
             saved
               ? "bg-green-600 text-white"
-              : "bg-primary text-white hover:bg-red-700"
+              : "bg-primary text-white hover:bg-primary-700"
           } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
         >
           <Save className="w-4 h-4" />

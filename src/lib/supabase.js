@@ -568,7 +568,7 @@ export const utils = {
 
   // Generar código QR para mesa
   generateTableQRCode(tenantSubdomain, tableNumber) {
-    const baseUrl = process.env.REACT_APP_BASE_URL || 'https://tappmesa.com'
+    const baseUrl = import.meta.env.VITE_APP_BASE_URL || import.meta.env.VITE_API_BASE_URL || 'https://tappmesa.com'
     return `${baseUrl}/${tenantSubdomain}/mesa/${tableNumber}`
   },
 

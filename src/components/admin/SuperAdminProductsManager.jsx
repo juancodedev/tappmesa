@@ -27,6 +27,7 @@ const SuperAdminProductsManager = () => {
 
   useEffect(() => {
     loadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recargar al cambiar tenant/filtro
   }, [selectedTenantId, categoryFilter, statusFilter])
 
   const loadData = async () => {
@@ -169,14 +170,14 @@ const SuperAdminProductsManager = () => {
               placeholder="Buscar productos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
           >
             <option value="all">Todas las categorías</option>
             {availableCategories.map((category) => (
@@ -189,7 +190,7 @@ const SuperAdminProductsManager = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
           >
             <option value="all">Todos los estados</option>
             <option value="available">Disponibles</option>
@@ -206,7 +207,7 @@ const SuperAdminProductsManager = () => {
               <p className="text-sm text-gray-600">Total Productos</p>
               <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
             </div>
-            <Package className="h-8 w-8 text-blue-600" />
+            <Package className="h-8 w-8 text-primary" />
           </div>
         </div>
 
@@ -224,9 +225,9 @@ const SuperAdminProductsManager = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">No Disponibles</p>
-              <p className="text-2xl font-bold text-red-600">{stats.unavailable}</p>
+              <p className="text-2xl font-bold text-accent-700">{stats.unavailable}</p>
             </div>
-            <XCircle className="h-8 w-8 text-red-600" />
+            <XCircle className="h-8 w-8 text-accent-700" />
           </div>
         </div>
 
@@ -234,9 +235,9 @@ const SuperAdminProductsManager = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Precio Promedio</p>
-              <p className="text-xl font-bold text-orange-600">{formatCurrency(stats.avgPrice)}</p>
+              <p className="text-xl font-bold text-warm-700">{formatCurrency(stats.avgPrice)}</p>
             </div>
-            <BarChart3 className="h-8 w-8 text-orange-600" />
+            <BarChart3 className="h-8 w-8 text-warm-700" />
           </div>
         </div>
       </div>
@@ -268,7 +269,7 @@ const SuperAdminProductsManager = () => {
                   </div>
                 )}
                 {!product.is_available && (
-                  <div className="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 rounded text-xs font-medium">
+                  <div className="absolute top-2 right-2 bg-accent-600 text-white px-2 py-1 rounded text-xs font-medium">
                     No Disponible
                   </div>
                 )}
@@ -304,14 +305,14 @@ const SuperAdminProductsManager = () => {
 
                 {/* Price */}
                 <div className="flex items-center justify-between pt-3 border-t border-gray-200">
-                  <div className="flex items-center text-orange-600 font-bold">
+                  <div className="flex items-center text-warm-700 font-bold">
                     <DollarSign className="h-4 w-4" />
                     <span>{formatCurrency(product.price)}</span>
                   </div>
                   {product.is_available ? (
                     <CheckCircle className="h-5 w-5 text-green-600" />
                   ) : (
-                    <XCircle className="h-5 w-5 text-red-600" />
+                    <XCircle className="h-5 w-5 text-accent-700" />
                   )}
                 </div>
               </div>

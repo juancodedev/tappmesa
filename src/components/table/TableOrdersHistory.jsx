@@ -5,7 +5,7 @@ import { Clock, ChefHat, CheckCircle, XCircle, Package, RefreshCw, Edit2 } from 
 import { useCart } from '../../hooks/useCart'
 
 const TableOrdersHistory = () => {
-  const { tableSession, tenant } = useTenant()
+  const { tableSession } = useTenant()
   const { addItem } = useCart()
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
@@ -21,6 +21,7 @@ const TableOrdersHistory = () => {
 
       return () => clearInterval(interval)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- polling cuando hay tableSession
   }, [tableSession])
 
   const loadSessionOrders = async () => {

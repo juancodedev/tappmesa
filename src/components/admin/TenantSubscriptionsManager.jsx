@@ -128,7 +128,7 @@ const TenantSubscriptionsManager = () => {
     })
   }
 
-  const getPlanName = (planId) => {
+  const _getPlanName = (planId) => {
     const plan = plans.find(p => p.id === planId)
     return plan?.name || 'Sin plan'
   }
@@ -144,7 +144,7 @@ const TenantSubscriptionsManager = () => {
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
         <p className="mt-4 text-gray-600">Cargando tenants...</p>
       </div>
     )
@@ -162,7 +162,7 @@ const TenantSubscriptionsManager = () => {
         </div>
         <button
           onClick={loadData}
-          className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+          className="flex items-center space-x-2 px-4 py-2 bg-primary text-white hover:bg-primary-700 rounded-lg transition-colors shadow-sm"
         >
           <RefreshCw className="h-5 w-5" />
           <span>Actualizar</span>
@@ -190,7 +190,7 @@ const TenantSubscriptionsManager = () => {
                 className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden"
               >
                 {/* Header */}
-                <div className="bg-linear-to-r from-orange-500 to-red-500 text-white px-6 py-4">
+                <div className="bg-linear-to-r from-primary-600 to-warm-600 text-white px-6 py-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <Building2 className="h-6 w-6" />
@@ -224,7 +224,7 @@ const TenantSubscriptionsManager = () => {
                       <select
                         value={subscription?.plan_id || ''}
                         onChange={(e) => handleAssignPlan(tenant.id, e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                       >
                         <option value="">Sin plan asignado</option>
                         {plans.map((plan) => (
@@ -261,7 +261,7 @@ const TenantSubscriptionsManager = () => {
                         {!isEditing && subscription && (
                           <button
                             onClick={() => startEditingTenant(tenant)}
-                            className="flex items-center space-x-1 text-xs text-blue-600 hover:text-blue-700"
+                            className="flex items-center space-x-1 text-xs text-primary hover:text-primary-700"
                           >
                             <Edit2 className="h-3 w-3" />
                             <span>Editar</span>
@@ -281,7 +281,7 @@ const TenantSubscriptionsManager = () => {
                               value={limits.custom_max_tables || ''}
                               onChange={(e) => updateCustomLimit(tenant.id, 'custom_max_tables', e.target.value)}
                               placeholder="Dejar vacío para usar límite del plan"
-                              className="w-full px-3 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-orange-500"
+                              className="w-full px-3 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-primary"
                             />
                           ) : (
                             <p className="text-sm font-medium text-gray-900">
@@ -301,7 +301,7 @@ const TenantSubscriptionsManager = () => {
                               value={limits.custom_max_products || ''}
                               onChange={(e) => updateCustomLimit(tenant.id, 'custom_max_products', e.target.value)}
                               placeholder="Dejar vacío para usar límite del plan"
-                              className="w-full px-3 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-orange-500"
+                              className="w-full px-3 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-primary"
                             />
                           ) : (
                             <p className="text-sm font-medium text-gray-900">
@@ -321,7 +321,7 @@ const TenantSubscriptionsManager = () => {
                               value={limits.custom_max_people || ''}
                               onChange={(e) => updateCustomLimit(tenant.id, 'custom_max_people', e.target.value)}
                               placeholder="Dejar vacío para usar límite del plan"
-                              className="w-full px-3 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-orange-500"
+                              className="w-full px-3 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-primary"
                             />
                           ) : (
                             <p className="text-sm font-medium text-gray-900">
@@ -374,11 +374,11 @@ const TenantSubscriptionsManager = () => {
       )}
 
       {/* Info Box */}
-      <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start space-x-3">
-        <AlertCircle className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
-        <div className="text-sm text-blue-900">
+      <div className="mt-6 p-4 bg-cream-100 border border-primary-200 rounded-lg flex items-start space-x-3">
+        <AlertCircle className="h-5 w-5 text-primary-700 shrink-0 mt-0.5" />
+        <div className="text-sm text-primary-900">
           <p className="font-medium">Límites personalizados:</p>
-          <ul className="list-disc list-inside mt-1 space-y-1 text-blue-800">
+          <ul className="list-disc list-inside mt-1 space-y-1 text-primary-800">
             <li>Los límites personalizados sobrescriben los límites del plan base</li>
             <li>Dejar en blanco para usar el límite definido en el plan</li>
             <li>Los cambios se aplican inmediatamente</li>
@@ -396,6 +396,7 @@ const TenantUsageStats = ({ tenantId }) => {
 
   useEffect(() => {
     loadStats()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [tenantId])
 
   const loadStats = async () => {
@@ -413,7 +414,7 @@ const TenantUsageStats = ({ tenantId }) => {
   if (loading) {
     return (
       <div className="text-center py-2">
-        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600 mx-auto"></div>
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
       </div>
     )
   }

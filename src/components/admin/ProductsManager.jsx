@@ -63,6 +63,7 @@ const ProductsManager = () => {
       loadCategories()
       loadProducts()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar/cambiar tenant
   }, [tenantId, categoryFilter, superAdminContext?.selectedTenantId])
 
   const loadCategories = async () => {
@@ -414,7 +415,7 @@ const ProductsManager = () => {
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" />
           <span>Nuevo Producto</span>
@@ -462,7 +463,7 @@ const ProductsManager = () => {
           </p>
           <button
             onClick={() => openModal()}
-            className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+            className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
           >
             Crear Producto
           </button>
@@ -819,7 +820,7 @@ const ProductsManager = () => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center space-x-2"
+                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
                 >
                   <Save className="w-4 h-4" />
                   <span>{editingProduct ? 'Actualizar' : 'Crear'}</span>

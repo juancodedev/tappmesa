@@ -56,8 +56,6 @@ export const mockProduct = {
 // Helper to render components with providers
 export const renderWithProviders = (component, options = {}) => {
   const {
-    tenantValue = {},
-    cartValue = {},
     initialLocation = '/',
   } = options
 
