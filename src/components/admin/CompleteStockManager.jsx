@@ -244,6 +244,7 @@ const CompleteStockManager = () => {
           notes: editForm.notes || null,
           last_updated: new Date().toISOString(),
         })
+        .eq("tenant_id", currentTenant.id)
         .eq("id", selectedItem.id);
 
       if (error) throw error;
@@ -297,6 +298,7 @@ const CompleteStockManager = () => {
       const { error } = await supabase
         .from("stock_alerts")
         .update({ is_resolved: true, resolved_at: new Date().toISOString() })
+        .eq("tenant_id", currentTenant.id)
         .eq("id", alertId);
 
       if (error) throw error;

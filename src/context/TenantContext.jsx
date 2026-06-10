@@ -252,13 +252,6 @@ export const TenantProvider = ({ children }) => {
         logger.error('❌ Tenant query error:', tenantError)
         logger.error('❌ Subdomain searched:', subdomain)
 
-        // Intentar buscar sin el filtro de subdomain para debugging
-        const { data: allTenants } = await supabase
-          .from('tenants')
-          .select('subdomain, name')
-          .eq('is_active', true)
-
-        logger.dev('📋 Available tenants:', allTenants)
         throw new Error(`Cafetería "${subdomain}" no encontrada`)
       }
       

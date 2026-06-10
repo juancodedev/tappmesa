@@ -555,7 +555,7 @@ export const customerService = {
   },
 
   // Obtener historial de cliente
-  async getCustomerHistory(customerId) {
+  async getCustomerHistory(customerId, tenantId) {
     try {
       const { data, error } = await supabase
         .from('customer_order_history')
@@ -569,6 +569,7 @@ export const customerService = {
           )
         `)
         .eq('customer_id', customerId)
+        .eq('tenant_id', tenantId)
         .order('created_at', { ascending: false })
 
       if (error) throw error
@@ -596,6 +597,98 @@ export const notificationService = {
       return { success: true }
     } catch (error) {
       console.error('Send notification error:', error)
+      return { success: false, error: error.message }
+    }
+  }
+}
+
+// Servicio de reservas
+export const reservationService = {
+  // Obtener disponibilidad de mesas para una fecha y hora
+  async getTableAvailability(tenantId, date, time) {
+    try {
+      // Obtener todas las mesas activas del tenant
+      const { data: tables, error: tablesError } = await supabase
+        .from('tables')
+        .select('id, number, capacity')
+        .eq('tenant_id', tenantId)
+        .eq('is_active', true)
+
+      if (tablesError) throw tablesError
+
+      // Obtener reservas existentes para esa fecha/hora
+      const { data: reservations, error: reservationsError } = await supabase
+        .from('reservations')
+        .select('table_id')
+        .eq('tenant_id', tenantId)
+        .eq('date', date)
+        .eq('time', time)
+        .neq('status', 'cancelled')
+
+      if (reservationsError) throw reservationsError
+
+      const reservedTableIds = new Set(
+        (reservations || []).map(r => r.table_id)
+      )
+
+      const availableTables = (tables || []).filter(
+        t => !reservedTableIds.has(t.id)
+      )
+
+      return { success: true, tables: availableTables }
+    } catch (error) {
+      console.error('Get table availability error:', error)
+      return { success: false, error: error.message }
+    }
+  },
+
+  // Crear una reserva
+  async createReservation({ tenantId, customerName, date, time, ...data }) {
+    try {
+      const { data: reservation, error } = await supabase
+        .from('reservations')
+        .insert({
+          tenant_id: tenantId,
+          customer_name: customerName,
+          date,
+          time,
+          ...data,
+          status: 'confirmed',
+          created_at: new Date().toISOString()
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+
+      return { success: true, reservation }
+    } catch (error) {
+      console.error('Create reservation error:', error)
+      return { success: false, error: error.message }
+    }
+  },
+
+  // Obtener reservas de un tenant para una fecha
+  async getReservations(tenantId, date) {
+    try {
+      const { data, error } = await supabase
+        .from('reservations')
+        .select(`
+          *,
+          table:tables (
+            number,
+            capacity
+          )
+        `)
+        .eq('tenant_id', tenantId)
+        .eq('date', date)
+        .order('time', { ascending: true })
+
+      if (error) throw error
+
+      return { success: true, reservations: data }
+    } catch (error) {
+      console.error('Get reservations error:', error)
       return { success: false, error: error.message }
     }
   }
