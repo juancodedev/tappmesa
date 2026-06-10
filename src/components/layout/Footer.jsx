@@ -111,7 +111,7 @@ const Footer = () => {
       {/* Background decorations */}
       <div className="absolute inset-0 bg-linear-to-br from-coffee-900 via-coffee-800 to-coffee-900"></div>
       <div className="absolute top-10 left-10 text-6xl opacity-5 animate-float">☕</div>
-      <div className="absolute bottom-20 right-20 text-4xl opacity-5 animate-float-delay">🥐</div>
+      <div className="absolute bottom-20 right-20 text-4xl opacity-5 animate-float">🥐</div>
       <div className="absolute top-40 right-10 text-5xl opacity-5 animate-float">⭐</div>
 
       <div className="max-w-7xl mx-auto px-4 relative z-10">
@@ -201,7 +201,7 @@ const Footer = () => {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group relative w-12 h-12 bg-coffee-700 hover:bg-coffee-600 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover-glow"
+                    className="group relative w-12 h-12 bg-coffee-700 hover:bg-coffee-600 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 "
                     title={`${social.name} - ${social.followers} seguidores`}
                   >
                     <span className="text-lg group-hover:scale-110 transition-transform">{social.icon}</span>
@@ -293,7 +293,7 @@ const Footer = () => {
                     />
                     <button 
                       type="submit" 
-                      className="bg-primary-500 hover:bg-primary-600 text-coffee-100 px-6 py-3 rounded-lg font-semibold transition-all whitespace-nowrap cta-button hover-lift"
+                      className="bg-primary-500 hover:bg-primary-600 text-coffee-100 px-6 py-3 rounded-lg font-semibold transition-all whitespace-nowrap "
                     >
                       Suscribirse Gratis
                     </button>
@@ -388,11 +388,11 @@ const Footer = () => {
 
       {/* Back to Top Button mejorado */}
       <button 
-        className="fixed bottom-6 right-6 w-14 h-14 bg-linear-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-coffee-100 rounded-full flex items-center justify-center text-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 z-50 hover-glow"
+        className="fixed bottom-6 right-6 w-14 h-14 bg-linear-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-coffee-100 rounded-full flex items-center justify-center text-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 z-50 "
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         title="Volver arriba con un café ☕"
       >
-        <span className="animate-gentle-pulse">☕</span>
+        <span className="animate-pulse">☕</span>
       </button>
     </footer>
   );
