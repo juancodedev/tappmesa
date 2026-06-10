@@ -210,24 +210,22 @@ async function seed() {
 
       const passwordHash = await bcrypt.hash(user.password, SALT_ROUNDS);
 
-      const { error: insertError } = await supabase.from('admin_users').insert({
-        email: user.email,
-        password_hash: passwordHash,
-        full_name: user.fullName,
-        role: user.role,
-        tenant_id: tenant?.id || null,
-        is_active: true,
-      });
+      // Upsert: si el email ya existe, actualiza password_hash y datos
+      const { error: upsertError } = await supabase
+        .from('admin_users')
+        .upsert({
+          email: user.email,
+          password_hash: passwordHash,
+          full_name: user.fullName,
+          role: user.role,
+          tenant_id: tenant?.id || null,
+          is_active: true,
+        }, { onConflict: 'email' });
 
-      if (insertError) {
-        if (insertError.code === '23505') {
-          console.log(`  ⚠️  Ya existe: ${user.email}`);
-        } else {
-          throw insertError;
-        }
-      } else {
-        console.log(`  ✅ Usuario: ${user.email} (${user.role})`);
+      if (upsertError) {
+        throw upsertError;
       }
+      console.log(`  ✅ Usuario: ${user.email} (${user.role})`);
     } catch (err) {
       console.error(`  ❌ Error con ${user.email}:`, err.message);
     }
