@@ -312,6 +312,7 @@ export const CartProvider = ({ children }) => {
     
     // Utilidades
     isEmpty: items.length === 0
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- funciones recreadas en cada render, useCallback agregaria complejidad innecesaria
   }), [items, isOpen, placingOrder])
 
   return (
