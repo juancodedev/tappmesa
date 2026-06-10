@@ -25,16 +25,16 @@ const Footer = () => {
             </p>
             {/* Social Links */}
             <div className="flex gap-3">
-              <a href="#" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
+              <a href="https://facebook.com/tappmesa" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
                 <Facebook className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
               </a>
-              <a href="#" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
+              <a href="https://instagram.com/tappmesa" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
                 <Instagram className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
               </a>
-              <a href="#" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
+              <a href="https://twitter.com/tappmesa" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
                 <Twitter className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
               </a>
-              <a href="#" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
+              <a href="https://linkedin.com/company/tappmesa" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
                 <Linkedin className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
               </a>
             </div>
