@@ -1,8 +1,10 @@
 // src/components/Landing/v2/CTA.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight, MessageCircle, Sparkles, CheckCircle2, Zap } from 'lucide-react';
 
 const CTA = () => {
+  const navigate = useNavigate();
   return (
     <section className="py-24 lg:py-32 bg-linear-to-br from-gray-50 via-primary-50/20 to-gray-50 relative overflow-hidden">
       {/* Decorative gradient blobs */}
@@ -40,12 +42,18 @@ const CTA = () => {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-                  <button className="group w-full sm:w-auto px-10 py-5 bg-linear-to-r from-primary-600 to-secondary-600 text-white rounded-xl hover:shadow-2xl hover:shadow-primary-500/30 hover:scale-105 transition-all font-bold text-lg flex items-center justify-center gap-3">
+                  <button
+                    onClick={() => navigate('/register')}
+                    className="group w-full sm:w-auto px-10 py-5 bg-linear-to-r from-primary-600 to-secondary-600 text-white rounded-xl hover:shadow-2xl hover:shadow-primary-500/30 hover:scale-105 transition-all font-bold text-lg flex items-center justify-center gap-3"
+                  >
                     <Zap className="w-5 h-5" />
                     Empezar Prueba Gratuita
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </button>
-                  <button className="w-full sm:w-auto px-10 py-5 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all font-bold text-lg flex items-center justify-center gap-3">
+                  <button
+                    onClick={() => window.location.href = 'mailto:hola@tappmesa.com'}
+                    className="w-full sm:w-auto px-10 py-5 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all font-bold text-lg flex items-center justify-center gap-3"
+                  >
                     <MessageCircle className="w-5 h-5" />
                     Hablar con un Experto
                   </button>

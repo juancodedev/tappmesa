@@ -198,7 +198,7 @@ const Pricing = () => {
             <div
               ref={carouselRef}
               onScroll={handleScroll}
-              className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-6 px-12 md:px-16 py-4"
+              className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none gap-6 px-12 md:px-16 py-4"
               style={{
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
@@ -320,15 +320,7 @@ const Pricing = () => {
       </div>
 
       {/* Custom CSS to hide scrollbar */}
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
+
     </section>
   );
 };

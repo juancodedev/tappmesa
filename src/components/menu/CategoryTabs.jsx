@@ -78,7 +78,7 @@ const CategoryTabs = ({ activeCategory, onCategoryChange }) => {
   return (
     <div className="sticky top-16 z-20 bg-white border-b border-gray-200">
       <div className="px-4 py-3">
-        <div className="flex space-x-3 overflow-x-auto scrollbar-hide">
+        <div className="flex space-x-3 overflow-x-auto scrollbar-none">
           {categories.map((category) => {
             const isActive = activeCategory === category.slug;
             const IconComponent = iconMap[category.icon] || Grid3X3;
@@ -110,15 +110,7 @@ const CategoryTabs = ({ activeCategory, onCategoryChange }) => {
       </div>
 
       {/* Indicador de scroll horizontal */}
-      <style jsx>{`
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
+
     </div>
   );
 };
