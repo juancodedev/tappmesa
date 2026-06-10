@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components -- archivo de contexto que exporta Provider y utilidades */
-import { createContext, useState, useEffect, useContext } from 'react'
+import { createContext, useState, useEffect, useContext, useMemo } from 'react'
 import { supabase } from '../lib/supabase'
 import { AuthContext } from './AuthContext'
 import logger from '../utils/logger'
@@ -211,7 +211,7 @@ export const TenantProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- recargar cuando cambie usuario
   }, [authContext?.user?.tenant_id])
 
-  const value = {
+  const value = useMemo(() => ({
     tenant,
     table,
     tableSession,
@@ -222,7 +222,7 @@ export const TenantProvider = ({ children }) => {
     setTenant,
     subdomain: getSubdomain(),
     tableCode: getTableCode()
-  }
+  }), [tenant, table, tableSession, loading, error, appType])
 
   return (
     <TenantContext.Provider value={value}>
