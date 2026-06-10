@@ -1,5 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+// TODO: Migrar a createBrowserRouter + RouterProvider (React Router v7)
+// Ver src/router.jsx para la configuracion propuesta con loaders/actions.
+// La API actual (BrowserRouter + Routes/Route) es legacy pero funcional.
 import { BrowserRouter } from 'react-router-dom'
 import * as Sentry from '@sentry/react'
 import App from './App.jsx'
