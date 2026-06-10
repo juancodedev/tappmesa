@@ -81,11 +81,34 @@ const testUsers = [
 ];
 
 async function createTenant(data) {
-  const slug = data.name.toLowerCase()
+  const baseSlug = data.name.toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
 
+  // Verificar si ya existe un tenant con este nombre
+  const { data: existing } = await supabase
+    .from('tenants')
+    .select('id, name, slug')
+    .eq('name', data.name)
+    .maybeSingle();
+
+  if (existing) {
+    console.log(`  ⚠️  Tenant ya existe: ${existing.name} (slug: ${existing.slug})`);
+    return existing;
+  }
+
+  // Slug único: agregar sufijo si el slug ya existe
+  let slug = baseSlug;
+  const { count: slugCount } = await supabase
+    .from('tenants')
+    .select('id', { count: 'exact', head: true })
+    .eq('slug', slug);
+  if (slugCount > 0) {
+    slug = `${baseSlug}-${Date.now().toString(36)}`;
+  }
+
   const subdomain = `${slug}-${Math.random().toString(36).substr(2, 6)}`;
+  const uniqueCode = slug.toUpperCase().replace(/-/g, '').slice(0, 8);
 
   const { data: tenant, error } = await supabase
     .from('tenants')
@@ -117,7 +140,7 @@ async function createTenant(data) {
     tenant_id: tenant.id,
     number: String(i + 1),
     capacity: 4,
-    unique_code: `${slug.toUpperCase().replace(/-/g, '')}${String(i + 1).padStart(2, '0')}`,
+    unique_code: `${uniqueCode}${String(i + 1).padStart(2, '0')}`,
     status: 'available',
     is_active: true,
   }));
