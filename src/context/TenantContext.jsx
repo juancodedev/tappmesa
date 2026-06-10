@@ -222,6 +222,7 @@ export const TenantProvider = ({ children }) => {
     setTenant,
     subdomain: getSubdomain(),
     tableCode: getTableCode()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- loadTenant es estable en la practica, agregarlo invalidaria el memo cada render
   }), [tenant, table, tableSession, loading, error, appType])
 
   return (

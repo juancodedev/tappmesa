@@ -18,14 +18,12 @@ const logger = require('../utils/logger');
 // ============================================================
 let kv = null;
 let memoryStore = null;
-let storageType = 'memory';
 
 try {
   const vercelKv = require('@vercel/kv');
   // Solo usar KV si hay URL configurada (evita errores sin env vars)
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     kv = vercelKv.kv;
-    storageType = 'kv';
   } else {
     memoryStore = new Map();
   }
@@ -87,14 +85,6 @@ function getWindowSeconds(windowMs) {
 // KV storage operations
 // ============================================================
 
-async function kvGet(key) {
-  return await kv.get(key);
-}
-
-async function kvSet(key, data, windowMs) {
-  await kv.set(key, data, { ex: getWindowSeconds(windowMs) });
-}
-
 async function kvIncrement(key, windowMs) {
   // Usar incr para atomicidad, con expire en el primer set
   const count = await kv.incr(key);
@@ -115,15 +105,6 @@ function memoryGet(key) {
 
 function memorySet(key, data) {
   memoryStore.set(key, data);
-}
-
-function memoryIncrement(key) {
-  const data = memoryStore.get(key);
-  if (data) {
-    data.count++;
-    return data.count;
-  }
-  return 1;
 }
 
 function memoryCleanup() {
