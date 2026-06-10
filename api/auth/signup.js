@@ -40,7 +40,7 @@ module.exports = async function handler(req, res) {
 
   // Rate limiting
   const rateLimit = rateLimiter('auth/signup');
-  if (rateLimit(req, res)) {
+  if (await rateLimit(req, res)) {
     return;
   }
 
