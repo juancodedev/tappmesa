@@ -140,9 +140,9 @@ function App() {
             {/* Ruta de inicio exacta - ahora con landing mejorada */}
             <Route path="/" element={<LandingPage />} />
 
-            {/* Ruta catch-all al final (existente) */}
-            <Route path="/*" element={<AppContent />} />
+            {/* Rutas especificas antes del catch-all */}
             <Route path="/contact-sales" element={<ContactSales/>} />
+            <Route path="/*" element={<AppContent />} />
           </Routes>
           {import.meta.env.DEV && <SubdomainDebug />}
         </TenantProvider>
