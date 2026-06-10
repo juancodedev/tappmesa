@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Plus, Minus, Clock, Thermometer } from 'lucide-react'
+import { Plus, Minus, Clock, Thermometer, Flame, Snowflake, Coffee, Leaf, CupSoda, Utensils } from 'lucide-react'
 import { useTenant } from '../../hooks/useTenant'
 import { useCart } from '../../hooks/useCart'
 import { getOptimalTextClass } from '../../utils/helpers'
@@ -44,20 +44,20 @@ const MenuCard = ({ product }) => {
 
   const getTemperatureIcon = (temp) => {
     switch (temp) {
-      case 'hot': return '🔥'
-      case 'cold': return '🧊'
-      case 'iced': return '❄️'
-      default: return '🔥'
+      case 'hot': return <Flame className="w-3 h-3 text-orange-500" />
+      case 'cold': return <Snowflake className="w-3 h-3 text-blue-400" />
+      case 'iced': return <Snowflake className="w-3 h-3 text-blue-300" />
+      default: return <Flame className="w-3 h-3 text-orange-500" />
     }
   }
 
   const getBeverageTypeIcon = (type) => {
     switch (type) {
-      case 'coffee': return '☕'
-      case 'tea': return '🍃'
-      case 'cold': return '🥤'
-      case 'food': return '🍽️'
-      default: return '☕'
+      case 'coffee': return <Coffee className="w-4 h-4 text-amber-700" />
+      case 'tea': return <Leaf className="w-4 h-4 text-green-600" />
+      case 'cold': return <CupSoda className="w-4 h-4 text-blue-500" />
+      case 'food': return <Utensils className="w-4 h-4 text-gray-500" />
+      default: return <Coffee className="w-4 h-4 text-amber-700" />
     }
   }
 

@@ -92,6 +92,13 @@ const Cart = () => {
       return
     }
 
+    // Validar formato de teléfono chileno (+56912345678 o 912345678)
+    const chileanPhoneRegex = /^(\+56)?9\d{8}$/
+    if (!chileanPhoneRegex.test(customerInfo.phone.trim())) {
+      alert('Ingresa un teléfono chileno válido (ej: +56912345678 o 912345678)')
+      return
+    }
+
     // Realizar pedido
     const result = await placeOrder(customerInfo)
     

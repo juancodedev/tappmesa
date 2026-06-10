@@ -168,3 +168,19 @@
 .animate-fade-in { animation: fade-in 0.6s ease-out forwards; }
 .animate-scale-in { animation: scale-in 0.5s ease-out forwards; }
 .animate-float { animation: float 6s ease-in-out infinite; }
+
+@layer utilities {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

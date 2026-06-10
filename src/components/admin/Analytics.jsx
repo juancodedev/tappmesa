@@ -435,7 +435,7 @@ const Analytics = () => {
                         </button>
                           <button
                             onClick={() => handleOpenEdit(item)}
-                            className="text-indigo-600 hover:text-indigo-900 p-1 rounded transition-colors"
+                            className="text-primary-600 hover:text-primary-800 p-1 rounded transition-colors"
                             title="Editar"
                           >
                             <Edit className="w-4 h-4" />
