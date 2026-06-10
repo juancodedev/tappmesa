@@ -30,6 +30,8 @@ import {
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Componente para debugging
+// Debug panel visible solo en desarrollo (import.meta.env.DEV)
+// Muestra subdomain, app type y tenant para facilitar debugging multi-tenant
 const SubdomainDebug = () => {
   const { tenant, error, subdomain, appType } = useTenant();
 
