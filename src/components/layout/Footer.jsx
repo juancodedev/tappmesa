@@ -107,7 +107,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-coffee-dark text-coffee-900 relative overflow-hidden">
+    <footer className="bg-coffee-dark text-coffee-100 relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute inset-0 bg-linear-to-br from-coffee-900 via-coffee-800 to-coffee-900"></div>
       <div className="absolute top-10 left-10 text-6xl opacity-5 animate-float">☕</div>
@@ -120,7 +120,7 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-14 h-14 bg-linear-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-coffee-900 text-2xl shadow-lg">
+              <div className="w-14 h-14 bg-linear-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-coffee-100 text-2xl shadow-lg">
                 ☕
               </div>
               <div>
@@ -190,7 +190,7 @@ const Footer = () => {
 
             {/* Social media mejorado */}
             <div>
-              <span className="text-coffee-900 font-semibold mb-4 block flex items-center gap-2">
+              <span className="text-coffee-100 font-semibold mb-4 block flex items-center gap-2">
                 <span>🌐</span>
                 Síguenos en Redes Sociales:
               </span>
@@ -207,7 +207,7 @@ const Footer = () => {
                     <span className="text-lg group-hover:scale-110 transition-transform">{social.icon}</span>
                     
                     {/* Tooltip */}
-                    <div className="absolute bottom-14 left-1/2 transform -translate-x-1/2 bg-coffee-900 text-coffee-900 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    <div className="absolute bottom-14 left-1/2 transform -translate-x-1/2 bg-coffee-900 text-coffee-100 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                       {social.followers}
                     </div>
                   </a>
@@ -219,7 +219,7 @@ const Footer = () => {
           {/* Links Sections mejoradas */}
           {footerSections.map((section) => (
             <div key={section.title}>
-              <h3 className="text-coffee-900 font-bold mb-4 flex items-center gap-2">
+              <h3 className="text-coffee-100 font-bold mb-4 flex items-center gap-2">
                 {section.title === 'Para tu Cafetería' && '☕'}
                 {section.title === 'Recursos' && '📚'}
                 {section.title === 'Comunidad' && '👥'}
@@ -264,7 +264,7 @@ const Footer = () => {
           <div className="bg-linear-to-r from-coffee-800/50 to-primary-900/20 rounded-2xl p-6 border border-coffee-600">
             <div className="grid lg:grid-cols-2 gap-8 items-center">
               <div>
-                <h3 className="text-2xl font-bold text-coffee-900 mb-3 flex items-center gap-3">
+                <h3 className="text-2xl font-bold text-coffee-100 mb-3 flex items-center gap-3">
                   <span className="text-3xl">☕</span>
                   <div>
                     <div>Café Digital Semanal</div>
@@ -288,18 +288,18 @@ const Footer = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="tu@cafeteria.com"
-                      className="flex-1 px-4 py-3 bg-coffee-700 border border-coffee-600 rounded-lg text-coffee-900 placeholder-coffee-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all form-input-enhanced"
+                      className="flex-1 px-4 py-3 bg-coffee-700 border border-coffee-600 rounded-lg text-coffee-100 placeholder-coffee-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all form-input-enhanced"
                       required
                     />
                     <button 
                       type="submit" 
-                      className="bg-primary-500 hover:bg-primary-600 text-coffee-900 px-6 py-3 rounded-lg font-semibold transition-all whitespace-nowrap cta-button hover-lift"
+                      className="bg-primary-500 hover:bg-primary-600 text-coffee-100 px-6 py-3 rounded-lg font-semibold transition-all whitespace-nowrap cta-button hover-lift"
                     >
                       Suscribirse Gratis
                     </button>
                   </form>
                 ) : (
-                  <div className="bg-green-600 text-coffee-900 p-4 rounded-lg flex items-center gap-3">
+                  <div className="bg-green-600 text-coffee-100 p-4 rounded-lg flex items-center gap-3">
                     <CheckCircle className="h-6 w-6 shrink-0" />
                     <div>
                       <div className="font-semibold">¡Bienvenido a la comunidad!</div>
@@ -319,7 +319,7 @@ const Footer = () => {
         {/* Certificaciones y reconocimientos específicos */}
         <div className="border-t border-coffee-700 py-8">
           <div className="text-center mb-6">
-            <h4 className="text-coffee-900 font-bold text-lg mb-4 flex items-center justify-center gap-2">
+            <h4 className="text-coffee-100 font-bold text-lg mb-4 flex items-center justify-center gap-2">
               <span>🏆</span>
               Reconocimientos y Certificaciones
             </h4>
@@ -335,7 +335,7 @@ const Footer = () => {
                   className="bg-coffee-800/30 p-4 rounded-lg text-center hover:bg-coffee-800/50 transition-colors"
                 >
                   <div className="text-2xl mb-2">{award.icon}</div>
-                  <div className="text-sm font-semibold text-coffee-900">{award.title}</div>
+                  <div className="text-sm font-semibold text-coffee-100">{award.title}</div>
                   <div className="text-xs text-coffee-400 mt-1">{award.subtitle}</div>
                 </div>
               ))}
@@ -388,7 +388,7 @@ const Footer = () => {
 
       {/* Back to Top Button mejorado */}
       <button 
-        className="fixed bottom-6 right-6 w-14 h-14 bg-linear-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-coffee-900 rounded-full flex items-center justify-center text-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 z-50 hover-glow"
+        className="fixed bottom-6 right-6 w-14 h-14 bg-linear-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-coffee-100 rounded-full flex items-center justify-center text-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 z-50 hover-glow"
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         title="Volver arriba con un café ☕"
       >
