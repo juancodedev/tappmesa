@@ -153,107 +153,6 @@
   }
 }
 
-/* Landing page design system */
-@layer base {
-  :root {
-    --background: 30 20% 98%;
-    --foreground: 25 30% 15%;
-
-    --card: 30 20% 99%;
-    --card-foreground: 25 30% 15%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 25 30% 15%;
-
-    --primary: 25 40% 30%;
-    /* Deep Coffee */
-    --primary-foreground: 30 20% 98%;
-
-    --secondary: 100 20% 45%;
-    /* Sage Green */
-    --secondary-foreground: 30 20% 98%;
-
-    --muted: 30 15% 94%;
-    --muted-foreground: 25 15% 45%;
-
-    --accent: 35 70% 50%;
-    /* Golden Honey */
-    --accent-foreground: 25 30% 15%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 30 15% 90%;
-    --input: 30 15% 90%;
-    --ring: 25 40% 30%;
-
-    --radius: 1rem;
-
-    /* Sidebar variables for admin dashboard */
-    --sidebar-background: 30 20% 99%;
-    --sidebar-foreground: 25 30% 15%;
-    --sidebar-primary: 25 40% 30%;
-    --sidebar-primary-foreground: 30 20% 98%;
-    --sidebar-accent: 30 15% 94%;
-    --sidebar-accent-foreground: 25 30% 15%;
-    --sidebar-border: 30 15% 90%;
-    --sidebar-ring: 25 40% 30%;
-
-    /* Gradients for cafe theme */
-    --gradient-warm: linear-gradient(135deg, hsl(25 40% 30%), hsl(35 60% 45%));
-    --gradient-cream: linear-gradient(180deg, hsl(30 20% 98%), hsl(30 20% 95%));
-    --gradient-hero: linear-gradient(135deg, hsl(25 40% 30% / 0.95), hsl(25 30% 20% / 0.9));
-
-    /* Shadows */
-    --shadow-soft: 0 4px 20px hsl(25 40% 30% / 0.08);
-    --shadow-elevated: 0 10px 40px hsl(25 40% 30% / 0.12);
-
-    /* Transitions */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .dark {
-    --background: 25 30% 10%;
-    --foreground: 30 45% 98%;
-
-    --card: 25 35% 12%;
-    --card-foreground: 30 45% 98%;
-
-    --popover: 25 35% 12%;
-    --popover-foreground: 30 45% 98%;
-
-    --primary: 30 70% 60%;
-    --primary-foreground: 25 47% 15%;
-
-    --secondary: 25 40% 20%;
-    --secondary-foreground: 30 45% 98%;
-
-    --muted: 25 30% 18%;
-    --muted-foreground: 30 20% 65%;
-
-    --accent: 30 70% 55%;
-    --accent-foreground: 30 45% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 25 30% 22%;
-    --input: 25 30% 22%;
-    --ring: 30 70% 60%;
-
-    /* Sidebar variables for dark mode */
-    --sidebar-background: 25 35% 12%;
-    --sidebar-foreground: 30 45% 98%;
-    --sidebar-primary: 30 70% 60%;
-    --sidebar-primary-foreground: 25 47% 15%;
-    --sidebar-accent: 25 30% 18%;
-    --sidebar-accent-foreground: 30 45% 98%;
-    --sidebar-border: 25 30% 22%;
-    --sidebar-ring: 30 70% 60%;
-  }
-}
-
-/* Landing page keyframes */
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -269,3 +168,19 @@
 .animate-fade-in { animation: fade-in 0.6s ease-out forwards; }
 .animate-scale-in { animation: scale-in 0.5s ease-out forwards; }
 .animate-float { animation: float 6s ease-in-out infinite; }
+
+@layer utilities {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

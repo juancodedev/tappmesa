@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useCart } from '../../../hooks/useCart'
-import { X, Plus, Minus, Trash2, MessageSquare } from 'lucide-react'
+import { X, Plus, Minus, Trash2, MessageSquare, Flame, Snowflake, Coffee, Utensils } from 'lucide-react'
 
 const CartItem = ({ item }) => {
   const { updateQuantity, removeItem, updateNotes, formatPrice, getItemTotal } = useCart()
@@ -25,7 +25,7 @@ const CartItem = ({ item }) => {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-2xl">
-              {item.product.beverage_type === 'cold' ? '🧊' : item.product.beverage_type === 'hot' ? '☕' : '🍽️'}
+              {item.product.beverage_type === 'cold' ? <Snowflake className="w-6 h-6 text-blue-400" /> : item.product.beverage_type === 'hot' ? <Coffee className="w-6 h-6 text-amber-600" /> : <Utensils className="w-6 h-6 text-gray-400" />}
             </div>
           )}
         </div>
@@ -61,7 +61,7 @@ const CartItem = ({ item }) => {
                       : 'bg-white text-gray-600 border-gray-300 hover:border-primary'
                   }`}
                 >
-                  {temp === 'hot' ? '🔥' : temp === 'cold' ? '🧊' : '❄️'}
+                  {temp === 'hot' ? <Flame className="w-3 h-3 inline" /> : temp === 'cold' ? <Snowflake className="w-3 h-3 inline" /> : <Snowflake className="w-3 h-3 inline opacity-60" />}
                 </button>
               ))}
             </div>
