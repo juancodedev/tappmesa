@@ -2,12 +2,11 @@
  * Email Service
  *
  * Servicio centralizado para envío de emails
- * Soporta múltiples proveedores: SendGrid, Resend, Nodemailer
+ * Proveedores: Resend (activo), SendGrid (código disponible), Console (dev local)
  *
- * Para activar:
- * 1. Instalar: npm install @sendgrid/mail  O  npm install resend
- * 2. Configurar env: SENDGRID_API_KEY  O  RESEND_API_KEY
- * 3. Descomentar el provider que uses
+ * Para activar Resend en producción:
+ * 1. Configurar env: RESEND_API_KEY, FROM_EMAIL, EMAIL_PROVIDER=resend
+ * 2. En Vercel: vercel env add RESEND_API_KEY
  */
 
 const logger = require('../utils/logger');
@@ -47,9 +46,8 @@ async function sendViaSendGrid(to, subject, html, text) {
 */
 
 /**
- * Resend Provider (descomentar para usar)
+ * Resend Provider
  */
-/*
 const { Resend } = require('resend');
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -68,7 +66,6 @@ async function sendViaResend(to, subject, html, text) {
     return { success: false, error: error.message };
   }
 }
-*/
 
 /**
  * Console Provider (para desarrollo)
@@ -151,9 +148,7 @@ async function sendEmail(to, subject, html, text = null) {
       return sendViaConsole(to, subject, html, text);
 
     case 'resend':
-      // return await sendViaResend(to, subject, html, text);
-      logger.warn('Resend not configured, using console');
-      return sendViaConsole(to, subject, html, text);
+      return await sendViaResend(to, subject, html, text);
 
     case 'console':
     default:

@@ -57,6 +57,7 @@
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.13.2",
+    "resend": "^6.12.4",
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
