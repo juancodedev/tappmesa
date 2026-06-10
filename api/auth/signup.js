@@ -4,6 +4,7 @@ const { createClient } = require('@supabase/supabase-js');
 const logger = require('../utils/logger');
 const { rateLimiter, blacklistMiddleware } = require('../middleware/rateLimit');
 const { corsMiddleware } = require('../middleware/cors');
+const { validatePassword } = require('../middleware/validation');
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
@@ -71,10 +72,11 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // Validar longitud de contraseña
-    if (password.length < 8) {
+    // Validar contraseña
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.valid) {
       return res.status(400).json({
-        error: 'La contraseña debe tener al menos 8 caracteres'
+        error: passwordValidation.error
       });
     }
 
