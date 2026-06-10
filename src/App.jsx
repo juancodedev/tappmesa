@@ -19,14 +19,12 @@ import {
   PrivacyPage,
   TermsPage,
   HelpPage,
-  ContactPage
+  ContactPage,
+  ReservationsPage,
+  WaiterDashboard,
+  KitchenDashboard,
+  ContactSales
 } from './components/LazyComponents';
-
-// Importar directamente (no lazy) para reservas y waiter
-import ReservationsPage from './pages/reservations/ReservationsPage';
-import WaiterDashboard from './pages/waiter/WaiterDashboard';
-import KitchenDashboard from './pages/kitchen/KitchenDashboard';
-import ContactSales from './pages/contact-sales/ContactSales';
 
 // Keep ProtectedRoute as regular import since it's lightweight
 import ProtectedRoute from './components/ProtectedRoute';

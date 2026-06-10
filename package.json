@@ -25,7 +25,6 @@
     "test:watch": "vitest --watch"
   },
   "dependencies": {
-    "@prisma/client": "6.4.1",
     "@radix-ui/themes": "^3.2.1",
     "@sentry/react": "^10.17.0",
     "@sentry/vite-plugin": "^5.1.1",
@@ -45,7 +44,7 @@
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.33.0",
+    "@eslint/js": "^10.0.1",
     "@flydotio/dockerfile": "^0.7.10",
     "@tailwindcss/postcss": "^4.2.2",
     "@testing-library/dom": "^10.4.1",
@@ -57,13 +56,14 @@
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^5.2.0",
     "autoprefixer": "^10.4.27",
-    "eslint": "^10.2.1",
+    "eslint": "^10.3.0",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
-    "jsdom": "^29.0.1",
+    "jsdom": "^29.1.1",
     "postcss": "^8.5.10",
-    "prisma": "7.8.0",
+    "@prisma/client": "6.4.1",
+    "prisma": "6.4.1",
     "tailwindcss": "^4.2.2",
     "vite": "^8.0.10",
     "vitest": "^4.1.0"

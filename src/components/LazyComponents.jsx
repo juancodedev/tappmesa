@@ -28,6 +28,11 @@ const LazyTermsPage = lazy(() => import('../pages/landing/TermsPage'));
 const LazyHelpPage = lazy(() => import('../pages/landing/HelpPage'));
 const LazyContactPage = lazy(() => import('../pages/landing/ContactPage'));
 
+// Lazy load secondary page components (not in the critical path)
+const LazyWaiterDashboard = lazy(() => import('../pages/waiter/WaiterDashboard'));
+const LazyKitchenDashboard = lazy(() => import('../pages/kitchen/KitchenDashboard'));
+const LazyContactSales = lazy(() => import('../pages/contact-sales/ContactSales'));
+
 // Lazy load layout components
 const LazyMenuLayout = lazy(() => import('./layout/MenuLayout'));
 
@@ -58,6 +63,10 @@ export const HelpPage = withSuspense(LazyHelpPage, "Cargando ayuda...");
 export const ContactPage = withSuspense(LazyContactPage, "Cargando contacto...");
 
 export const MenuLayout = withSuspense(LazyMenuLayout, "Cargando menú...");
+
+export const WaiterDashboard = withSuspense(LazyWaiterDashboard, "Cargando panel del garzón...");
+export const KitchenDashboard = withSuspense(LazyKitchenDashboard, "Cargando panel de cocina...");
+export const ContactSales = withSuspense(LazyContactSales, "Cargando...");
 
 // Also export the LoadingSpinner for direct use
 export { LoadingSpinner };
