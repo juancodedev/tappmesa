@@ -1,17 +1,17 @@
 // API Route: /api/auth/reset-password.js
-import bcrypt from 'bcryptjs';
-import { createClient } from '@supabase/supabase-js';
-import logger from '../utils/logger.js';
-import { rateLimiter, blacklistMiddleware } from '../middleware/rateLimit.js';
-import { corsMiddleware } from '../middleware/cors.js';
-import { sendEmail, getPasswordResetEmail } from '../services/emailService.js';
+const bcrypt = require('bcryptjs');
+const { createClient } = require('@supabase/supabase-js');
+const logger = require('../utils/logger');
+const { rateLimiter, blacklistMiddleware } = require('../middleware/rateLimit');
+const { corsMiddleware } = require('../middleware/cors');
+const { sendEmail, getPasswordResetEmail } = require('../services/emailService');
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // CORS
   if (corsMiddleware(req, res, ['POST', 'OPTIONS'])) {
     return;

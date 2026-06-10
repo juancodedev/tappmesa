@@ -2,7 +2,6 @@
   "name": "tappmesa",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "pnpm": {
     "overrides": {
       "lodash": "4.17.23",
