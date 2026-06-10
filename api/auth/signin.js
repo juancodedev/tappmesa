@@ -72,10 +72,36 @@ module.exports = async function handler(req, res) {
       .update({ last_login: new Date().toISOString() })
       .eq('id', admin.id);
 
+    // Límite de sesiones concurrentes: max 5 por usuario
+    const MAX_SESSIONS = parseInt(process.env.MAX_CONCURRENT_SESSIONS) || 5;
+    const { data: activeSessions } = await supabase
+      .from('admin_sessions')
+      .select('id, created_at')
+      .eq('user_id', admin.id)
+      .gt('expires_at', new Date().toISOString())
+      .order('created_at', { ascending: true });
+
+    if (activeSessions && activeSessions.length >= MAX_SESSIONS) {
+      // Eliminar las sesiones más antiguas para dejar lugar a la nueva
+      const sessionsToDelete = activeSessions.slice(0, activeSessions.length - MAX_SESSIONS + 1);
+      const idsToDelete = sessionsToDelete.map(s => s.id);
+
+      await supabase
+        .from('admin_sessions')
+        .delete()
+        .in('id', idsToDelete);
+
+      logger.security('sessions_limited', {
+        user_id: admin.id,
+        deleted_count: idsToDelete.length,
+        max_sessions: MAX_SESSIONS
+      });
+    }
+
     // Crear nueva sesión
     const sessionToken = generateSessionToken();
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7); // 7 días (reducido de 30 para mejor seguridad)
+    expiresAt.setDate(expiresAt.getDate() + 7); // 7 días
 
     await supabase
       .from('admin_sessions')
