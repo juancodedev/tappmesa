@@ -103,8 +103,20 @@ npx prisma db push
 ```
 
 5. **Iniciar servidor de desarrollo**
+
+Las API routes (serverless functions de Vercel) necesitan un servidor aparte:
+
 ```bash
+# Terminal 1: API routes (puerto :3001)
+node dev-server.js
+
+# Terminal 2: Frontend (puerto :5173)
 pnpm dev
+```
+
+O en una sola terminal:
+```bash
+pnpm dev:all
 ```
 
 Acceder a: `http://localhost:5173`
