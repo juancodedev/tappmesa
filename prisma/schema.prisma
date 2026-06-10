@@ -729,6 +729,10 @@ model customers {
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+/// DEPRECATED: Use stock_inventory instead.
+/// Este modelo usa Int para stock (sin decimales) y no tiene soporte
+/// para movimientos, alertas ni proveedores. Se mantiene por compatibilidad
+/// con datos existentes. No usar para nuevas features.
 model inventory {
   id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   tenant_id     String?   @db.Uuid
