@@ -167,39 +167,48 @@ Ver `DESARROLLO-LOCAL-SUBDOMINIOS.md` para configuración detallada.
 
 > ⚠️ **SOLO PARA DESARROLLO** - Cambiar en producción
 
+### Seed de datos
+
+Para crear los usuarios de prueba en la base de datos:
+
+```bash
+# Asegurate de tener VITE_SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY en .env.local
+pnpm seed
+```
+
 ### Super Admin (Acceso Global)
 ```
-Email: superadmin@tappmesa.dev
-Password: TappM3sa$2025!Super
+Email: admin@tappmesa.com
+Password: admin123
 Acceso: http://localhost:5173/admin
+```
+
+### Tenant Admin - Café Central
+```
+Email: cafe-central@cafe-central.com
+Password: admin123
+Acceso: http://cafe-central-tappmesa.localhost:5173/admin
 ```
 
 ### Tenant Admin - Tetería Luna
 ```
-Email: admin@teteria-luna.dev
-Password: T3t3r1aLun4#2025
+Email: teteria-luna@teteria-luna.com
+Password: admin123
 Acceso: http://teteria-luna-tappmesa.localhost:5173/admin
 ```
 
-### Tenant Admin - Coffee Central
+### Tenant Admin - Bistro Sunrise
 ```
-Email: admin@coffee-central.dev
-Password: C0ff33C3ntr@l!25
-Acceso: http://coffee-central-tappmesa.localhost:5173/admin
-```
-
-### Staff - Mesero
-```
-Email: mesero@teteria-luna.dev
-Password: M3s3r0T3t3r14!
-Rol: waiter
+Email: bistro-sunrise@bistro-sunrise.com
+Password: admin123
+Acceso: http://bistro-sunrise-tappmesa.localhost:5173/admin
 ```
 
-### Staff - Cocina
+### Tenant Admin - Coffee & Co
 ```
-Email: cocina@teteria-luna.dev
-Password: C0c1n4T3t3r14!
-Rol: kitchen
+Email: coffee-co@coffee-co.com
+Password: admin123
+Acceso: http://coffee-co-tappmesa.localhost:5173/admin
 ```
 
 ## 📁 Estructura del Proyecto

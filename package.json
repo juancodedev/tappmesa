@@ -32,6 +32,7 @@
     "dev": "vite",
     "dev:api": "node dev-server.js",
     "dev:all": "node dev-server.js & vite",
+    "seed": "node scripts/seed-test-users.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
