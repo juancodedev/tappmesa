@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components -- archivo de contexto que exporta Provider y utilidades */
-import { createContext, useState, useEffect } from 'react'
+import { createContext, useState, useEffect, useMemo } from 'react'
 import { useTenant } from '../hooks/useTenant'
 import { supabase } from '../lib/supabase'
 import logger from '../utils/logger'
@@ -285,7 +285,7 @@ export const CartProvider = ({ children }) => {
   const closeCart = () => setIsOpen(false)
   const toggleCart = () => setIsOpen(!isOpen)
 
-  const value = {
+  const value = useMemo(() => ({
     // Estado
     items,
     isOpen,
@@ -312,7 +312,7 @@ export const CartProvider = ({ children }) => {
     
     // Utilidades
     isEmpty: items.length === 0
-  }
+  }), [items, isOpen, placingOrder])
 
   return (
     <CartContext.Provider value={value}>
