@@ -13,28 +13,90 @@ export const supabase = supabaseUrl && supabaseAnonKey
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null
 
-// Servicio de autenticación actualizado - usando cliente directo mientras se soluciona Vercel
-import { directAuthService } from './secureAuthDirect.js';
+// API base URL for serverless function calls
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
-// Uso del servicio directo (temporal hasta que Vercel API funcione)
+// Servicio de autenticación — llama a API routes serverless con bcrypt
 export const authService = {
   async signUp(userData) {
-    console.log('🔄 Usando servicio directo de autenticación (temporal)');
-    return await directAuthService.signUp(userData);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, error: data.error || 'Error al crear la cuenta' };
+      }
+      if (data.sessionToken) {
+        localStorage.setItem('tappmesa-session', data.sessionToken);
+      }
+      return data;
+    } catch {
+      return { success: false, error: 'Error de conexión. Intenta nuevamente.' };
+    }
   },
 
   async signIn(email, password) {
-    console.log('🔄 Usando servicio directo de autenticación (temporal)');
-    return await directAuthService.signIn(email, password);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, error: data.error || 'Error al iniciar sesión' };
+      }
+      if (data.sessionToken) {
+        localStorage.setItem('tappmesa-session', data.sessionToken);
+      }
+      return data;
+    } catch {
+      return { success: false, error: 'Error de conexión. Intenta nuevamente.' };
+    }
   },
 
   async signOut() {
-    console.log('🔄 Usando servicio directo de autenticación (temporal)');
-    return await directAuthService.signOut();
+    const sessionToken = localStorage.getItem('tappmesa-session');
+    if (sessionToken) {
+      try {
+        await fetch(`${API_BASE_URL}/api/auth/signout`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${sessionToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+      } catch {
+        // Ignorar error de red — siempre limpiar localStorage
+      }
+    }
+    localStorage.removeItem('tappmesa-session');
+    return { success: true };
   },
 
   async getCurrentSession() {
-    return await directAuthService.getCurrentSession();
+    const sessionToken = localStorage.getItem('tappmesa-session');
+    if (!sessionToken) return null;
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/session`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${sessionToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!response.ok) {
+        localStorage.removeItem('tappmesa-session');
+        return null;
+      }
+      return await response.json();
+    } catch {
+      localStorage.removeItem('tappmesa-session');
+      return null;
+    }
   },
 
   // Métodos legacy deprecados

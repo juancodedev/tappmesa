@@ -1,0 +1,29 @@
+# SDD configuration — Tappmesa
+context: |
+  Multi-tenant SaaS for Chilean cafes/restaurants. React 19 + Vite 7 + Tailwind CSS 4.
+  Subdomain-based tenant isolation. PostgreSQL (Supabase) + Prisma ORM.
+  Custom bcrypt auth with session tokens. Vercel deployment (serverless API routes).
+  Feature-based module structure under src/features/. React Context for global state.
+strict_tdd: true
+testing:
+  runner: vitest
+  framework: vitest
+  layers:
+    unit: { available: true, tool: vitest }
+    integration: { available: true, tool: '@testing-library/react' }
+    e2e: { available: false, tool: null }
+  coverage:
+    available: true
+    command: vitest run --coverage
+  quality:
+    linter: { available: true, command: eslint . }
+    type_checker: { available: false, command: null }
+    formatter: { available: false, command: null }
+phases:
+  propose: { required: true }
+  spec: { required: true }
+  design: { required: true }
+  tasks: { required: true }
+  apply: { required: true }
+  verify: { required: true }
+  archive: { required: true }
