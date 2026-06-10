@@ -88,6 +88,14 @@ export default defineConfig({
   server: {
     host: "0.0.0.0", // Permite conexiones externas
     port: 5173,
+    // Proxy para API routes (Vercel serverless functions)
+    // Requiere: node dev-server.js (corre en :3001)
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
+    },
     // Permitir hosts personalizados para subdominios
     allowedHosts: [
       "tappmesa.local",
