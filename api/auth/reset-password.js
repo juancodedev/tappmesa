@@ -5,6 +5,7 @@ const logger = require('../utils/logger');
 const { rateLimiter, blacklistMiddleware } = require('../middleware/rateLimit');
 const { corsMiddleware } = require('../middleware/cors');
 const { sendEmail, getPasswordResetEmail } = require('../services/emailService');
+const { validatePassword } = require('../middleware/validation');
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
@@ -166,8 +167,9 @@ async function handleResetPassword(req, res) {
       return res.status(400).json({ error: 'Token y nueva contraseña son requeridos' });
     }
 
-    if (newPassword.length < 6) {
-      return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
+    const passwordValidation = validatePassword(newPassword);
+    if (!passwordValidation.valid) {
+      return res.status(400).json({ error: passwordValidation.error });
     }
 
     // Verificar token
