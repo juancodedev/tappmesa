@@ -64,41 +64,60 @@ El sistema utiliza una paleta de colores cuidadosamente seleccionada para evocar
 
 ### Prerrequisitos
 - Node.js 18+
-- npm o pnpm
-- Cuenta en Supabase
+- pnpm
+- Una base de datos PostgreSQL (recomendado: [Supabase](https://supabase.com) — plan gratis)
 
 ### Pasos de Instalación
 
 1. **Clonar el repositorio**
 ```bash
-git clone https://github.com/tu-usuario/tappmesa.git
+git clone https://github.com/juancodedev/tappmesa.git
 cd tappmesa
 ```
 
 2. **Instalar dependencias**
 ```bash
-npm install
+pnpm install
 ```
 
 3. **Configurar variables de entorno**
-
-Crear archivo `.env` en la raíz:
-```env
-VITE_SUPABASE_URL=tu-supabase-url
-VITE_SUPABASE_ANON_KEY=tu-supabase-anon-key
-VITE_API_BASE_URL=http://localhost:5173
+```bash
+cp .env.local.sample .env.local
 ```
 
-4. **Ejecutar migraciones de base de datos**
+Editar `.env.local` con tus credenciales de Supabase:
+```env
+VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
 
-Ver `database/00-ORDEN-DE-EJECUCION.md` para el orden correcto.
+> ⚠️ **Importante**: Las API routes usan `SUPABASE_SERVICE_ROLE_KEY`. Si usás Supabase local con `supabase start`, obtenés estas credenciales del archivo `supabase/config.toml` o corriendo `supabase status`.
+
+4. **Sincronizar schema de base de datos** (opcional)
+```bash
+# Si tenés acceso directo a la DB:
+npx prisma db push
+
+# O ejecutar migraciones manuales desde database/
+```
 
 5. **Iniciar servidor de desarrollo**
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Acceder a: `http://localhost:5173`
+
+> 💡 Para subdominios locales, los navegadores modernos resuelven `*.localhost` a `127.0.0.1` automáticamente. Ver [Desarrollo Local con Subdominios](DESARROLLO-LOCAL-SUBDOMINIOS.md).
+
+### Solución de problemas de conexión
+
+| Error | Causa probable | Solución |
+|-------|---------------|----------|
+| `supabase is null` en consola | `VITE_SUPABASE_URL` o `VITE_SUPABASE_ANON_KEY` no configurados | Verificar `.env.local` |
+| `Error: Email o contraseña incorrectos` en login | DB sin datos de seed o auth routes sin service role key | Verificar `SUPABASE_SERVICE_ROLE_KEY` y correr seed |
+| `Failed to fetch` en API routes | Vite dev server no redirige a API routes | Usar `pnpm dev` (Vite proxy configurado) |
 
 ## 🚀 Desarrollo Local
 
@@ -278,10 +297,20 @@ vercel deploy
 
 ### Variables de Entorno en Vercel
 
-Configurar en dashboard de Vercel:
+Configurar en dashboard de Vercel (ver `.env.local.sample` para descripciones):
+
+**Requeridas:**
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_ANON_KEY`
-- `VITE_API_BASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+**Recomendadas:**
+- `EMAIL_PROVIDER=resend` + `RESEND_API_KEY` + `FROM_EMAIL` — emails transaccionales
+- `KV_REST_API_URL` + `KV_REST_API_TOKEN` — rate limiting persistente (correr `vercel kv create`)
+
+**Opcionales:**
+- `FRONTEND_URL` — override para URLs en emails
+- `MAX_CONCURRENT_SESSIONS` — límite de sesiones por usuario (default: 5)
 
 ### Subdominios en Vercel
 
