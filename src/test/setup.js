@@ -12,14 +12,21 @@ window.location = {
   reload: vi.fn(),
 }
 
-// Mock localStorage
+// Mock localStorage funcional (almacena datos reales)
+const createMockStorage = () => {
+  let store = {}
+  return {
+    getItem: vi.fn((key) => store[key] ?? null),
+    setItem: vi.fn((key, value) => { store[key] = String(value) }),
+    removeItem: vi.fn((key) => { delete store[key] }),
+    clear: vi.fn(() => { store = {} }),
+    get length() { return Object.keys(store).length },
+    key: vi.fn((i) => Object.keys(store)[i] ?? null),
+    _store: store, // exposición para debugging en tests
+  }
+}
 Object.defineProperty(window, 'localStorage', {
-  value: {
-    getItem: vi.fn(),
-    setItem: vi.fn(),
-    removeItem: vi.fn(),
-    clear: vi.fn(),
-  },
+  value: createMockStorage(),
   writable: true,
 })
 
