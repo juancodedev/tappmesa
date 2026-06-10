@@ -705,7 +705,7 @@ model customer_order_history {
 model customers {
   id                       String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   tenant_id                String?                  @db.Uuid
-  phone                    String                   @unique @db.VarChar
+  phone                    String                   @db.VarChar
   name                     String?                  @db.VarChar
   email                    String?                  @db.VarChar
   total_orders             Int?                     @default(0)
@@ -724,7 +724,7 @@ model customers {
   tenants                  tenants?                 @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([tenant_id], map: "idx_customers_tenant_active")
-  @@index([tenant_id, phone], map: "idx_customers_tenant_phone")
+  @@unique([tenant_id, phone])
   @@schema("public")
 }
 
@@ -1234,7 +1234,7 @@ model tables {
   number               String           @db.VarChar
   capacity             Int
   location             String?          @db.VarChar
-  unique_code          String?          @unique @db.VarChar
+  unique_code          String?          @db.VarChar
   qr_code_url          String?
   status               String?          @default("available") @db.VarChar
   is_active            Boolean?         @default(true)
@@ -1249,6 +1249,7 @@ model tables {
   tenants              tenants?         @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([tenant_id, number])
+  @@unique([tenant_id, unique_code])
   @@schema("public")
 }
 
