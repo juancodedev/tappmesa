@@ -41,7 +41,7 @@ module.exports = async function handler(req, res) {
 async function handleResetRequest(req, res) {
   // Rate limiting para reset requests
   const rateLimit = rateLimiter('auth/reset-password/request');
-  if (rateLimit(req, res)) {
+  if (await rateLimit(req, res)) {
     return;
   }
 
