@@ -3,152 +3,7 @@ import { useCart } from '../../hooks/useCart'
 import { useTenant } from '../../hooks/useTenant'
 import { supabase } from '../../lib/supabase'
 import { X, Plus, Minus, ShoppingCart, Trash2, MessageSquare, CheckCircle, Clock } from 'lucide-react'
-
-const CartItem = ({ item }) => {
-  const { updateQuantity, removeItem, updateNotes, formatPrice, getItemTotal } = useCart()
-  const [showNotes, setShowNotes] = useState(false)
-  const [notes, setNotes] = useState(item.notes || '')
-
-  const handleNotesSubmit = () => {
-    updateNotes(item.id, notes)
-    setShowNotes(false)
-  }
-
-  const getTemperatureIcon = (temp) => {
-    switch (temp) {
-      case 'hot': return '🔥'
-      case 'cold': return '🧊'
-      case 'iced': return '❄️'
-      default: return '🔥'
-    }
-  }
-
-  const getTemperatureText = (temp) => {
-    switch (temp) {
-      case 'hot': return 'Caliente'
-      case 'cold': return 'Frío'
-      case 'iced': return 'Helado'
-      default: return 'Caliente'
-    }
-  }
-
-  return (
-    <div className="bg-white rounded-lg p-4 border border-gray-200">
-      <div className="flex items-start space-x-3">
-        {/* Imagen del producto */}
-        <div className="w-16 h-16 bg-gray-100 rounded-lg shrink-0 overflow-hidden">
-          {item.product.image_url ? (
-            <img 
-              src={item.product.image_url} 
-              alt={item.product.name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-2xl">
-              {item.product.beverage_type === 'coffee' ? '☕' : 
-               item.product.beverage_type === 'tea' ? '🍃' : '🥤'}
-            </div>
-          )}
-        </div>
-
-        {/* Información del producto */}
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-gray-900 text-sm">
-            {item.product.name}
-          </h3>
-          
-          <div className="flex items-center space-x-2 mt-1">
-            <span className="text-xs text-gray-500">
-              {getTemperatureIcon(item.temperature)} {getTemperatureText(item.temperature)}
-            </span>
-            <span className="text-xs text-gray-500">
-              {formatPrice(item.product.price)} c/u
-            </span>
-          </div>
-
-          {item.notes && (
-            <p className="text-xs text-gray-600 mt-1 italic">
-              "{item.notes}"
-            </p>
-          )}
-
-          {/* Controles de cantidad */}
-          <div className="flex items-center justify-between mt-3">
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                className="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-              >
-                <Minus className="w-3 h-3 text-gray-600" />
-              </button>
-              
-              <span className="w-8 text-center font-semibold text-sm">
-                {item.quantity}
-              </span>
-              
-              <button
-                onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                className="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-              >
-                <Plus className="w-3 h-3 text-gray-600" />
-              </button>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setShowNotes(!showNotes)}
-                className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
-                title="Agregar nota"
-              >
-                <MessageSquare className="w-4 h-4" />
-              </button>
-              
-              <button
-                onClick={() => removeItem(item.id)}
-                className="p-1 text-red-400 hover:text-red-600 transition-colors"
-                title="Eliminar"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-              
-              <span className="font-semibold text-sm text-gray-900">
-                {formatPrice(getItemTotal(item))}
-              </span>
-            </div>
-          </div>
-
-          {/* Campo de notas */}
-          {showNotes && (
-            <div className="mt-3 space-y-2">
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Agregar instrucciones especiales..."
-                className="w-full text-xs border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                rows={2}
-              />
-              <div className="flex space-x-2">
-                <button
-                  onClick={handleNotesSubmit}
-                  className="text-xs bg-primary text-white px-3 py-1 rounded-lg hover:bg-primary-700 transition-colors"
-                >
-                  Guardar
-                </button>
-                <button
-                  onClick={() => setShowNotes(false)}
-                  className="text-xs text-gray-600 hover:text-gray-800 transition-colors"
-                >
-                  Cancelar
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
+import CartItem from '../../features/cart/components/CartItem'
 const Cart = () => {
   const { tenant, table } = useTenant()
   const { 
@@ -302,7 +157,7 @@ const Cart = () => {
                 setOrderResult(null)
                 closeCart()
               }}
-              className="w-full bg-primary text-gray-700 py-3 border border-gray-500 rounded-lg font-semibold hover:text-white hover:bg-primary-700 transition-colors"
+              className="w-full bg-primary text-white py-3 border border-gray-500 rounded-lg font-semibold hover:text-white hover:bg-primary-700 transition-colors"
             >
               Continuar
             </button>
@@ -474,7 +329,7 @@ const Cart = () => {
               <button
                 onClick={handlePlaceOrder}
                 disabled={!customerInfo.name || !customerInfo.phone || placingOrder}
-                className="flex-2 bg-primary text-gray-700 border border-gray-700 py-3 rounded-lg font-medium hover:bg-primary-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                className="flex-1 bg-primary text-white border border-gray-700 py-3 rounded-lg font-medium hover:bg-primary-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
                 {placingOrder ? (
                   <>
