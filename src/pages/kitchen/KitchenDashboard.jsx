@@ -97,6 +97,7 @@ const KitchenDashboard = () => {
           status: newStatus,
           updated_at: new Date().toISOString()
         })
+        .eq('tenant_id', tenant.id)
         .eq('id', orderId)
 
       if (error) throw error
