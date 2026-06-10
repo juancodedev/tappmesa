@@ -53,23 +53,6 @@ export const mockProduct = {
   is_available: true,
 }
 
-// Helper to render components with providers
-export const renderWithProviders = (component, options = {}) => {
-  const {
-    initialLocation = '/',
-  } = options
-
-  // Mock window.location for the test
-  window.location.pathname = initialLocation
-
-  const AllProviders = ({ children }) => {
-    return children // We'll wrap with actual providers in the tests
-  }
-
-  // Note: render function should be imported from @testing-library/react in the actual test files
-  return { AllProviders }
-}
-
 // Helper to create mock functions with specific return values
 export const createMockFunction = (returnValue) => vi.fn(() => returnValue)
 
