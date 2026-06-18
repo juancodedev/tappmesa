@@ -1,6 +1,35 @@
 // src/components/Landing/v2/Footer.jsx
 import React from 'react';
-import { Coffee, Facebook, Instagram, Twitter, Mail, Linkedin, Youtube } from 'lucide-react';
+import { Coffee, Mail } from 'lucide-react';
+
+// Brand icons as inline SVGs — Lucide doesn't ship trademarked logos
+const FacebookIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+  </svg>
+);
+
+const InstagramIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+    <circle cx="12" cy="12" r="5" />
+    <circle cx="17.5" cy="6.5" r="1.5" />
+  </svg>
+);
+
+const TwitterIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
+
+const LinkedinIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z" />
+    <rect x="2" y="9" width="4" height="12" />
+    <circle cx="4" cy="4" r="2" />
+  </svg>
+);
 
 const Footer = () => {
   return (
@@ -26,16 +55,16 @@ const Footer = () => {
             {/* Social Links */}
             <div className="flex gap-3">
               <a href="https://facebook.com/tappmesa" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
-                <Facebook className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                <FacebookIcon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
               </a>
               <a href="https://instagram.com/tappmesa" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
-                <Instagram className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                <InstagramIcon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
               </a>
               <a href="https://twitter.com/tappmesa" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
-                <Twitter className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                <TwitterIcon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
               </a>
               <a href="https://linkedin.com/company/tappmesa" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-800 hover:bg-linear-to-br hover:from-primary-600 hover:to-secondary-600 rounded-lg transition-all group">
-                <Linkedin className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                <LinkedinIcon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
               </a>
             </div>
           </div>
