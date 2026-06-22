@@ -60,7 +60,7 @@
     "dotenv": "^17.2.2",
     "lucide-react": "^1.18.0",
     "pg": "^8.20.0",
-    "radix-ui": "^1.4.3",
+    "radix-ui": "^1.6.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.13.2",
