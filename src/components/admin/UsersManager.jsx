@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react'
 import { useTenant } from '../../hooks/useTenant'
 import { useAuth } from '../../hooks/useAuth'
-import { secureAuthService } from '../../lib/authService'
+import { authService } from '../../lib/supabase'
 import { SuperAdminContext } from '../../context/SuperAdminContext'
 import SuperAdminNoTenantMessage from './SuperAdminNoTenantMessage'
 import {
@@ -29,7 +29,7 @@ const UsersManager = () => {
   // CRUD de usuarios via /api/admin/users (task 1.9): el hash y el scope
   // viven server-side; acá no se toca admin_users directamente.
   const apiCall = async (url, options = {}) => {
-    const response = await secureAuthService.authenticatedFetch(url, {
+    const response = await authService.authenticatedFetch(url, {
       ...options,
       headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
     })

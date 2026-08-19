@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { secureAuthService } from '../../lib/authService'
+import { authService } from '../../lib/supabase'
 import {
   Users,
   Search,
@@ -36,7 +36,7 @@ const SystemUsersManager = () => {
       setLoading(true)
 
       // Usuarios vía API (super_admin: lista completa, sin password_hash)
-      const response = await secureAuthService.authenticatedFetch('/api/admin/users', {
+      const response = await authService.authenticatedFetch('/api/admin/users', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       })
@@ -78,7 +78,7 @@ const SystemUsersManager = () => {
     }
 
     try {
-      const response = await secureAuthService.authenticatedFetch(`/api/admin/users/${userId}`, {
+      const response = await authService.authenticatedFetch(`/api/admin/users/${userId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_active: !currentStatus })

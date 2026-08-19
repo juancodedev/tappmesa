@@ -172,6 +172,54 @@ export const authService = {
     }
   },
 
+  // C5: headers autenticados (Bearer session) para las API routes.
+  getSessionToken() {
+    return localStorage.getItem('tappmesa-session');
+  },
+
+  getAuthHeaders() {
+    const token = this.getSessionToken();
+    return token ? {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    } : {
+      'Content-Type': 'application/json'
+    };
+  },
+
+  // C5: wrapper para peticiones autenticadas a API routes (requireAuth).
+  // 401 → refresh JWT una vez vía /api/auth/token (la sesión puede estar
+  // viva aunque un request haya fallado); si el refresh funciona se
+  // reintenta una sola vez; si la sesión expiró de verdad (refresh 401,
+  // ya limpió keys) se recarga la página hacia el login.
+  async authenticatedFetch(url, options = {}) {
+    const headers = {
+      ...this.getAuthHeaders(),
+      ...options.headers
+    };
+
+    let response = await fetch(url, {
+      ...options,
+      headers
+    });
+
+    if (response.status === 401) {
+      const refreshed = await this.refreshJwt();
+      if (refreshed?.token) {
+        const retryHeaders = {
+          ...this.getAuthHeaders(),
+          ...options.headers
+        };
+        response = await fetch(url, { ...options, headers: retryHeaders });
+        if (response.status !== 401) return response;
+      }
+      // Sesión realmente expirada (refreshJwt ya limpió tappmesa-session/jwt)
+      window.location.reload();
+    }
+
+    return response;
+  },
+
   // Métodos legacy deprecados
   async hashPassword(password) {
     console.warn('⚠️  Client-side password hashing is deprecated and insecure. Server-side bcrypt is now used.');
