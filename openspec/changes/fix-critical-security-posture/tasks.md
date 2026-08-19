@@ -49,7 +49,7 @@ S2 blocks on S1 (SEC-005: migration commits ONLY after routes + token path + uni
 - [x] 1.11 api/middleware/rateLimit.js: keys auth/token, orders, orders/my, table-sessions, admin/users; test 429 burst (RTE-006).
 - [x] 1.12 package.json + .env.local.sample: jsonwebtoken; SUPABASE_JWT_SECRET server-only (never VITE_); SEC-007 client-bundle grep check.
 - [x] 1.13 Delete src/lib/authService.js + src/middleware/tenantResolver.js (zero importers verified); import sweep; verify src/test/lib/authService.test.js still targets supabase.js's authService export.
-- [ ] 1.14 S1 verification: PostgREST test-token query pre-lockdown (SEC-001 scenario); `pnpm test:run` green; June-2026 fixes not regressed (design §12).
+- [x] 1.14 S1 verification: PostgREST test-token query pre-lockdown (SEC-001 scenario); `pnpm test:run` green; June-2026 fixes not regressed (design §12).
 
 ## Split 2 — rls-lockdown-flip (BLOCKS on 1.14 verified)
 
