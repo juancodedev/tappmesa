@@ -227,6 +227,32 @@ describe('POST /api/table-sessions (task 1.8)', () => {
     expect(res.statusCode).toBe(405)
   })
 
+  it('SEC-006: never trusts a capability from headers/body — mints its own and returns it in the body', async () => {
+    const res = makeRes()
+    await handler(
+      makeReq({
+        headers: { authorization: 'Bearer client-bogus-cap' },
+        body: {
+          table_id: '11111111-1111-1111-1111-111111111111',
+          tenant_id: '22222222-2222-2222-2222-222222222222',
+          capability: 'client-provided-cap', // se ignora: nada de capabilities via input
+        },
+      }),
+      res,
+    )
+
+    expect(res.statusCode).toBe(201)
+    const tsIndex = supabase.from.mock.results.findIndex(
+      (r, i) => supabase.from.mock.calls[i][0] === 'table_sessions' && r.value.isInsert,
+    )
+    const insertPayload = supabase.from.mock.results[tsIndex].value.insert.mock.calls[0][0]
+    expect(insertPayload.capability_token).toMatch(/^ts_/)
+    expect(insertPayload.capability_token).not.toBe('client-provided-cap')
+    expect(insertPayload.capability_token.length).toBeGreaterThan(16)
+    // La capability viaja en la respuesta (body), nunca por un header.
+    expect(res.body.session.capability_token).toMatch(/^ts_/)
+  })
+
   it('returns 500 and logs when the create insert fails', async () => {
     supabase.state.insertError = { message: 'insert failed' }
     const res = makeRes()

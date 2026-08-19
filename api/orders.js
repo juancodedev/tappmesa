@@ -7,10 +7,11 @@
 //   GET  /api/orders/my?capability=...   → órdenes de la sesión (200 [] si desconocida)
 //   POST /api/orders/:id/cancel          → cancelar (sólo propia; 200 {cancelled:false} si ajena)
 //
-// Credenciales:
-//   * capability token en Authorization: Bearer <cap>  (opaque HMAC, D4)
+// Credenciales (SEC-006/R2-5: sin headers custom y la capability viaja en
+// body o query string, NUNCA en Authorization):
+//   * capability en body (`body.capability`) para place/cancel (spec:
+//     {items[], capability?, ...} y {capability}); query ?capability= para /my
 //   * takeout: sin capability, tenant desde Host header
-//   * NO se aceptan headers custom (R2-5): el único canal es Authorization.
 //
 // SEC-001: este flujo de cliente NUNCA minta JWTs.
 //
@@ -31,10 +32,6 @@ const PLACEABLE_STATUSES = ['pending', 'preparing'];
 
 function getPathSegments(req) {
   return (req.url || '').split('?')[0].split('/').filter(Boolean); // ['api','orders',...]
-}
-
-function getBearer(req) {
-  return req.headers?.authorization?.replace('Bearer ', '') || null;
 }
 
 function foldTemperature(item) {
@@ -77,7 +74,10 @@ function isValidItems(items) {
 // ---------------------------------------------------------------------
 
 async function placeOrder(supabase, req, res) {
-  const capability = getBearer(req);
+  // SEC-006: la capability viaja en body (spec {items[], capability?, ...}),
+  // NUNCA en Authorization (que no es custom header pero contradice el
+  // contrato y el canal query/body exigido por el spec).
+  const capability = req.body?.capability || null;
   const body = req.body || {};
 
   const idempotencyKey = body.idempotency_key;
@@ -190,7 +190,8 @@ async function myOrders(supabase, req, res) {
 }
 
 async function cancelOrder(supabase, req, res, orderId) {
-  const capability = getBearer(req);
+  // SEC-006: la capability viaja en body (spec: {capability}).
+  const capability = req.body?.capability || null;
   const session = await findSessionByCapability(supabase, capability);
   if (!session) {
     return res.status(401).json({ error: 'Capability inválida o sesión cerrada' });

@@ -22,6 +22,9 @@ const createdOrder = {
   total: '5950.00',
 }
 
+// SEC-006 (R2-5): las capabilities viajan en body/query string, NUNCA en
+// headers (ni Authorization ni custom). place/cancel leen `body.capability`;
+// /my lee `?capability=`.
 function makeReq({ method = 'POST', url = '/api/orders', headers = {}, body = {}, query = {} } = {}) {
   return { method, url, headers, body, query }
 }
@@ -114,8 +117,7 @@ describe('POST /api/orders (place, task 1.7)', () => {
 
   it('places an order via the db function (201) and folds temperature into notes', async () => {
     const req = makeReq({
-      headers: { authorization: `Bearer ${CAP}` },
-      body: validBody,
+      body: { ...validBody, capability: CAP },
     })
     const res = makeRes()
 
@@ -140,7 +142,7 @@ describe('POST /api/orders (place, task 1.7)', () => {
 
   it('returns the existing order (200) on double-submit without calling the function again', async () => {
     supabase.state.idemResult = { data: { id: 'order-1' }, error: null }
-    const req = makeReq({ headers: { authorization: `Bearer ${CAP}` }, body: validBody })
+    const req = makeReq({ body: { ...validBody, capability: CAP } })
     const res = makeRes()
 
     await handler(req, res)
@@ -170,12 +172,28 @@ describe('POST /api/orders (place, task 1.7)', () => {
 
   it('rejects unknown capability with 401 (no existence leak)', async () => {
     supabase.state.sessionResult = { data: null, error: { message: 'PGRST116: not found' } }
-    const req = makeReq({ headers: { authorization: 'Bearer v1.cap.bogus.aaaa' }, body: validBody })
+    const req = makeReq({ body: { ...validBody, capability: 'v1.cap.bogus.aaaa' } })
     const res = makeRes()
 
     await handler(req, res)
 
     expect(res.statusCode).toBe(401)
+    expect(supabase.rpc).not.toHaveBeenCalled()
+  })
+
+  it('SEC-006: ignores a capability sent via Authorization header (takeout path, 400 without Host)', async () => {
+    const req = makeReq({
+      headers: { authorization: `Bearer ${CAP}` }, // canal prohibido para capabilities
+      body: validBody,
+    })
+    const res = makeRes()
+
+    await handler(req, res)
+
+    // La capability en Authorization NO autentica: sin body.capability el
+    // flujo cae a takeout y sin Host reconocible responde 400.
+    expect(res.statusCode).toBe(400)
+    expect(res.body.error).toMatch(/capability|tenant/i)
     expect(supabase.rpc).not.toHaveBeenCalled()
   })
 
@@ -194,8 +212,7 @@ describe('POST /api/orders (place, task 1.7)', () => {
 
   it('requires an idempotency_key (400) for replay safety', async () => {
     const req = makeReq({
-      headers: { authorization: `Bearer ${CAP}` },
-      body: { items: [{ product_id: 'prod-1', quantity: 1 }] },
+      body: { items: [{ product_id: 'prod-1', quantity: 1 }], capability: CAP },
     })
     const res = makeRes()
 
@@ -206,7 +223,7 @@ describe('POST /api/orders (place, task 1.7)', () => {
   })
 
   it('never mints a JWT for the customer flow (SEC-001)', async () => {
-    const req = makeReq({ headers: { authorization: `Bearer ${CAP}` }, body: validBody })
+    const req = makeReq({ body: { ...validBody, capability: CAP } })
     const res = makeRes()
 
     await handler(req, res)
@@ -322,7 +339,7 @@ describe('POST /api/orders/:id/cancel (task 1.7)', () => {
     await handler(
       makeReq({
         url: '/api/orders/order-foreign/cancel',
-        headers: { authorization: `Bearer ${CAP}` },
+        body: { capability: CAP },
       }),
       res,
     )
@@ -337,7 +354,7 @@ describe('POST /api/orders/:id/cancel (task 1.7)', () => {
     await handler(
       makeReq({
         url: '/api/orders/order-1/cancel',
-        headers: { authorization: `Bearer ${CAP}` },
+        body: { capability: CAP },
       }),
       res,
     )
@@ -352,12 +369,26 @@ describe('POST /api/orders/:id/cancel (task 1.7)', () => {
     await handler(
       makeReq({
         url: '/api/orders/order-1/cancel',
-        headers: { authorization: 'Bearer v1.cap.bogus.aaaa' },
+        body: { capability: 'v1.cap.bogus.aaaa' },
       }),
       res,
     )
     expect(res.statusCode).toBe(401)
     expect(supabase.state.updateResult).toBeDefined()
+    expect(supabase.from).not.toHaveBeenCalledWith('orders')
+  })
+
+  it('SEC-006: cancel requires the capability in the body (401 without it, even with Authorization)', async () => {
+    const res = makeRes()
+    await handler(
+      makeReq({
+        url: '/api/orders/order-1/cancel',
+        headers: { authorization: `Bearer ${CAP}` },
+        body: {},
+      }),
+      res,
+    )
+    expect(res.statusCode).toBe(401)
     expect(supabase.from).not.toHaveBeenCalledWith('orders')
   })
 })
