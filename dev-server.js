@@ -31,13 +31,47 @@ const routes = {
   'POST:/api/auth/signout': require('./api/auth/signout'),
   'GET:/api/auth/session': require('./api/auth/session'),
   'POST:/api/auth/reset-password': require('./api/auth/reset-password'),
+  'POST:/api/auth/token': require('./api/auth/token'),
+  'POST:/api/orders': require('./api/orders'),
+  'GET:/api/orders/my': require('./api/orders'),
+  'POST:/api/orders/:id/cancel': require('./api/orders'),
+  'POST:/api/table-sessions': require('./api/table-sessions'),
+  'GET:/api/admin/users': require('./api/admin/users'),
+  'POST:/api/admin/users': require('./api/admin/users'),
+  'PUT:/api/admin/users/:id': require('./api/admin/users'),
+  'DELETE:/api/admin/users/:id': require('./api/admin/users'),
+}
+
+// Busca un handler exacto o con segmentos `:param` (ej: POST:/api/orders/:id/cancel)
+function lookupRoute(method, pathname) {
+  const exact = routes[`${method}:${pathname}`]
+  if (exact) return { handler: exact, params: null }
+
+  for (const [key, handler] of Object.entries(routes)) {
+    const [routeMethod, routePath] = key.split(':')
+    if (routeMethod !== method) continue
+
+    const routeParts = routePath.split('/')
+    const pathParts = pathname.split('/')
+    if (routeParts.length !== pathParts.length) continue
+
+    const params = {}
+    let match = true
+    for (let i = 0; i < routeParts.length; i += 1) {
+      const part = routeParts[i]
+      if (part.startsWith(':')) params[part.slice(1)] = pathParts[i]
+      else if (part !== pathParts[i]) { match = false; break }
+    }
+    if (match) return { handler, params }
+  }
+  return null
 }
 
 const server = http.createServer((req, res) => {
   const parsedUrl = url.parse(req.url, true)
   const pathname = parsedUrl.pathname
   const method = req.method.toUpperCase()
-  const routeKey = `${method}:${pathname}`
+  const route = lookupRoute(method, pathname)
 
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -50,18 +84,22 @@ const server = http.createServer((req, res) => {
     return
   }
 
-  const handler = routes[routeKey]
-
-  if (!handler) {
+  if (!route) {
     res.writeHead(404, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({ error: `Route not found: ${method} ${pathname}` }))
     return
+  }
+
+  // Merge de params de ruta (:id) en req.query, igual que Vercel
+  if (route.params) {
+    parsedUrl.query = { ...parsedUrl.query, ...route.params }
   }
 
   // Parsear body
   let body = ''
   req.on('data', chunk => { body += chunk })
   req.on('end', async () => {
+    req.query = parsedUrl.query || {}
     try {
       if (body) {
         req.body = JSON.parse(body)
@@ -88,9 +126,9 @@ const server = http.createServer((req, res) => {
     }
 
     try {
-      await handler(req, apiRes)
+      await route.handler(req, apiRes)
     } catch (error) {
-      console.error(`[dev-server] Error in ${routeKey}:`, error)
+      console.error(`[dev-server] Error in ${method} ${pathname}:`, error)
       if (!res.headersSent) {
         res.writeHead(500, { 'Content-Type': 'application/json' })
         res.end(JSON.stringify({ error: 'Internal server error' }))

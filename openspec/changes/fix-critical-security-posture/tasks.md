@@ -36,19 +36,19 @@ S2 blocks on S1 (SEC-005: migration commits ONLY after routes + token path + uni
 
 ## Split 1 — server-data-routes (test-first RED→GREEN per unit)
 
-- [ ] 1.1 prisma/schema.prisma: orders `idempotency_key @unique` + `@@unique([order_number])`; table_sessions `capability_token @unique`; generate migration.
-- [ ] 1.2 database/server-order-functions.sql: `tappmesa_place_order` (INVOKER, REVOKE PUBLIC EXECUTE, service-role only; prices from DB, IVA, order_number CSPRNG retry ×3, ON CONFLICT idempotency DO NOTHING) + capability HMAC helpers; tests.
-- [ ] 1.3 api/middleware/requireAuth.js: Bearer `tappmesa-session` → claim object (admin_sessions + admin_users); tests: 401 invalid/expired, claim shape.
-- [ ] 1.4 api/auth/token.js + api/auth/session.js inline `token`: HS256 JWT (exp−iat=3600, role authenticated, app_* claims, iss tappmesa-api); tests: claims, jwt.verify, customer flow mints none (SEC-001).
-- [ ] 1.5 src/lib/supabase.js: `export let supabase` + `setAccessToken(jwt)` (global.headers Authorization, zero call-site edits); getCurrentSession clears ONLY on 401 (C5); tests: 401 clears both keys, network/5xx keeps (C5-001).
-- [ ] 1.6 src/context/AuthContext.jsx: store `tappmesa-jwt` BEFORE SET_USER; silent refresh via /api/auth/token on 401; tests (SEC-002).
-- [ ] 1.7 api/orders.js: POST (capability or takeout Host resolution, `tappmesa_place_order`, 201/200 duplicate), GET /my?capability (200 [] unknown, 400 missing), POST /:id/cancel (foreign → 0 rows, cancelled:false); tests: double-submit, IVA, takeout, no-custom-headers (SEC-006/R2-5).
-- [ ] 1.8 api/table-sessions.js: verify tables row (tenant, is_active, qr not passed), resume/create, session_code, capability_token; tests: 201/200/400 expired.
-- [ ] 1.9 api/admin/users.js CRUD: bcrypt 12, tenant_id/role from claims (super_admin may set tenant_id), strip password_hash, audit rows; UsersManager.jsx/SystemUsersManager.jsx flips (remove plaintext 246-257); tests: $2 hash, no key in response, 403 escalation, 409 self-delete (ADM-001).
-- [ ] 1.10 api/auth/reset-password.js: server-minted `randomBytes(32)` 24h, delete previous; rate keys confirm/reset; tests (ADM-002).
-- [ ] 1.11 api/middleware/rateLimit.js: keys auth/token, orders, orders/my, table-sessions, admin/users; test 429 burst (RTE-006).
-- [ ] 1.12 package.json + .env.local.sample: jsonwebtoken; SUPABASE_JWT_SECRET server-only (never VITE_); SEC-007 client-bundle grep check.
-- [ ] 1.13 Delete src/lib/authService.js + src/middleware/tenantResolver.js (zero importers verified); import sweep; verify src/test/lib/authService.test.js still targets supabase.js's authService export.
+- [x] 1.1 prisma/schema.prisma: orders `idempotency_key @unique` + `@@unique([order_number])`; table_sessions `capability_token @unique`; generate migration.
+- [x] 1.2 database/server-order-functions.sql: `tappmesa_place_order` (INVOKER, REVOKE PUBLIC EXECUTE, service-role only; prices from DB, IVA, order_number CSPRNG retry ×3, ON CONFLICT idempotency DO NOTHING) + capability HMAC helpers; tests.
+- [x] 1.3 api/middleware/requireAuth.js: Bearer `tappmesa-session` → claim object (admin_sessions + admin_users); tests: 401 invalid/expired, claim shape.
+- [x] 1.4 api/auth/token.js + api/auth/session.js inline `token`: HS256 JWT (exp−iat=3600, role authenticated, app_* claims, iss tappmesa-api); tests: claims, jwt.verify, customer flow mints none (SEC-001).
+- [x] 1.5 src/lib/supabase.js: `export let supabase` + `setAccessToken(jwt)` (global.headers Authorization, zero call-site edits); getCurrentSession clears ONLY on 401 (C5); tests: 401 clears both keys, network/5xx keeps (C5-001).
+- [x] 1.6 src/context/AuthContext.jsx: store `tappmesa-jwt` BEFORE SET_USER; silent refresh via /api/auth/token on 401; tests (SEC-002).
+- [x] 1.7 api/orders.js: POST (capability or takeout Host resolution, `tappmesa_place_order`, 201/200 duplicate), GET /my?capability (200 [] unknown, 400 missing), POST /:id/cancel (foreign → 0 rows, cancelled:false); tests: double-submit, IVA, takeout, no-custom-headers (SEC-006/R2-5).
+- [x] 1.8 api/table-sessions.js: verify tables row (tenant, is_active, qr not passed), resume/create, session_code, capability_token; tests: 201/200/400 expired.
+- [x] 1.9 api/admin/users.js CRUD: bcrypt 12, tenant_id/role from claims (super_admin may set tenant_id), strip password_hash, audit rows; UsersManager.jsx/SystemUsersManager.jsx flips (remove plaintext 246-257); tests: $2 hash, no key in response, 403 escalation, 409 self-delete (ADM-001).
+- [x] 1.10 api/auth/reset-password.js: server-minted `randomBytes(32)` 24h, delete previous; rate keys confirm/reset; tests (ADM-002).
+- [x] 1.11 api/middleware/rateLimit.js: keys auth/token, orders, orders/my, table-sessions, admin/users; test 429 burst (RTE-006).
+- [x] 1.12 package.json + .env.local.sample: jsonwebtoken; SUPABASE_JWT_SECRET server-only (never VITE_); SEC-007 client-bundle grep check.
+- [x] 1.13 Delete src/lib/authService.js + src/middleware/tenantResolver.js (zero importers verified); import sweep; verify src/test/lib/authService.test.js still targets supabase.js's authService export.
 - [ ] 1.14 S1 verification: PostgREST test-token query pre-lockdown (SEC-001 scenario); `pnpm test:run` green; June-2026 fixes not regressed (design §12).
 
 ## Split 2 — rls-lockdown-flip (BLOCKS on 1.14 verified)

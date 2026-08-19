@@ -33,6 +33,7 @@ Object.defineProperty(window, 'localStorage', {
 // Mock Supabase environment variables
 vi.stubEnv('VITE_SUPABASE_URL', 'http://localhost:54321')
 vi.stubEnv('VITE_SUPABASE_ANON_KEY', 'test-anon-key')
+vi.stubEnv('SUPABASE_SERVICE_ROLE_KEY', 'test-service-role-key')
 
 // Mock document methods
 Object.defineProperty(document, 'title', {

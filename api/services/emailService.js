@@ -49,11 +49,24 @@ async function sendViaSendGrid(to, subject, html, text) {
  * Resend Provider
  */
 const { Resend } = require('resend');
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy: si no hay API key (tests, deploys mal configurados) no crasheamos
+// el require del módulo; sendViaResend fallará y se usa el fallback console.
+let resendClient = null;
+
+function getResendClient() {
+  if (!resendClient && process.env.RESEND_API_KEY) {
+    resendClient = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resendClient;
+}
 
 async function sendViaResend(to, subject, html, text) {
   try {
-    const result = await resend.emails.send({
+    const client = getResendClient();
+    if (!client) {
+      return { success: false, error: 'RESEND_API_KEY no configurada' };
+    }
+    const result = await client.emails.send({
       from: `${FROM_NAME} <${FROM_EMAIL}>`,
       to,
       subject,
