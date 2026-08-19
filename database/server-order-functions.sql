@@ -11,9 +11,12 @@
 --   * Transactional: savepoint interno, rollback parcial ante error.
 --   * Precios, IVA (19%) y totales se calculan AQUÍ (server-authoritative);
 --     el cliente jamás envía subtotal/tax/total.
---   * Número de orden YYMMDD-XXXXXX único (unique index) con retry ×3.
---     random() alcanza: el ORDER_NUMBER no es secreto (sale en tickets/QR),
---     la unicidad la garantiza el índice + reintento.
+--   * Número de orden YYMMDD-XXXXXX único (unique index) con retry ×3,
+--     generado con CSPRNG (RTE-001/D7): pgcrypto `gen_random_bytes` con
+--     rejection sampling (36*7=252; se descartan bytes 252..255) para
+--     un alfabeto de 36 símbolos sin sesgo. El número no es secreto
+--     (sale en tickets/QR) pero el spec exige CSPRNG; la unicidad la
+--     garantiza el índice + reintento.
 --   * Replay-safe: si p_idempotency_key ya existe, devuelve la orden
 --     original sin crear duplicados.
 --   * Temperatura: se pliega en notes (paridad con CartContext; el modelo
@@ -26,6 +29,10 @@
 --     '[{"product_id":"<uuid>","quantity":2,"notes":"Temperatura: hot"}]'::jsonb,
 --     p_idempotency_key);
 -- ============================================================
+
+-- CSPRNG vía pgcrypto (Supabase lo preinstala; idempotente por si el
+-- artefacto se aplica en un entorno sin la extensión).
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE OR REPLACE FUNCTION public.tappmesa_place_order(
   p_tenant_id         uuid,
@@ -54,6 +61,7 @@ DECLARE
   v_estimated    int := 0;
   v_alphabet     constant text := 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   v_number       text;
+  v_rand_byte    int;
   v_order_id     uuid;
   v_attempts     int := 0;
   v_inserted     int;
@@ -122,10 +130,17 @@ BEGIN
   END IF;
 
   -- 4) Número de orden único con retry ×3.
+  --    CSPRNG (RTE-001/D7): gen_random_bytes con rejection sampling para
+  --    36 símbolos sin sesgo (36*7=252; se descartan los bytes 252..255).
+  --    La unicidad la garantiza el unique index + ON CONFLICT + reintento.
   LOOP
     v_number := '';
     FOR i IN 1..6 LOOP
-      v_number := v_number || substr(v_alphabet, floor(random() * 36)::int + 1, 1);
+      LOOP
+        v_rand_byte := get_byte(gen_random_bytes(1), 0);
+        EXIT WHEN v_rand_byte < 252;
+      END LOOP;
+      v_number := v_number || substr(v_alphabet, (v_rand_byte % 36) + 1, 1);
     END LOOP;
     v_number := to_char(now(), 'YYMMDD') || '-' || v_number;
 
