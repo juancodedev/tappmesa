@@ -90,6 +90,31 @@ describe('POST /api/auth/token (task 1.4)', () => {
     expect(decoded.app_user_id).toBe('admin-uuid-1')
   })
 
+  it('SEC-001: returns expires_at (unix seconds) and the full claim set alongside token', async () => {
+    const handler = createTokenHandler({ supabase: fakeSupabase() })
+    const res = makeRes()
+
+    await handler(makeReq({ headers: { authorization: 'Bearer session-token-1' } }), res)
+
+    expect(res.statusCode).toBe(200)
+    // expires_at: unix epoch seconds, idéntico a claims.exp (documentado en la ruta)
+    expect(res.body.expires_at).toBeTypeOf('number')
+    expect(res.body.expires_at).toBe(res.body.claims.exp)
+
+    const decoded = jwt.verify(res.body.token, SECRET, { issuer: 'tappmesa-api' })
+    expect(res.body.claims).toEqual({
+      role: decoded.role,
+      sub: decoded.sub,
+      app_tenant_id: decoded.app_tenant_id,
+      app_role: decoded.app_role,
+      app_user_id: decoded.app_user_id,
+      iat: decoded.iat,
+      exp: decoded.exp,
+      iss: decoded.iss,
+    })
+    expect(decoded.exp - decoded.iat).toBe(3600) // TTL de 60 minutos (SEC-001)
+  })
+
   it('returns 401 without minting when the session is invalid', async () => {
     const handler = createTokenHandler({
       supabase: fakeSupabase({ sessionData: null, sessionError: { message: 'no row' } }),

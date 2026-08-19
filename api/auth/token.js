@@ -4,7 +4,11 @@
 // Minta/renueva el JWT de sesión admin (task 1.4, SEC-001).
 //
 // Body/headers: Authorization: Bearer <tappmesa-session>
-// Response 200: { token, claims: { exp } }      → el cliente lo guarda en `tappmesa-jwt`
+// Response 200: { token, expires_at, claims } → el cliente lo guarda en `tappmesa-jwt`
+//   * `expires_at`: unix epoch seconds, idéntico a `claims.exp` (SEC-001:
+//     contrato { token, expires_at, claims }).
+//   * `claims`: set completo del JWT (role, sub, app_tenant_id, app_role,
+//     app_user_id, iat, exp, iss).
 // Response 401: sesión inválida/expirada (no se minta nada)
 // Response 405: método no permitido
 // Response 429: rate limit ('auth/token')
@@ -51,7 +55,11 @@ function createTokenHandler({ supabase }) {
 
       return res.status(200).json({
         token,
-        claims: { exp: decoded.exp },
+        // SEC-001: contrato { token, expires_at, claims }. expires_at en
+        // unix epoch seconds (idéntico a claims.exp) — sin ambigüedad de
+        // zona horaria frente a una ISO.
+        expires_at: decoded.exp,
+        claims: decoded,
       });
     } catch (error) {
       if (error && /SUPABASE_JWT_SECRET/.test(error.message)) {
