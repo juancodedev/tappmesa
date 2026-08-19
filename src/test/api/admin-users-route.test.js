@@ -1,5 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createAdminUsersHandler } from '../../../api/admin/users.js'
+// Default export = handler real de producción (client service-role del módulo
+// + createRequireAuth real). Se usa en el test C1 para probar el wiring real.
+import defaultUsersHandler from '../../../api/admin/users.js'
+
+// C2 (JD round 1): DELETE /api/admin/users/:id must chain `.select()` so the
+// response is the real postgrest-js >= 2.105.1 shape ({data:[row]}) instead of
+// the impossible fake ({data:[{id}]} without select). `deleteSelectCalled`
+// tracks whether the delete chain called .select() — RED when the route forgets.
+
+// C1 (JD round 1): the default export must build requireAuth with the injected
+// service-role client, never `createRequireAuth()` (undefined → TypeError in
+// prod). The test drives the real default handler with a bogus session token:
+//   * client undefined → resolveClaims(undefined, …) lanza TypeError → 500
+//   * client presente → la query al supabase de test falla limpiamente → 401.
 
 // Task 1.9 (spec ADM-001): CRUD /api/admin/users behind requireAuth.
 //   * bcrypt 12 server-side; tenant_id/role from claims (super_admin may set
@@ -76,14 +90,19 @@ function fakeSupabase() {
     insertResult: { data: userRow, error: null },
     updateResult: { data: userRow, error: null },
     deleteResult: { data: null, error: null },
+    deleteSelectCalled: false,
     auditError: null,
   }
 
   const from = vi.fn((table) => {
     const chain = { isInsert: false, isUpdate: false, isDelete: false }
-    for (const key of ['eq', 'neq', 'order', 'limit', 'select']) {
+    for (const key of ['eq', 'neq', 'order', 'limit']) {
       chain[key] = vi.fn(() => chain)
     }
+    chain.select = vi.fn(() => {
+      if (chain.isDelete) state.deleteSelectCalled = true
+      return chain
+    })
     chain.insert = vi.fn(() => {
       chain.isInsert = true
       return chain
@@ -347,8 +366,11 @@ describe('CRUD /api/admin/users (task 1.9, ADM-001)', () => {
       expect(res.statusCode).toBe(409)
     })
 
-    it('deletes another user (204)', async () => {
-      supabase.state.deleteResult = { data: [{ id: OTHER_ID }], error: null }
+    it('C2: deletes another user (204) and writes the audit only when the delete chains .select()', async () => {
+      // Shape real de postgrest-js >= 2.105.1 con `.select()`: array de filas
+      // borradas. Sin `.select()` el cliente devuelve {data:null} (204 de
+      // PostgREST) y el handler no puede distinguir éxito de no-encontrado.
+      supabase.state.deleteResult = { data: [{ id: OTHER_ID, tenant_id: TENANT_A }], error: null }
       handler = createAdminUsersHandler({
         supabase,
         requireAuth: fakeRequireAuth(tenantAdminClaims),
@@ -356,11 +378,24 @@ describe('CRUD /api/admin/users (task 1.9, ADM-001)', () => {
       const res = makeRes()
       await handler(makeReq({ method: 'DELETE', url: `/api/admin/users/${OTHER_ID}` }), res)
       expect(res.statusCode).toBe(204)
+
+      // Regresión C2: el DELETE difunde `.select()` (si no, en prod devuelve
+      // {data:null} y SIEMPRE 404 — el 204 de este test es imposible).
+      expect(supabase.state.deleteSelectCalled).toBe(true)
+
+      // El audit se escribe en el delete exitoso (JD round 1: “audit log never written”).
+      const auditIdx = supabase.from.mock.calls.findIndex(([t]) => t === 'admin_audit_logs')
+      expect(auditIdx).toBeGreaterThanOrEqual(0)
+      const auditPayload = supabase.from.mock.results[auditIdx].value.insert.mock.calls[0][0]
+      expect(auditPayload.action).toBe('delete')
+      expect(auditPayload.resource).toBe('admin_users')
+      expect(auditPayload.resource_id).toBe(OTHER_ID)
+      expect(auditPayload.tenant_id).toBe(TENANT_A)
     })
 
-    it('returns 404 when the target is outside the tenant scope', async () => {
-      supabase.state.deleteResult = { data: null, error: null }
-      supabase.state.maybeSingleResult = { data: null, error: { message: 'PGRST116: not found' } }
+    it('C2: 404 with the real no-match shape ({data: []} on PostgREST 200) and on {data:null}', async () => {
+      // No-match con `.select()` → PostgREST 200 + body [] → {data: []}.
+      supabase.state.deleteResult = { data: [], error: null }
       handler = createAdminUsersHandler({
         supabase,
         requireAuth: fakeRequireAuth(tenantAdminClaims),
@@ -368,6 +403,69 @@ describe('CRUD /api/admin/users (task 1.9, ADM-001)', () => {
       const res = makeRes()
       await handler(makeReq({ method: 'DELETE', url: `/api/admin/users/${OTHER_ID}` }), res)
       expect(res.statusCode).toBe(404)
+      // Sin filas borradas no hay audit.
+      expect(supabase.from.mock.calls.some(([t]) => t === 'admin_audit_logs')).toBe(false)
+
+      // Legacy de clientes pre-2.105.1 sin .select(): {data:null} también 404.
+      supabase.state.deleteResult = { data: null, error: null }
+      const res2 = makeRes()
+      await handler(makeReq({ method: 'DELETE', url: `/api/admin/users/${OTHER_ID}` }), res2)
+      expect(res2.statusCode).toBe(404)
+      expect(supabase.from.mock.calls.some(([t]) => t === 'admin_audit_logs')).toBe(false)
+    })
+  })
+
+  describe('default export wiring (C1)', () => {
+    it('resolves auth through the real service-role client (401, not a 500 TypeError)', async () => {
+      // El default export es el handler de producción: si su requireAuth se
+      // construyó con createRequireAuth() sin client, resolveClaims explota
+      // con TypeError (síntoma JD round 1: 500 en TODAS las rutas admin).
+      // Con el client inyectado, la sesión bogus falla limpio → 401.
+      // (res.json devuelve `this` como Express real: requireAuth depende de
+      // ese valor truthy para cortar la cadena con 401.)
+      //
+      // Stub del fetch para que la query del client service-role del módulo
+      // resuelva al instante contra el PostgREST simulado (200 + body []) y el
+      // `.single()` falle limpio: sin red, sin timeouts, determinista.
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(async () => new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } })),
+      )
+      try {
+        const state = { statusCode: 200, body: null }
+        const res = {
+          status(code) {
+            state.statusCode = code
+            return this
+          },
+          json(data) {
+            state.body = data
+            return this
+          },
+          setHeader() {
+            return this
+          },
+          end() {},
+          get statusCode() {
+            return state.statusCode
+          },
+          get body() {
+            return state.body
+          },
+        }
+
+        await expect(
+          defaultUsersHandler(
+            { method: 'GET', url: '/api/admin/users', headers: { authorization: 'Bearer bogus-session' }, body: {}, query: {} },
+            res,
+          ),
+        ).resolves.toBeUndefined()
+
+        expect(state.statusCode).toBe(401)
+        expect(state.statusCode).not.toBe(500)
+      } finally {
+        vi.unstubAllGlobals()
+      }
     })
   })
 })

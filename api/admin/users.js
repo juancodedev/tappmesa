@@ -272,13 +272,18 @@ async function deleteUser(supabase, req, res, userId) {
 
   let query = supabase.from('admin_users').delete().eq('id', userId);
   if (!isSuper) query = query.eq('tenant_id', claims.admin.tenant_id);
+  // C2: sin `.select()` postgrest-js >= 2.105.1 devuelve {data:null} (204 de
+  // PostgREST) y el handler NO puede distinguir éxito de no-encontrado →
+  // 404 siempre, audit nunca. Con `.select()` el shape real es array de filas
+  // borradas (vacío si no matcheó).
+  query = query.select('id, tenant_id');
 
   const { data: deletedRows, error } = await query;
   if (error) {
     logger.error('admin_users delete error', error);
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
-  if (!Array.isArray(deletedRows) || deletedRows.length === 0) {
+  if (!deletedRows || deletedRows.length === 0) {
     return res.status(404).json({ error: 'Usuario no encontrado' });
   }
 
@@ -340,6 +345,6 @@ const supabase = createClient(
 
 module.exports = createAdminUsersHandler({
   supabase,
-  requireAuth: createRequireAuth(),
+  requireAuth: createRequireAuth(supabase), // C1: client inyectado, nunca createRequireAuth() sin arg
 });
 module.exports.createAdminUsersHandler = createAdminUsersHandler;
