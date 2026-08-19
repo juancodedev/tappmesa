@@ -117,10 +117,13 @@ async function placeOrder(supabase, req, res) {
   }
 
   // Replay-safe: si la orden ya existe para esta idempotency_key, devolver 200.
+  // WARNING-3 (JD round 1): el pre-check es TENANT-scoped — una key de otro
+  // tenant no debe colisionar/filtrarse como replay (leak cross-tenant).
   const { data: existing } = await supabase
     .from('orders')
     .select('id, tenant_id, order_number, status, subtotal, tax, total')
     .eq('idempotency_key', idempotencyKey)
+    .eq('tenant_id', tenantId)
     .maybeSingle();
 
   if (existing) {

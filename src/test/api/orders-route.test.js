@@ -55,6 +55,19 @@ function makeRes() {
   }
 }
 
+// WARNING-3 (JD round 1): el pre-check de idempotencia DEBE ser tenant-scoped.
+// Simula PostgREST: si la cadena filtra por tenant_id y el row mockeado es de
+// OTRO tenant, la query no matchea (null). Sin el filtro, el row ajeno vuelve
+// como replay → leak de orden cross-tenant.
+function applyOrdersTenantFilter(chain, state) {
+  const rowTenant = state.idemResult.data?.tenant_id
+  const tenantEqs = chain.eq.mock.calls.filter(([key]) => key === 'tenant_id')
+  if (tenantEqs.length > 0 && rowTenant && tenantEqs.every(([, v]) => v !== rowTenant)) {
+    return { data: null, error: { message: 'PGRST116: not found' } }
+  }
+  return null // sin decisión: usar el resultado por defecto
+}
+
 // Fake supabase con estado mutable: el test setea el resultado ANTES de cada await.
 function fakeSupabase() {
   const state = {
@@ -79,6 +92,7 @@ function fakeSupabase() {
       async () =>
         (table === 'table_sessions' && state.sessionResult) ||
         (table === 'tenants' && state.tenantResult) ||
+        (table === 'orders' && applyOrdersTenantFilter(chain, state)) ||
         state.idemResult,
     )
     chain.single = chain.maybeSingle
@@ -172,7 +186,8 @@ describe('POST /api/orders (place, task 1.7)', () => {
   })
 
   it('returns the existing order (200) on double-submit without calling the function again', async () => {
-    supabase.state.idemResult = { data: { id: 'order-1' }, error: null }
+    // Fila realista del pre-check (el select incluye tenant_id).
+    supabase.state.idemResult = { data: { id: 'order-1', tenant_id: 'tenant-uuid-1' }, error: null }
     const req = makeReq({ body: { ...validBody, capability: CAP } })
     const res = makeRes()
 
@@ -180,6 +195,37 @@ describe('POST /api/orders (place, task 1.7)', () => {
 
     expect(res.statusCode).toBe(200)
     expect(supabase.rpc).not.toHaveBeenCalled()
+  })
+
+  it('WARNING-3: scopes the idempotency pre-check by tenant — a foreign key does not replay (201, no leak)', async () => {
+    // Una key de OTRO tenant (mismo idempotency_key) no debe devolverse como
+    // replay de este tenant: el pre-check lleva WHERE tenant_id. Con el
+    // filtro, PostgREST no matchea → se sigue al rpc (201). Sin el filtro, la
+    // orden ajena vuelve como {order, duplicate:true} → LEAK (200).
+    supabase.state.idemResult = { data: { id: 'order-other', tenant_id: 'tenant-OTHER', order_number: '260819-LEAK00' }, error: null }
+    const req = makeReq({ body: { ...validBody, idempotency_key: 'idem-cross-tenant', capability: CAP } })
+    const res = makeRes()
+
+    await handler(req, res)
+
+    expect(res.statusCode).toBe(201)
+    expect(supabase.rpc).toHaveBeenCalledWith(
+      'tappmesa_place_order',
+      expect.objectContaining({ p_idempotency_key: 'idem-cross-tenant' }),
+    )
+  })
+
+  it('still leaks nothing: pre-check query filters orders by the resolved tenant_id', async () => {
+    // Regresión del WHERE: la cadena del pre-check DEBE incluir
+    // eq('tenant_id', tenantResuelto) — el filtro viaja a la BD.
+    const res = makeRes()
+    await handler(makeReq({ body: { ...validBody, capability: CAP } }), res)
+
+    const ordersIdx = supabase.from.mock.calls.findIndex(([t]) => t === 'orders')
+    expect(ordersIdx).toBeGreaterThanOrEqual(0)
+    const chain = supabase.from.mock.results[ordersIdx].value
+    expect(chain.eq).toHaveBeenCalledWith('idempotency_key', 'idem-1')
+    expect(chain.eq).toHaveBeenCalledWith('tenant_id', 'tenant-uuid-1')
   })
 
   it('supports takeout when no capability is provided (Host resolution, null session)', async () => {
