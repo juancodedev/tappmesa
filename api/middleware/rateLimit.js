@@ -50,6 +50,11 @@ const RATE_LIMITS = {
     maxRequests: 3, // 3 intentos
     message: 'Demasiadas solicitudes de reset. Por favor intenta en 15 minutos.'
   },
+  'auth/token': {
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    maxRequests: 30, // 30 mint/refresh por ventana
+    message: 'Demasiadas solicitudes de token. Por favor intenta más tarde.'
+  },
   'default': {
     windowMs: 60 * 1000, // 1 minuto
     maxRequests: 30, // 30 requests por minuto

@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest'
-/* global Buffer */
 import {
   generateCapabilityToken,
   verifyCapabilityToken,
