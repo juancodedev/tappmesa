@@ -71,6 +71,8 @@ export function AuthProvider({ children }) {
 
   const checkAuthStatus = useCallback(async () => {
     try {
+      // getCurrentSession adjunta el JWT (tappmesa-jwt) + setAccessToken
+      // ANTES de resolver, así SET_USER siempre ve el JWT listo (C5).
       const session = await authService.getCurrentSession();
 
       if (session) {
@@ -114,6 +116,13 @@ export function AuthProvider({ children }) {
       const result = await authService.signUp(registrationData);
 
       if (result.success) {
+        // C5: adjuntar JWT antes de SET_USER (ver login)
+        try {
+          await authService.refreshJwt();
+        } catch (refreshErr) {
+          logger.error("Error refreshing JWT after register:", refreshErr);
+        }
+
         dispatch({ type: authActions.SET_USER, payload: {
           ...result.admin,
           tenant: result.tenant
@@ -139,6 +148,14 @@ export function AuthProvider({ children }) {
       const result = await authService.signIn(email, password);
 
       if (result.success) {
+        // C5: adjuntar JWT ANTES de SET_USER (TenantProvider depende de él).
+        // signin no entrega JWT inline → refreshJwt() (best-effort).
+        try {
+          await authService.refreshJwt();
+        } catch (refreshErr) {
+          logger.error("Error refreshing JWT after login:", refreshErr);
+        }
+
         dispatch({ type: authActions.SET_USER, payload: {
           ...result.admin,
           tenant: result.tenant

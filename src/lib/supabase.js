@@ -9,9 +9,36 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('⚠️ Create a .env file based on .env.example to enable all features.')
 }
 
-export const supabase = supabaseUrl && supabaseAnonKey
-  ? createClient(supabaseUrl, supabaseAnonKey)
+// El cliente es de SOLO QUERIES (PostgREST via anon o JWT en headers);
+// la auth es 100% custom (api/auth + bcrypt server-side), así que
+// desactivamos todo el ciclo de vida de GoTrue: nada de persistir sesiones
+// ni auto-token-refresh ni leer localStorage (evita colisiones con nuestro
+// tappmesa-session/tappmesa-jwt).
+const CLIENT_OPTS = {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+    detectSessionInUrl: false
+  }
+}
+
+export let supabase = supabaseUrl && supabaseAnonKey
+  ? createClient(supabaseUrl, supabaseAnonKey, CLIENT_OPTS)
   : null
+
+// C5 (task 1.5): adjunta el JWT mintado server-side ("tappmesa-jwt") al
+// cliente anónimo para que las queries del admin viajen con capacidad y las
+// policies RLS (tenant_id = claim) apliquen. Sin JWT (menú público/anónimo)
+// el cliente queda como anon.
+export function setAccessToken(jwt) {
+  if (!supabaseUrl || !supabaseAnonKey) return
+  supabase = jwt
+    ? createClient(supabaseUrl, supabaseAnonKey, {
+        ...CLIENT_OPTS,
+        global: { headers: { Authorization: `Bearer ${jwt}` } }
+      })
+    : createClient(supabaseUrl, supabaseAnonKey, CLIENT_OPTS)
+}
 
 // API base URL for serverless function calls
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
@@ -74,6 +101,8 @@ export const authService = {
       }
     }
     localStorage.removeItem('tappmesa-session');
+    localStorage.removeItem('tappmesa-jwt');
+    setAccessToken(null);
     return { success: true };
   },
 
@@ -89,12 +118,56 @@ export const authService = {
         }
       });
       if (!response.ok) {
-        localStorage.removeItem('tappmesa-session');
+        // C5: SOLO un 401 invalida la sesión (5xx/red NO borran localStorage —
+        // un error transitorio del server no debe desloguear al admin).
+        if (response.status === 401) {
+          localStorage.removeItem('tappmesa-session');
+          localStorage.removeItem('tappmesa-jwt');
+        }
         return null;
       }
-      return await response.json();
+      const data = await response.json();
+      // El JWT viaja inline en la respuesta de /api/auth/session (OQ2):
+      // adjuntarlo acá garantiza que esté listo ANTES de SET_USER (el
+      // TenantProvider depende de él para scoping de queries).
+      if (data?.token) {
+        localStorage.setItem('tappmesa-jwt', data.token);
+        setAccessToken(data.token);
+      }
+      return data;
     } catch {
-      localStorage.removeItem('tappmesa-session');
+      // C5: error de red → no tocar localStorage
+      return null;
+    }
+  },
+
+  // C5: obtiene/refresca el JWT vía /api/auth/token (Bearer session).
+  // Se usa en login/register (signin no entrega JWT inline) y como refresh.
+  async refreshJwt() {
+    const sessionToken = localStorage.getItem('tappmesa-session');
+    if (!sessionToken) return null;
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/token`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${sessionToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem('tappmesa-session');
+          localStorage.removeItem('tappmesa-jwt');
+        }
+        return null;
+      }
+      const data = await response.json();
+      if (data?.token) {
+        localStorage.setItem('tappmesa-jwt', data.token);
+        setAccessToken(data.token);
+      }
+      return data;
+    } catch {
       return null;
     }
   },

@@ -184,6 +184,93 @@ describe('authService', () => {
 
       expect(fetch).toHaveBeenCalledWith('/api/auth/session', expect.any(Object))
       expect(localStorage.removeItem).toHaveBeenCalledWith('tappmesa-session')
+      expect(localStorage.removeItem).toHaveBeenCalledWith('tappmesa-jwt')
+      expect(result).toBeNull()
+    })
+
+    it('C5: NO borra localStorage en 5xx (error transitorio del server)', async () => {
+      localStorage.getItem.mockReturnValue('valid-token-xyz')
+      mockFetchError(500, 'Internal Server Error')
+
+      const result = await authService.getCurrentSession()
+
+      expect(localStorage.removeItem).not.toHaveBeenCalled()
+      expect(result).toBeNull()
+    })
+
+    it('C5: NO borra localStorage en error de red', async () => {
+      localStorage.getItem.mockReturnValue('valid-token-xyz')
+      mockFetchNetworkError()
+
+      const result = await authService.getCurrentSession()
+
+      expect(localStorage.removeItem).not.toHaveBeenCalled()
+      expect(result).toBeNull()
+    })
+
+    it('C5: adjunta JWT inline (tappmesa-jwt) cuando la respuesta trae token', async () => {
+      localStorage.getItem.mockReturnValue('valid-token-xyz')
+      mockFetchSuccess({
+        admin: { id: 1, email: 'admin@test.com' },
+        tenant: { id: 1 },
+        token: 'jwt-abc-123'
+      })
+
+      const result = await authService.getCurrentSession()
+
+      expect(localStorage.setItem).toHaveBeenCalledWith('tappmesa-jwt', 'jwt-abc-123')
+      expect(result.token).toBe('jwt-abc-123')
+    })
+  })
+
+  // ------------------------------------------------------------------
+  // T4b: refreshJwt (C5)
+  // ------------------------------------------------------------------
+  describe('refreshJwt', () => {
+    it('should POST /api/auth/token with Bearer session and store tappmesa-jwt on success', async () => {
+      localStorage.getItem.mockReturnValue('session-token-abc')
+      mockFetchSuccess({ token: 'jwt-refreshed-123', expires_at: '2099-01-01T00:00:00Z' })
+
+      const result = await authService.refreshJwt()
+
+      expect(fetch).toHaveBeenCalledWith('/api/auth/token', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer session-token-abc',
+          'Content-Type': 'application/json'
+        }
+      })
+      expect(localStorage.setItem).toHaveBeenCalledWith('tappmesa-jwt', 'jwt-refreshed-123')
+      expect(result.token).toBe('jwt-refreshed-123')
+    })
+
+    it('should return null without fetching when no session token', async () => {
+      localStorage.getItem.mockReturnValue(null)
+
+      const result = await authService.refreshJwt()
+
+      expect(fetch).not.toHaveBeenCalled()
+      expect(result).toBeNull()
+    })
+
+    it('should clear session+jwt on 401 and return null', async () => {
+      localStorage.getItem.mockReturnValue('expired-session')
+      mockFetchError(401, 'No autorizado')
+
+      const result = await authService.refreshJwt()
+
+      expect(localStorage.removeItem).toHaveBeenCalledWith('tappmesa-session')
+      expect(localStorage.removeItem).toHaveBeenCalledWith('tappmesa-jwt')
+      expect(result).toBeNull()
+    })
+
+    it('C5: NO borra localStorage en error de red', async () => {
+      localStorage.getItem.mockReturnValue('valid-session')
+      mockFetchNetworkError()
+
+      const result = await authService.refreshJwt()
+
+      expect(localStorage.removeItem).not.toHaveBeenCalled()
       expect(result).toBeNull()
     })
   })
