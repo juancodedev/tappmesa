@@ -35,6 +35,7 @@ const routes = {
   'POST:/api/orders': require('./api/orders'),
   'GET:/api/orders/my': require('./api/orders'),
   'POST:/api/orders/:id/cancel': require('./api/orders'),
+  'POST:/api/table-sessions': require('./api/table-sessions'),
 }
 
 // Busca un handler exacto o con segmentos `:param` (ej: POST:/api/orders/:id/cancel)
