@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import jwt from 'jsonwebtoken'
 import { createSessionHandler } from '../../../api/auth/session.js'
 

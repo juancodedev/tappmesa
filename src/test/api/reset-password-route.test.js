@@ -284,6 +284,9 @@ describe('POST /api/auth/reset-password (task 1.10, ADM-002)', () => {
       expect(audit[0].args[0][0].action).toBe('password_reset_completed')
     })
 
+    // 11 invocaciones reales de la ruta (bcrypt server-side) → lento bajo
+    // carga paralela de vitest; timeout extendido (infra de test, sin cambio
+    // de contrato).
     it('429 si se abusa del reset (10/h)', async () => {
       const ip = nextIp()
       for (let i = 0; i < 10; i++) {
@@ -294,6 +297,6 @@ describe('POST /api/auth/reset-password (task 1.10, ADM-002)', () => {
       const res = makeRes()
       await handler(makeReq({ body: { token: 'a'.repeat(64), newPassword: 'NuevaPassword123!' }, headers: { 'x-forwarded-for': ip } }), res)
       expect(res.statusCode).toBe(429)
-    })
+    }, 15000)
   })
 })
