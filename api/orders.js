@@ -172,9 +172,12 @@ async function myOrders(supabase, req, res) {
     return res.status(200).json({ orders: [] }); // no filtra existencia
   }
 
+  // RTE-002 (CRITICAL-1): la forma embebida `order_items → products` DEBE ser
+  // idéntica a la lectura actual de TableOrdersHistory.jsx:31-46 para que el
+  // flip de los pollers en split 2 sea drop-in (spec RTE-002 / design D5).
   const { data, error } = await supabase
     .from('orders')
-    .select('id, order_number, status, subtotal, tax, total, created_at')
+    .select('*, order_items(*, product:products(id, name, price, image_url))')
     .eq('table_session_id', session.id)
     .order('created_at', { ascending: false });
 

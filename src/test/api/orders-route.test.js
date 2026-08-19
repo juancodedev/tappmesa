@@ -260,6 +260,51 @@ describe('GET /api/orders/my (task 1.7)', () => {
     expect(res.body.orders).toHaveLength(1)
     expect(supabase.from).toHaveBeenCalledWith('orders')
   })
+
+  it('RTE-002: requests the embedded order_items→products shape identical to TableOrdersHistory.jsx:31-46 (CRITICAL-1)', async () => {
+    supabase.state.listResult = { data: [createdOrder], error: null }
+    const res = makeRes()
+    await handler(
+      makeReq({ method: 'GET', url: '/api/orders/my', query: { capability: CAP } }),
+      res,
+    )
+    expect(res.statusCode).toBe(200)
+
+    const ordersCallIdx = supabase.from.mock.calls.findIndex(([table]) => table === 'orders')
+    expect(ordersCallIdx).toBeGreaterThanOrEqual(0)
+    const ordersChain = supabase.from.mock.results[ordersCallIdx].value
+    expect(ordersChain.select).toHaveBeenCalledWith(
+      '*, order_items(*, product:products(id, name, price, image_url))',
+    )
+    expect(ordersChain.eq).toHaveBeenCalledWith('table_session_id', 'ts-1')
+    expect(ordersChain.order).toHaveBeenCalledWith('created_at', { ascending: false })
+  })
+
+  it('RTE-002: response carries orders with their embedded order_items→product rows (drop-in for the S2 pollers)', async () => {
+    const embeddedOrder = {
+      ...createdOrder,
+      order_items: [
+        {
+          id: 'oi-1',
+          product_id: 'prod-1',
+          quantity: 2,
+          unit_price: '2500.00',
+          product: { id: 'prod-1', name: 'Café', price: '2500.00', image_url: '/cafe.jpg' },
+        },
+      ],
+    }
+    supabase.state.listResult = { data: [embeddedOrder], error: null }
+    const res = makeRes()
+    await handler(
+      makeReq({ method: 'GET', url: '/api/orders/my', query: { capability: CAP } }),
+      res,
+    )
+    expect(res.statusCode).toBe(200)
+    expect(res.body.orders).toHaveLength(1)
+    expect(res.body.orders[0].order_items).toHaveLength(1)
+    expect(res.body.orders[0].order_items[0].product.name).toBe('Café')
+    expect(res.body.orders[0].order_items[0].product.image_url).toBe('/cafe.jpg')
+  })
 })
 
 describe('POST /api/orders/:id/cancel (task 1.7)', () => {
