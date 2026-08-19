@@ -140,6 +140,37 @@ describe('POST /api/orders (place, task 1.7)', () => {
     })
   })
 
+  it('WARNING-2: normalizes the SETOF rpc response ([order]) to a single order object (201)', async () => {
+    // tappmesa_place_order es RETURNS SETOF → postgrest-js devuelve
+    // {data: [orden]} en el path de la rpc mientras el replay del pre-check
+    // devuelve objeto único: el contrato de respuesta DEBE ser idéntico.
+    supabase.state.rpcResult = { data: [createdOrder], error: null }
+    const req = makeReq({ body: { ...validBody, capability: CAP } })
+    const res = makeRes()
+
+    await handler(req, res)
+
+    expect(res.statusCode).toBe(201)
+    expect(Array.isArray(res.body.order)).toBe(false)
+    expect(res.body.order.id).toBe('order-1')
+    expect(res.body.duplicate).toBe(false)
+  })
+
+  it('WARNING-2: keeps a single-composite rpc response as the same contract (201)', async () => {
+    // Si la función se alinea a RETURNS public.orders (composite), la ruta
+    // no debe romperse: mismo shape de respuesta que el caso SETOF.
+    supabase.state.rpcResult = { data: createdOrder, error: null }
+    const req = makeReq({ body: { ...validBody, capability: CAP } })
+    const res = makeRes()
+
+    await handler(req, res)
+
+    expect(res.statusCode).toBe(201)
+    expect(Array.isArray(res.body.order)).toBe(false)
+    expect(res.body.order.id).toBe('order-1')
+    expect(res.body.duplicate).toBe(false)
+  })
+
   it('returns the existing order (200) on double-submit without calling the function again', async () => {
     supabase.state.idemResult = { data: { id: 'order-1' }, error: null }
     const req = makeReq({ body: { ...validBody, capability: CAP } })

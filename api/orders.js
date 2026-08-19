@@ -133,7 +133,7 @@ async function placeOrder(supabase, req, res) {
     notes: foldTemperature(it),
   }));
 
-  const { data: order, error: rpcError } = await supabase.rpc('tappmesa_place_order', {
+  const { data: rpcData, error: rpcError } = await supabase.rpc('tappmesa_place_order', {
     p_tenant_id: tenantId,
     p_table_session_id: tableSessionId,
     p_customer_name: body.customer_name || null,
@@ -155,6 +155,17 @@ async function placeOrder(supabase, req, res) {
       return res.status(503).json({ error: 'Reintenta en unos segundos' });
     }
     logger.error('rpc tappmesa_place_order error', rpcError);
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+
+  // WARNING-2 (JD round 1): tappmesa_place_order es RETURNS SETOF → el shape
+  // de la rpc es {data:[orden]}, mientras el replay del pre-check devuelve
+  // objeto único. Normalizar SIEMPRE a objeto único para que el contrato
+  // {order, duplicate} sea idéntico en ambos paths (y a cualquier shape que
+  // adopte la función en el futuro: SETOF o composite).
+  const order = Array.isArray(rpcData) ? rpcData[0] : rpcData;
+  if (!order) {
+    logger.error('rpc tappmesa_place_order returned no order', { tenantId, idempotencyKey });
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
 
