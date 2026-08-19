@@ -55,6 +55,26 @@ const RATE_LIMITS = {
     maxRequests: 30, // 30 mint/refresh por ventana
     message: 'Demasiadas solicitudes de token. Por favor intenta más tarde.'
   },
+  'orders': {
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    maxRequests: 60, // 60 placements/cancels por ventana
+    message: 'Demasiadas solicitudes de órdenes. Por favor intenta más tarde.'
+  },
+  'orders/my': {
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    maxRequests: 120, // polling: 120 reads por ventana
+    message: 'Demasiadas consultas de órdenes. Por favor intenta más tarde.'
+  },
+  'table-sessions': {
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    maxRequests: 60, // 60 creaciones/resúmenes por ventana
+    message: 'Demasiadas solicitudes de sesión de mesa. Por favor intenta más tarde.'
+  },
+  'admin/users': {
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    maxRequests: 60, // 60 operaciones CRUD por ventana
+    message: 'Demasiadas solicitudes de usuarios. Por favor intenta más tarde.'
+  },
   'default': {
     windowMs: 60 * 1000, // 1 minuto
     maxRequests: 30, // 30 requests por minuto

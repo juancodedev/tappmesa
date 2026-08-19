@@ -58,21 +58,24 @@ DECLARE
   v_attempts     int := 0;
   v_inserted     int;
 BEGIN
-  -- 1) Validar sesión de mesa: existe, del tenant, activa.
+  -- 1) Validar sesión de mesa (si hay): existe, del tenant, activa.
+  --    p_table_session_id NULL = takeout (se resuelve el tenant por Host en la ruta).
   IF p_items IS NULL OR jsonb_array_length(p_items) = 0 THEN
     RAISE EXCEPTION 'EMPTY_ORDER';
   END IF;
 
-  SELECT * INTO v_session
-    FROM public.table_sessions
-   WHERE id = p_table_session_id AND tenant_id = p_tenant_id
-   FOR UPDATE;
+  IF p_table_session_id IS NOT NULL THEN
+    SELECT * INTO v_session
+      FROM public.table_sessions
+     WHERE id = p_table_session_id AND tenant_id = p_tenant_id
+     FOR UPDATE;
 
-  IF NOT FOUND THEN
-    RAISE EXCEPTION 'INVALID_SESSION';
-  END IF;
-  IF v_session.status IS DISTINCT FROM 'active' OR v_session.ended_at IS NOT NULL THEN
-    RAISE EXCEPTION 'SESSION_CLOSED';
+    IF NOT FOUND THEN
+      RAISE EXCEPTION 'INVALID_SESSION';
+    END IF;
+    IF v_session.status IS DISTINCT FROM 'active' OR v_session.ended_at IS NOT NULL THEN
+      RAISE EXCEPTION 'SESSION_CLOSED';
+    END IF;
   END IF;
 
   -- 2) Replay-safe: ya existe una orden para esta idempotency_key → devolverla.
@@ -169,6 +172,17 @@ BEGIN
 EXCEPTION
   WHEN OTHERS THEN
     ROLLBACK TO SAVEPOINT sp_place_order;
+    -- Carrera de doble submit concurrente: la idempotency_key ya existe →
+    -- devolver la orden original (replay) en lugar de fallar.
+    IF SQLSTATE = '23505' AND p_idempotency_key IS NOT NULL THEN
+      SELECT id INTO v_order_id
+        FROM public.orders
+       WHERE idempotency_key = p_idempotency_key AND tenant_id = p_tenant_id;
+      IF v_order_id IS NOT NULL THEN
+        RETURN QUERY SELECT o.* FROM public.orders o WHERE o.id = v_order_id;
+        RETURN;
+      END IF;
+    END IF;
     RAISE;
 END;
 $$;
