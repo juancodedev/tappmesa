@@ -6,6 +6,12 @@ import {
   formatOrderNumber,
   randomHex,
 } from '../../../api/utils/capability.js'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
+
+const modulePath = join(dirname(fileURLToPath(import.meta.url)), '../../../api/utils/capability.js')
+const source = readFileSync(modulePath, 'utf8')
 
 const SECRET = 'test-secret-123'
 
@@ -114,5 +120,38 @@ describe('generateCapabilityToken / verifyCapabilityToken', () => {
     expect(verifyCapabilityToken('garbage', SECRET)).toBeNull()
     expect(verifyCapabilityToken('v1.cap.only-two-parts', SECRET)).toBeNull()
     expect(verifyCapabilityToken('v9.cap.cGF5bG9hZA==.aaaa', SECRET)).toBeNull()
+  })
+})
+
+// WARNING-4 (JD round 1): el módulo era ESM puro, incompatible con el runtime
+// serverless del repo (commonjs: api/*.js usan require y module.exports). Un
+// `require()` real desde Node v20 lanza ERR_REQUIRE_ESM, dejando la utilidad
+// inutilizable para rutas de producción. Alineado a CJS: este contrato estático
+// fija que el archivo sea CommonJS y exporte la API completa.
+describe('capability.js is CommonJS (WARNING-4)', () => {
+  it('requires node:crypto via require, not import', () => {
+    expect(source).toMatch(/require\(['"]node:crypto['"]\)/)
+    expect(source).not.toMatch(/^import\s/m)
+  })
+
+  it('uses module.exports with the full API surface', () => {
+    expect(source).toMatch(/module\.exports\s*=\s*\{/)
+    const exportBlock = source.slice(source.indexOf('module.exports'))
+    for (const name of [
+      'randomHex',
+      'formatOrderNumber',
+      'generateOrderNumber',
+      'generateCapabilityToken',
+      'verifyCapabilityToken',
+      'CAPABILITY_VERSION',
+      'CAPABILITY_KIND',
+      'ORDER_CODE_LENGTH',
+    ]) {
+      expect(exportBlock).toMatch(new RegExp(`^\\s*${name},?\\s*$`, 'm'))
+    }
+  })
+
+  it('has no ESM export statements left', () => {
+    expect(source).not.toMatch(/export\s+(function|const|class|\{)/)
   })
 })

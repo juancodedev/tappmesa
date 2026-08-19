@@ -13,8 +13,15 @@
 // Node-side: la función SQL `tappmesa_place_order` implementa la misma
 // lógica server-side; este módulo sólo cubre la generación/verificación
 // local (demo/dev y tests).
+//
+// CommonJS (WARNING-4, JD round 1): alineado con el resto del árbol server
+// (api/*.js usan require/module.exports; package.json no declara
+// type:module). El formato anterior (ESM puro) rompía `require()` en
+// runtimes Node < 20.19 (ERR_REQUIRE_ESM) y convivía con una segunda forma
+// de minting en table-sessions.js → drift de docs. Export object literral
+// para que el lexer de Node (cjs-module-lexer) resuelva los named exports.
 
-import { createHmac, timingSafeEqual, randomBytes } from 'node:crypto'
+const { createHmac, timingSafeEqual, randomBytes } = require('node:crypto')
 
 const CAPABILITY_VERSION = 'v1'
 const CAPABILITY_KIND = 'cap'
@@ -27,7 +34,7 @@ const MAX_ORDER_NUMBER_ATTEMPTS = 3
  * @param {number} bytes
  * @returns {string} hex de longitud `bytes * 2`
  */
-export function randomHex(bytes) {
+function randomHex(bytes) {
   return randomBytes(bytes).toString('hex')
 }
 
@@ -37,7 +44,7 @@ export function randomHex(bytes) {
  * @param {string} code seis caracteres A-Z0-9
  * @returns {string}
  */
-export function formatOrderNumber(date, code) {
+function formatOrderNumber(date, code) {
   const y = String(date.getFullYear()).slice(-2)
   const m = String(date.getMonth() + 1).padStart(2, '0')
   const d = String(date.getDate()).padStart(2, '0')
@@ -65,7 +72,7 @@ function pickOrderCode(rng) {
  * @returns {string}
  * @throws {Error} si tras 3 intentos no hay código sin colisión
  */
-export function generateOrderNumber(date, rng, used = new Set()) {
+function generateOrderNumber(date, rng, used = new Set()) {
   for (let attempt = 0; attempt < MAX_ORDER_NUMBER_ATTEMPTS; attempt += 1) {
     const code = rng
       ? pickOrderCode(rng)
@@ -82,7 +89,7 @@ export function generateOrderNumber(date, rng, used = new Set()) {
  * @param {string} secret
  * @returns {string} `v1.cap.<base64url(payload)>.<hmac-hex>`
  */
-export function generateCapabilityToken(payload, secret) {
+function generateCapabilityToken(payload, secret) {
   const encoded = Buffer.from(JSON.stringify(payload)).toString('base64url')
   const hmac = createHmac('sha256', secret).update(`${CAPABILITY_VERSION}.cap.${encoded}`).digest('hex')
   return `${CAPABILITY_VERSION}.cap.${encoded}.${hmac}`
@@ -94,7 +101,7 @@ export function generateCapabilityToken(payload, secret) {
  * @param {string} secret
  * @returns {Record<string, unknown> | null} payload firmado, o null si inválido
  */
-export function verifyCapabilityToken(token, secret) {
+function verifyCapabilityToken(token, secret) {
   if (typeof token !== 'string') return null
   const parts = token.split('.')
   if (parts.length !== 4) return null
@@ -117,5 +124,14 @@ export function verifyCapabilityToken(token, secret) {
   }
 }
 
-// Mantiene la firma del default branch para compatibilidad:
-export { CAPABILITY_VERSION, CAPABILITY_KIND, ORDER_CODE_LENGTH }
+module.exports = {
+  randomHex,
+  formatOrderNumber,
+  generateOrderNumber,
+  generateCapabilityToken,
+  verifyCapabilityToken,
+  // Mantiene la firma del default branch para compatibilidad:
+  CAPABILITY_VERSION,
+  CAPABILITY_KIND,
+  ORDER_CODE_LENGTH,
+}
