@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
+import { secureAuthService } from '../../lib/authService'
 import {
   Users,
   Search,
@@ -34,31 +35,34 @@ const SystemUsersManager = () => {
     try {
       setLoading(true)
 
-      // Load all admin users
-      const { data: usersData, error: usersError } = await supabase
-        .from('admin_users')
-        .select(`
-          *,
-          tenant:tenants (
-            id,
-            name,
-            slug
-          )
-        `)
-        .order('created_at', { ascending: false })
-
-      if (usersError) {
-        console.error('Error loading users:', usersError)
-        throw new Error(`Error al cargar usuarios: ${usersError.message}`)
+      // Usuarios vía API (super_admin: lista completa, sin password_hash)
+      const response = await secureAuthService.authenticatedFetch('/api/admin/users', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      if (!response.ok) {
+        let message = 'Error del servidor'
+        try {
+          const data = await response.json()
+          message = data.error || message
+        } catch { /* cuerpo no JSON */ }
+        throw new Error(`Error al cargar usuarios: ${message}`)
       }
+      const usersData = (await response.json()).users || []
 
-      // Load all tenants for filter
+      // Load all tenants for filter (tabla pública del menú)
       const { data: tenantsData } = await supabase
         .from('tenants')
         .select('id, name, slug')
         .order('name', { ascending: true })
 
-      setUsers(usersData || [])
+      // La API no hace JOINs: mapeamos tenant_id → tenant (name/slug) aquí
+      setUsers(
+        usersData.map((u) => ({
+          ...u,
+          tenant: tenantsData?.find((t) => t.id === u.tenant_id) || null,
+        })),
+      )
       setTenants(tenantsData || [])
     } catch (error) {
       console.error('Error loading system users:', error)
@@ -74,15 +78,19 @@ const SystemUsersManager = () => {
     }
 
     try {
-      const { error } = await supabase
-        .from('admin_users')
-        .update({
-          is_active: !currentStatus,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', userId)
-
-      if (error) throw error
+      const response = await secureAuthService.authenticatedFetch(`/api/admin/users/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: !currentStatus })
+      })
+      if (!response.ok) {
+        let message = 'Error del servidor'
+        try {
+          const data = await response.json()
+          message = data.error || message
+        } catch { /* cuerpo no JSON */ }
+        throw new Error(message)
+      }
 
       alert('Usuario actualizado exitosamente')
       loadData()
