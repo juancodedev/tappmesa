@@ -61,4 +61,14 @@ describe('rateLimiter burst (RTE-006, task 1.11)', () => {
       expect(RATE_LIMITS[key].maxRequests).toBeGreaterThan(0)
     }
   })
+
+  it('enforces the spec threshold for the orders key (RTE-005: 30/min/IP)', async () => {
+    vi.resetModules()
+    const { RATE_LIMITS } = await import('../../../api/middleware/rateLimit.js')
+
+    const orders = RATE_LIMITS['orders']
+    expect(orders.maxRequests).toBe(30)
+    expect(orders.windowMs).toBe(60 * 1000)
+    expect(orders.message).toMatch(/minuto/i)
+  })
 })

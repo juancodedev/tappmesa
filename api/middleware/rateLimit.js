@@ -66,9 +66,9 @@ const RATE_LIMITS = {
     message: 'Demasiadas solicitudes de token. Por favor intenta más tarde.'
   },
   'orders': {
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    maxRequests: 60, // 60 placements/cancels por ventana
-    message: 'Demasiadas solicitudes de órdenes. Por favor intenta más tarde.'
+    windowMs: 60 * 1000, // 1 minuto (specc RTE-005: 30/min/IP)
+    maxRequests: 30, // 30 placements/cancels por minuto
+    message: 'Demasiadas solicitudes de órdenes. Por favor intenta en 1 minuto.'
   },
   'orders/my': {
     windowMs: 15 * 60 * 1000, // 15 minutos
