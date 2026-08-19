@@ -31,4 +31,21 @@ describe('database/server-order-functions.sql (task 1.2)', () => {
   it('requires pgcrypto availability (CREATE EXTENSION IF NOT EXISTS pgcrypto)', () => {
     expect(sql).toMatch(/CREATE EXTENSION IF NOT EXISTS pgcrypto/)
   })
+
+  it('WARNING-1: orders.table_number stores the physical table number, never the session_code', () => {
+    const insertStart = sql.indexOf('INSERT INTO public.orders')
+    const insertEnd = sql.indexOf('ON CONFLICT (order_number)')
+    expect(insertStart).toBeGreaterThanOrEqual(0)
+    expect(insertEnd).toBeGreaterThan(insertStart)
+
+    const insertBlock = sql.slice(insertStart, insertEnd)
+    // El INSERT de orders NO debe poblar table_number con el session_code.
+    expect(insertBlock).not.toMatch(/session_code/)
+
+    // La mesa física se resuelve desde el registro `tables` (vía table_id)
+    // y se inserta como número de mesa. Takeout (sin sesión) → NULL.
+    expect(insertBlock).toMatch(/v_table_number/)
+    expect(sql).toMatch(/FROM\s+public\.tables/)
+    expect(sql).toMatch(/v_table_number\s+text/)
+  })
 })

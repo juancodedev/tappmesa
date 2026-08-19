@@ -49,6 +49,7 @@ SET search_path = public
 AS $$
 DECLARE
   v_session      public.table_sessions%ROWTYPE;
+  v_table_number text;
   v_item         jsonb;
   v_product_id   uuid;
   v_quantity     int;
@@ -84,6 +85,14 @@ BEGIN
     IF v_session.status IS DISTINCT FROM 'active' OR v_session.ended_at IS NOT NULL THEN
       RAISE EXCEPTION 'SESSION_CLOSED';
     END IF;
+
+    -- Mesa física (WARNING-1 JD round 1): `orders.table_number` debe ser el
+    -- número de la mesa (tables.number), NO el session_code de la sesión.
+    -- Deterministic regression del dashboard admin que lee table_number.
+    SELECT t.number INTO v_table_number
+      FROM public.tables t
+     WHERE t.id = v_session.table_id;
+    v_table_number := NULLIF(v_table_number, '');
   END IF;
 
   -- 2) Replay-safe: ya existe una orden para esta idempotency_key → devolverla.
@@ -150,7 +159,7 @@ BEGIN
       status, subtotal, tax, total, notes, order_number, idempotency_key, estimated_time
     ) VALUES (
       p_tenant_id, p_table_session_id,
-      NULLIF(v_session.session_code, ''), p_customer_name, p_customer_phone,
+      v_table_number, p_customer_name, p_customer_phone,
       'pending', v_subtotal, v_tax, v_total, NULL, v_number, p_idempotency_key, v_estimated
     )
     ON CONFLICT (order_number) DO NOTHING
