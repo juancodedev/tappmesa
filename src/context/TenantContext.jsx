@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components -- archivo de contexto que exporta Provider y utilidades */
 import { createContext, useState, useEffect, useContext, useMemo } from 'react'
 import { supabase } from '../lib/supabase'
+import { api } from '../services/api'
 import { AuthContext } from './AuthContext'
 import logger from '../utils/logger'
 import { getSubdomain, getTableCode, getAppType } from '../utils/tenantUtils'
@@ -130,7 +131,7 @@ export const TenantProvider = ({ children }) => {
         logger.dev('✅ Table loaded:', tableData.number)
 
         // Crear o recuperar sesión de mesa
-        await createOrResumeTableSession(tenantData.id, tableData.id, tableCode)
+        await createOrResumeTableSession(tenantData.id, tableData.id)
       }
       
       // Aplicar branding dinámico
@@ -153,44 +154,21 @@ export const TenantProvider = ({ children }) => {
     }
   }
 
-  const createOrResumeTableSession = async (tenantId, tableId, tableCode) => {
+  const createOrResumeTableSession = async (tenantId, tableId) => {
     try {
-      // Buscar sesión activa existente
-      const { data: existingSession } = await supabase
-        .from('table_sessions')
-        .select('*')
-        .eq('tenant_id', tenantId)
-        .eq('table_id', tableId)
-        .eq('status', 'active')
-        .order('started_at', { ascending: false })
-        .limit(1)
-        .maybeSingle()
+      // 2.5 flip: la sesión de mesa se crea/recupera SERVER-side vía la ruta
+      // POST /api/table-sessions (task 1.8): verifica la mesa, resume la sesión
+      // activa o INSERTa una nueva con capability_token HMAC (RTE-004). El
+      // cliente deja de tocar `table_sessions` (anon pierde acceso post-lockdown).
+      const data = await api.post('/api/table-sessions', {
+        table_id: tableId,
+        tenant_id: tenantId
+      })
 
-      if (existingSession) {
-        setTableSession(existingSession)
-        logger.dev('✅ Resumed table session:', existingSession.session_code)
-        return
-      }
+      if (!data?.session) throw new Error('No se pudo crear la sesión de mesa')
 
-      // Crear nueva sesión
-      const sessionCode = `${tableCode}-${Date.now().toString(36).toUpperCase()}`
-      
-      const { data: newSession, error } = await supabase
-        .from('table_sessions')
-        .insert({
-          tenant_id: tenantId,
-          table_id: tableId,
-          session_code: sessionCode,
-          status: 'active'
-        })
-        .select()
-        .single()
-
-      if (error) throw error
-
-      setTableSession(newSession)
-      logger.dev('✅ Created new table session:', sessionCode)
-
+      setTableSession(data.session)
+      logger.dev('✅ Table session ready:', data.session.session_code)
     } catch (error) {
       logger.error('❌ Error managing table session:', error)
     }
