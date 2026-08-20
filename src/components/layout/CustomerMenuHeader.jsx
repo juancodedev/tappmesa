@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTenant } from '../../hooks/useTenant'
-import { supabase } from '../../lib/supabase'
+import { api } from '../../services/api'
 import { Clock, ChefHat, CheckCircle, Package, ShoppingBag } from 'lucide-react'
 
 const CustomerMenuHeader = ({ onOrdersClick }) => {
@@ -26,30 +26,25 @@ const CustomerMenuHeader = ({ onOrdersClick }) => {
     if (!tableSession) return
 
     try {
-      // Obtener el pedido más reciente que no esté cancelado o entregado
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .eq('table_session_id', tableSession.id)
-        .not('status', 'in', '(cancelled,delivered)')
-        .order('created_at', { ascending: false })
-        .limit(1)
+      // 2.6 flip: lecturas de sesión vía ruta server GET /api/orders/my
+      // (misma forma embebida; 200 [] si la capability es desconocida)
+      const data = await api.get(
+        `/api/orders/my?capability=${encodeURIComponent(tableSession.capability_token)}`
+      )
+      const orders = data.orders || []
 
-      if (error) throw error
+      // Pedido actual = el más reciente que no esté cancelado ni entregado
+      // (la ruta devuelve por created_at DESC)
+      const order = orders.find(o => !['cancelled', 'delivered'].includes(o.status)) || null
+      setCurrentOrder(order)
 
-      if (data && data.length > 0) {
-        const order = data[0]
-        setCurrentOrder(order)
-
-        // Verificar si está atrasado (más de 20 minutos)
-        if (order.estimated_time) {
-          const createdAt = new Date(order.created_at)
-          const now = new Date()
-          const minutesElapsed = (now - createdAt) / 1000 / 60
-          setIsDelayed(minutesElapsed > order.estimated_time + 5)
-        }
+      // Verificar si está atrasado (más de 20 minutos)
+      if (order?.estimated_time) {
+        const createdAt = new Date(order.created_at)
+        const now = new Date()
+        const minutesElapsed = (now - createdAt) / 1000 / 60
+        setIsDelayed(minutesElapsed > order.estimated_time + 5)
       } else {
-        setCurrentOrder(null)
         setIsDelayed(false)
       }
     } catch (error) {
