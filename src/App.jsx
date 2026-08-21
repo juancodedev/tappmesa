@@ -125,12 +125,28 @@ function App() {
             } />
 
             {/* Ruta para el dashboard del garzón */}
-            <Route path="/waiter" element={<WaiterDashboard />} />
-            <Route path="/garzon" element={<WaiterDashboard />} />
+            <Route path="/waiter" element={
+              <ProtectedRoute requireRole="staff">
+                <WaiterDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/garzon" element={
+              <ProtectedRoute requireRole="staff">
+                <WaiterDashboard />
+              </ProtectedRoute>
+            } />
 
             {/* Ruta para el dashboard de cocina */}
-            <Route path="/kitchen" element={<KitchenDashboard />} />
-            <Route path="/cocina" element={<KitchenDashboard />} />
+            <Route path="/kitchen" element={
+              <ProtectedRoute requireRole="staff">
+                <KitchenDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/cocina" element={
+              <ProtectedRoute requireRole="staff">
+                <KitchenDashboard />
+              </ProtectedRoute>
+            } />
 
             {/* Ruta específica para reservas */}
             <Route path="/reservas" element={<ReservationsPage />} />

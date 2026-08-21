@@ -49,6 +49,18 @@
   ],
   "rewrites": [
     {
+      "source": "/api/orders/my",
+      "destination": "/api/orders"
+    },
+    {
+      "source": "/api/orders/:id/cancel",
+      "destination": "/api/orders"
+    },
+    {
+      "source": "/api/admin/users/:id",
+      "destination": "/api/admin/users"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     },

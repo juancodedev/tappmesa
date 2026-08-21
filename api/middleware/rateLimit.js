@@ -50,6 +50,41 @@ const RATE_LIMITS = {
     maxRequests: 3, // 3 intentos
     message: 'Demasiadas solicitudes de reset. Por favor intenta en 15 minutos.'
   },
+  'auth/reset-password/confirm': {
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    maxRequests: 30, // 30 validaciones de token por ventana
+    message: 'Demasiadas solicitudes de confirmación. Por favor intenta más tarde.'
+  },
+  'auth/reset-password/reset': {
+    windowMs: 60 * 60 * 1000, // 1 hora
+    maxRequests: 10, // 10 cambios de contraseña por hora
+    message: 'Demasiados intentos de cambio de contraseña. Por favor intenta en 1 hora.'
+  },
+  'auth/token': {
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    maxRequests: 30, // 30 mint/refresh por ventana
+    message: 'Demasiadas solicitudes de token. Por favor intenta más tarde.'
+  },
+  'orders': {
+    windowMs: 60 * 1000, // 1 minuto (specc RTE-005: 30/min/IP)
+    maxRequests: 30, // 30 placements/cancels por minuto
+    message: 'Demasiadas solicitudes de órdenes. Por favor intenta en 1 minuto.'
+  },
+  'orders/my': {
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    maxRequests: 120, // polling: 120 reads por ventana
+    message: 'Demasiadas consultas de órdenes. Por favor intenta más tarde.'
+  },
+  'table-sessions': {
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    maxRequests: 60, // 60 creaciones/resúmenes por ventana
+    message: 'Demasiadas solicitudes de sesión de mesa. Por favor intenta más tarde.'
+  },
+  'admin/users': {
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    maxRequests: 60, // 60 operaciones CRUD por ventana
+    message: 'Demasiadas solicitudes de usuarios. Por favor intenta más tarde.'
+  },
   'default': {
     windowMs: 60 * 1000, // 1 minuto
     maxRequests: 30, // 30 requests por minuto

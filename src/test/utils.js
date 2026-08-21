@@ -18,6 +18,7 @@ export const mockTenant = {
   id: 1,
   name: 'Café Central',
   subdomain: 'cafe-central',
+  slug: 'cafe-central',
   primary_color: '#dc2626',
   secondary_color: '#f97316',
   is_active: true,
@@ -39,6 +40,7 @@ export const mockTableSession = {
   table_id: 1,
   session_code: 'ABCD1234-ABC123',
   status: 'active',
+  capability_token: 'ts_mock-capability-token',
   started_at: '2023-01-01T10:00:00Z',
 }
 

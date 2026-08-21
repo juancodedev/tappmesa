@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '../../lib/supabase'
 import { useTenant } from '../../hooks/useTenant'
+import { api } from '../../services/api'
 import { Clock, ChefHat, CheckCircle, XCircle, Package, RefreshCw, Edit2 } from 'lucide-react'
 import { useCart } from '../../hooks/useCart'
 
@@ -28,26 +28,14 @@ const TableOrdersHistory = () => {
     if (!tableSession) return
 
     try {
-      const { data, error } = await supabase
-        .from('orders')
-        .select(`
-          *,
-          order_items (
-            *,
-            product:products (
-              id,
-              name,
-              price,
-              image_url
-            )
-          )
-        `)
-        .eq('table_session_id', tableSession.id)
-        .order('created_at', { ascending: false })
+      // 2.6 flip: las órdenes de la sesión se leen vía la ruta server
+      // GET /api/orders/my?capability= (RTE-002): misma forma embebida
+      // order_items → products que la lectura directa anterior — drop-in.
+      const data = await api.get(
+        `/api/orders/my?capability=${encodeURIComponent(tableSession.capability_token)}`
+      )
 
-      if (error) throw error
-
-      setOrders(data || [])
+      setOrders(data.orders || [])
     } catch (error) {
       console.error('Error loading session orders:', error)
     } finally {
@@ -117,11 +105,11 @@ const TableOrdersHistory = () => {
         }
       })
 
-      // Cancelar el pedido original
-      await supabase
-        .from('orders')
-        .update({ status: 'cancelled' })
-        .eq('id', order.id)
+      // Cancelar el pedido original vía ruta server (SEC-006: capability en
+      // body, nunca headers)
+      await api.post(`/api/orders/${order.id}/cancel`, {
+        capability: tableSession.capability_token
+      })
 
       loadSessionOrders()
     }
