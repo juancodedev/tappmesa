@@ -64,8 +64,8 @@ S2 blocks on S1 (SEC-005: migration commits ONLY after routes + token path + uni
 
 ## Split 3 — route-hardening (depends on S1 claims; 2 ∥ 3)
 
-- [ ] 3.1 ProtectedRoute.jsx: `requireRole` (staff/waiter/kitchen, super_admin allowed); tests: unauth redirect, role allowed/denied (PRO-001).
-- [ ] 3.2 App.jsx: wrap /waiter /garzon /kitchen /cocina with ProtectedRoute + requireRole (128-133).
+- [x] 3.1 ProtectedRoute.jsx: `requireRole` (staff/waiter/kitchen, super_admin allowed); tests: unauth redirect, role allowed/denied (PRO-001).
+- [x] 3.2 App.jsx: wrap /waiter /garzon /kitchen /cocina with ProtectedRoute + requireRole (128-133).
 - [ ] 3.3 S3 verification: unauth redirects to login, authorized renders, super_admin OK; `pnpm test:run` green.
 
 ## Deferred Follow-up Group (DEF — NOT in splits 1-3; own IDs)
