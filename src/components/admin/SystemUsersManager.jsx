@@ -119,7 +119,7 @@ const SystemUsersManager = () => {
       'waiter': 'bg-yellow-100 text-yellow-800 border-yellow-300',
       'kitchen': 'bg-orange-100 text-orange-800 border-orange-300'
     }
-    return colors[role] || 'bg-gray-100 text-gray-800 border-gray-300'
+    return colors[role] || 'bg-primary-50 text-gray-800 border-primary-300'
   }
 
   const formatDate = (dateString) => {
@@ -202,7 +202,7 @@ const SystemUsersManager = () => {
               placeholder="Buscar usuarios..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
 
@@ -210,7 +210,7 @@ const SystemUsersManager = () => {
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="px-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           >
             <option value="all">Todos los roles</option>
             <option value="super_admin">Super Admin</option>
@@ -224,7 +224,7 @@ const SystemUsersManager = () => {
           <select
             value={tenantFilter}
             onChange={(e) => setTenantFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="px-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           >
             <option value="all">Todos los tenants</option>
             {tenants.map((tenant) => (
@@ -238,7 +238,7 @@ const SystemUsersManager = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="px-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           >
             <option value="all">Todos los estados</option>
             <option value="active">Activos</option>
@@ -249,7 +249,7 @@ const SystemUsersManager = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Usuarios</p>
@@ -259,7 +259,7 @@ const SystemUsersManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Activos</p>
@@ -269,7 +269,7 @@ const SystemUsersManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Super Admins</p>
@@ -279,7 +279,7 @@ const SystemUsersManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Admins de Tenant</p>
@@ -292,7 +292,7 @@ const SystemUsersManager = () => {
 
       {/* Users Table */}
       {filteredUsers.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
+        <div className="text-center py-12 bg-cream-50 rounded-lg">
           <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             No se encontraron usuarios
@@ -304,7 +304,7 @@ const SystemUsersManager = () => {
       ) : (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-cream-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Usuario
@@ -331,7 +331,7 @@ const SystemUsersManager = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={user.id} className="hover:bg-cream-50 transition-colors">
                   {/* User Info */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">

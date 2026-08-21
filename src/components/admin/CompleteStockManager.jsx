@@ -419,13 +419,13 @@ const CompleteStockManager = () => {
     return (
       <div className="p-6">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+          <div className="h-8 bg-primary-200 rounded w-1/3"></div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-24 bg-gray-200 rounded-lg"></div>
+              <div key={i} className="h-24 bg-primary-200 rounded-lg"></div>
             ))}
           </div>
-          <div className="h-96 bg-gray-200 rounded-lg"></div>
+          <div className="h-96 bg-primary-200 rounded-lg"></div>
         </div>
       </div>
     );
@@ -485,7 +485,7 @@ const CompleteStockManager = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg p-4 shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-500">Total Items</p>
@@ -497,7 +497,7 @@ const CompleteStockManager = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg p-4 shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-500">Stock Bajo</p>
@@ -509,7 +509,7 @@ const CompleteStockManager = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg p-4 shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-500">Agotados</p>
@@ -521,7 +521,7 @@ const CompleteStockManager = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg p-4 shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-500">Valor Total</p>
@@ -533,7 +533,7 @@ const CompleteStockManager = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg p-4 shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-500">Alertas</p>
@@ -547,7 +547,7 @@ const CompleteStockManager = () => {
       </div>
 
       {/* Filtros */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+      <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-4 mb-6">
         <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -556,7 +556,7 @@ const CompleteStockManager = () => {
               placeholder="Buscar productos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
 
@@ -565,7 +565,7 @@ const CompleteStockManager = () => {
             <select
               value={stockFilter}
               onChange={(e) => setStockFilter(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             >
               <option value="all">Todos</option>
               <option value="low">Stock Bajo</option>
@@ -578,10 +578,10 @@ const CompleteStockManager = () => {
       </div>
 
       {/* Tabla de inventario */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-primary-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-cream-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Producto
@@ -613,7 +613,7 @@ const CompleteStockManager = () => {
                 const StatusIcon = stockStatus.icon;
 
                 return (
-                  <tr key={item.id} className="hover:bg-gray-50">
+                  <tr key={item.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <div className="text-sm font-medium text-gray-900">
@@ -634,7 +634,7 @@ const CompleteStockManager = () => {
                         <div className="text-sm font-medium text-gray-900">
                           {item.current_stock} {item.unit}
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                        <div className="w-full bg-primary-200 rounded-full h-2 mt-1">
                           <div
                             className={`h-2 rounded-full ${
                               stockStatus.status === "out"
@@ -778,7 +778,7 @@ const CompleteStockManager = () => {
                       quantity: e.target.value,
                     })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   placeholder={`Cantidad en ${selectedItem.unit}`}
                   required
                 />
@@ -793,7 +793,7 @@ const CompleteStockManager = () => {
                   onChange={(e) =>
                     setMovementForm({ ...movementForm, reason: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   required
                 >
                   {movementForm.type === "in" ? (
@@ -834,7 +834,7 @@ const CompleteStockManager = () => {
                         unitCost: e.target.value,
                       })
                     }
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="Costo por unidad"
                   />
                 </div>
@@ -850,7 +850,7 @@ const CompleteStockManager = () => {
                   onChange={(e) =>
                     setMovementForm({ ...movementForm, notes: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                  className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                   placeholder="Notas adicionales..."
                 />
               </div>
@@ -859,7 +859,7 @@ const CompleteStockManager = () => {
                 <button
                   type="button"
                   onClick={() => setShowMovementModal(false)}
-                  className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex-1 border border-primary-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-cream-50 transition-colors"
                 >
                   Cancelar
                 </button>
@@ -917,7 +917,7 @@ const CompleteStockManager = () => {
                   onChange={(e) =>
                     setEditForm({ ...editForm, currentStock: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   required
                 />
               </div>
@@ -931,7 +931,7 @@ const CompleteStockManager = () => {
                   onChange={(e) =>
                     setEditForm({ ...editForm, unit: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 >
                   <option value="unidad">Unidad</option>
                   <option value="kg">Kilogramos</option>
@@ -955,7 +955,7 @@ const CompleteStockManager = () => {
                   onChange={(e) =>
                     setEditForm({ ...editForm, minStock: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   required
                 />
               </div>
@@ -972,7 +972,7 @@ const CompleteStockManager = () => {
                   onChange={(e) =>
                     setEditForm({ ...editForm, maxStock: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   required
                 />
               </div>
@@ -989,7 +989,7 @@ const CompleteStockManager = () => {
                   onChange={(e) =>
                     setEditForm({ ...editForm, costPerUnit: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   required
                 />
               </div>
@@ -1004,7 +1004,7 @@ const CompleteStockManager = () => {
                   onChange={(e) =>
                     setEditForm({ ...editForm, supplier: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   placeholder="Nombre del proveedor"
                 />
               </div>
@@ -1019,7 +1019,7 @@ const CompleteStockManager = () => {
                   onChange={(e) =>
                     setEditForm({ ...editForm, location: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   placeholder="Ej: Estante A, Refrigerador 1"
                 />
               </div>
@@ -1034,7 +1034,7 @@ const CompleteStockManager = () => {
                   onChange={(e) =>
                     setEditForm({ ...editForm, expiryDate: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
 
@@ -1048,7 +1048,7 @@ const CompleteStockManager = () => {
                   onChange={(e) =>
                     setEditForm({ ...editForm, notes: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                  className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                   placeholder="Notas adicionales sobre el producto..."
                 />
               </div>
@@ -1057,7 +1057,7 @@ const CompleteStockManager = () => {
                 <button
                   type="button"
                   onClick={() => setShowEditModal(false)}
-                  className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex-1 border border-primary-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-cream-50 transition-colors"
                 >
                   Cancelar
                 </button>
@@ -1092,7 +1092,7 @@ const CompleteStockManager = () => {
 
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-cream-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Fecha
@@ -1116,7 +1116,7 @@ const CompleteStockManager = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {movements.map((movement) => (
-                    <tr key={movement.id} className="hover:bg-gray-50">
+                    <tr key={movement.id} className="hover:bg-cream-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {formatDate(movement.created_at)}
                       </td>
@@ -1166,7 +1166,7 @@ const CompleteStockManager = () => {
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => setShowHistoryModal(false)}
-                className="bg-primary text-gray-700 px-6 py-2 rounded-lg border border-gray-300 bg-primary hover:text-white hover:bg-primary-700 transition-colors"
+                className="bg-primary text-gray-700 px-6 py-2 rounded-lg border border-primary-300 bg-primary hover:text-white hover:bg-primary-700 transition-colors"
               >
                 Cerrar
               </button>

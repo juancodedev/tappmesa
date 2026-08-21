@@ -97,7 +97,7 @@ const AdminApp = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-primary-50">
       {/* Sidebar mobile */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
@@ -116,7 +116,7 @@ const AdminApp = () => {
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Top bar */}
-        <div className="sticky top-0 z-40 flex h-16 bg-white shadow-sm border-b border-gray-200">
+        <div className="sticky top-0 z-40 flex h-16 bg-white shadow-sm border-b border-primary-200">
           <button
             onClick={() => setSidebarOpen(true)}
             className="px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary lg:hidden"
@@ -171,7 +171,7 @@ const AdminApp = () => {
 const SidebarContent = ({ navigation, closeSidebar }) => (
   <div className="flex flex-col h-full bg-white">
     {/* Logo */}
-    <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+    <div className="flex items-center justify-between h-16 px-6 border-b border-primary-200">
       <div className="flex items-center space-x-3">
         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
           <span className="text-white font-bold text-sm">T</span>
@@ -196,7 +196,7 @@ const SidebarContent = ({ navigation, closeSidebar }) => (
             className={`flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
               item.current
                 ? 'bg-primary text-white'
-                : 'text-gray-700 hover:bg-gray-100'
+                : 'text-gray-700 hover:bg-primary-50'
             }`}
           >
             <Icon className="h-5 w-5" />
@@ -207,7 +207,7 @@ const SidebarContent = ({ navigation, closeSidebar }) => (
     </nav>
 
     {/* Footer */}
-    <div className="px-4 py-6 border-t border-gray-200">
+    <div className="px-4 py-6 border-t border-primary-200">
       <div className="text-xs text-gray-500 text-center">
         Tappmesa Admin v1.0
       </div>
