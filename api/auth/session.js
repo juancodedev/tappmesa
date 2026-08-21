@@ -11,9 +11,9 @@
 // export usa el client service-role de módulo (patrón de las otras rutas).
 
 const { createClient } = require('@supabase/supabase-js');
-const logger = require('../utils/logger');
-const { resolveClaims } = require('../middleware/requireAuth');
-const { mintAdminJwt, decodeClaims } = require('../utils/jwt');
+const logger = require('../../lib/utils/logger');
+const { resolveClaims } = require('../../lib/middleware/requireAuth');
+const { mintAdminJwt, decodeClaims } = require('../../lib/utils/jwt');
 
 function createSessionHandler({ supabase }) {
   return async function handler(req, res) {

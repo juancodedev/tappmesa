@@ -17,11 +17,11 @@
 // usa el client service-role de módulo.
 
 const { createClient } = require('@supabase/supabase-js');
-const { createRequireAuth } = require('../middleware/requireAuth');
-const { mintAdminJwt, decodeClaims } = require('../utils/jwt');
-const { rateLimiter, blacklistMiddleware } = require('../middleware/rateLimit');
-const { corsMiddleware } = require('../middleware/cors');
-const logger = require('../utils/logger');
+const { createRequireAuth } = require('../../lib/middleware/requireAuth');
+const { mintAdminJwt, decodeClaims } = require('../../lib/utils/jwt');
+const { rateLimiter, blacklistMiddleware } = require('../../lib/middleware/rateLimit');
+const { corsMiddleware } = require('../../lib/middleware/cors');
+const logger = require('../../lib/utils/logger');
 
 function createTokenHandler({ supabase }) {
   const requireAuth = createRequireAuth(supabase);

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { createRequireAuth } from '../../../api/middleware/requireAuth.js'
+import { createRequireAuth } from '../../../lib/middleware/requireAuth.js'
 
 // Cliente supabase fake: la query esperada es
 //   from('admin_sessions').select(...).eq('session_token', t).gt('expires_at', now).single()

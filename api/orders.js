@@ -19,10 +19,10 @@
 // usa el client service-role de módulo.
 
 const { createClient } = require('@supabase/supabase-js');
-const { corsMiddleware } = require('./middleware/cors');
-const { rateLimiter, blacklistMiddleware } = require('./middleware/rateLimit');
-const { resolveSubdomain } = require('./utils/hostResolver');
-const logger = require('./utils/logger');
+const { corsMiddleware } = require('../lib/middleware/cors');
+const { rateLimiter, blacklistMiddleware } = require('../lib/middleware/rateLimit');
+const { resolveSubdomain } = require('../lib/utils/hostResolver');
+const logger = require('../lib/utils/logger');
 
 const PLACEABLE_STATUSES = ['pending', 'preparing'];
 

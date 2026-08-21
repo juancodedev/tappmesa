@@ -5,12 +5,12 @@ import {
   generateOrderNumber,
   formatOrderNumber,
   randomHex,
-} from '../../../api/utils/capability.js'
+} from '../../../lib/utils/capability.js'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
-const modulePath = join(dirname(fileURLToPath(import.meta.url)), '../../../api/utils/capability.js')
+const modulePath = join(dirname(fileURLToPath(import.meta.url)), '../../../lib/utils/capability.js')
 const source = readFileSync(modulePath, 'utf8')
 
 const SECRET = 'test-secret-123'

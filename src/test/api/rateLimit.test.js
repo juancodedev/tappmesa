@@ -33,7 +33,7 @@ describe('rateLimiter burst (RTE-006, task 1.11)', () => {
   it('blocks after the maxRequests burst and sets 429 headers', async () => {
     // Módulo fresco → memoryStore limpio (el rate limiting usa estado de módulo)
     vi.resetModules()
-    const { rateLimiter, RATE_LIMITS } = await import('../../../api/middleware/rateLimit.js')
+    const { rateLimiter, RATE_LIMITS } = await import('../../../lib/middleware/rateLimit.js')
 
     const key = 'auth/token'
     const max = RATE_LIMITS[key].maxRequests
@@ -54,7 +54,7 @@ describe('rateLimiter burst (RTE-006, task 1.11)', () => {
 
   it('includes the new S1 endpoint keys in RATE_LIMITS', async () => {
     vi.resetModules()
-    const { RATE_LIMITS } = await import('../../../api/middleware/rateLimit.js')
+    const { RATE_LIMITS } = await import('../../../lib/middleware/rateLimit.js')
 
     for (const key of ['auth/token', 'orders', 'orders/my', 'table-sessions', 'admin/users']) {
       expect(RATE_LIMITS[key], `missing key ${key}`).toBeDefined()
@@ -64,7 +64,7 @@ describe('rateLimiter burst (RTE-006, task 1.11)', () => {
 
   it('enforces the spec threshold for the orders key (RTE-005: 30/min/IP)', async () => {
     vi.resetModules()
-    const { RATE_LIMITS } = await import('../../../api/middleware/rateLimit.js')
+    const { RATE_LIMITS } = await import('../../../lib/middleware/rateLimit.js')
 
     const orders = RATE_LIMITS['orders']
     expect(orders.maxRequests).toBe(30)

@@ -31,7 +31,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['api/**/*.js', 'scripts/**/*.js', 'vite.config.js'],
+    files: ['api/**/*.js', 'lib/**/*.js', 'scripts/**/*.js', 'vite.config.js'],
     languageOptions: {
       globals: { ...globals.node },
       parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },

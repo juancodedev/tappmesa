@@ -21,11 +21,11 @@
 
 const bcrypt = require('bcryptjs');
 const { createClient } = require('@supabase/supabase-js');
-const { createRequireAuth } = require('../middleware/requireAuth');
-const { corsMiddleware } = require('../middleware/cors');
-const { rateLimiter, blacklistMiddleware } = require('../middleware/rateLimit');
-const { validatePassword } = require('../middleware/validation');
-const logger = require('../utils/logger');
+const { createRequireAuth } = require('../../lib/middleware/requireAuth');
+const { corsMiddleware } = require('../../lib/middleware/cors');
+const { rateLimiter, blacklistMiddleware } = require('../../lib/middleware/rateLimit');
+const { validatePassword } = require('../../lib/middleware/validation');
+const logger = require('../../lib/utils/logger');
 
 const BCRYPT_ROUNDS = 12;
 const TENANT_ROLE_ALLOWLIST = ['staff', 'waiter', 'kitchen', 'manager', 'cashier', 'tenant_admin'];

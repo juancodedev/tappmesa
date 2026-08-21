@@ -1,9 +1,9 @@
 // API Route: /api/auth/signin.js
 const bcrypt = require('bcryptjs');
 const { createClient } = require('@supabase/supabase-js');
-const logger = require('../utils/logger');
-const { rateLimiter, blacklistMiddleware } = require('../middleware/rateLimit');
-const { corsMiddleware } = require('../middleware/cors');
+const logger = require('../../lib/utils/logger');
+const { rateLimiter, blacklistMiddleware } = require('../../lib/middleware/rateLimit');
+const { corsMiddleware } = require('../../lib/middleware/cors');
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,

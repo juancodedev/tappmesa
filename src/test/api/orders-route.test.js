@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createOrdersHandler } from '../../../api/orders.js'
-import { generateCapabilityToken } from '../../../api/utils/capability.js'
+import { generateCapabilityToken } from '../../../lib/utils/capability.js'
 
 const SECRET = 'test-capability-secret'
 const CAP = generateCapabilityToken({ table_session_id: 'ts-1' }, SECRET)

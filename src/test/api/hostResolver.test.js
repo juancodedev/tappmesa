@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { resolveSubdomain } from '../../../api/utils/hostResolver.js'
+import { resolveSubdomain } from '../../../lib/utils/hostResolver.js'
 
 describe('resolveSubdomain (takeout Host resolution)', () => {
   it('resolves Vercel tenant format [name]-tappmesa.vercel.app', () => {
