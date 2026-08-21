@@ -1,15 +1,34 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
+import { useState } from 'react'
 import userEvent from '@testing-library/user-event'
 import { CartProvider } from '../../context/CartContext'
 import { useCart } from '../../hooks/useCart'
-import { TenantProvider } from '../../context/TenantContext'
-import { mockTenant, mockProduct, resetAllMocks, createMockSupabase } from '../utils'
+import { TenantContext } from '../../context/TenantContext'
+import { mockTenant, mockProduct, mockTableSession, resetAllMocks } from '../utils'
 
-// Mock the supabase import and TenantContext
-vi.mock('../../lib/supabase', () => ({
-  supabase: createMockSupabase()
-}))
+// Componente de nivel módulo para el flujo placeOrder: definirlo dentro del
+// render de TestCartComponent cambiaría su identidad en cada re-render del
+// provider y remontaría el estado local (result) — 2.4
+const PlaceCartComponent = () => {
+  const cart = useCart()
+  const [result, setResult] = useState(null)
+  return (
+    <div data-testid="cart-place">
+      <button data-testid="add-item" onClick={() => cart.addItem(mockProduct, 2, 'hot', 'Extra foam')}>
+        Add Item
+      </button>
+      <button data-testid="place-order" onClick={() => cart.placeOrder({ name: 'Ana', phone: '+56912345678' }).then(setResult)}>
+        Place Order
+      </button>
+      <div data-testid="items-count">{cart.getTotalItems()}</div>
+      <div data-testid="is-open">{cart.isOpen ? 'open' : 'closed'}</div>
+      <div data-testid="place-result">
+        {result?.success === true ? `ok:${result.order.order_number}` : result?.success === false ? 'error' : 'none'}
+      </div>
+    </div>
+  )
+}
 
 // Test component to interact with cart
 const TestCartComponent = ({ testType = 'basic' }) => {
@@ -78,14 +97,21 @@ const TestCartComponent = ({ testType = 'basic' }) => {
       </div>
     )
   }
+
+  if (testType === 'place') {
+    return <PlaceCartComponent />
+  }
   
   return null
 }
 
-// Mock TenantProvider that provides a tenant
-const MockTenantProvider = ({ children }) => {
+// Mock TenantProvider: provee el contexto de tenant directamente (el tenant
+// real no se monta — estas pruebas cubren solo CartProvider; 2.4/2.5)
+const MockTenantProvider = ({ children, tableSession = null }) => {
   const mockTenantContext = {
     tenant: mockTenant,
+    table: tableSession ? { id: 1, number: 5 } : null,
+    tableSession,
     loading: false,
     error: null,
     appType: 'tenant',
@@ -94,9 +120,9 @@ const MockTenantProvider = ({ children }) => {
   }
   
   return (
-    <TenantProvider value={mockTenantContext}>
+    <TenantContext.Provider value={mockTenantContext}>
       {children}
-    </TenantProvider>
+    </TenantContext.Provider>
   )
 }
 
@@ -174,7 +200,7 @@ describe('CartContext', () => {
       )
 
       expect(screen.getByTestId('is-empty')).toHaveTextContent('empty')
-      expect(consoleSpy).toHaveBeenCalledWith('Error loading cart from localStorage:', expect.any(SyntaxError))
+      expect(consoleSpy).toHaveBeenCalledWith('[ERROR]', 'Error loading cart from localStorage:', expect.any(SyntaxError))
       
       consoleSpy.mockRestore()
     })
@@ -212,7 +238,7 @@ describe('CartContext', () => {
       await user.click(screen.getByTestId('add-item'))
 
       // Should have only one item with updated quantity
-      const items = screen.getAllByTestId(/^item-\\d+$/)
+      const items = screen.getAllByTestId(/^item-\d+$/)
       expect(items).toHaveLength(1)
       expect(screen.getByTestId('item-quantity-0')).toHaveTextContent('2') // Last quantity wins
     })
@@ -257,10 +283,10 @@ describe('CartContext', () => {
       )
 
       await user.click(screen.getByTestId('add-item'))
-      expect(screen.getAllByTestId(/^item-\\d+$/)).toHaveLength(1)
+      expect(screen.getAllByTestId(/^item-\d+$/)).toHaveLength(1)
 
       await user.click(screen.getByTestId('remove-item-0'))
-      expect(screen.queryAllByTestId(/^item-\\d+$/)).toHaveLength(0)
+      expect(screen.queryAllByTestId(/^item-\d+$/)).toHaveLength(0)
     })
 
     it('should clear entire cart', async () => {
@@ -274,10 +300,10 @@ describe('CartContext', () => {
 
       await user.click(screen.getByTestId('add-item'))
       await user.click(screen.getByTestId('add-item'))
-      expect(screen.getAllByTestId(/^item-\\d+$/)).toHaveLength(1)
+      expect(screen.getAllByTestId(/^item-\d+$/)).toHaveLength(1)
 
       await user.click(screen.getByTestId('clear-cart'))
-      expect(screen.queryAllByTestId(/^item-\\d+$/)).toHaveLength(0)
+      expect(screen.queryAllByTestId(/^item-\d+$/)).toHaveLength(0)
     })
 
     it('should open and close cart', async () => {
@@ -369,7 +395,7 @@ describe('CartContext', () => {
       )
 
       // Initial state should show formatted zero
-      expect(screen.getByTestId('formatted-total')).toMatch(/\\$.*0/)
+      expect(screen.getByTestId('formatted-total')).toHaveTextContent(/\$.*0/)
     })
   })
 
@@ -383,6 +409,126 @@ describe('CartContext', () => {
       }).toThrow('useCart must be used within CartProvider')
       
       console.error = originalError
+    })
+  })
+
+  describe('placeOrder (RLS-001, task 2.4)', () => {
+    const stubResponse = (status, body) => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: status >= 200 && status < 300,
+        status,
+        json: vi.fn().mockResolvedValue(body)
+      }))
+    }
+
+    afterEach(() => {
+      vi.unstubAllGlobals()
+    })
+
+    it('places order via POST /api/orders (takeout: no capability in body)', async () => {
+      stubResponse(201, {
+        order: {
+          order_number: '260820-001',
+          estimated_time: 15,
+          subtotal: 7000,
+          tax: 1330,
+          total: 8330
+        },
+        duplicate: false
+      })
+
+      render(
+        <MockTenantProvider>
+          <CartProvider>
+            <TestCartComponent testType="place" />
+          </CartProvider>
+        </MockTenantProvider>
+      )
+
+      await user.click(screen.getByTestId('add-item'))
+      await user.click(screen.getByTestId('place-order'))
+
+      await waitFor(() => {
+        expect(screen.getByTestId('place-result')).toHaveTextContent('ok:260820-001')
+      })
+
+      // 2.4: el pedido va a la ruta server, no a supabase directo
+      const [url, init] = fetch.mock.calls[0]
+      expect(String(url)).toContain('/api/orders')
+      expect(init.method).toBe('POST')
+      const body = JSON.parse(init.body)
+      expect(body.idempotency_key).toBeTruthy()
+      expect(body.capability).toBeUndefined() // takeout
+      expect(body.items).toEqual([
+        expect.objectContaining({ product_id: mockProduct.id, quantity: 2, temperature: 'hot' })
+      ])
+
+      // Carrito limpio y cerrado tras el pedido
+      expect(screen.getByTestId('items-count')).toHaveTextContent('0')
+      expect(screen.getByTestId('is-open')).toHaveTextContent('closed')
+    })
+
+    it('includes capability_token in body when table session exists (QR flow)', async () => {
+      stubResponse(201, { order: { order_number: '260820-002', estimated_time: 10 }, duplicate: false })
+
+      render(
+        <MockTenantProvider tableSession={mockTableSession}>
+          <CartProvider>
+            <TestCartComponent testType="place" />
+          </CartProvider>
+        </MockTenantProvider>
+      )
+
+      await user.click(screen.getByTestId('add-item'))
+      await user.click(screen.getByTestId('place-order'))
+
+      await waitFor(() => {
+        expect(screen.getByTestId('place-result')).toHaveTextContent('ok:260820-002')
+      })
+
+      const body = JSON.parse(fetch.mock.calls[0][1].body)
+      expect(body.capability).toBe('ts_mock-capability-token')
+    })
+
+    it('returns success:false with server error message on failure', async () => {
+      stubResponse(409, { error: 'La sesión de mesa está cerrada' })
+
+      render(
+        <MockTenantProvider tableSession={mockTableSession}>
+          <CartProvider>
+            <TestCartComponent testType="place" />
+          </CartProvider>
+        </MockTenantProvider>
+      )
+
+      await user.click(screen.getByTestId('add-item'))
+      await user.click(screen.getByTestId('place-order'))
+
+      await waitFor(() => {
+        expect(screen.getByTestId('place-result')).toHaveTextContent('error')
+      })
+
+      // El carrito NO se limpia si el pedido falla
+      expect(screen.getByTestId('items-count')).toHaveTextContent('2')
+    })
+
+    it('returns error without calling the route when cart is empty', async () => {
+      stubResponse(201, { order: { order_number: 'x' }, duplicate: false })
+
+      render(
+        <MockTenantProvider>
+          <CartProvider>
+            <TestCartComponent testType="place" />
+          </CartProvider>
+        </MockTenantProvider>
+      )
+
+      await user.click(screen.getByTestId('place-order'))
+
+      await waitFor(() => {
+        expect(screen.getByTestId('place-result')).toHaveTextContent('error')
+      })
+      expect(fetch).not.toHaveBeenCalled()
     })
   })
 

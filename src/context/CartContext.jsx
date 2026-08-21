@@ -1,37 +1,13 @@
 /* eslint-disable react-refresh/only-export-components -- archivo de contexto que exporta Provider y utilidades */
 import { createContext, useState, useEffect, useMemo } from 'react'
 import { useTenant } from '../hooks/useTenant'
-import { supabase } from '../lib/supabase'
+import { api } from '../services/api'
 import logger from '../utils/logger'
 
 export const CartContext = createContext()
 
-// Función para generar número de orden
-const generateOrderNumber = async (tenantId) => {
-  const today = new Date()
-  const dateStr = today.toISOString().slice(2, 10).replace(/-/g, '') // YYMMDD
-  
-  try {
-    // Contar órdenes del día
-    const { count, error } = await supabase
-      .from('orders')
-      .select('*', { count: 'exact', head: true })
-      .eq('tenant_id', tenantId)
-      .gte('created_at', today.toISOString().slice(0, 10) + 'T00:00:00.000Z')
-      .lt('created_at', today.toISOString().slice(0, 10) + 'T23:59:59.999Z')
-
-    if (error) throw error
-    
-    const orderCount = (count || 0) + 1
-    return `${dateStr}-${orderCount.toString().padStart(3, '0')}`
-  } catch (error) {
-    logger.error('Error generating order number:', error)
-    return `${dateStr}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`
-  }
-}
-
 export const CartProvider = ({ children }) => {
-  const { tenant, table, tableSession } = useTenant()
+  const { tenant, tableSession } = useTenant()
   const [items, setItems] = useState([])
   const [isOpen, setIsOpen] = useState(false)
   const [placingOrder, setPlacingOrder] = useState(false)
@@ -192,81 +168,50 @@ export const CartProvider = ({ children }) => {
     try {
       setPlacingOrder(true)
 
-      // Generar número de orden
-      const orderNumber = await generateOrderNumber(tenant.id)
+      // 2.4 flip: el pedido se crea SERVER-side vía POST /api/orders (task 1.7):
+      // precios/IVA/order_number/session totals los calcula tappmesa_place_order
+      // con service-role. El cliente deja de contar órdenes, calcular totales y
+      // escribir en orders/order_items/table_sessions (anon pierde acceso
+      // post-lockdown). Replay-safe: idempotency_key regenerada por pedido.
+      const idempotencyKey =
+        typeof crypto !== 'undefined' && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2)}`
 
-      // Calcular totales
-      const subtotal = getSubtotal()
-      const tax = getTax()
-      const total = getTotal()
-
-      // Calcular tiempo estimado (suma de tiempos de preparación)
-      const estimatedTime = items.reduce((total, item) => {
-        const prepTime = item.product.preparation_time || 5 // 5 min por defecto
-        return total + (prepTime * item.quantity)
-      }, 0)
-
-      // Crear la orden en Supabase (dejar que genere el UUID automáticamente)
-      const orderData = {
-        tenant_id: tenant.id,
-        table_session_id: tableSession?.id || null,
-        table_number: table?.number || customerInfo.tableNumber || null,
-        customer_name: customerInfo.name,
-        customer_phone: customerInfo.phone,
-        order_number: orderNumber,
-        status: 'pending',
-        subtotal: subtotal,
-        tax: tax,
-        total: total,
-        estimated_time: Math.max(estimatedTime, 10), // Mínimo 10 minutos
-        notes: customerInfo.notes || null
+      const body = {
+        items: items.map((item) => ({
+          product_id: item.product.id,
+          quantity: item.quantity,
+          temperature: item.temperature,
+          notes: item.notes || null
+        })),
+        idempotency_key: idempotencyKey,
+        customer_name: customerInfo.name || null,
+        customer_phone: customerInfo.phone || null
+      }
+      // Sesión de mesa (flujo QR): la capability viaja en body (SEC-006),
+      // nunca en Authorization. Sin capability → takeout (tenant por Host).
+      if (tableSession?.capability_token) {
+        body.capability = tableSession.capability_token
       }
 
-      const { data: order, error: orderError } = await supabase
-        .from('orders')
-        .insert(orderData)
-        .select()
-        .single()
+      const data = await api.post('/api/orders', body)
 
-      if (orderError) throw orderError
+      if (!data?.order) throw new Error('Respuesta inválida del servidor')
 
-      // Crear los items de la orden
-      const orderItems = items.map(item => ({
-        order_id: order.id,
-        product_id: item.product.id,
-        quantity: item.quantity,
-        unit_price: item.product.price,
-        total_price: getItemTotal(item),
-        notes: `${item.temperature ? `Temperatura: ${item.temperature}` : ''}${item.notes ? ` | ${item.notes}` : ''}`
-      }))
-
-      const { error: itemsError } = await supabase
-        .from('order_items')
-        .insert(orderItems)
-
-      if (itemsError) throw itemsError
-
-      // Actualizar sesión de mesa si existe
-      if (tableSession) {
-        await supabase
-          .from('table_sessions')
-          .update({
-            total_orders: (tableSession.total_orders || 0) + 1,
-            total_amount: (tableSession.total_amount || 0) + total
-          })
-          .eq('id', tableSession.id)
-      }
+      // total_orders/total_amount de la sesión los actualiza el server (RPC).
 
       // Limpiar carrito
       clearCart()
       closeCart()
 
-      logger.dev('✅ Pedido creado:', order.order_number)
+      logger.dev('✅ Pedido creado:', data.order.order_number)
       
       return { 
         success: true, 
-        order: order,
-        message: `¡Pedido ${orderNumber} enviado! Tiempo estimado: ${Math.max(estimatedTime, 10)} minutos.`
+        order: data.order,
+        duplicate: !!data.duplicate,
+        message: `¡Pedido ${data.order.order_number} enviado! Tiempo estimado: ${data.order.estimated_time || 10} minutos.`
       }
 
     } catch (error) {

@@ -36,9 +36,12 @@ vi.stubEnv('VITE_SUPABASE_ANON_KEY', 'test-anon-key')
 vi.stubEnv('SUPABASE_SERVICE_ROLE_KEY', 'test-service-role-key')
 
 // Mock document methods
+// configurable: true permite a los tests instalar spies propios (p. ej.
+// capturar el setter para verificar branding dinámico del tenant)
 Object.defineProperty(document, 'title', {
   set: vi.fn(),
   get: vi.fn(() => 'Tappmesa Test'),
+  configurable: true,
 })
 
 Object.defineProperty(document.documentElement.style, 'setProperty', {

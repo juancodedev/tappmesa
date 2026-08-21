@@ -49,18 +49,18 @@ S2 blocks on S1 (SEC-005: migration commits ONLY after routes + token path + uni
 - [x] 1.11 api/middleware/rateLimit.js: keys auth/token, orders, orders/my, table-sessions, admin/users; test 429 burst (RTE-006).
 - [x] 1.12 package.json + .env.local.sample: jsonwebtoken; SUPABASE_JWT_SECRET server-only (never VITE_); SEC-007 client-bundle grep check.
 - [x] 1.13 Delete src/lib/authService.js + src/middleware/tenantResolver.js (zero importers verified); import sweep; verify src/test/lib/authService.test.js still targets supabase.js's authService export.
-- [ ] 1.14 S1 verification: PostgREST test-token query pre-lockdown (SEC-001 scenario); `pnpm test:run` green; June-2026 fixes not regressed (design §12).
+- [x] 1.14 S1 verification: PostgREST test-token query pre-lockdown (SEC-001 scenario); `pnpm test:run` green; June-2026 fixes not regressed (design §12).
 
 ## Split 2 — rls-lockdown-flip (BLOCKS on 1.14 verified)
 
-- [ ] 2.1 database/secure-data-access.sql (ONE txn, order §4): introspective DROP sweep (bare true / auth.uid() / latch quals + named inventory incl. `tables_{select,insert,update,delete}_authenticated` ×4) → DROP fns (latch 5, reset-token, QR ×2, table_statuses ×2; loyalty trigger + fn) → REVOKE EXECUTE (analytics family; claim-guard `get_top_products`) → grants matrix (zero anon on claim tables; menu anon; stock_* TO authenticated) → `app_claim_tenant_id()` / `app_is_super_admin()` → claim policies (FOR ALL authenticated OR super_admin; reservations unchanged) → indexes confirm → COMMIT.
-- [ ] 2.2 database/rollback-secure-data-access.sql (reverse DDL) + pre-flight `pg_policies` snapshot step; archive dropped fns under database/archive/.
-- [ ] 2.3 Delete/archive superseded scripts: setup-rls, fix-rls-orders, fix-rls-tables, fix-tables-rls-tenant-isolation, fix-rls-customer-history, 01/02-SEGURO `USING(true)` blocks, fix-reset-token-function.sql, add-qr-expiration.sql; keep migrate-to-secure-auth.sql + functions.sql.
-- [ ] 2.4 CartContext.jsx: placeOrder → POST /api/orders (drop client order_number count + client totals); RE-ENABLE src/test/context/CartContext.test.jsx (remove vite.config.js exclude) + update tests (RLS-001).
-- [ ] 2.5 TenantContext.jsx: createOrResumeTableSession → POST /api/table-sessions (store capability_token); RE-ENABLE TenantContext.test.jsx + update tests.
-- [ ] 2.6 TableOrdersHistory.jsx: poller → GET /api/orders/my?capability; cancel → POST /:id/cancel; tests (drop-in shape, RTE-002).
-- [ ] 2.7 CustomerMenuHeader.jsx: poller → GET /api/orders/my?capability (latest-non-cancelled/delivered filter); tests.
-- [ ] 2.8 S2 verification (§12): `pg_policies` asserts (zero true/auth.uid()/latch quals; named inventory gone); `pg_proc` DROP targets absent; anon matrix 0 rows on orders/order_items/table_sessions/customers/customer_order_history/table_statuses/admin_*/password_reset_tokens; menu reads OK; claim matrix own-tenant rows / cross-tenant 0 / super_admin OK; trigger smoke (stock_movements, session totals); day-of flip checklist (SEC-005); `pnpm test:run` green.
+- [x] 2.1 database/secure-data-access.sql (ONE txn, order §4): introspective DROP sweep (bare true / auth.uid() / latch quals + named inventory incl. `tables_{select,insert,update,delete}_authenticated` ×4) → DROP fns (latch 5, reset-token, QR ×2, table_statuses ×2; loyalty trigger + fn) → REVOKE EXECUTE (analytics family; claim-guard `get_top_products`) → grants matrix (zero anon on claim tables; menu anon; stock_* TO authenticated) → `app_claim_tenant_id()` / `app_is_super_admin()` → claim policies (FOR ALL authenticated OR super_admin; reservations unchanged) → indexes confirm → COMMIT.
+- [x] 2.2 database/rollback-secure-data-access.sql (reverse DDL) + pre-flight `pg_policies` snapshot step; archive dropped fns under database/archive/.
+- [x] 2.3 Delete/archive superseded scripts: setup-rls, fix-rls-orders, fix-rls-tables, fix-tables-rls-tenant-isolation, fix-rls-customer-history, 01/02-SEGURO `USING(true)` blocks, fix-reset-token-function.sql, add-qr-expiration.sql; keep migrate-to-secure-auth.sql + functions.sql.
+- [x] 2.4 CartContext.jsx: placeOrder → POST /api/orders (drop client order_number count + client totals); RE-ENABLE src/test/context/CartContext.test.jsx (remove vite.config.js exclude) + update tests (RLS-001).
+- [x] 2.5 TenantContext.jsx: createOrResumeTableSession → POST /api/table-sessions (store capability_token); RE-ENABLE TenantContext.test.jsx + update tests.
+- [x] 2.6 TableOrdersHistory.jsx: poller → GET /api/orders/my?capability; cancel → POST /:id/cancel; tests (drop-in shape, RTE-002).
+- [x] 2.7 CustomerMenuHeader.jsx: poller → GET /api/orders/my?capability (latest-non-cancelled/delivered filter); tests.
+- [x] 2.8 S2 verification (§12): `pg_policies` asserts (zero true/auth.uid()/latch quals; named inventory gone); `pg_proc` DROP targets absent; anon matrix 0 rows on orders/order_items/table_sessions/customers/customer_order_history/table_statuses/admin_*/password_reset_tokens; menu reads OK; claim matrix own-tenant rows / cross-tenant 0 / super_admin OK; trigger smoke (stock_movements, session totals); day-of flip checklist (SEC-005); `pnpm test:run` green.
 
 ## Split 3 — route-hardening (depends on S1 claims; 2 ∥ 3)
 
