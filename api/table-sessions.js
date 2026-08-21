@@ -21,9 +21,9 @@
 
 const { createClient } = require('@supabase/supabase-js');
 const { createHmac, randomUUID, timingSafeEqual } = require('node:crypto');
-const { corsMiddleware } = require('./middleware/cors');
-const { rateLimiter, blacklistMiddleware } = require('./middleware/rateLimit');
-const logger = require('./utils/logger');
+const { corsMiddleware } = require('../lib/middleware/cors');
+const { rateLimiter, blacklistMiddleware } = require('../lib/middleware/rateLimit');
+const logger = require('../lib/utils/logger');
 
 const CAPABILITY_TAG = 'tappmesa-capability-v1';
 

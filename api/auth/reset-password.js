@@ -2,11 +2,11 @@
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const { createClient } = require('@supabase/supabase-js');
-const logger = require('../utils/logger');
-const { rateLimiter, blacklistMiddleware } = require('../middleware/rateLimit');
-const { corsMiddleware } = require('../middleware/cors');
-const { sendEmail, getPasswordResetEmail } = require('../services/emailService');
-const { validatePassword } = require('../middleware/validation');
+const logger = require('../../lib/utils/logger');
+const { rateLimiter, blacklistMiddleware } = require('../../lib/middleware/rateLimit');
+const { corsMiddleware } = require('../../lib/middleware/cors');
+const { sendEmail, getPasswordResetEmail } = require('../../lib/services/emailService');
+const { validatePassword } = require('../../lib/middleware/validation');
 
 const RESET_TOKEN_TTL_MS = 24 * 60 * 60 * 1000; // 24 horas
 

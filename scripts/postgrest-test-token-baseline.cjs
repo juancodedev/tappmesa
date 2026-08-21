@@ -54,7 +54,7 @@ try {
   // dotenv missing — env vars must be provided inline.
 }
 
-const { mintAdminJwt, verifyToken, JWT_TTL_SECONDS, JWT_ISSUER } = require('../api/utils/jwt.js');
+const { mintAdminJwt, verifyToken, JWT_TTL_SECONDS, JWT_ISSUER } = require('../lib/utils/jwt.js');
 
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;

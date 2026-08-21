@@ -7,7 +7,7 @@ import {
   getJwtSecret,
   JWT_TTL_SECONDS,
   JWT_ISSUER,
-} from '../../../api/utils/jwt.js'
+} from '../../../lib/utils/jwt.js'
 
 const SECRET = 'test-supabase-jwt-secret'
 const REAL_SECRET = process.env.SUPABASE_JWT_SECRET
