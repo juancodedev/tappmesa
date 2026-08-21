@@ -126,7 +126,7 @@ const SuperAdminCustomersManager = () => {
     } else {
       return {
         text: 'Regular',
-        color: 'bg-gray-100 text-gray-800',
+        color: 'bg-primary-50 text-gray-800',
         icon: Users
       }
     }
@@ -174,7 +174,7 @@ const SuperAdminCustomersManager = () => {
 
           <button
             onClick={loadData}
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-primary-50 hover:bg-primary-200 rounded-lg transition-colors"
           >
             <RefreshCw className="h-5 w-5" />
             <span>Actualizar</span>
@@ -199,14 +199,14 @@ const SuperAdminCustomersManager = () => {
               placeholder="Buscar por nombre, teléfono, email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+              className="w-full pl-10 pr-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             />
           </div>
 
           <select
             value={customerFilter}
             onChange={(e) => setCustomerFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
             <option value="all">Todos los clientes</option>
             <option value="vip">Solo VIP</option>
@@ -218,7 +218,7 @@ const SuperAdminCustomersManager = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Clientes</p>
@@ -228,7 +228,7 @@ const SuperAdminCustomersManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Clientes VIP</p>
@@ -238,7 +238,7 @@ const SuperAdminCustomersManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Nuevos (30 días)</p>
@@ -248,7 +248,7 @@ const SuperAdminCustomersManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Ingresos Totales</p>
@@ -263,7 +263,7 @@ const SuperAdminCustomersManager = () => {
 
       {/* Customers Grid */}
       {filteredCustomers.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-12 text-center">
           <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No hay clientes</h3>
           <p className="text-gray-600">
@@ -279,7 +279,7 @@ const SuperAdminCustomersManager = () => {
             return (
               <div
                 key={customer.id}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+                className="bg-white rounded-lg shadow-sm border border-primary-200 p-6 hover:shadow-md transition-shadow"
               >
                 {/* Header with segment */}
                 <div className="flex items-center justify-between mb-4">
@@ -322,7 +322,7 @@ const SuperAdminCustomersManager = () => {
                 </div>
 
                 {/* Tenant */}
-                <div className="mb-4 pb-4 border-b border-gray-200">
+                <div className="mb-4 pb-4 border-b border-primary-200">
                   <div className="flex items-center text-sm text-gray-600">
                     <Building2 className="h-4 w-4 text-gray-400 mr-2" />
                     <div>
@@ -334,13 +334,13 @@ const SuperAdminCustomersManager = () => {
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="text-center p-2 bg-gray-50 rounded-lg">
+                  <div className="text-center p-2 bg-cream-50 rounded-lg">
                     <ShoppingBag className="h-5 w-5 text-gray-400 mx-auto mb-1" />
                     <div className="text-lg font-bold text-gray-900">{customer.total_orders || 0}</div>
                     <div className="text-xs text-gray-500">Pedidos</div>
                   </div>
 
-                  <div className="text-center p-2 bg-gray-50 rounded-lg">
+                  <div className="text-center p-2 bg-cream-50 rounded-lg">
                     <DollarSign className="h-5 w-5 text-gray-400 mx-auto mb-1" />
                     <div className="text-lg font-bold text-gray-900">
                       {formatCurrency(customer.total_spent)}
@@ -351,7 +351,7 @@ const SuperAdminCustomersManager = () => {
 
                 {/* Last visit */}
                 {customer.last_order_at && (
-                  <div className="mt-3 pt-3 border-t border-gray-200">
+                  <div className="mt-3 pt-3 border-t border-primary-200">
                     <div className="flex items-center justify-center text-xs text-gray-500">
                       <Calendar className="h-3 w-3 mr-1" />
                       Última visita: {formatDate(customer.last_order_at)}

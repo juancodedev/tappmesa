@@ -245,7 +245,7 @@ const SuperAdminTenantsManager = () => {
 
           <button
             onClick={loadData}
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-primary-50 hover:bg-primary-200 rounded-lg transition-colors"
           >
             <RefreshCw className="h-5 w-5" />
             <span>Actualizar</span>
@@ -262,7 +262,7 @@ const SuperAdminTenantsManager = () => {
               placeholder="Buscar por nombre, slug o subdomain..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
 
@@ -272,7 +272,7 @@ const SuperAdminTenantsManager = () => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="px-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
               <option value="all">Todos los estados</option>
               <option value="active">Activos</option>
@@ -284,7 +284,7 @@ const SuperAdminTenantsManager = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Tenants</p>
@@ -294,7 +294,7 @@ const SuperAdminTenantsManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Activos</p>
@@ -306,7 +306,7 @@ const SuperAdminTenantsManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Inactivos</p>
@@ -318,7 +318,7 @@ const SuperAdminTenantsManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Con Plan</p>
@@ -333,7 +333,7 @@ const SuperAdminTenantsManager = () => {
 
       {/* Tenants List */}
       {filteredTenants.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
+        <div className="text-center py-12 bg-cream-50 rounded-lg">
           <Building2 className="h-16 w-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             No se encontraron tenants
@@ -345,7 +345,7 @@ const SuperAdminTenantsManager = () => {
       ) : (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-cream-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Tenant
@@ -369,7 +369,7 @@ const SuperAdminTenantsManager = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredTenants.map((tenant) => (
-                <tr key={tenant.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={tenant.id} className="hover:bg-cream-50 transition-colors">
                   {/* Tenant Info */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
@@ -577,7 +577,7 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
             <select
               value={selectedPlanId}
               onChange={(e) => setSelectedPlanId(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             >
               <option value="">Sin plan asignado</option>
               {plans.filter(p => p.is_active).map((plan) => (
@@ -616,7 +616,7 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
                     custom_max_tables: e.target.value ? parseInt(e.target.value) : null
                   })}
                   placeholder="Dejar vacío para usar límite del plan"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <div>
@@ -630,7 +630,7 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
                     custom_max_products: e.target.value ? parseInt(e.target.value) : null
                   })}
                   placeholder="Dejar vacío para usar límite del plan"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <div>
@@ -644,7 +644,7 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
                     custom_max_people: e.target.value ? parseInt(e.target.value) : null
                   })}
                   placeholder="Dejar vacío para usar límite del plan"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 />
               </div>
             </div>
@@ -661,19 +661,19 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
           <div className="border-t pt-6">
             <h3 className="text-sm font-medium text-gray-700 mb-3">Estadísticas de Uso</h3>
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gray-50 p-3 rounded-lg">
+              <div className="bg-cream-50 p-3 rounded-lg">
                 <div className="text-xs text-gray-600">Mesas</div>
                 <div className="text-2xl font-bold text-gray-900">{tenant.counts.tables}</div>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg">
+              <div className="bg-cream-50 p-3 rounded-lg">
                 <div className="text-xs text-gray-600">Productos</div>
                 <div className="text-2xl font-bold text-gray-900">{tenant.counts.products}</div>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg">
+              <div className="bg-cream-50 p-3 rounded-lg">
                 <div className="text-xs text-gray-600">Usuarios</div>
                 <div className="text-2xl font-bold text-gray-900">{tenant.counts.users}</div>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg">
+              <div className="bg-cream-50 p-3 rounded-lg">
                 <div className="text-xs text-gray-600">Pedidos</div>
                 <div className="text-2xl font-bold text-gray-900">{tenant.counts.orders}</div>
               </div>

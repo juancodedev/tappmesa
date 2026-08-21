@@ -23,7 +23,7 @@ const TenantSelector = ({
         <select
           value={selectedTenantId || 'all'}
           onChange={(e) => onTenantChange(e.target.value === 'all' ? null : e.target.value)}
-          className="px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white text-sm font-medium"
+          className="px-4 py-2 border-2 border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-sm font-medium"
         >
           <option value="all">
             🌍 Todos los Tenants
