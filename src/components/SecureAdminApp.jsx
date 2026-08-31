@@ -526,7 +526,7 @@ const SecureAdminAppContent = () => {
 }
 
 const SidebarContent = ({ navigation, user, onLogout, closeSidebar, isNavigationActive }) => (
-  <div className="flex flex-col h-full bg-primary-900 shadow-2xl">
+  <div className="flex flex-col h-full bg-gradient-to-b from-primary-800 to-primary-900 shadow-2xl">
     {/* Logo */}
     <div className="flex items-center justify-between h-16 px-6 border-b border-primary-800/50">
       <div className="flex items-center space-x-3">

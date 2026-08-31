@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react'
-import { supabase } from '../../lib/supabase'
 import { useTenant } from '../../hooks/useTenant'
 import { useAuth } from '../../hooks/useAuth'
+import { authService } from '../../lib/supabase'
 import { SuperAdminContext } from '../../context/SuperAdminContext'
 import SuperAdminNoTenantMessage from './SuperAdminNoTenantMessage'
 import {
@@ -25,6 +25,27 @@ const UsersManager = () => {
   const { tenant } = useTenant()
   const { user, isSuperAdmin } = useAuth()
   const superAdminContext = useContext(SuperAdminContext)
+
+  // CRUD de usuarios via /api/admin/users (task 1.9): el hash y el scope
+  // viven server-side; acá no se toca admin_users directamente.
+  const apiCall = async (url, options = {}) => {
+    const response = await authService.authenticatedFetch(url, {
+      ...options,
+      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
+    })
+    if (!response.ok) {
+      let message = 'Error del servidor'
+      try {
+        const data = await response.json()
+        message = data.error || message
+      } catch { /* cuerpo no JSON */ }
+      if (response.status === 403) message = 'Sin permisos para esa acción'
+      if (response.status === 409) message = 'No puedes eliminar tu propio usuario'
+      throw new Error(message)
+    }
+    if (response.status === 204) return null
+    return response.json()
+  }
 
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
@@ -66,60 +87,22 @@ const UsersManager = () => {
     try {
       setLoading(true)
 
-      if (!currentTenantId) {
+      if (!currentTenantId && !isSuperAdmin) {
         console.warn('No hay tenant_id disponible')
         setUsers([])
         return
       }
 
-      // Cargar usuarios desde admin_users (para tenant admins y staff)
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select('*')
-        .eq('tenant_id', currentTenantId)
-        .order('created_at', { ascending: false })
-
-      if (error) {
-        console.warn('No se pudo cargar usuarios desde Supabase:', error)
-        // Datos de ejemplo si falla
-        setUsers([
-          {
-            id: '1',
-            full_name: 'Juan Pérez',
-            email: 'juan@cafecentral.cl',
-            phone: '+56912345678',
-            role: 'tenant_admin',
-            is_active: true,
-            last_login: '2024-12-19T10:30:00Z',
-            created_at: '2024-01-15T08:00:00Z'
-          },
-          {
-            id: '2',
-            full_name: 'María González',
-            email: 'maria@cafecentral.cl',
-            phone: '+56987654321',
-            role: 'staff',
-            is_active: true,
-            last_login: '2024-12-19T09:15:00Z',
-            created_at: '2024-02-20T10:00:00Z'
-          },
-          {
-            id: '3',
-            full_name: 'Carlos Silva',
-            email: 'carlos@cafecentral.cl',
-            phone: '+56911122334',
-            role: 'staff',
-            is_active: false,
-            last_login: '2024-12-10T14:22:00Z',
-            created_at: '2024-03-01T12:00:00Z'
-          }
-        ])
-      } else {
-        setUsers(data || [])
-        console.log('✅ Usuarios cargados:', data?.length || 0)
-      }
+      // Cargar usuarios vía API (el server aplica el scope por claims)
+      const params = isSuperAdmin && superAdminContext?.selectedTenantId
+        ? `?tenant_id=${encodeURIComponent(superAdminContext.selectedTenantId)}`
+        : ''
+      const data = await apiCall(`/api/admin/users${params}`)
+      setUsers(data.users || [])
+      console.log('✅ Usuarios cargados:', data.users?.length || 0)
     } catch (error) {
       console.error('Error loading users:', error)
+      alert('Error al cargar usuarios: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -197,69 +180,38 @@ const UsersManager = () => {
           email: formData.email.trim().toLowerCase(),
           phone: formData.phone.trim(),
           role: formData.role,
-          is_active: formData.is_active,
-          updated_at: new Date().toISOString()
+          is_active: formData.is_active
         }
 
-        // Verificar que no exista otro usuario con el mismo email
-        const { data: existingUser } = await supabase
-          .from('admin_users')
-          .select('id')
-          .eq('email', formData.email.trim().toLowerCase())
-          .eq('tenant_id', currentTenantId)
-          .neq('id', selectedUser.id)
-          .single()
-
-        if (existingUser) {
-          alert('Ya existe un usuario con ese email')
-          return
-        }
-
-        const { error } = await supabase
-          .from('admin_users')
-          .update(updateData)
-          .eq('id', selectedUser.id)
-
-        if (error) throw error
-        console.log('✅ Usuario actualizado')
-
-        // TODO: Si cambió la contraseña, actualizar en auth.users
+        // Si cambió la contraseña, el server la re-hashea (bcrypt 12)
         if (formData.password.trim()) {
-          console.log('⚠️ Actualización de contraseña pendiente de implementar')
+          updateData.password = formData.password
         }
+
+        await apiCall(`/api/admin/users/${selectedUser.id}`, {
+          method: 'PUT',
+          body: JSON.stringify(updateData)
+        })
+        console.log('✅ Usuario actualizado')
       } else {
-        // Crear nuevo usuario
-        // Verificar que no exista un usuario con el mismo email
-        const { data: existingUser } = await supabase
-          .from('admin_users')
-          .select('id')
-          .eq('email', formData.email.trim().toLowerCase())
-          .eq('tenant_id', currentTenantId)
-          .single()
-
-        if (existingUser) {
-          alert('Ya existe un usuario con ese email')
-          return
+        // Crear nuevo usuario (bcrypt y scope enteramente server-side)
+        const payload = {
+          full_name: formData.full_name.trim(),
+          email: formData.email.trim().toLowerCase(),
+          phone: formData.phone.trim(),
+          role: formData.role,
+          password: formData.password,
+          is_active: formData.is_active
+        }
+        // Solo el super_admin indica tenant; para tenant_admin va por claims
+        if (isSuperAdmin && currentTenantId) {
+          payload.tenant_id = currentTenantId
         }
 
-        // Hashear la contraseña (usando el mismo método que en secureAuthDirect)
-        const passwordHash = formData.password // Por ahora guardar como texto plano, idealmente hashear
-
-        // Crear usuario en admin_users
-        const { error } = await supabase
-          .from('admin_users')
-          .insert({
-            tenant_id: currentTenantId,
-            full_name: formData.full_name.trim(),
-            email: formData.email.trim().toLowerCase(),
-            phone: formData.phone.trim(),
-            role: formData.role,
-            password_hash: passwordHash,
-            is_active: formData.is_active,
-            created_at: new Date().toISOString()
-          })
-
-        if (error) throw error
+        await apiCall('/api/admin/users', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        })
         console.log('✅ Usuario creado')
       }
 
@@ -281,13 +233,8 @@ const UsersManager = () => {
     }
 
     try {
-      const { error } = await supabase
-        .from('admin_users')
-        .delete()
-        .eq('id', userId)
+      await apiCall(`/api/admin/users/${userId}`, { method: 'DELETE' })
 
-      if (error) throw error
-      
       console.log('✅ Usuario eliminado')
       await loadUsers()
     } catch (error) {
@@ -298,16 +245,11 @@ const UsersManager = () => {
 
   const toggleUserStatus = async (userId, currentStatus) => {
     try {
-      const { error } = await supabase
-        .from('admin_users')
-        .update({
-          is_active: !currentStatus,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', userId)
+      await apiCall(`/api/admin/users/${userId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ is_active: !currentStatus })
+      })
 
-      if (error) throw error
-      
       console.log('✅ Estado del usuario actualizado')
       await loadUsers()
     } catch (error) {

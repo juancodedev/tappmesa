@@ -172,7 +172,7 @@ const SuperAdminStockManager = () => {
 
           <button
             onClick={loadData}
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-primary-50 hover:bg-primary-200 rounded-lg transition-colors"
           >
             <RefreshCw className="h-5 w-5" />
             <span>Actualizar</span>
@@ -197,14 +197,14 @@ const SuperAdminStockManager = () => {
               placeholder="Buscar productos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+              className="w-full pl-10 pr-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             />
           </div>
 
           <select
             value={stockFilter}
             onChange={(e) => setStockFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
             <option value="all">Todos los estados</option>
             <option value="low">Stock Bajo</option>
@@ -216,7 +216,7 @@ const SuperAdminStockManager = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Items</p>
@@ -226,7 +226,7 @@ const SuperAdminStockManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Stock Bajo</p>
@@ -236,7 +236,7 @@ const SuperAdminStockManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Sin Stock</p>
@@ -246,7 +246,7 @@ const SuperAdminStockManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Valor Total</p>
@@ -261,7 +261,7 @@ const SuperAdminStockManager = () => {
 
       {/* Inventory Table */}
       {filteredInventory.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-12 text-center">
           <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No hay items de inventario</h3>
           <p className="text-gray-600">
@@ -269,10 +269,10 @@ const SuperAdminStockManager = () => {
           </p>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg shadow-sm border border-primary-200">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-cream-50 border-b border-primary-200">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Producto
@@ -301,7 +301,7 @@ const SuperAdminStockManager = () => {
                   const StatusIcon = stockStatus.icon
 
                   return (
-                    <tr key={item.id} className="hover:bg-gray-50">
+                    <tr key={item.id} className="hover:bg-cream-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <Package className="h-5 w-5 text-gray-400 mr-3" />
@@ -328,7 +328,7 @@ const SuperAdminStockManager = () => {
                             {item.current_stock}
                           </div>
                           <div className="w-16">
-                            <div className="bg-gray-200 rounded-full h-2">
+                            <div className="bg-primary-200 rounded-full h-2">
                               <div
                                 className={`h-2 rounded-full ${
                                   stockStatus.status === 'low' ? 'bg-red-500' :

@@ -165,7 +165,7 @@ const Settings = () => {
 
       <div className="space-y-8">
         {/* Información Básica */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <Globe className="w-5 h-5 mr-2" />
             Información Básica
@@ -180,7 +180,7 @@ const Settings = () => {
                 type="text"
                 value={settings.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
 
@@ -193,7 +193,7 @@ const Settings = () => {
                 type="tel"
                 value={settings.phone}
                 onChange={(e) => handleInputChange("phone", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
 
@@ -206,7 +206,7 @@ const Settings = () => {
                 type="email"
                 value={settings.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
 
@@ -218,7 +218,7 @@ const Settings = () => {
                 type="url"
                 value={settings.website}
                 onChange={(e) => handleInputChange("website", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
 
@@ -232,7 +232,7 @@ const Settings = () => {
                   handleInputChange("description", e.target.value)
                 }
                 rows={3}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
               />
             </div>
 
@@ -245,14 +245,14 @@ const Settings = () => {
                 type="text"
                 value={settings.address}
                 onChange={(e) => handleInputChange("address", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
           </div>
         </div>
 
         {/* Branding */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <Palette className="w-5 h-5 mr-2" />
             Branding
@@ -270,7 +270,7 @@ const Settings = () => {
                   onChange={(e) =>
                     handleInputChange("primary_color", e.target.value)
                   }
-                  className="w-12 h-10 border border-gray-300 rounded cursor-pointer"
+                  className="w-12 h-10 border border-primary-300 rounded cursor-pointer"
                 />
                 <input
                   type="text"
@@ -278,7 +278,7 @@ const Settings = () => {
                   onChange={(e) =>
                     handleInputChange("primary_color", e.target.value)
                   }
-                  className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="flex-1 border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
             </div>
@@ -294,7 +294,7 @@ const Settings = () => {
                   onChange={(e) =>
                     handleInputChange("secondary_color", e.target.value)
                   }
-                  className="w-12 h-10 border border-gray-300 rounded cursor-pointer"
+                  className="w-12 h-10 border border-primary-300 rounded cursor-pointer"
                 />
                 <input
                   type="text"
@@ -302,7 +302,7 @@ const Settings = () => {
                   onChange={(e) =>
                     handleInputChange("secondary_color", e.target.value)
                   }
-                  className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="flex-1 border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
             </div>
@@ -319,7 +319,7 @@ const Settings = () => {
                     className="w-12 h-12 object-cover rounded-lg"
                   />
                 )}
-                <label className="flex items-center space-x-2 cursor-pointer bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition-colors">
+                <label className="flex items-center space-x-2 cursor-pointer bg-primary-50 hover:bg-primary-200 px-3 py-2 rounded-lg transition-colors">
                   <Upload className="w-4 h-4" />
                   <span className="text-sm">Subir Logo</span>
                   <input
@@ -335,7 +335,7 @@ const Settings = () => {
         </div>
 
         {/* Horarios de Atención */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <Clock className="w-5 h-5 mr-2" />
             Horarios de Atención
@@ -357,7 +357,7 @@ const Settings = () => {
                     onChange={(e) =>
                       handleBusinessHourChange(day, "closed", !e.target.checked)
                     }
-                    className="rounded border-gray-300 text-primary focus:ring-primary"
+                    className="rounded border-primary-300 text-primary focus:ring-primary"
                   />
                   <span className="text-sm text-gray-600">Abierto</span>
                 </label>
@@ -371,7 +371,7 @@ const Settings = () => {
                         onChange={(e) =>
                           handleBusinessHourChange(day, "open", e.target.value)
                         }
-                        className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        className="border border-primary-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                       <span className="text-gray-500">a</span>
                       <input
@@ -380,7 +380,7 @@ const Settings = () => {
                         onChange={(e) =>
                           handleBusinessHourChange(day, "close", e.target.value)
                         }
-                        className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        className="border border-primary-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                     </div>
                   </>
@@ -395,7 +395,7 @@ const Settings = () => {
         </div>
 
         {/* Configuraciones Operativas */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <DollarSign className="w-5 h-5 mr-2" />
             Configuraciones Operativas
@@ -415,7 +415,7 @@ const Settings = () => {
                 onChange={(e) =>
                   handleInputChange("tax_rate", parseFloat(e.target.value))
                 }
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
 
@@ -426,7 +426,7 @@ const Settings = () => {
               <select
                 value={settings.currency}
                 onChange={(e) => handleInputChange("currency", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="CLP">Peso Chileno (CLP)</option>
                 <option value="USD">Dólar (USD)</option>
@@ -441,7 +441,7 @@ const Settings = () => {
               <select
                 value={settings.timezone}
                 onChange={(e) => handleInputChange("timezone", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="America/Santiago">Santiago (UTC-3)</option>
                 <option value="America/New_York">Nueva York (UTC-5)</option>
@@ -452,7 +452,7 @@ const Settings = () => {
         </div>
 
         {/* Servicios */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <Wifi className="w-5 h-5 mr-2" />
             Servicios Disponibles
@@ -466,7 +466,7 @@ const Settings = () => {
                 onChange={(e) =>
                   handleInputChange("table_service_enabled", e.target.checked)
                 }
-                className="rounded border-gray-300 text-primary focus:ring-primary"
+                className="rounded border-primary-300 text-primary focus:ring-primary"
               />
               <div>
                 <span className="font-medium text-gray-900">
@@ -485,7 +485,7 @@ const Settings = () => {
                 onChange={(e) =>
                   handleInputChange("takeaway_enabled", e.target.checked)
                 }
-                className="rounded border-gray-300 text-primary focus:ring-primary"
+                className="rounded border-primary-300 text-primary focus:ring-primary"
               />
               <div>
                 <span className="font-medium text-gray-900">Para Llevar</span>
@@ -502,7 +502,7 @@ const Settings = () => {
                 onChange={(e) =>
                   handleInputChange("delivery_enabled", e.target.checked)
                 }
-                className="rounded border-gray-300 text-primary focus:ring-primary"
+                className="rounded border-primary-300 text-primary focus:ring-primary"
               />
               <div>
                 <span className="font-medium text-gray-900">Delivery</span>
@@ -515,7 +515,7 @@ const Settings = () => {
         </div>
 
         {/* Automatización */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <Printer className="w-5 h-5 mr-2" />
             Automatización
@@ -529,7 +529,7 @@ const Settings = () => {
                 onChange={(e) =>
                   handleInputChange("order_auto_print", e.target.checked)
                 }
-                className="rounded border-gray-300 text-primary focus:ring-primary"
+                className="rounded border-primary-300 text-primary focus:ring-primary"
               />
               <div>
                 <span className="font-medium text-gray-900">
@@ -544,7 +544,7 @@ const Settings = () => {
         </div>
 
         {/* QR Codes */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <QrCode className="w-5 h-5 mr-2" />
             Códigos QR
@@ -566,7 +566,7 @@ const Settings = () => {
                   )
                 }
                 placeholder="Dejar vacío para nunca expirar"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
               <p className="mt-2 text-sm text-gray-600">
                 Los códigos QR de las mesas expirarán después de este número de días.
@@ -595,7 +595,7 @@ const Settings = () => {
         </div>
 
         {/* Notificaciones */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <Bell className="w-5 h-5 mr-2" />
             Notificaciones
@@ -609,7 +609,7 @@ const Settings = () => {
                 onChange={(e) =>
                   handleNotificationChange("email", e.target.checked)
                 }
-                className="rounded border-gray-300 text-primary focus:ring-primary"
+                className="rounded border-primary-300 text-primary focus:ring-primary"
               />
               <div>
                 <span className="font-medium text-gray-900">Email</span>
@@ -626,7 +626,7 @@ const Settings = () => {
                 onChange={(e) =>
                   handleNotificationChange("sms", e.target.checked)
                 }
-                className="rounded border-gray-300 text-primary focus:ring-primary"
+                className="rounded border-primary-300 text-primary focus:ring-primary"
               />
               <div>
                 <span className="font-medium text-gray-900">SMS</span>
@@ -643,7 +643,7 @@ const Settings = () => {
                 onChange={(e) =>
                   handleNotificationChange("push", e.target.checked)
                 }
-                className="rounded border-gray-300 text-primary focus:ring-primary"
+                className="rounded border-primary-300 text-primary focus:ring-primary"
               />
               <div>
                 <span className="font-medium text-gray-900">Push</span>

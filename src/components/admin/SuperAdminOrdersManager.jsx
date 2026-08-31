@@ -103,10 +103,10 @@ const SuperAdminOrdersManager = () => {
       'pending': 'bg-yellow-100 text-yellow-800 border-yellow-300',
       'preparing': 'bg-blue-100 text-blue-800 border-blue-300',
       'ready': 'bg-green-100 text-green-800 border-green-300',
-      'completed': 'bg-gray-100 text-gray-800 border-gray-300',
+      'completed': 'bg-primary-50 text-gray-800 border-primary-300',
       'cancelled': 'bg-red-100 text-red-800 border-red-300'
     }
-    return colors[status] || 'bg-gray-100 text-gray-800 border-gray-300'
+    return colors[status] || 'bg-primary-50 text-gray-800 border-primary-300'
   }
 
   const getStatusText = (status) => {
@@ -186,7 +186,7 @@ const SuperAdminOrdersManager = () => {
 
           <button
             onClick={loadData}
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-primary-50 hover:bg-primary-200 rounded-lg transition-colors"
           >
             <RefreshCw className="h-5 w-5" />
             <span>Actualizar</span>
@@ -202,14 +202,14 @@ const SuperAdminOrdersManager = () => {
               placeholder="Buscar pedidos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+              className="w-full pl-10 pr-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             />
           </div>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
             <option value="all">Todos los estados</option>
             <option value="pending">Pendientes</option>
@@ -222,7 +222,7 @@ const SuperAdminOrdersManager = () => {
           <select
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
             <option value="today">Hoy</option>
             <option value="week">Última semana</option>
@@ -234,7 +234,7 @@ const SuperAdminOrdersManager = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Pedidos</p>
@@ -244,7 +244,7 @@ const SuperAdminOrdersManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Ingresos Totales</p>
@@ -254,7 +254,7 @@ const SuperAdminOrdersManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Pendientes</p>
@@ -264,7 +264,7 @@ const SuperAdminOrdersManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Completados</p>
@@ -277,14 +277,14 @@ const SuperAdminOrdersManager = () => {
 
       {/* Orders Table */}
       {filteredOrders.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
+        <div className="text-center py-12 bg-cream-50 rounded-lg">
           <ShoppingBag className="h-16 w-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No se encontraron pedidos</h3>
         </div>
       ) : (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-cream-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                   # Pedido
@@ -314,7 +314,7 @@ const SuperAdminOrdersManager = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={order.id} className="hover:bg-cream-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">
                       {order.order_number}

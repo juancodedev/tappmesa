@@ -121,7 +121,7 @@ const SuperAdminTablesManager = () => {
 
           <button
             onClick={loadData}
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-primary-50 hover:bg-primary-200 rounded-lg transition-colors"
           >
             <RefreshCw className="h-5 w-5" />
             <span>Actualizar</span>
@@ -146,14 +146,14 @@ const SuperAdminTablesManager = () => {
               placeholder="Buscar mesas..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+              className="w-full pl-10 pr-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             />
           </div>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
             <option value="all">Todos los estados</option>
             <option value="active">Activas</option>
@@ -164,7 +164,7 @@ const SuperAdminTablesManager = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Mesas</p>
@@ -174,7 +174,7 @@ const SuperAdminTablesManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Activas</p>
@@ -184,7 +184,7 @@ const SuperAdminTablesManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Con Código QR</p>
@@ -194,7 +194,7 @@ const SuperAdminTablesManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Tenants</p>
@@ -207,7 +207,7 @@ const SuperAdminTablesManager = () => {
 
       {/* Tables Grid */}
       {filteredTables.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
+        <div className="text-center py-12 bg-cream-50 rounded-lg">
           <Coffee className="h-16 w-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No se encontraron mesas</h3>
         </div>
@@ -217,7 +217,7 @@ const SuperAdminTablesManager = () => {
             <div
               key={table.id}
               className={`bg-white rounded-lg shadow-md border-2 overflow-hidden hover:shadow-lg transition-shadow ${
-                table.is_active ? 'border-gray-200' : 'border-red-200 opacity-60'
+                table.is_active ? 'border-primary-200' : 'border-red-200 opacity-60'
               }`}
             >
               {/* Header */}
@@ -274,7 +274,7 @@ const SuperAdminTablesManager = () => {
                     )}
                   </div>
                 ) : (
-                  <div className="bg-gray-50 border border-gray-200 rounded p-2">
+                  <div className="bg-cream-50 border border-primary-200 rounded p-2">
                     <div className="flex items-center text-sm text-gray-500">
                       <QrCode className="h-4 w-4 mr-2" />
                       <span>Sin código QR</span>
@@ -283,7 +283,7 @@ const SuperAdminTablesManager = () => {
                 )}
 
                 {/* Created Date */}
-                <div className="flex items-center text-xs text-gray-500 pt-2 border-t border-gray-200">
+                <div className="flex items-center text-xs text-gray-500 pt-2 border-t border-primary-200">
                   <Calendar className="h-3 w-3 mr-1" />
                   <span>Creada: {formatDate(table.created_at)}</span>
                 </div>

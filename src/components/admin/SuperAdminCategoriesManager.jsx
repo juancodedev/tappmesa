@@ -122,7 +122,7 @@ const SuperAdminCategoriesManager = () => {
 
           <button
             onClick={loadData}
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-primary-50 hover:bg-primary-200 rounded-lg transition-colors"
           >
             <RefreshCw className="h-5 w-5" />
             <span>Actualizar</span>
@@ -147,14 +147,14 @@ const SuperAdminCategoriesManager = () => {
               placeholder="Buscar categorías..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+              className="w-full pl-10 pr-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             />
           </div>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
             <option value="all">Todos los estados</option>
             <option value="active">Activas</option>
@@ -165,7 +165,7 @@ const SuperAdminCategoriesManager = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Categorías</p>
@@ -175,7 +175,7 @@ const SuperAdminCategoriesManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Activas</p>
@@ -185,7 +185,7 @@ const SuperAdminCategoriesManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Con Productos</p>
@@ -195,7 +195,7 @@ const SuperAdminCategoriesManager = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-primary-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Más Usada</p>
@@ -213,7 +213,7 @@ const SuperAdminCategoriesManager = () => {
 
       {/* Categories Grid */}
       {filteredCategories.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-12 text-center">
           <Tag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No hay categorías</h3>
           <p className="text-gray-600">
@@ -228,7 +228,7 @@ const SuperAdminCategoriesManager = () => {
             return (
               <div
                 key={category.id}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+                className="bg-white rounded-lg shadow-sm border border-primary-200 p-6 hover:shadow-md transition-shadow"
               >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
@@ -252,7 +252,7 @@ const SuperAdminCategoriesManager = () => {
                       Activa
                     </div>
                   ) : (
-                    <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-50 text-gray-800">
                       <XCircle className="h-3 w-3 mr-1" />
                       Inactiva
                     </div>
@@ -260,7 +260,7 @@ const SuperAdminCategoriesManager = () => {
                 </div>
 
                 {/* Tenant */}
-                <div className="mb-4 pb-4 border-b border-gray-200">
+                <div className="mb-4 pb-4 border-b border-primary-200">
                   <div className="flex items-center text-sm text-gray-600">
                     <Building2 className="h-4 w-4 text-gray-400 mr-2" />
                     <div>
@@ -278,7 +278,7 @@ const SuperAdminCategoriesManager = () => {
                     <div className="text-xs text-gray-600">Productos</div>
                   </div>
 
-                  <div className="text-center p-3 bg-gray-50 rounded-lg">
+                  <div className="text-center p-3 bg-cream-50 rounded-lg">
                     <BarChart3 className="h-5 w-5 text-gray-600 mx-auto mb-1" />
                     <div className="text-2xl font-bold text-gray-900">
                       {category.display_order !== null ? category.display_order : '-'}
@@ -289,7 +289,7 @@ const SuperAdminCategoriesManager = () => {
 
                 {/* Description if exists */}
                 {category.description && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
+                  <div className="mt-4 pt-4 border-t border-primary-200">
                     <p className="text-sm text-gray-600 line-clamp-2">
                       {category.description}
                     </p>
