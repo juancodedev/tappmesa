@@ -138,21 +138,25 @@ Acceder a: `http://localhost:5173`
 #### Landing Page
 ```
 http://localhost:5173
-http://tappmesa.localhost:5173
 ```
 
-#### Tenant (Cafetería)
+#### Tenant (Cafetería) - Subdominios Locales
 ```
+http://cafe-central-tappmesa.localhost:5173
 http://teteria-luna-tappmesa.localhost:5173
-http://coffee-central-tappmesa.localhost:5173
+http://bistro-sunrise-tappmesa.localhost:5173
+http://coffee-co-tappmesa.localhost:5173
 ```
 
-#### Admin de Tenant
+#### Admin de Tenant - Local
+
 ```
+http://cafe-central-tappmesa.localhost:5173/admin
 http://teteria-luna-tappmesa.localhost:5173/admin
 ```
 
-#### Super Admin (Global)
+#### Super Admin (Global) - Local
+
 ```
 http://localhost:5173/admin
 ```
@@ -162,6 +166,16 @@ http://localhost:5173/admin
 Los navegadores modernos resuelven automáticamente `*.localhost` a `127.0.0.1`.
 
 Ver `DESARROLLO-LOCAL-SUBDOMINIOS.md` para configuración detallada.
+
+**⚠️ Nota importante sobre el formato del subdominio:**
+
+Es normal ver URLs con un patrón que parece duplicado (ej. `cafe-central-tappmesa.tappmesa.juancode.dev`). Esto obedece a una necesidad técnica:
+
+- El sufijo `-tappmesa` es obligatorio para el aislamiento de bases de datos en Supabase
+- Sin este sufijo, las políticas RLS no pueden diferenciar entre tenants en una base de datos compartida
+- Todo el código base y migraciones asumen este patrón
+
+En producción, la URL completa es `https://<tenant-identifier>-tappmesa.tappmesa.juancode.dev/`, pero para presentaciones o documentación al cliente, se puede mostrar el nombre simplificado `cafe-central.tappmesa.juancode.dev` manteniendo el `-tappmesa` en la configuración interna.
 
 ## 🔐 Credenciales de Prueba
 
@@ -209,6 +223,13 @@ Acceso: http://bistro-sunrise-tappmesa.localhost:5173/admin
 Email: coffee-co@coffee-co.com
 Password: admin123
 Acceso: http://coffee-co-tappmesa.localhost:5173/admin
+```
+
+### Personal de Cocina - Dashboard
+```
+Email: cocina@tappmesa.local
+Password: cocina123
+Acceso: http://localhost:5173/kitchen
 ```
 
 ## 📁 Estructura del Proyecto
