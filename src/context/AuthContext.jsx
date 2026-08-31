@@ -210,7 +210,16 @@ export function AuthProvider({ children }) {
       return staffPermissions.includes(`${resource}:${action}`);
     }
 
-    // Default: no permissions for other roles
+// Permisos delegados para el personal de cocina
+    if (state.user.role === 'cocina') {
+      const cocinaPermissions = [
+        'orders:read', 'orders:write',
+        'tables:read'
+      ];
+      return cocinaPermissions.includes(`${resource}:${action}`);
+    }
+
+// Default: no permissions for other roles
     return false;
   };
 

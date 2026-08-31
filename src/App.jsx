@@ -129,8 +129,16 @@ function App() {
             <Route path="/garzon" element={<WaiterDashboard />} />
 
             {/* Ruta para el dashboard de cocina */}
-            <Route path="/kitchen" element={<KitchenDashboard />} />
-            <Route path="/cocina" element={<KitchenDashboard />} />
+            <Route path="/kitchen" element={
+              <ProtectedRoute requireRole="cocina">
+                <KitchenDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/cocina" element={
+              <ProtectedRoute requireRole="cocina">
+                <KitchenDashboard />
+              </ProtectedRoute>
+            } />
 
             {/* Ruta específica para reservas */}
             <Route path="/reservas" element={<ReservationsPage />} />
