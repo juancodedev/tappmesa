@@ -3,12 +3,18 @@ import { render, screen, waitFor} from '@testing-library/react'
 import { TenantProvider } from '../../context/TenantContext'
 import { useTenant } from '../../hooks/useTenant'
 import { useIsTenant, useTenantUrl } from '../../hooks/useTenantHooks'
-import { createMockSupabase, mockTenant, mockTable, mockTableSession, mockLocation, resetAllMocks } from '../utils'
+import { mockTenant, mockTable, mockTableSession, mockLocation, resetAllMocks } from '../utils'
 
-// Mock the supabase import
-vi.mock('../../lib/supabase', () => ({
-  supabase: createMockSupabase()
-}))
+// Mock compartido del módulo supabase: la instancia que usa TenantProvider
+// debe ser la MISMA que los tests configuran. vi.hoisted evita el problema
+// de hoisting de vi.mock con referencias top-level.
+const mocks = vi.hoisted(() => ({ supabase: null }))
+
+vi.mock('../../lib/supabase', async () => {
+  const { createMockSupabase } = await import('../utils')
+  mocks.supabase = createMockSupabase()
+  return { supabase: mocks.supabase }
+})
 
 // Test component to access context values
 const TestComponent = ({ testType = 'basic' }) => {
@@ -52,7 +58,7 @@ describe('TenantContext', () => {
 
   beforeEach(() => {
     resetAllMocks()
-    mockSupabase = createMockSupabase()
+    mockSupabase = mocks.supabase
     // Reset document properties
     document.title = 'Tappmesa Test'
     document.documentElement.style.setProperty = vi.fn()
@@ -115,7 +121,7 @@ describe('TenantContext', () => {
         hostname: 'cafe-central.tappmesa.local',
         pathname: '/ABCD1234/menu'
       })
-      
+
       // Mock successful tenant and table fetch
       const mockTenantQuery = {
         select: vi.fn().mockReturnThis(),
@@ -129,23 +135,15 @@ describe('TenantContext', () => {
         single: vi.fn().mockResolvedValue({ data: mockTable, error: null })
       }
 
-      const mockSessionQuery = {
-        select: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        order: vi.fn().mockReturnThis(),
-        limit: vi.fn().mockReturnThis(),
-        maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-        insert: vi.fn().mockReturnThis(),
-      }
-
       mockSupabase.from
         .mockReturnValueOnce(mockTenantQuery)
         .mockReturnValueOnce(mockTableQuery)
-        .mockReturnValueOnce(mockSessionQuery)
-        .mockReturnValueOnce({
-          ...mockSessionQuery,
-          single: vi.fn().mockResolvedValue({ data: mockTableSession, error: null })
-        })
+
+      // 2.5 flip: create/resume session via POST /api/table-sessions
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: true,
+        json: vi.fn().mockResolvedValue({ session: mockTableSession })
+      }))
 
       render(
         <TenantProvider>
@@ -158,6 +156,13 @@ describe('TenantContext', () => {
         expect(screen.getByTestId('subdomain')).toHaveTextContent('cafe-central')
         expect(screen.getByTestId('table-code')).toHaveTextContent('ABCD1234')
       })
+
+      // La sesión debe recuperarse de la ruta server, no de la tabla directa
+      expect(fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/api/table-sessions'),
+        expect.objectContaining({ method: 'POST' })
+      )
+      vi.unstubAllGlobals()
     })
 
     it('should handle tenant not found error', async () => {
@@ -186,6 +191,15 @@ describe('TenantContext', () => {
 
     it('should apply tenant branding', async () => {
       mockLocation({ hostname: 'cafe-central.tappmesa.local' })
+
+      // document.title está mockeado en setup.js (propiedad configurable):
+      // capturar el setter para verificar que el branding lo asigna
+      const titleSetter = vi.fn()
+      Object.defineProperty(document, 'title', {
+        set: titleSetter,
+        get: vi.fn(() => 'Tappmesa Test'),
+        configurable: true,
+      })
       
       mockSupabase.from.mockReturnValue({
         select: vi.fn().mockReturnThis(),
@@ -200,7 +214,7 @@ describe('TenantContext', () => {
       )
 
       await waitFor(() => {
-        expect(document.title).toBe('Café Central - Tappmesa')
+        expect(titleSetter).toHaveBeenCalledWith('Café Central - Tappmesa')
         expect(document.documentElement.style.setProperty).toHaveBeenCalledWith('--primary-color', '#dc2626')
         expect(document.documentElement.style.setProperty).toHaveBeenCalledWith('--secondary-color', '#f97316')
       })
@@ -278,8 +292,10 @@ describe('TenantContext', () => {
       })
     })
 
-    it('should generate localhost URL with query parameter', async () => {
-      mockLocation({ hostname: 'localhost' })
+    it('should generate localhost URL from tenant slug', async () => {
+      // Subdominio real de tenant sobre .localhost: appType tenant (se carga
+      // el tenant) y el hook entra a la rama hostname.includes('localhost')
+      mockLocation({ hostname: 'cafe-central.localhost' })
       
       mockSupabase.from.mockReturnValue({
         select: vi.fn().mockReturnThis(),
@@ -294,7 +310,7 @@ describe('TenantContext', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByTestId('tenant-url')).toHaveTextContent('http://localhost:5173?cafe=cafe-central')
+        expect(screen.getByTestId('tenant-url')).toHaveTextContent('http://cafe-central.localhost:5173')
       })
     })
 

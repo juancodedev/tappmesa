@@ -27,7 +27,7 @@ export const api = {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Error en la petición');
+        throw new Error(data.message || data.error || 'Error en la petición');
       }
 
       return data;

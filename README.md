@@ -53,12 +53,14 @@ El sistema utiliza una paleta de colores cuidadosamente seleccionada para evocar
 ### Backend & Database
 - **Supabase** - PostgreSQL + Auth + Storage
 - **Prisma** - ORM y schema management
-- **Vercel** - Serverless deployment
+- **Vercel** - Serverless deployment (10 API routes)
 
 ### Autenticación
-- bcrypt para hashing de passwords
+- bcrypt para hashing de passwords (12 rounds)
+- JWT (HS256) para server-to-server auth
 - Session tokens con expiración
-- Row Level Security (RLS)
+- Claim-scoped Row Level Security (RLS)
+- Capability tokens HMAC para mesas
 
 ## 📦 Instalación
 
@@ -90,9 +92,10 @@ Editar `.env.local` con tus credenciales de Supabase:
 VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_JWT_SECRET=tu-jwt-secret-aqui
 ```
 
-> ⚠️ **Importante**: Las API routes usan `SUPABASE_SERVICE_ROLE_KEY`. Si usás Supabase local con `supabase start`, obtenés estas credenciales del archivo `supabase/config.toml` o corriendo `supabase status`.
+> ⚠️ **Importante**: `SUPABASE_JWT_SECRET` es solo server-side (nunca VITE_). Se usa para firmificar JWTs HS256. En Supabase local, está en `supabase/config.toml` bajo `[auth.jwt_secret]`.
 
 4. **Sincronizar schema de base de datos** (opcional)
 ```bash
@@ -236,9 +239,16 @@ Acceso: http://localhost:5173/kitchen
 
 ```
 tappmesa/
-├── api/                      # Serverless functions (Vercel)
-│   └── auth/                # Endpoints de autenticación
-├── database/                # Migraciones SQL
+├── api/                      # Serverless functions (Vercel) — route handlers only
+│   ├── admin/               # Admin CRUD (users)
+│   ├── auth/                # Auth endpoints (signin, signup, token, session, reset-password)
+│   ├── orders.js            # Orders: place/my/cancel
+│   └── table-sessions.js    # Table sessions: create/resume
+├── lib/                     # Shared utilities (NOT deployed as functions)
+│   ├── middleware/          # cors, rateLimit, requireAuth, validation
+│   ├── services/           # emailService
+│   └── utils/              # capability, hostResolver, jwt, logger
+├── database/                # Migraciones SQL + archive
 ├── prisma/                  # Schema de Prisma
 ├── public/                  # Assets estáticos
 ├── src/
@@ -250,7 +260,7 @@ tappmesa/
 │   ├── context/           # React Context providers
 │   ├── features/          # Módulos por feature
 │   ├── hooks/             # Custom hooks
-│   ├── lib/               # Utilidades y servicios
+│   ├── lib/               # Client-side utils (supabase client)
 │   ├── pages/             # Páginas principales
 │   ├── services/          # Servicios API
 │   └── test/              # Tests y utilidades de testing
@@ -310,15 +320,29 @@ Ver `TESTING.md` para guías detalladas.
 
 ### Autenticación
 - Passwords hasheados con bcrypt (12 rounds)
+- JWT (HS256) con `requireAuth` middleware para server routes
 - Session tokens con expiración
 - Invalidación automática en logout
-- Reset de password seguro
+- Reset de password seguro (server-minted tokens)
+
+### Server Routes (todo via API, nada directo a Supabase)
+- `POST /api/orders` — place order (capability o takeout via Host header)
+- `GET /api/orders/my` — claim-scoped order history
+- `POST /api/orders/:id/cancel` — cancel own orders
+- `POST /api/table-sessions` — create/resume table session
+- `POST /api/auth/token` — mint JWT for authenticated users
+- `POST /api/admin/users` — CRUD usuarios (bcrypt, claim-scoped)
 
 ### Base de Datos
-- Row Level Security (RLS) habilitado
-- Políticas por tenant y rol
+- Claim-scoped Row Level Security (`app_claim_tenant_id()`, `app_is_super_admin()`)
+- Zero anon access on claim tables (orders, customers, table_sessions, etc.)
+- Capability tokens HMAC para aislamiento de mesas
 - Foreign keys para integridad
 - Auditoría de cambios
+
+### Infraestructura
+- `lib/` separado de `api/` para estar bajo el límite de 12 functions (Vercel Hobby)
+- CORS, rate limiting, y validación centralizados en `lib/middleware/`
 
 Ver `SECURE_AUTH_GUIDE.md` para detalles de implementación.
 
@@ -345,6 +369,7 @@ Configurar en dashboard de Vercel (ver `.env.local.sample` para descripciones):
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_JWT_SECRET` — solo server-side, para JWT signing
 
 **Recomendadas:**
 - `EMAIL_PROVIDER=resend` + `RESEND_API_KEY` + `FROM_EMAIL` — emails transaccionales

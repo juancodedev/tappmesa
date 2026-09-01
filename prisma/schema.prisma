@@ -888,7 +888,8 @@ model orders {
   tax                    Decimal?                 @default(0) @db.Decimal(10, 2)
   total                  Decimal                  @db.Decimal(10, 2)
   notes                  String?
-  order_number           String?                  @db.VarChar
+  order_number           String?                  @unique(map: "orders_order_number_key") @db.VarChar
+  idempotency_key        String?                  @unique(map: "orders_idempotency_key_key") @db.VarChar(255)
   estimated_time         Int?
   created_at             DateTime?                @default(now()) @db.Timestamptz(6)
   table_session_id       String?                  @db.Uuid
@@ -1188,9 +1189,10 @@ model surveys {
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model table_sessions {
   id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id      String?     @db.Uuid
-  table_id       String?     @db.Uuid
-  session_code   String      @db.VarChar
+  tenant_id        String?     @db.Uuid
+  table_id         String?     @db.Uuid
+  session_code     String      @db.VarChar
+  capability_token String?     @unique(map: "table_sessions_capability_token_key") @db.VarChar(255)
   customer_name  String?     @db.VarChar
   customer_phone String?     @db.VarChar
   started_at     DateTime?   @default(now()) @db.Timestamptz(6)

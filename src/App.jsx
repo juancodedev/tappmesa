@@ -125,8 +125,16 @@ function App() {
             } />
 
             {/* Ruta para el dashboard del garzón */}
-            <Route path="/waiter" element={<WaiterDashboard />} />
-            <Route path="/garzon" element={<WaiterDashboard />} />
+            <Route path="/waiter" element={
+              <ProtectedRoute requireRole="staff">
+                <WaiterDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/garzon" element={
+              <ProtectedRoute requireRole="staff">
+                <WaiterDashboard />
+              </ProtectedRoute>
+            } />
 
             {/* Ruta para el dashboard de cocina */}
             <Route path="/kitchen" element={

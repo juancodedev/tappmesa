@@ -285,7 +285,7 @@ const PreBillSettings = () => {
 
       <div className="space-y-6">
         {/* Pre-Bill Settings */}
-        <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-md border border-primary-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <FileText className="h-5 w-5 mr-2 text-orange-600" />
             Configuración de Pre-Cuentas
@@ -306,7 +306,7 @@ const PreBillSettings = () => {
                   step="0.5"
                   value={tipPercentage}
                   onChange={(e) => setTipPercentage(e.target.value)}
-                  className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-32 px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
                 <span className="text-gray-600">%</span>
                 <span className="text-sm text-gray-500">
@@ -322,9 +322,9 @@ const PreBillSettings = () => {
             </div>
 
             {/* Preview */}
-            <div className="pt-4 border-t border-gray-200">
+            <div className="pt-4 border-t border-primary-200">
               <p className="text-sm font-medium text-gray-700 mb-2">Vista previa del cálculo:</p>
-              <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
+              <div className="bg-cream-50 rounded-lg p-4 space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal:</span>
                   <span className="font-medium">$10.000</span>
@@ -335,7 +335,7 @@ const PreBillSettings = () => {
                     ${Math.round(10000 * (parseFloat(tipPercentage) / 100)).toLocaleString('es-CL')}
                   </span>
                 </div>
-                <div className="flex justify-between pt-2 border-t border-gray-300 text-base">
+                <div className="flex justify-between pt-2 border-t border-primary-300 text-base">
                   <span className="font-semibold">TOTAL:</span>
                   <span className="font-bold text-orange-600">
                     ${(10000 + Math.round(10000 * (parseFloat(tipPercentage) / 100))).toLocaleString('es-CL')}
@@ -347,7 +347,7 @@ const PreBillSettings = () => {
         </div>
 
         {/* Survey Settings */}
-        <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-md border border-primary-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900 flex items-center">
               <QrCode className="h-5 w-5 mr-2 text-orange-600" />
@@ -358,7 +358,7 @@ const PreBillSettings = () => {
                 type="checkbox"
                 checked={showSurvey}
                 onChange={(e) => setShowSurvey(e.target.checked)}
-                className="w-5 h-5 text-orange-600 rounded focus:ring-orange-500"
+                className="w-5 h-5 text-orange-600 rounded focus:ring-primary-500"
               />
               <span className="text-sm font-medium text-gray-700">
                 Mostrar encuesta en pre-cuentas
@@ -389,14 +389,14 @@ const PreBillSettings = () => {
                     value={surveyUrl}
                     onChange={(e) => setSurveyUrl(e.target.value)}
                     placeholder="https://forms.google.com/..."
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   />
                   {surveyUrl && (
                     <a
                       href={surveyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center space-x-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm transition-colors"
+                      className="flex items-center space-x-1 px-3 py-2 bg-primary-50 hover:bg-primary-200 rounded-lg text-sm transition-colors"
                     >
                       <ExternalLink className="h-4 w-4" />
                       <span>Probar</span>
@@ -418,7 +418,7 @@ const PreBillSettings = () => {
                   value={benefitText}
                   onChange={(e) => setBenefitText(e.target.value)}
                   placeholder="Ej: ¡10% de descuento en tu próxima visita!"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
                 <p className="mt-1 text-xs text-gray-500">
                   Este texto aparecerá junto al código QR de la encuesta
@@ -426,13 +426,13 @@ const PreBillSettings = () => {
               </div>
 
               {/* Active toggle */}
-              <div className="pt-4 border-t border-gray-200">
+              <div className="pt-4 border-t border-primary-200">
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={surveyActive}
                     onChange={(e) => setSurveyActive(e.target.checked)}
-                    className="w-4 h-4 text-orange-600 rounded focus:ring-orange-500"
+                    className="w-4 h-4 text-orange-600 rounded focus:ring-primary-500"
                   />
                   <span className="text-sm text-gray-700">
                     Encuesta activa (desmarcar para pausar temporalmente)
@@ -441,9 +441,9 @@ const PreBillSettings = () => {
               </div>
 
               {/* Preview */}
-              <div className="pt-4 border-t border-gray-200">
+              <div className="pt-4 border-t border-primary-200">
                 <p className="text-sm font-medium text-gray-700 mb-3">Vista previa en pre-cuenta:</p>
-                <div className="bg-gray-50 rounded-lg p-6 border-2 border-dashed border-gray-300">
+                <div className="bg-cream-50 rounded-lg p-6 border-2 border-dashed border-primary-300">
                   <div className="text-center">
                     <div className="inline-block p-4 bg-white rounded-lg shadow-sm">
                       <QrCode className="h-20 w-20 mx-auto text-gray-400 mb-2" />

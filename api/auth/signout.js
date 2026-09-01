@@ -1,6 +1,6 @@
 // API Route: /api/auth/signout.js
 const { createClient } = require('@supabase/supabase-js');
-const logger = require('../utils/logger');
+const logger = require('../../lib/utils/logger');
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
