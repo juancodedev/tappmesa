@@ -89,7 +89,7 @@
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
     "lint-staged": "^17.0.8",
-    "postcss": "^8.5.15",
+    "postcss": "^8.5.23",
     "prisma": "6.4.1",
     "tailwindcss": "^4.2.2",
     "vite": "^8.0.16",
