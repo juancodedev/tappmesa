@@ -138,12 +138,12 @@ function App() {
 
             {/* Ruta para el dashboard de cocina */}
             <Route path="/kitchen" element={
-              <ProtectedRoute requireRole="staff">
+              <ProtectedRoute requireRole="cocina">
                 <KitchenDashboard />
               </ProtectedRoute>
             } />
             <Route path="/cocina" element={
-              <ProtectedRoute requireRole="staff">
+              <ProtectedRoute requireRole="cocina">
                 <KitchenDashboard />
               </ProtectedRoute>
             } />
