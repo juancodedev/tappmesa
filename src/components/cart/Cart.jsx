@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useCart } from '../../hooks/useCart'
+import { useEscapeKey } from '../../hooks/useEscapeKey'
 import { useTenant } from '../../hooks/useTenant'
 import { supabase } from '../../lib/supabase'
 import { X, Plus, Minus, ShoppingCart, Trash2, MessageSquare, CheckCircle, Clock } from 'lucide-react'
@@ -31,6 +32,21 @@ const Cart = () => {
   const [orderResult, setOrderResult] = useState(null)
   const [isReturningCustomer, setIsReturningCustomer] = useState(false)
   const [checkingCustomer, setCheckingCustomer] = useState(false)
+  // Error inline en lugar de alert(): { field: 'name' | 'phone' | 'order', message }
+  const [formError, setFormError] = useState(null)
+
+  const handleClose = () => {
+    setOrderResult(null)
+    setFormError(null)
+    closeCart()
+  }
+
+  useEscapeKey(handleClose, isOpen || !!orderResult?.success)
+
+  const updateField = (field, value) => {
+    setCustomerInfo(prev => ({ ...prev, [field]: value }))
+    if (formError?.field === field) setFormError(null)
+  }
 
   // Auto-fill table number when table context changes
   useEffect(() => {
@@ -83,21 +99,23 @@ const Cart = () => {
 
     // Validaciones
     if (!customerInfo.name.trim()) {
-      alert('Por favor ingresa tu nombre')
+      setFormError({ field: 'name', message: 'Por favor ingresa tu nombre' })
       return
     }
 
     if (!customerInfo.phone.trim()) {
-      alert('Por favor ingresa tu teléfono')
+      setFormError({ field: 'phone', message: 'Por favor ingresa tu teléfono' })
       return
     }
 
     // Validar formato de teléfono chileno (+56912345678 o 912345678)
     const chileanPhoneRegex = /^(\+56)?9\d{8}$/
     if (!chileanPhoneRegex.test(customerInfo.phone.trim())) {
-      alert('Ingresa un teléfono chileno válido (ej: +56912345678 o 912345678)')
+      setFormError({ field: 'phone', message: 'Ingresa un teléfono chileno válido (ej: +56912345678 o 912345678)' })
       return
     }
+
+    setFormError(null)
 
     // Realizar pedido
     const result = await placeOrder(customerInfo)
@@ -112,7 +130,7 @@ const Cart = () => {
         notes: ''
       })
     } else {
-      alert(result.error || 'Error al procesar el pedido')
+      setFormError({ field: 'order', message: result.error || 'Error al procesar el pedido' })
     }
   }
 
@@ -120,11 +138,16 @@ const Cart = () => {
   if (orderResult && orderResult.success) {
     return (
       <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center sm:justify-center">
-        <div className="bg-white w-full h-auto sm:w-96 sm:rounded-lg overflow-hidden">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="order-success-title"
+          className="bg-white w-full h-auto sm:w-96 sm:rounded-lg overflow-hidden safe-area-bottom"
+        >
           {/* Success Header */}
           <div className="bg-green-50 p-6 text-center border-b border-green-200">
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-green-900 mb-2">
+            <h2 id="order-success-title" className="text-xl font-bold text-green-900 mb-2">
               ¡Pedido Enviado!
             </h2>
             <p className="text-green-700">
@@ -160,10 +183,7 @@ const Cart = () => {
           {/* Close Button */}
           <div className="p-6 border-t border-gray-200">
             <button
-              onClick={() => {
-                setOrderResult(null)
-                closeCart()
-              }}
+              onClick={handleClose}
               className="w-full bg-primary text-white py-3 border border-gray-500 rounded-lg font-semibold hover:text-white hover:bg-primary-700 transition-colors"
             >
               Continuar
@@ -178,11 +198,16 @@ const Cart = () => {
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center sm:justify-center">
-      <div className="bg-white w-full h-5/6 sm:w-96 sm:h-auto sm:max-h-[90vh] sm:rounded-lg overflow-hidden flex flex-col">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cart-title"
+        className="bg-white w-full h-[85dvh] sm:w-96 sm:h-auto sm:max-h-[90dvh] rounded-t-2xl sm:rounded-lg overflow-hidden flex flex-col safe-area-bottom"
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
-            <ShoppingCart className="w-5 h-5" />
+          <h2 id="cart-title" className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
+            <ShoppingCart className="w-5 h-5" aria-hidden="true" />
             <span>Tu Pedido</span>
             {!isEmpty && (
               <span className="bg-primary text-white text-xs px-2 py-1 rounded-full">
@@ -191,15 +216,16 @@ const Cart = () => {
             )}
           </h2>
           <button
-            onClick={closeCart}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            onClick={handleClose}
+            aria-label="Cerrar carrito"
+            className="touch-target justify-center hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <X className="w-5 h-5 text-gray-600" />
+            <X className="w-5 h-5 text-gray-600" aria-hidden="true" />
           </button>
         </div>
 
         {/* Contenido */}
-        <div className="flex-1 overflow-y-auto max-h-[calc(90vh-280px)]">
+        <div className="flex-1 overflow-y-auto">
           {isEmpty ? (
             <div className="flex flex-col items-center justify-center h-64 text-center px-4">
               <ShoppingCart className="w-16 h-16 text-gray-300 mb-4" />
@@ -227,16 +253,27 @@ const Cart = () => {
                 <div className="space-y-3">
                   {/* Teléfono - primero para detectar cliente */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Número de teléfono
+                    <label htmlFor="cart-phone" className="block text-sm font-medium text-gray-700 mb-1">
+                      Número de teléfono <span className="text-red-600" aria-hidden="true">*</span>
                     </label>
                     <input
+                      id="cart-phone"
                       type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      required
                       placeholder="Ej: +56912345678"
                       value={customerInfo.phone}
-                      onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      onChange={(e) => updateField('phone', e.target.value)}
+                      aria-invalid={formError?.field === 'phone'}
+                      aria-describedby={formError?.field === 'phone' ? 'cart-phone-error' : undefined}
+                      className={`w-full border rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${formError?.field === 'phone' ? 'border-red-500' : 'border-gray-300'}`}
                     />
+                    {formError?.field === 'phone' && (
+                      <p id="cart-phone-error" role="alert" className="text-sm text-red-700 mt-1">
+                        {formError.message}
+                      </p>
+                    )}
                     {!customerInfo.phone && (
                       <div className="mt-2 bg-linear-to-r from-primary/10 to-red-50 border border-primary/30 rounded-lg p-3">
                         <div className="flex items-start space-x-2">
@@ -253,7 +290,7 @@ const Cart = () => {
                       </div>
                     )}
                     {checkingCustomer && (
-                      <p className="text-xs text-gray-500 mt-1">Verificando...</p>
+                      <p className="text-xs text-gray-600 mt-1" aria-live="polite">Verificando...</p>
                     )}
                     {isReturningCustomer && (
                       <div className="mt-2 bg-green-50 border border-green-200 rounded-lg p-2">
@@ -267,16 +304,29 @@ const Cart = () => {
 
                   {/* Nombre */}
                   <div>
+                    <label htmlFor="cart-name" className="block text-sm font-medium text-gray-700 mb-1">
+                      Nombre <span className="text-red-600" aria-hidden="true">*</span>
+                    </label>
                     <input
+                      id="cart-name"
                       type="text"
+                      autoComplete="name"
+                      required
                       placeholder="Tu nombre"
                       value={customerInfo.name}
-                      onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      disabled={isReturningCustomer && customerInfo.name}
+                      onChange={(e) => updateField('name', e.target.value)}
+                      aria-invalid={formError?.field === 'name'}
+                      aria-describedby={formError?.field === 'name' ? 'cart-name-error' : undefined}
+                      className={`w-full border rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${formError?.field === 'name' ? 'border-red-500' : 'border-gray-300'}`}
+                      disabled={isReturningCustomer && !!customerInfo.name}
                     />
+                    {formError?.field === 'name' && (
+                      <p id="cart-name-error" role="alert" className="text-sm text-red-700 mt-1">
+                        {formError.message}
+                      </p>
+                    )}
                     {isReturningCustomer && customerInfo.name && (
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-600 mt-1">
                         Nombre guardado de tu última visita
                       </p>
                     )}
@@ -284,18 +334,22 @@ const Cart = () => {
 
                   {/* Mesa */}
                   <div>
+                    <label htmlFor="cart-table" className="block text-sm font-medium text-gray-700 mb-1">
+                      Mesa
+                    </label>
                     <input
+                      id="cart-table"
                       type="text"
                       placeholder="Número de mesa"
                       value={customerInfo.tableNumber}
-                      onChange={(e) => setCustomerInfo({...customerInfo, tableNumber: e.target.value})}
+                      onChange={(e) => updateField('tableNumber', e.target.value)}
                       disabled={!!table}
-                      className={`w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${
+                      className={`w-full border rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent border-gray-300 ${
                         table ? 'bg-gray-50 cursor-not-allowed' : ''
                       }`}
                     />
                     {table && (
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-600 mt-1">
                         Mesa detectada automáticamente
                       </p>
                     )}
@@ -309,6 +363,12 @@ const Cart = () => {
         {/* Footer con totales y botones */}
         {!isEmpty && (
           <div className="border-t border-gray-200 p-4 space-y-4">
+            {formError?.field === 'order' && (
+              <p role="alert" className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700">
+                {formError.message}
+              </p>
+            )}
+
             {/* Totales */}
             <div className="space-y-2">
               <div className="flex justify-between text-sm">

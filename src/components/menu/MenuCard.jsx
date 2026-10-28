@@ -69,6 +69,8 @@ const MenuCard = ({ product }) => {
           <img
             src={product.image_url}
             alt={product.name}
+            loading="lazy"
+            decoding="async"
             className="w-full h-48 object-cover"
           />
         ) : (
@@ -137,20 +139,21 @@ const MenuCard = ({ product }) => {
         {/* Opciones de temperatura */}
         {product.temperature_options && product.temperature_options.length > 1 && (
           <div className="mb-3">
-            <p className="text-xs font-medium text-gray-700 mb-2">Temperatura:</p>
-            <div className="flex space-x-2">
+            <p id={`temp-label-${product.id}`} className="text-xs font-medium text-gray-700 mb-2">Temperatura:</p>
+            <div className="flex flex-wrap gap-2" role="group" aria-labelledby={`temp-label-${product.id}`}>
               {product.temperature_options.map((temp) => (
                 <button
                   key={temp}
                   onClick={() => setSelectedTemp(temp)}
-                  className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                  aria-pressed={selectedTemp === temp}
+                  className={`touch-target space-x-1 px-3 rounded-full text-sm font-medium transition-colors ${
                     selectedTemp === temp
                       ? textClass
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                   style={selectedTemp === temp ? { backgroundColor: primaryColor } : {}}
                 >
-                  <span>{getTemperatureIcon(temp)}</span>
+                  <span aria-hidden="true">{getTemperatureIcon(temp)}</span>
                   <span className="capitalize">{temp === 'hot' ? 'Caliente' : temp === 'cold' ? 'Frío' : 'Helado'}</span>
                 </button>
               ))}
@@ -171,30 +174,32 @@ const MenuCard = ({ product }) => {
               {quantity > 0 && (
                 <button
                   onClick={handleRemove}
-                  className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors touch-target"
+                  aria-label={`Quitar un ${product.name}`}
+                  className="touch-target justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
                 >
-                  <Minus className="w-4 h-4 text-gray-600" />
+                  <Minus className="w-4 h-4 text-gray-600" aria-hidden="true" />
                 </button>
               )}
               
               {quantity > 0 && (
-                <span className="w-8 text-center font-semibold text-gray-900">
+                <span className="w-8 text-center font-semibold text-gray-900" aria-live="polite">
                   {quantity}
                 </span>
               )}
               
               <button
                 onClick={handleAdd}
+                aria-label={`Agregar un ${product.name}`}
                 className={`px-4 py-2 rounded-lg font-semibold ${textClass} transition-all duration-200 touch-target hover:shadow-md`}
                 style={{ backgroundColor: primaryColor }}
               >
                 {quantity === 0 ? (
                   <div className="flex items-center space-x-1">
-                    <Plus className="w-4 h-4" />
+                    <Plus className="w-4 h-4" aria-hidden="true" />
                     <span>Agregar</span>
                   </div>
                 ) : (
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-4 h-4" aria-hidden="true" />
                 )}
               </button>
             </div>

@@ -21,6 +21,10 @@ const CartItem = ({ item }) => {
             <img
               src={item.product.image_url}
               alt={item.product.name}
+              loading="lazy"
+              decoding="async"
+              width={64}
+              height={64}
               className="w-full h-full object-cover"
             />
           ) : (
@@ -41,10 +45,10 @@ const CartItem = ({ item }) => {
             </div>
             <button
               onClick={() => removeItem(item.id)}
-              className="shrink-0 p-1 hover:bg-red-50 rounded transition-colors"
-              aria-label="Eliminar producto"
+              className="touch-target justify-center shrink-0 -mt-2 -mr-2 hover:bg-red-50 rounded-lg transition-colors"
+              aria-label={`Eliminar ${item.product.name}`}
             >
-              <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-500" />
+              <Trash2 className="w-4 h-4 text-gray-500 hover:text-red-500" aria-hidden="true" />
             </button>
           </div>
 
@@ -72,18 +76,18 @@ const CartItem = ({ item }) => {
             <div className="flex items-center border border-gray-300 rounded-lg">
               <button
                 onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                className="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-                aria-label="Reducir cantidad"
+                className="touch-target justify-center rounded-l-lg hover:bg-gray-100 transition-colors"
+                aria-label={`Reducir cantidad de ${item.product.name}`}
               >
-                <Minus className="w-3 h-3" />
+                <Minus className="w-4 h-4" aria-hidden="true" />
               </button>
-              <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+              <span className="w-8 text-center text-sm font-medium" aria-live="polite">{item.quantity}</span>
               <button
                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                className="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-                aria-label="Aumentar cantidad"
+                className="touch-target justify-center rounded-r-lg hover:bg-gray-100 transition-colors"
+                aria-label={`Aumentar cantidad de ${item.product.name}`}
               >
-                <Plus className="w-3 h-3" />
+                <Plus className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
 
@@ -91,35 +95,40 @@ const CartItem = ({ item }) => {
 
             <button
               onClick={() => setShowNotes(!showNotes)}
-              className={`ml-auto p-1.5 rounded transition-colors ${
-                item.notes ? 'bg-primary/10 text-primary' : 'text-gray-400 hover:text-gray-600'
+              className={`touch-target justify-center ml-auto rounded-lg transition-colors ${
+                item.notes ? 'bg-primary/10 text-primary' : 'text-gray-500 hover:text-gray-700'
               }`}
-              aria-label="Agregar notas"
+              aria-label={item.notes ? `Editar notas de ${item.product.name}` : `Agregar notas a ${item.product.name}`}
+              aria-expanded={showNotes}
             >
-              <MessageSquare className="w-4 h-4" />
+              <MessageSquare className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
 
           {/* Notes Input */}
           {showNotes && (
             <div className="mt-2">
+              <label htmlFor={`notes-${item.id}`} className="sr-only">
+                Notas para {item.product.name}
+              </label>
               <textarea
+                id={`notes-${item.id}`}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Notas para este producto..."
-                className="w-full text-xs border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                className="w-full text-base border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                 rows={2}
               />
               <div className="flex gap-2 mt-1">
                 <button
                   onClick={handleNotesSubmit}
-                  className="text-xs bg-primary text-white px-3 py-1 rounded-lg hover:bg-primary-700 transition-colors"
+                  className="text-sm bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
                 >
                   Guardar
                 </button>
                 <button
                   onClick={() => { setShowNotes(false); setNotes(item.notes || '') }}
-                  className="text-xs text-gray-500 px-3 py-1 hover:text-gray-700"
+                  className="text-sm text-gray-600 px-4 py-2 hover:text-gray-800"
                 >
                   Cancelar
                 </button>
