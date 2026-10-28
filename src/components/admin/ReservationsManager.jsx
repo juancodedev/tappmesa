@@ -17,9 +17,9 @@ import {
   MessageSquare,
   Filter,
   RefreshCw,
-  Edit,
-  X
+  Edit
 } from 'lucide-react'
+import Modal from '../ui/Modal'
 
 const ReservationsManager = () => {
   const { tenant } = useTenant()
@@ -452,143 +452,138 @@ const ReservationsManager = () => {
 
       {/* Edit Modal */}
       {showEditModal && editingReservation && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={closeEditModal}>
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0">
-              <h2 className="text-xl font-bold text-gray-900">
-                {editingReservation.id ? 'Editar Reserva' : 'Nueva Reserva'}
-              </h2>
-              <button onClick={closeEditModal} className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleEditSubmit} className="p-6">
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Nombre del Cliente *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={editingReservation.customer_name}
-                      onChange={(e) => setEditingReservation({ ...editingReservation, customer_name: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Teléfono *
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      value={editingReservation.customer_phone}
-                      onChange={(e) => setEditingReservation({ ...editingReservation, customer_phone: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      value={editingReservation.customer_email || ''}
-                      onChange={(e) => setEditingReservation({ ...editingReservation, customer_email: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Número de Mesa
-                    </label>
-                    <input
-                      type="text"
-                      value={editingReservation.table_number || ''}
-                      onChange={(e) => setEditingReservation({ ...editingReservation, table_number: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Fecha *
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      value={editingReservation.reservation_date}
-                      onChange={(e) => setEditingReservation({ ...editingReservation, reservation_date: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Hora *
-                    </label>
-                    <input
-                      type="time"
-                      required
-                      value={editingReservation.reservation_time}
-                      onChange={(e) => setEditingReservation({ ...editingReservation, reservation_time: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Número de Personas *
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      min="1"
-                      value={editingReservation.party_size}
-                      onChange={(e) => setEditingReservation({ ...editingReservation, party_size: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
+        <Modal
+          isOpen
+          onClose={closeEditModal}
+          title={editingReservation.id ? 'Editar Reserva' : 'Nueva Reserva'}
+          size="lg"
+          bodyClassName=""
+        >
+          <form onSubmit={handleEditSubmit} className="p-6">
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nombre del Cliente *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editingReservation.customer_name}
+                    onChange={(e) => setEditingReservation({ ...editingReservation, customer_name: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Solicitudes Especiales
+                    Teléfono *
                   </label>
-                  <textarea
-                    rows="3"
-                    value={editingReservation.special_requests || ''}
-                    onChange={(e) => setEditingReservation({ ...editingReservation, special_requests: e.target.value })}
+                  <input
+                    type="tel"
+                    required
+                    value={editingReservation.customer_phone}
+                    onChange={(e) => setEditingReservation({ ...editingReservation, customer_phone: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="Alergias, preferencias de ubicación, etc."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={editingReservation.customer_email || ''}
+                    onChange={(e) => setEditingReservation({ ...editingReservation, customer_email: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Número de Mesa
+                  </label>
+                  <input
+                    type="text"
+                    value={editingReservation.table_number || ''}
+                    onChange={(e) => setEditingReservation({ ...editingReservation, table_number: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Fecha *
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={editingReservation.reservation_date}
+                    onChange={(e) => setEditingReservation({ ...editingReservation, reservation_date: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Hora *
+                  </label>
+                  <input
+                    type="time"
+                    required
+                    value={editingReservation.reservation_time}
+                    onChange={(e) => setEditingReservation({ ...editingReservation, reservation_time: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Número de Personas *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="1"
+                    value={editingReservation.party_size}
+                    onChange={(e) => setEditingReservation({ ...editingReservation, party_size: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
-                <button
-                  type="button"
-                  onClick={closeEditModal}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-                >
-                  Guardar Cambios
-                </button>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Solicitudes Especiales
+                </label>
+                <textarea
+                  rows="3"
+                  value={editingReservation.special_requests || ''}
+                  onChange={(e) => setEditingReservation({ ...editingReservation, special_requests: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Alergias, preferencias de ubicación, etc."
+                />
               </div>
-            </form>
-          </div>
-        </div>
+            </div>
+
+            <div className="flex items-center justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
+              <button
+                type="button"
+                onClick={closeEditModal}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
+              >
+                Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </Modal>
       )}
     </div>
   )

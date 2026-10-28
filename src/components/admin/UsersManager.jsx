@@ -16,10 +16,10 @@ import {
   ShieldCheck,
   Clock,
   Save,
-  X,
   Eye,
   EyeOff
 } from 'lucide-react'
+import Modal from '../ui/Modal'
 
 const UsersManager = () => {
   const { tenant } = useTenant()
@@ -490,190 +490,179 @@ const UsersManager = () => {
 
       {/* Add/Edit Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
-            {/* Header */}
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {selectedUser ? 'Editar Usuario' : 'Agregar Nuevo Usuario'}
-                </h3>
-                <button
-                  onClick={() => setShowAddModal(false)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
+        <Modal
+          isOpen
+          onClose={() => setShowAddModal(false)}
+          title={selectedUser ? 'Editar Usuario' : 'Agregar Nuevo Usuario'}
+          bodyClassName=""
+          closeOnBackdrop={false}
+        >
+          {/* Form */}
+          <div className="p-6 space-y-4">
+            {/* Nombre completo */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Nombre Completo *
+              </label>
+              <input
+                type="text"
+                value={formData.full_name}
+                onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                placeholder="Juan Pérez"
+              />
+            </div>
+            
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email *
+              </label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                placeholder="juan@cafecentral.cl"
+              />
+            </div>
+            
+            {/* Teléfono */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Teléfono
+              </label>
+              <input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                placeholder="+56912345678"
+              />
+            </div>
+            
+            {/* Rol */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Rol *
+              </label>
+              <select
+                value={formData.role}
+                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              >
+                <option value="staff">Personal</option>
+                <option value="tenant_admin">Administrador</option>
+                <option value="customer">Cliente</option>
+              </select>
+              <p className="text-xs text-gray-500 mt-1">
+                {formData.role === 'tenant_admin' && '👑 Acceso completo al sistema'}
+                {formData.role === 'staff' && '👤 Acceso a operaciones diarias'}
+                {formData.role === 'customer' && '🛒 Solo acceso como cliente'}
+              </p>
             </div>
 
-            {/* Form */}
-            <div className="p-6 space-y-4">
-              {/* Nombre completo */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nombre Completo *
-                </label>
+            {/* Contraseña */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {selectedUser ? 'Nueva Contraseña (opcional)' : 'Contraseña *'}
+              </label>
+              <div className="relative">
                 <input
-                  type="text"
-                  value={formData.full_name}
-                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="Juan Pérez"
+                  type={showPassword ? 'text' : 'password'}
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  placeholder={selectedUser ? 'Dejar vacío para mantener actual' : 'Mínimo 6 caracteres'}
                 />
-              </div>
-              
-              {/* Email */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="juan@cafecentral.cl"
-                />
-              </div>
-              
-              {/* Teléfono */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Teléfono
-                </label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="+56912345678"
-                />
-              </div>
-              
-              {/* Rol */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Rol *
-                </label>
-                <select
-                  value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                >
-                  <option value="staff">Personal</option>
-                  <option value="tenant_admin">Administrador</option>
-                  <option value="customer">Cliente</option>
-                </select>
-                <p className="text-xs text-gray-500 mt-1">
-                  {formData.role === 'tenant_admin' && '👑 Acceso completo al sistema'}
-                  {formData.role === 'staff' && '👤 Acceso a operaciones diarias'}
-                  {formData.role === 'customer' && '🛒 Solo acceso como cliente'}
-                </p>
-              </div>
-
-              {/* Contraseña */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {selectedUser ? 'Nueva Contraseña (opcional)' : 'Contraseña *'}
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder={selectedUser ? 'Dejar vacío para mantener actual' : 'Mínimo 6 caracteres'}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-4 h-4 text-gray-400" />
-                    ) : (
-                      <Eye className="w-4 h-4 text-gray-400" />
-                    )}
-                  </button>
-                </div>
-                {!selectedUser && (
-                  <p className="text-xs text-gray-500 mt-1">
-                    La contraseña debe tener al menos 6 caracteres
-                  </p>
-                )}
-              </div>
-
-              {/* Estado activo */}
-              <div>
-                <label className="flex items-center space-x-3">
-                  <input
-                    type="checkbox"
-                    checked={formData.is_active}
-                    onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                    className="rounded border-gray-300 text-primary focus:ring-primary"
-                  />
-                  <div>
-                    <span className="font-medium text-gray-900">Usuario Activo</span>
-                    <p className="text-sm text-gray-600">
-                      {formData.is_active 
-                        ? 'El usuario puede acceder al sistema' 
-                        : 'El usuario no podrá iniciar sesión'
-                      }
-                    </p>
-                  </div>
-                </label>
-              </div>
-
-              {/* Información adicional */}
-              {!selectedUser && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <p className="text-sm text-blue-700">
-                    <strong>📧 Nota:</strong> Se enviará un email de bienvenida al usuario con sus credenciales de acceso.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Footer */}
-            <div className="p-6 border-t border-gray-200">
-              <div className="flex space-x-3">
                 <button
-                  onClick={() => setShowAddModal(false)}
-                  disabled={saving}
-                  className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleSaveUser}
-                  disabled={saving || !formData.full_name.trim() || !formData.email.trim() || (!selectedUser && !formData.password.trim())}
-                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-sm"
-                >
-                  {saving ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      <span>Guardando...</span>
-                    </>
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4 text-gray-400" />
                   ) : (
-                    <>
-                      <Save className="w-4 h-4" />
-                      <span>{selectedUser ? 'Actualizar Usuario' : 'Crear Usuario'}</span>
-                    </>
+                    <Eye className="w-4 h-4 text-gray-400" />
                   )}
                 </button>
               </div>
-              
-              {/* Validaciones */}
-              <div className="mt-3 text-xs text-gray-500">
-                <p>* Campos obligatorios</p>
-                {selectedUser && (
-                  <p>💡 Dejar la contraseña vacía mantendrá la contraseña actual</p>
-                )}
+              {!selectedUser && (
+                <p className="text-xs text-gray-500 mt-1">
+                  La contraseña debe tener al menos 6 caracteres
+                </p>
+              )}
+            </div>
+
+            {/* Estado activo */}
+            <div>
+              <label className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  checked={formData.is_active}
+                  onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+                  className="rounded border-gray-300 text-primary focus:ring-primary"
+                />
+                <div>
+                  <span className="font-medium text-gray-900">Usuario Activo</span>
+                  <p className="text-sm text-gray-600">
+                    {formData.is_active 
+                      ? 'El usuario puede acceder al sistema' 
+                      : 'El usuario no podrá iniciar sesión'
+                    }
+                  </p>
+                </div>
+              </label>
+            </div>
+
+            {/* Información adicional */}
+            {!selectedUser && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <p className="text-sm text-blue-700">
+                  <strong>📧 Nota:</strong> Se enviará un email de bienvenida al usuario con sus credenciales de acceso.
+                </p>
               </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="p-6 border-t border-gray-200">
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowAddModal(false)}
+                disabled={saving}
+                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSaveUser}
+                disabled={saving || !formData.full_name.trim() || !formData.email.trim() || (!selectedUser && !formData.password.trim())}
+                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-sm"
+              >
+                {saving ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                    <span>Guardando...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    <span>{selectedUser ? 'Actualizar Usuario' : 'Crear Usuario'}</span>
+                  </>
+                )}
+              </button>
+            </div>
+            
+            {/* Validaciones */}
+            <div className="mt-3 text-xs text-gray-500">
+              <p>* Campos obligatorios</p>
+              {selectedUser && (
+                <p>💡 Dejar la contraseña vacía mantendrá la contraseña actual</p>
+              )}
             </div>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   )

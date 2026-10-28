@@ -12,9 +12,9 @@ import {
   Filter,
   Edit,
   History,
-  X,
   Save
 } from 'lucide-react'
+import Modal from '../ui/Modal'
 
 const Analytics = () => {
   const { tenant } = useTenant()
@@ -459,186 +459,79 @@ const Analytics = () => {
 
       {/* Stock Movement Modal */}
       {showMovementModal && selectedProduct && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              {selectedProduct.movementType === 'add' ? 'Agregar Stock' : 'Reducir Stock'}
-            </h3>
-            
-            <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-2">
-                Producto: <span className="font-medium">{selectedProduct.product.name}</span>
-              </p>
-              <p className="text-sm text-gray-600 mb-4">
-                Stock actual: <span className="font-medium">{selectedProduct.current_stock} {selectedProduct.unit}</span>
-              </p>
-              
-              <form onSubmit={handleSubmitMovement} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Cantidad
-                  </label>
-                  <input
-                    type="number"
-                    min="0.01"
-                    step="0.01"
-                    required
-                    value={movementForm.quantity}
-                    onChange={(e) => setMovementForm({...movementForm, quantity: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Ingresa la cantidad"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Motivo
-                  </label>
-                  <select 
-                    value={movementForm.reason}
-                    onChange={(e) => setMovementForm({...movementForm, reason: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  >
-                    {selectedProduct.movementType === 'add' ? (
-                      <>
-                        <option value="purchase">Compra</option>
-                        <option value="adjustment">Ajuste de inventario</option>
-                        <option value="return">Devolución</option>
-                      </>
-                    ) : (
-                      <>
-                        <option value="sale">Venta</option>
-                        <option value="waste">Desperdicio</option>
-                        <option value="adjustment">Ajuste de inventario</option>
-                      </>
-                    )}
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Notas (opcional)
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={movementForm.notes}
-                    onChange={(e) => setMovementForm({...movementForm, notes: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                    placeholder="Agregar notas sobre este movimiento..."
-                  />
-                </div>
-
-                <div className="flex space-x-3 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowMovementModal(false)}
-                    className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={saving}
-                    className={`flex-1 px-4 py-2 rounded-lg transition-colors text-white shadow-sm flex items-center justify-center space-x-2 ${
-                      selectedProduct.movementType === 'add'
-                        ? 'bg-green-600 hover:bg-green-700'
-                        : 'bg-red-600 hover:bg-red-700'
-                    }`}
-                  >
-                    {saving ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                    ) : null}
-                    <span>{saving ? 'Procesando...' : (selectedProduct.movementType === 'add' ? 'Agregar Stock' : 'Reducir Stock')}</span>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Modal */}
-      {showEditModal && selectedProduct && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Editar Configuración de Stock
-              </h3>
-              <button 
-                onClick={() => setShowEditModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            
-            <p className="text-sm text-gray-600 mb-4">
+        <Modal
+          isOpen
+          onClose={() => setShowMovementModal(false)}
+          title={selectedProduct.movementType === 'add' ? 'Agregar Stock' : 'Reducir Stock'}
+          closeOnBackdrop={false}
+        >
+          <div className="mb-4">
+            <p className="text-sm text-gray-600 mb-2">
               Producto: <span className="font-medium">{selectedProduct.product.name}</span>
             </p>
-
-            <form onSubmit={handleSubmitEdit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Stock Mínimo
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    required
-                    value={editForm.min_stock}
-                    onChange={(e) => setEditForm({...editForm, min_stock: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Stock Máximo
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    required
-                    value={editForm.max_stock}
-                    onChange={(e) => setEditForm({...editForm, max_stock: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-              </div>
-
+            <p className="text-sm text-gray-600 mb-4">
+              Stock actual: <span className="font-medium">{selectedProduct.current_stock} {selectedProduct.unit}</span>
+            </p>
+            
+            <form onSubmit={handleSubmitMovement} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Unidad
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={editForm.unit}
-                  onChange={(e) => setEditForm({...editForm, unit: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="ej: kg, litros, unidad"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Costo por Unidad
+                  Cantidad
                 </label>
                 <input
                   type="number"
+                  min="0.01"
                   step="0.01"
                   required
-                  value={editForm.cost_per_unit}
-                  onChange={(e) => setEditForm({...editForm, cost_per_unit: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                  value={movementForm.quantity}
+                  onChange={(e) => setMovementForm({...movementForm, quantity: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  placeholder="Ingresa la cantidad"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Motivo
+                </label>
+                <select 
+                  value={movementForm.reason}
+                  onChange={(e) => setMovementForm({...movementForm, reason: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                >
+                  {selectedProduct.movementType === 'add' ? (
+                    <>
+                      <option value="purchase">Compra</option>
+                      <option value="adjustment">Ajuste de inventario</option>
+                      <option value="return">Devolución</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="sale">Venta</option>
+                      <option value="waste">Desperdicio</option>
+                      <option value="adjustment">Ajuste de inventario</option>
+                    </>
+                  )}
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Notas (opcional)
+                </label>
+                <textarea
+                  rows={3}
+                  value={movementForm.notes}
+                  onChange={(e) => setMovementForm({...movementForm, notes: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                  placeholder="Agregar notas sobre este movimiento..."
                 />
               </div>
 
               <div className="flex space-x-3 pt-4">
                 <button
                   type="button"
-                  onClick={() => setShowEditModal(false)}
+                  onClick={() => setShowMovementModal(false)}
                   className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Cancelar
@@ -646,19 +539,116 @@ const Analytics = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
+                  className={`flex-1 px-4 py-2 rounded-lg transition-colors text-white shadow-sm flex items-center justify-center space-x-2 ${
+                    selectedProduct.movementType === 'add'
+                      ? 'bg-green-600 hover:bg-green-700'
+                      : 'bg-red-600 hover:bg-red-700'
+                  }`}
                 >
                   {saving ? (
                     <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                  ) : (
-                    <Save className="w-4 h-4" />
-                  )}
-                  <span>{saving ? 'Guardando...' : 'Guardar'}</span>
+                  ) : null}
+                  <span>{saving ? 'Procesando...' : (selectedProduct.movementType === 'add' ? 'Agregar Stock' : 'Reducir Stock')}</span>
                 </button>
               </div>
             </form>
           </div>
-        </div>
+        </Modal>
+      )}
+
+      {/* Edit Modal */}
+      {showEditModal && selectedProduct && (
+        <Modal
+          isOpen
+          onClose={() => setShowEditModal(false)}
+          title="Editar Configuración de Stock"
+          closeOnBackdrop={false}
+        >
+          <p className="text-sm text-gray-600 mb-4">
+            Producto: <span className="font-medium">{selectedProduct.product.name}</span>
+          </p>
+
+          <form onSubmit={handleSubmitEdit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Stock Mínimo
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  required
+                  value={editForm.min_stock}
+                  onChange={(e) => setEditForm({...editForm, min_stock: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Stock Máximo
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  required
+                  value={editForm.max_stock}
+                  onChange={(e) => setEditForm({...editForm, max_stock: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Unidad
+              </label>
+              <input
+                type="text"
+                required
+                value={editForm.unit}
+                onChange={(e) => setEditForm({...editForm, unit: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="ej: kg, litros, unidad"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Costo por Unidad
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                required
+                value={editForm.cost_per_unit}
+                onChange={(e) => setEditForm({...editForm, cost_per_unit: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+
+            <div className="flex space-x-3 pt-4">
+              <button
+                type="button"
+                onClick={() => setShowEditModal(false)}
+                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={saving}
+                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
+              >
+                {saving ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                <span>{saving ? 'Guardando...' : 'Guardar'}</span>
+              </button>
+            </div>
+          </form>
+        </Modal>
       )}
     </div>
   )

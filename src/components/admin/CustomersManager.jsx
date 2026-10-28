@@ -19,6 +19,7 @@ import {
   Edit,
   Save,
 } from "lucide-react";
+import Modal from '../ui/Modal';
 
 const CustomersManager = () => {
   const { tenant: currentTenant } = useTenant();
@@ -501,228 +502,208 @@ const CustomersManager = () => {
 
       {/* Modal de detalles del cliente */}
       {selectedCustomer && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full p-6 max-h-screen overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Detalles del Cliente
-              </h3>
-              <button
-                onClick={() => setSelectedCustomer(null)}
-                className="text-gray-400 hover:text-gray-600 transition-colors text-2xl"
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">
-                    Información Personal
-                  </h4>
-                  <div className="space-y-2 text-sm">
-                    <p>
-                      <strong>Nombre:</strong>{" "}
-                      {selectedCustomer.name || "No especificado"}
-                    </p>
-                    <p>
-                      <strong>Teléfono:</strong> {selectedCustomer.phone}
-                    </p>
-                    <p>
-                      <strong>Email:</strong>{" "}
-                      {selectedCustomer.email || "No especificado"}
-                    </p>
-                    <p>
-                      <strong>Cliente desde:</strong>{" "}
-                      {formatDate(selectedCustomer.created_at)}
-                    </p>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">
-                    Estadísticas
-                  </h4>
-                  <div className="space-y-2 text-sm">
-                    <p>
-                      <strong>Total de pedidos:</strong>{" "}
-                      {selectedCustomer.total_orders || 0}
-                    </p>
-                    <p>
-                      <strong>Total gastado:</strong>{" "}
-                      {formatCurrency(selectedCustomer.total_spent || 0)}
-                    </p>
-                    <p>
-                      <strong>Puntos de lealtad:</strong>{" "}
-                      {selectedCustomer.loyalty_points || 0}
-                    </p>
-                    <p>
-                      <strong>Último pedido:</strong>{" "}
-                      {selectedCustomer.last_order_date
-                        ? formatDate(selectedCustomer.last_order_date)
-                        : "Nunca"}
-                    </p>
-                  </div>
+        <Modal
+          isOpen
+          onClose={() => setSelectedCustomer(null)}
+          title="Detalles del Cliente"
+          size="lg"
+          closeOnBackdrop={false}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-medium text-gray-900 mb-2">
+                  Información Personal
+                </h4>
+                <div className="space-y-2 text-sm">
+                  <p>
+                    <strong>Nombre:</strong>{" "}
+                    {selectedCustomer.name || "No especificado"}
+                  </p>
+                  <p>
+                    <strong>Teléfono:</strong> {selectedCustomer.phone}
+                  </p>
+                  <p>
+                    <strong>Email:</strong>{" "}
+                    {selectedCustomer.email || "No especificado"}
+                  </p>
+                  <p>
+                    <strong>Cliente desde:</strong>{" "}
+                    {formatDate(selectedCustomer.created_at)}
+                  </p>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">
-                    Segmentación
-                  </h4>
-                  <div className="space-y-2">
-                    {selectedCustomer.is_vip && (
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-                        <Star className="w-4 h-4 mr-1" />
-                        Cliente VIP
-                      </span>
-                    )}
-                    {selectedCustomer.total_orders >= 5 && (
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                        <TrendingUp className="w-4 h-4 mr-1" />
-                        Cliente Frecuente
-                      </span>
-                    )}
-                  </div>
+              <div>
+                <h4 className="font-medium text-gray-900 mb-2">
+                  Estadísticas
+                </h4>
+                <div className="space-y-2 text-sm">
+                  <p>
+                    <strong>Total de pedidos:</strong>{" "}
+                    {selectedCustomer.total_orders || 0}
+                  </p>
+                  <p>
+                    <strong>Total gastado:</strong>{" "}
+                    {formatCurrency(selectedCustomer.total_spent || 0)}
+                  </p>
+                  <p>
+                    <strong>Puntos de lealtad:</strong>{" "}
+                    {selectedCustomer.loyalty_points || 0}
+                  </p>
+                  <p>
+                    <strong>Último pedido:</strong>{" "}
+                    {selectedCustomer.last_order_date
+                      ? formatDate(selectedCustomer.last_order_date)
+                      : "Nunca"}
+                  </p>
                 </div>
-
-                {selectedCustomer.notes && (
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-2">Notas</h4>
-                    <p className="text-sm text-gray-600">
-                      {selectedCustomer.notes}
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
 
-            <div className="mt-6 flex justify-end">
-              <button
-                onClick={() => setSelectedCustomer(null)}
-                className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-              >
-                Cerrar
-              </button>
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-medium text-gray-900 mb-2">
+                  Segmentación
+                </h4>
+                <div className="space-y-2">
+                  {selectedCustomer.is_vip && (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                      <Star className="w-4 h-4 mr-1" />
+                      Cliente VIP
+                    </span>
+                  )}
+                  {selectedCustomer.total_orders >= 5 && (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                      <TrendingUp className="w-4 h-4 mr-1" />
+                      Cliente Frecuente
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {selectedCustomer.notes && (
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-2">Notas</h4>
+                  <p className="text-sm text-gray-600">
+                    {selectedCustomer.notes}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
-        </div>
+
+          <div className="mt-6 flex justify-end">
+            <button
+              onClick={() => setSelectedCustomer(null)}
+              className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
+            >
+              Cerrar
+            </button>
+          </div>
+        </Modal>
       )}
 
       {/* Modal de edición del cliente */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Editar Cliente
-              </h3>
+        <Modal
+          isOpen
+          onClose={() => { setShowEditModal(false); setSelectedCustomer(null); }}
+          title="Editar Cliente"
+          closeOnBackdrop={false}
+        >
+          <form onSubmit={handleUpdateCustomer} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Nombre
+              </label>
+              <input
+                type="text"
+                value={editFormData.name}
+                onChange={(e) => setEditFormData({...editFormData, name: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                placeholder="Nombre del cliente"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Teléfono
+              </label>
+              <input
+                type="tel"
+                value={editFormData.phone}
+                onChange={(e) => setEditFormData({...editFormData, phone: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                placeholder="+569..."
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email
+              </label>
+              <input
+                type="email"
+                value={editFormData.email}
+                onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                placeholder="email@ejemplo.com"
+              />
+            </div>
+
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="is_vip"
+                checked={editFormData.is_vip}
+                onChange={(e) => setEditFormData({...editFormData, is_vip: e.target.checked})}
+                className="rounded border-gray-300 text-primary focus:ring-primary"
+              />
+              <label htmlFor="is_vip" className="ml-2 text-sm text-gray-700 font-medium">
+                Cliente VIP
+              </label>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Notas
+              </label>
+              <textarea
+                value={editFormData.notes}
+                onChange={(e) => setEditFormData({...editFormData, notes: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                rows="3"
+                placeholder="Notas adicionales sobre el cliente..."
+              ></textarea>
+            </div>
+
+            <div className="flex space-x-3 pt-4">
               <button
+                type="button"
                 onClick={() => {
                   setShowEditModal(false);
                   setSelectedCustomer(null);
                 }}
-                className="text-gray-400 hover:text-gray-600 transition-colors text-2xl"
+                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                ×
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={saving}
+                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
+              >
+                {saving ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                <span>{saving ? 'Guardando...' : 'Guardar Cambios'}</span>
               </button>
             </div>
-
-            <form onSubmit={handleUpdateCustomer} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nombre
-                </label>
-                <input
-                  type="text"
-                  value={editFormData.name}
-                  onChange={(e) => setEditFormData({...editFormData, name: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="Nombre del cliente"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Teléfono
-                </label>
-                <input
-                  type="tel"
-                  value={editFormData.phone}
-                  onChange={(e) => setEditFormData({...editFormData, phone: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="+569..."
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={editFormData.email}
-                  onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="email@ejemplo.com"
-                />
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="is_vip"
-                  checked={editFormData.is_vip}
-                  onChange={(e) => setEditFormData({...editFormData, is_vip: e.target.checked})}
-                  className="rounded border-gray-300 text-primary focus:ring-primary"
-                />
-                <label htmlFor="is_vip" className="ml-2 text-sm text-gray-700 font-medium">
-                  Cliente VIP
-                </label>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Notas
-                </label>
-                <textarea
-                  value={editFormData.notes}
-                  onChange={(e) => setEditFormData({...editFormData, notes: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  rows="3"
-                  placeholder="Notas adicionales sobre el cliente..."
-                ></textarea>
-              </div>
-
-              <div className="flex space-x-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowEditModal(false);
-                    setSelectedCustomer(null);
-                  }}
-                  className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
-                >
-                  {saving ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                  ) : (
-                    <Save className="w-4 h-4" />
-                  )}
-                  <span>{saving ? 'Guardando...' : 'Guardar Cambios'}</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+          </form>
+        </Modal>
       )}
     </div>
   );

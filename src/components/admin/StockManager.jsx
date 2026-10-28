@@ -13,10 +13,10 @@ import {
   Filter,
   Edit,
   History,
-  X,
   ArrowUp,
   ArrowDown
 } from 'lucide-react'
+import Modal from '../ui/Modal'
 
 const StockManager = () => {
   const { tenant } = useTenant()
@@ -516,335 +516,322 @@ const StockManager = () => {
 
       {/* Stock Movement Modal */}
       {showMovementModal && selectedProduct && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              {selectedProduct.movementType === 'add' ? 'Agregar Stock' : 'Reducir Stock'}
-            </h3>
+        <Modal
+          isOpen
+          onClose={() => setShowMovementModal(false)}
+          title={selectedProduct.movementType === 'add' ? 'Agregar Stock' : 'Reducir Stock'}
+          closeOnBackdrop={false}
+        >
+          <div className="mb-4">
+            <p className="text-sm text-gray-600 mb-2">
+              Producto: <span className="font-medium">{selectedProduct.product.name}</span>
+            </p>
+            <p className="text-sm text-gray-600 mb-4">
+              Stock actual: <span className="font-medium">{selectedProduct.current_stock} {selectedProduct.unit}</span>
+            </p>
             
-            <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-2">
-                Producto: <span className="font-medium">{selectedProduct.product.name}</span>
-              </p>
-              <p className="text-sm text-gray-600 mb-4">
-                Stock actual: <span className="font-medium">{selectedProduct.current_stock} {selectedProduct.unit}</span>
-              </p>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Cantidad
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    step="0.01"
-                    value={movementForm.quantity}
-                    onChange={(e) => setMovementForm({ ...movementForm, quantity: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Ingresa la cantidad"
-                  />
-                </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Cantidad
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  step="0.01"
+                  value={movementForm.quantity}
+                  onChange={(e) => setMovementForm({ ...movementForm, quantity: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  placeholder="Ingresa la cantidad"
+                />
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Motivo
-                  </label>
-                  <select
-                    value={movementForm.reason}
-                    onChange={(e) => setMovementForm({ ...movementForm, reason: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  >
-                    {selectedProduct.movementType === 'add' ? (
-                      <>
-                        <option value="purchase">Compra</option>
-                        <option value="adjustment">Ajuste de inventario</option>
-                        <option value="return">Devolución</option>
-                      </>
-                    ) : (
-                      <>
-                        <option value="sale">Venta</option>
-                        <option value="waste">Desperdicio</option>
-                        <option value="adjustment">Ajuste de inventario</option>
-                      </>
-                    )}
-                  </select>
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Motivo
+                </label>
+                <select
+                  value={movementForm.reason}
+                  onChange={(e) => setMovementForm({ ...movementForm, reason: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                >
+                  {selectedProduct.movementType === 'add' ? (
+                    <>
+                      <option value="purchase">Compra</option>
+                      <option value="adjustment">Ajuste de inventario</option>
+                      <option value="return">Devolución</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="sale">Venta</option>
+                      <option value="waste">Desperdicio</option>
+                      <option value="adjustment">Ajuste de inventario</option>
+                    </>
+                  )}
+                </select>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Notas (opcional)
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={movementForm.notes}
-                    onChange={(e) => setMovementForm({ ...movementForm, notes: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                    placeholder="Agregar notas sobre este movimiento..."
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Notas (opcional)
+                </label>
+                <textarea
+                  rows={3}
+                  value={movementForm.notes}
+                  onChange={(e) => setMovementForm({ ...movementForm, notes: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                  placeholder="Agregar notas sobre este movimiento..."
+                />
               </div>
             </div>
-            
-            <div className="flex space-x-3">
-              <button
-                onClick={() => setShowMovementModal(false)}
-                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleSubmitMovement}
-                className={`flex-1 px-4 py-2 rounded-lg transition-colors text-white ${
-                  selectedProduct.movementType === 'add'
-                    ? 'bg-green-600 hover:bg-green-700'
-                    : 'bg-red-600 hover:bg-red-700'
-                }`}
-              >
-                {selectedProduct.movementType === 'add' ? 'Agregar Stock' : 'Reducir Stock'}
-              </button>
-            </div>
           </div>
-        </div>
+          
+          <div className="flex space-x-3">
+            <button
+              onClick={() => setShowMovementModal(false)}
+              className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleSubmitMovement}
+              className={`flex-1 px-4 py-2 rounded-lg transition-colors text-white ${
+                selectedProduct.movementType === 'add'
+                  ? 'bg-green-600 hover:bg-green-700'
+                  : 'bg-red-600 hover:bg-red-700'
+              }`}
+            >
+              {selectedProduct.movementType === 'add' ? 'Agregar Stock' : 'Reducir Stock'}
+            </button>
+          </div>
+        </Modal>
       )}
 
       {/* History Modal */}
       {showHistoryModal && selectedProduct && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowHistoryModal(false)}>
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
-            <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">Historial de Movimientos</h2>
-                <p className="text-sm text-gray-600">{selectedProduct.product?.name}</p>
+        <Modal
+          isOpen
+          onClose={() => setShowHistoryModal(false)}
+          title="Historial de Movimientos"
+          size="xl"
+          bodyClassName="flex flex-col"
+        >
+          <div className="flex-1 overflow-y-auto p-6">
+            {movementHistory.length === 0 ? (
+              <div className="text-center py-12">
+                <History className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-600">No hay movimientos registrados</p>
               </div>
-              <button onClick={() => setShowHistoryModal(false)} className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+            ) : (
+              <div className="space-y-3">
+                {movementHistory.map((movement) => {
+                  const isIncoming = movement.movement_type === 'in'
+                  const reasonLabels = {
+                    purchase: 'Compra',
+                    sale: 'Venta',
+                    waste: 'Desperdicio',
+                    adjustment: 'Ajuste',
+                    return: 'Devolución'
+                  }
 
-            <div className="flex-1 overflow-y-auto p-6">
-              {movementHistory.length === 0 ? (
-                <div className="text-center py-12">
-                  <History className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">No hay movimientos registrados</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {movementHistory.map((movement) => {
-                    const isIncoming = movement.movement_type === 'in'
-                    const reasonLabels = {
-                      purchase: 'Compra',
-                      sale: 'Venta',
-                      waste: 'Desperdicio',
-                      adjustment: 'Ajuste',
-                      return: 'Devolución'
-                    }
+                  return (
+                    <div key={movement.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start space-x-3 flex-1">
+                          <div className={`p-2 rounded-lg ${isIncoming ? 'bg-green-100' : 'bg-red-100'}`}>
+                            {isIncoming ? (
+                              <ArrowUp className="w-5 h-5 text-green-600" />
+                            ) : (
+                              <ArrowDown className="w-5 h-5 text-red-600" />
+                            )}
+                          </div>
 
-                    return (
-                      <div key={movement.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-start space-x-3 flex-1">
-                            <div className={`p-2 rounded-lg ${isIncoming ? 'bg-green-100' : 'bg-red-100'}`}>
-                              {isIncoming ? (
-                                <ArrowUp className="w-5 h-5 text-green-600" />
-                              ) : (
-                                <ArrowDown className="w-5 h-5 text-red-600" />
-                              )}
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <span className={`font-semibold ${isIncoming ? 'text-green-600' : 'text-red-600'}`}>
+                                {isIncoming ? '+' : '-'}{parseFloat(movement.quantity).toFixed(2)} {selectedProduct.unit}
+                              </span>
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-gray-200 text-gray-700">
+                                {reasonLabels[movement.reason] || movement.reason}
+                              </span>
                             </div>
 
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-2 mb-1">
-                                <span className={`font-semibold ${isIncoming ? 'text-green-600' : 'text-red-600'}`}>
-                                  {isIncoming ? '+' : '-'}{parseFloat(movement.quantity).toFixed(2)} {selectedProduct.unit}
-                                </span>
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-200 text-gray-700">
-                                  {reasonLabels[movement.reason] || movement.reason}
-                                </span>
-                              </div>
+                            {movement.notes && (
+                              <p className="text-sm text-gray-600 mb-1">{movement.notes}</p>
+                            )}
 
-                              {movement.notes && (
-                                <p className="text-sm text-gray-600 mb-1">{movement.notes}</p>
+                            <div className="flex items-center space-x-4 text-xs text-gray-500">
+                              <span>{formatDate(movement.created_at)}</span>
+                              {movement.total_cost && (
+                                <span>Costo: {formatCurrency(parseFloat(movement.total_cost))}</span>
                               )}
-
-                              <div className="flex items-center space-x-4 text-xs text-gray-500">
-                                <span>{formatDate(movement.created_at)}</span>
-                                {movement.total_cost && (
-                                  <span>Costo: {formatCurrency(parseFloat(movement.total_cost))}</span>
-                                )}
-                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-
-            <div className="border-t border-gray-200 px-6 py-4">
-              <button
-                onClick={() => setShowHistoryModal(false)}
-                className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Cerrar
-              </button>
-            </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
-        </div>
+
+          <div className="border-t border-gray-200 px-6 py-4">
+            <button
+              onClick={() => setShowHistoryModal(false)}
+              className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cerrar
+            </button>
+          </div>
+        </Modal>
       )}
 
       {/* Edit Modal */}
       {showEditModal && selectedProduct && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowEditModal(false)}>
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0">
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">Editar Inventario</h2>
-                <p className="text-sm text-gray-600">{selectedProduct.product?.name}</p>
-              </div>
-              <button onClick={() => setShowEditModal(false)} className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-6">
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Stock Mínimo *
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      min="0"
-                      step="0.01"
-                      value={editForm.min_stock}
-                      onChange={(e) => setEditForm({ ...editForm, min_stock: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Stock Máximo *
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      min="0"
-                      step="0.01"
-                      value={editForm.max_stock}
-                      onChange={(e) => setEditForm({ ...editForm, max_stock: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Unidad de Medida *
-                    </label>
-                    <select
-                      value={editForm.unit}
-                      onChange={(e) => setEditForm({ ...editForm, unit: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    >
-                      <option value="unidad">Unidad</option>
-                      <option value="kg">Kilogramo (kg)</option>
-                      <option value="g">Gramo (g)</option>
-                      <option value="litros">Litros</option>
-                      <option value="ml">Mililitros (ml)</option>
-                      <option value="paquete">Paquete</option>
-                      <option value="caja">Caja</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Costo por Unidad *
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      min="0"
-                      step="0.01"
-                      value={editForm.cost_per_unit}
-                      onChange={(e) => setEditForm({ ...editForm, cost_per_unit: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Proveedor
-                    </label>
-                    <input
-                      type="text"
-                      value={editForm.supplier}
-                      onChange={(e) => setEditForm({ ...editForm, supplier: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="Nombre del proveedor"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Ubicación
-                    </label>
-                    <input
-                      type="text"
-                      value={editForm.location}
-                      onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="Ej: Bodega A, Estante 3"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Fecha de Vencimiento
-                    </label>
-                    <input
-                      type="date"
-                      value={editForm.expiry_date}
-                      onChange={(e) => setEditForm({ ...editForm, expiry_date: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
+        <Modal
+          isOpen
+          onClose={() => setShowEditModal(false)}
+          title="Editar Inventario"
+          size="lg"
+          bodyClassName=""
+        >
+          <div className="p-6">
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Stock Mínimo *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    step="0.01"
+                    value={editForm.min_stock}
+                    onChange={(e) => setEditForm({ ...editForm, min_stock: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Notas
+                    Stock Máximo *
                   </label>
-                  <textarea
-                    rows="3"
-                    value={editForm.notes}
-                    onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    step="0.01"
+                    value={editForm.max_stock}
+                    onChange={(e) => setEditForm({ ...editForm, max_stock: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="Información adicional sobre el producto..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Unidad de Medida *
+                  </label>
+                  <select
+                    value={editForm.unit}
+                    onChange={(e) => setEditForm({ ...editForm, unit: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="unidad">Unidad</option>
+                    <option value="kg">Kilogramo (kg)</option>
+                    <option value="g">Gramo (g)</option>
+                    <option value="litros">Litros</option>
+                    <option value="ml">Mililitros (ml)</option>
+                    <option value="paquete">Paquete</option>
+                    <option value="caja">Caja</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Costo por Unidad *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    step="0.01"
+                    value={editForm.cost_per_unit}
+                    onChange={(e) => setEditForm({ ...editForm, cost_per_unit: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Proveedor
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.supplier}
+                    onChange={(e) => setEditForm({ ...editForm, supplier: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Nombre del proveedor"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Ubicación
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.location}
+                    onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Ej: Bodega A, Estante 3"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Fecha de Vencimiento
+                  </label>
+                  <input
+                    type="date"
+                    value={editForm.expiry_date}
+                    onChange={(e) => setEditForm({ ...editForm, expiry_date: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
-                <button
-                  onClick={() => setShowEditModal(false)}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleSubmitEdit}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-                >
-                  Guardar Cambios
-                </button>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Notas
+                </label>
+                <textarea
+                  rows="3"
+                  value={editForm.notes}
+                  onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Información adicional sobre el producto..."
+                />
               </div>
             </div>
+
+            <div className="flex items-center justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
+              <button
+                onClick={() => setShowEditModal(false)}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSubmitEdit}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                Guardar Cambios
+              </button>
+            </div>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   )

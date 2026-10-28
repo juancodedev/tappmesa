@@ -17,6 +17,7 @@ import {
   Search,
   ShoppingBag
 } from 'lucide-react'
+import Modal from '../ui/Modal'
 
 const OrdersManager = () => {
   const { tenant: currentTenant } = useTenant()
@@ -494,72 +495,63 @@ const OrdersManager = () => {
 
       {/* Modal de detalles */}
       {selectedOrder && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Detalles del Pedido #{selectedOrder.order_number}
-              </h3>
-              <button
-                onClick={() => setSelectedOrder(null)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                ×
-              </button>
+        <Modal
+          isOpen
+          onClose={() => setSelectedOrder(null)}
+          title={<>Detalles del Pedido #{selectedOrder.order_number}</>}
+          closeOnBackdrop={false}
+        >
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-medium text-gray-900 mb-2">Cliente:</h4>
+              <p className="text-gray-600">{selectedOrder.customer_name}</p>
+              <p className="text-gray-600">{selectedOrder.customer_phone}</p>
+              {selectedOrder.table_number && (
+                <p className="text-gray-600">{selectedOrder.table_number}</p>
+              )}
             </div>
-            
-            <div className="space-y-4">
-              <div>
-                <h4 className="font-medium text-gray-900 mb-2">Cliente:</h4>
-                <p className="text-gray-600">{selectedOrder.customer_name}</p>
-                <p className="text-gray-600">{selectedOrder.customer_phone}</p>
-                {selectedOrder.table_number && (
-                  <p className="text-gray-600">{selectedOrder.table_number}</p>
-                )}
-              </div>
 
-              <div>
-                <h4 className="font-medium text-gray-900 mb-2">Productos:</h4>
-                <div className="space-y-1">
-                  {selectedOrder.order_items?.map((item, index) => (
-                    <div key={index} className="flex justify-between text-sm">
-                      <span>{item.quantity}x {item.products?.name}</span>
-                      <span>{formatCurrency(item.total_price)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="border-t pt-4">
-                <div className="flex justify-between font-bold">
-                  <span>Total:</span>
-                  <span>{formatCurrency(selectedOrder.total)}</span>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="font-medium text-gray-900 mb-1">Estado:</h4>
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedOrder.status)}`}>
-                  {getStatusText(selectedOrder.status)}
-                </span>
-              </div>
-
-              <div>
-                <h4 className="font-medium text-gray-900 mb-1">Fecha y hora:</h4>
-                <p className="text-gray-600">
-                  {new Date(selectedOrder.created_at).toLocaleString('es-CL')}
-                </p>
+            <div>
+              <h4 className="font-medium text-gray-900 mb-2">Productos:</h4>
+              <div className="space-y-1">
+                {selectedOrder.order_items?.map((item, index) => (
+                  <div key={index} className="flex justify-between text-sm">
+                    <span>{item.quantity}x {item.products?.name}</span>
+                    <span>{formatCurrency(item.total_price)}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <button
-              onClick={() => setSelectedOrder(null)}
-              className="w-full mt-6 bg-primary text-white py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-            >
-              Cerrar
-            </button>
+            <div className="border-t pt-4">
+              <div className="flex justify-between font-bold">
+                <span>Total:</span>
+                <span>{formatCurrency(selectedOrder.total)}</span>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-medium text-gray-900 mb-1">Estado:</h4>
+              <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedOrder.status)}`}>
+                {getStatusText(selectedOrder.status)}
+              </span>
+            </div>
+
+            <div>
+              <h4 className="font-medium text-gray-900 mb-1">Fecha y hora:</h4>
+              <p className="text-gray-600">
+                {new Date(selectedOrder.created_at).toLocaleString('es-CL')}
+              </p>
+            </div>
           </div>
-        </div>
+
+          <button
+            onClick={() => setSelectedOrder(null)}
+            className="w-full mt-6 bg-primary text-white py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
+          >
+            Cerrar
+          </button>
+        </Modal>
       )}
     </div>
   )
