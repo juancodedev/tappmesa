@@ -23,6 +23,7 @@ import {
   DollarSign,
   BarChart3
 } from 'lucide-react'
+import Modal from '../ui/Modal'
 
 const SuperAdminTenantsManager = () => {
   const _navigate = useNavigate()
@@ -552,136 +553,129 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="bg-linear-to-r from-primary-600 to-primary-800 text-white px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold">{tenant.name}</h2>
-              <p className="text-sm opacity-90">@{tenant.slug}</p>
-            </div>
-            <button onClick={onClose} className="text-white hover:text-gray-200">
-              <XCircle className="h-6 w-6" />
-            </button>
-          </div>
+    <Modal
+      isOpen
+      onClose={onClose}
+      title={tenant.name}
+      description={`@${tenant.slug}`}
+      size="lg"
+      bodyClassName=""
+      closeOnBackdrop={false}
+    >
+      {/* Content */}
+      <div className="p-6 space-y-6">
+        {/* Plan Selection */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Plan de Suscripción
+          </label>
+          <select
+            value={selectedPlanId}
+            onChange={(e) => setSelectedPlanId(e.target.value)}
+            className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+          >
+            <option value="">Sin plan asignado</option>
+            {plans.filter(p => p.is_active).map((plan) => (
+              <option key={plan.id} value={plan.id}>
+                {plan.name} - {new Intl.NumberFormat('es-CL', {
+                  style: 'currency',
+                  currency: 'CLP',
+                  minimumFractionDigits: 0
+                }).format(plan.price)}/mes
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={handleAssignPlan}
+            disabled={loading || !selectedPlanId}
+            className="mt-2 w-full px-4 py-2 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
+          >
+            {loading ? 'Asignando...' : 'Asignar Plan'}
+          </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6 space-y-6">
-          {/* Plan Selection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Plan de Suscripción
-            </label>
-            <select
-              value={selectedPlanId}
-              onChange={(e) => setSelectedPlanId(e.target.value)}
-              className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            >
-              <option value="">Sin plan asignado</option>
-              {plans.filter(p => p.is_active).map((plan) => (
-                <option key={plan.id} value={plan.id}>
-                  {plan.name} - {new Intl.NumberFormat('es-CL', {
-                    style: 'currency',
-                    currency: 'CLP',
-                    minimumFractionDigits: 0
-                  }).format(plan.price)}/mes
-                </option>
-              ))}
-            </select>
-            <button
-              onClick={handleAssignPlan}
-              disabled={loading || !selectedPlanId}
-              className="mt-2 w-full px-4 py-2 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
-            >
-              {loading ? 'Asignando...' : 'Asignar Plan'}
-            </button>
-          </div>
-
-          {/* Custom Limits */}
-          <div className="border-t pt-6">
-            <h3 className="text-sm font-medium text-gray-700 mb-3">
-              Límites Personalizados (opcional)
-            </h3>
-            <div className="space-y-3">
-              <div>
-                <label className="text-xs text-gray-600">Máximo de Mesas</label>
-                <input
-                  type="number"
-                  min="1"
-                  value={customLimits.custom_max_tables || ''}
-                  onChange={(e) => setCustomLimits({
-                    ...customLimits,
-                    custom_max_tables: e.target.value ? parseInt(e.target.value) : null
-                  })}
-                  placeholder="Dejar vacío para usar límite del plan"
-                  className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-gray-600">Máximo de Productos</label>
-                <input
-                  type="number"
-                  min="1"
-                  value={customLimits.custom_max_products || ''}
-                  onChange={(e) => setCustomLimits({
-                    ...customLimits,
-                    custom_max_products: e.target.value ? parseInt(e.target.value) : null
-                  })}
-                  placeholder="Dejar vacío para usar límite del plan"
-                  className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-gray-600">Máximo de Personas por Mesa</label>
-                <input
-                  type="number"
-                  min="1"
-                  value={customLimits.custom_max_people || ''}
-                  onChange={(e) => setCustomLimits({
-                    ...customLimits,
-                    custom_max_people: e.target.value ? parseInt(e.target.value) : null
-                  })}
-                  placeholder="Dejar vacío para usar límite del plan"
-                  className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                />
-              </div>
+        {/* Custom Limits */}
+        <div className="border-t pt-6">
+          <h3 className="text-sm font-medium text-gray-700 mb-3">
+            Límites Personalizados (opcional)
+          </h3>
+          <div className="space-y-3">
+            <div>
+              <label className="text-xs text-gray-600">Máximo de Mesas</label>
+              <input
+                type="number"
+                min="1"
+                value={customLimits.custom_max_tables || ''}
+                onChange={(e) => setCustomLimits({
+                  ...customLimits,
+                  custom_max_tables: e.target.value ? parseInt(e.target.value) : null
+                })}
+                placeholder="Dejar vacío para usar límite del plan"
+                className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              />
             </div>
-            <button
-              onClick={handleUpdateLimits}
-              disabled={loading}
-              className="mt-3 w-full px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
-            >
-              {loading ? 'Actualizando...' : 'Actualizar Límites'}
-            </button>
+            <div>
+              <label className="text-xs text-gray-600">Máximo de Productos</label>
+              <input
+                type="number"
+                min="1"
+                value={customLimits.custom_max_products || ''}
+                onChange={(e) => setCustomLimits({
+                  ...customLimits,
+                  custom_max_products: e.target.value ? parseInt(e.target.value) : null
+                })}
+                placeholder="Dejar vacío para usar límite del plan"
+                className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-gray-600">Máximo de Personas por Mesa</label>
+              <input
+                type="number"
+                min="1"
+                value={customLimits.custom_max_people || ''}
+                onChange={(e) => setCustomLimits({
+                  ...customLimits,
+                  custom_max_people: e.target.value ? parseInt(e.target.value) : null
+                })}
+                placeholder="Dejar vacío para usar límite del plan"
+                className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
           </div>
+          <button
+            onClick={handleUpdateLimits}
+            disabled={loading}
+            className="mt-3 w-full px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
+          >
+            {loading ? 'Actualizando...' : 'Actualizar Límites'}
+          </button>
+        </div>
 
-          {/* Stats */}
-          <div className="border-t pt-6">
-            <h3 className="text-sm font-medium text-gray-700 mb-3">Estadísticas de Uso</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-cream-50 p-3 rounded-lg">
-                <div className="text-xs text-gray-600">Mesas</div>
-                <div className="text-2xl font-bold text-gray-900">{tenant.counts.tables}</div>
-              </div>
-              <div className="bg-cream-50 p-3 rounded-lg">
-                <div className="text-xs text-gray-600">Productos</div>
-                <div className="text-2xl font-bold text-gray-900">{tenant.counts.products}</div>
-              </div>
-              <div className="bg-cream-50 p-3 rounded-lg">
-                <div className="text-xs text-gray-600">Usuarios</div>
-                <div className="text-2xl font-bold text-gray-900">{tenant.counts.users}</div>
-              </div>
-              <div className="bg-cream-50 p-3 rounded-lg">
-                <div className="text-xs text-gray-600">Pedidos</div>
-                <div className="text-2xl font-bold text-gray-900">{tenant.counts.orders}</div>
-              </div>
+        {/* Stats */}
+        <div className="border-t pt-6">
+          <h3 className="text-sm font-medium text-gray-700 mb-3">Estadísticas de Uso</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-cream-50 p-3 rounded-lg">
+              <div className="text-xs text-gray-600">Mesas</div>
+              <div className="text-2xl font-bold text-gray-900">{tenant.counts.tables}</div>
+            </div>
+            <div className="bg-cream-50 p-3 rounded-lg">
+              <div className="text-xs text-gray-600">Productos</div>
+              <div className="text-2xl font-bold text-gray-900">{tenant.counts.products}</div>
+            </div>
+            <div className="bg-cream-50 p-3 rounded-lg">
+              <div className="text-xs text-gray-600">Usuarios</div>
+              <div className="text-2xl font-bold text-gray-900">{tenant.counts.users}</div>
+            </div>
+            <div className="bg-cream-50 p-3 rounded-lg">
+              <div className="text-xs text-gray-600">Pedidos</div>
+              <div className="text-2xl font-bold text-gray-900">{tenant.counts.orders}</div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Modal>
   )
 }
 

@@ -14,9 +14,9 @@ import {
   Users,
   MapPin,
   MoreVertical,
-  Save,
-  X
+  Save
 } from 'lucide-react'
+import Modal from '../ui/Modal'
 
 const TablesManager = () => {
   const { tenant: currentTenant } = useTenant()
@@ -780,126 +780,125 @@ const TablesManager = () => {
 
       {/* Add/Edit Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              {selectedTable ? 'Editar Mesa' : 'Agregar Nueva Mesa'}
-            </h3>
+        <Modal
+          isOpen
+          onClose={() => setShowAddModal(false)}
+          title={selectedTable ? 'Editar Mesa' : 'Agregar Nueva Mesa'}
+          closeOnBackdrop={false}
+        >
+          <div className="space-y-4 mb-6">
+            {/* Número de Mesa */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Número de Mesa *
+              </label>
+              <input
+                type="text"
+                value={formData.number}
+                onChange={(e) => setFormData({ ...formData, number: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                placeholder="Ej: Mesa 1, Mesa A, VIP 1"
+              />
+            </div>
             
-            <div className="space-y-4 mb-6">
-              {/* Número de Mesa */}
+            {/* Capacidad */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Capacidad (personas) *
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="20"
+                value={formData.capacity}
+                onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) || 2 })}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+            
+            {/* Ubicación */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Ubicación *
+              </label>
+              <select
+                value={formData.location}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              >
+                <option value="interior">Interior</option>
+                <option value="terraza">Terraza</option>
+                <option value="barra">Barra</option>
+                <option value="privado">Salón Privado</option>
+                <option value="exterior">Exterior</option>
+              </select>
+            </div>
+
+            {/* Estado */}
+            {tableStatuses.length > 0 && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Número de Mesa *
-                </label>
-                <input
-                  type="text"
-                  value={formData.number}
-                  onChange={(e) => setFormData({ ...formData, number: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="Ej: Mesa 1, Mesa A, VIP 1"
-                />
-              </div>
-              
-              {/* Capacidad */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Capacidad (personas) *
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="20"
-                  value={formData.capacity}
-                  onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) || 2 })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-              </div>
-              
-              {/* Ubicación */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Ubicación *
+                  Estado Inicial
                 </label>
                 <select
-                  value={formData.location}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  value={formData.status_id}
+                  onChange={(e) => setFormData({ ...formData, status_id: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 >
-                  <option value="interior">Interior</option>
-                  <option value="terraza">Terraza</option>
-                  <option value="barra">Barra</option>
-                  <option value="privado">Salón Privado</option>
-                  <option value="exterior">Exterior</option>
+                  {tableStatuses.map((status) => (
+                    <option key={status.id} value={status.id}>
+                      {status.name}
+                    </option>
+                  ))}
                 </select>
               </div>
+            )}
 
-              {/* Estado */}
-              {tableStatuses.length > 0 && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Estado Inicial
-                  </label>
-                  <select
-                    value={formData.status_id}
-                    onChange={(e) => setFormData({ ...formData, status_id: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  >
-                    {tableStatuses.map((status) => (
-                      <option key={status.id} value={status.id}>
-                        {status.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {/* Información adicional */}
-              {!selectedTable && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <p className="text-sm text-blue-700">
-                    <strong>📝 Nota:</strong> Podrás generar un código QR para esta mesa después de crearla usando el botón "Ver QR".
-                  </p>
-                </div>
-              )}
-            </div>
-            
-            <div className="flex space-x-3">
-              <button
-                onClick={() => setShowAddModal(false)}
-                disabled={saving}
-                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleSaveTable}
-                disabled={saving || !formData.number.trim()}
-                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-sm"
-              >
-                {saving ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    <span>Guardando...</span>
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-4 h-4" />
-                    <span>{selectedTable ? 'Actualizar Mesa' : 'Crear Mesa'}</span>
-                  </>
-                )}
-              </button>
-            </div>
-            
-            {/* Validaciones */}
-            <div className="mt-4 text-xs text-gray-500">
-              <p>* Campos obligatorios</p>
-              {selectedTable && (
-                <p>💡 El código QR existente se mantendrá sin cambios</p>
-              )}
-            </div>
+            {/* Información adicional */}
+            {!selectedTable && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <p className="text-sm text-blue-700">
+                  <strong>📝 Nota:</strong> Podrás generar un código QR para esta mesa después de crearla usando el botón "Ver QR".
+                </p>
+              </div>
+            )}
           </div>
-        </div>
+          
+          <div className="flex space-x-3">
+            <button
+              onClick={() => setShowAddModal(false)}
+              disabled={saving}
+              className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleSaveTable}
+              disabled={saving || !formData.number.trim()}
+              className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-sm"
+            >
+              {saving ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <span>Guardando...</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  <span>{selectedTable ? 'Actualizar Mesa' : 'Crear Mesa'}</span>
+                </>
+              )}
+            </button>
+          </div>
+          
+          {/* Validaciones */}
+          <div className="mt-4 text-xs text-gray-500">
+            <p>* Campos obligatorios</p>
+            {selectedTable && (
+              <p>💡 El código QR existente se mantendrá sin cambios</p>
+            )}
+          </div>
+        </Modal>
       )}
 
       {/* Click outside to close menu */}

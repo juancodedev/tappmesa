@@ -10,11 +10,11 @@ import {
   Edit,
   Trash2,
   Save,
-  X,
   ArrowUp,
   ArrowDown,
   Package
 } from 'lucide-react'
+import Modal from '../ui/Modal'
 
 const CategoriesManager = () => {
   const { tenant: currentTenant } = useTenant()
@@ -408,96 +408,87 @@ const CategoriesManager = () => {
 
       {/* Modal de creación/edición */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                {editingCategory ? 'Editar Categoría' : 'Nueva Categoría'}
-              </h3>
+        <Modal
+          isOpen
+          onClose={closeModal}
+          title={editingCategory ? 'Editar Categoría' : 'Nueva Categoría'}
+          closeOnBackdrop={false}
+        >
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Nombre *
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => handleNameChange(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                placeholder="Ej: Bebidas Calientes"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Slug
+              </label>
+              <input
+                type="text"
+                value={formData.slug}
+                onChange={(e) => setFormData({...formData, slug: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                placeholder="bebidas-calientes"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Se genera automáticamente desde el nombre
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Orden de visualización
+              </label>
+              <input
+                type="number"
+                value={formData.display_order}
+                onChange={(e) => setFormData({...formData, display_order: parseInt(e.target.value)})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                min="0"
+              />
+            </div>
+
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="is_active"
+                checked={formData.is_active}
+                onChange={(e) => setFormData({...formData, is_active: e.target.checked})}
+                className="rounded border-gray-300 text-primary focus:ring-primary"
+              />
+              <label htmlFor="is_active" className="ml-2 text-sm text-gray-700">
+                Categoría activa
+              </label>
+            </div>
+
+            <div className="flex space-x-3 pt-4">
               <button
+                type="button"
                 onClick={closeModal}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <X className="w-5 h-5" />
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
+              >
+                <Save className="w-4 h-4" />
+                <span>{editingCategory ? 'Actualizar' : 'Crear'}</span>
               </button>
             </div>
-            
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nombre *
-                </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => handleNameChange(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="Ej: Bebidas Calientes"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Slug
-                </label>
-                <input
-                  type="text"
-                  value={formData.slug}
-                  onChange={(e) => setFormData({...formData, slug: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="bebidas-calientes"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Se genera automáticamente desde el nombre
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Orden de visualización
-                </label>
-                <input
-                  type="number"
-                  value={formData.display_order}
-                  onChange={(e) => setFormData({...formData, display_order: parseInt(e.target.value)})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  min="0"
-                />
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="is_active"
-                  checked={formData.is_active}
-                  onChange={(e) => setFormData({...formData, is_active: e.target.checked})}
-                  className="rounded border-gray-300 text-primary focus:ring-primary"
-                />
-                <label htmlFor="is_active" className="ml-2 text-sm text-gray-700">
-                  Categoría activa
-                </label>
-              </div>
-
-              <div className="flex space-x-3 pt-4">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{editingCategory ? 'Actualizar' : 'Crear'}</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+          </form>
+        </Modal>
       )}
     </div>
   )

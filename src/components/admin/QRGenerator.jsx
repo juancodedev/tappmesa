@@ -5,6 +5,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { SuperAdminContext } from '../../context/SuperAdminContext'
 import SuperAdminNoTenantMessage from './SuperAdminNoTenantMessage'
 import { QrCode, Download, Eye, Copy, Check, ArrowLeft } from 'lucide-react'
+import Modal from '../ui/Modal'
 
 const QRGenerator = () => {
   const { user, isSuperAdmin } = useAuth()
@@ -322,43 +323,42 @@ const QRGenerator = () => {
 
       {/* Modal de vista previa */}
       {selectedTable && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <div className="text-center">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                QR Code - {selectedTable.number}
-              </h3>
-              
-              <img 
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(generateQRUrl(selectedTable))}`}
-                alt={`QR Code para ${selectedTable.number}`}
-                className="mx-auto mb-4 rounded-lg shadow-lg"
-                width={250}
-                height={250}
-              />
-              
-              <div className="text-sm text-gray-600 mb-6">
-                <p className="mb-2">Código: <code className="bg-gray-100 px-2 py-1 rounded">{selectedTable.unique_code}</code></p>
-                <p>URL: <code className="bg-gray-100 px-2 py-1 rounded text-xs">{generateQRUrl(selectedTable)}</code></p>
-              </div>
-              
-              <div className="flex space-x-3">
-                <button
-                  onClick={() => downloadQR(selectedTable)}
-                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-                >
-                  Descargar QR
-                </button>
-                <button
-                  onClick={() => setSelectedTable(null)}
-                  className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Cerrar
-                </button>
-              </div>
+        <Modal
+          isOpen
+          onClose={() => setSelectedTable(null)}
+          title={<>QR Code - {selectedTable.number}</>}
+          closeOnBackdrop={false}
+        >
+          <div className="text-center">
+            <img 
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(generateQRUrl(selectedTable))}`}
+              alt={`QR Code para ${selectedTable.number}`}
+              className="mx-auto mb-4 rounded-lg shadow-lg"
+              width={250}
+              height={250}
+            />
+            
+            <div className="text-sm text-gray-600 mb-6">
+              <p className="mb-2">Código: <code className="bg-gray-100 px-2 py-1 rounded">{selectedTable.unique_code}</code></p>
+              <p>URL: <code className="bg-gray-100 px-2 py-1 rounded text-xs">{generateQRUrl(selectedTable)}</code></p>
+            </div>
+            
+            <div className="flex space-x-3">
+              <button
+                onClick={() => downloadQR(selectedTable)}
+                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
+              >
+                Descargar QR
+              </button>
+              <button
+                onClick={() => setSelectedTable(null)}
+                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cerrar
+              </button>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
 
       {/* Instrucciones */}

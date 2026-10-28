@@ -20,6 +20,7 @@ import {
   Tag,
   Upload
 } from 'lucide-react'
+import Modal from '../ui/Modal'
 
 const ProductsManager = () => {
   const { tenant: currentTenant } = useTenant()
@@ -598,237 +599,229 @@ const ProductsManager = () => {
 
       {/* Modal de creación/edición */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full p-6 max-h-screen overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
-              </h3>
+        <Modal
+          isOpen
+          onClose={closeModal}
+          title={editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
+          size="lg"
+          closeOnBackdrop={false}
+        >
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Información básica */}
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Nombre *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => handleNameChange(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="Ej: Latte Especial"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Slug
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.slug}
+                    onChange={(e) => setFormData({...formData, slug: e.target.value})}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="latte-especial"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Categoría *
+                  </label>
+                  <select
+                    value={formData.category_id}
+                    onChange={(e) => setFormData({...formData, category_id: e.target.value})}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    required
+                  >
+                    <option value="">Seleccionar categoría</option>
+                    {categories.map(category => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Precio *
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.price}
+                      onChange={(e) => setFormData({...formData, price: e.target.value})}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="0"
+                      min="0"
+                      step="10"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Tiempo prep. (min)
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.preparation_time}
+                      onChange={(e) => setFormData({...formData, preparation_time: parseInt(e.target.value)})}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      min="1"
+                      max="60"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Imagen y opciones */}
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Imagen del producto
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                    {formData.image_url ? (
+                      <div className="relative">
+                        <img
+                          src={formData.image_url}
+                          alt="Preview"
+                          className="w-full h-32 object-cover rounded"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setFormData({...formData, image_url: ''})}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="text-center">
+                        <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                        <div className="flex flex-col space-y-2">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            disabled={imageUploading}
+                            className="hidden"
+                            id="image-upload"
+                          />
+                          <label
+                            htmlFor="image-upload"
+                            className="cursor-pointer bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors inline-flex items-center justify-center space-x-2"
+                          >
+                            <Upload className="w-4 h-4" />
+                            <span>{imageUploading ? 'Subiendo...' : 'Subir imagen'}</span>
+                          </label>
+                          <input
+                            type="url"
+                            placeholder="O pegar URL de imagen"
+                            value={formData.image_url}
+                            onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Tipo de bebida (opcional)
+                  </label>
+                  <select
+                    value={formData.beverage_type}
+                    onChange={(e) => setFormData({...formData, beverage_type: e.target.value})}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  >
+                    <option value="">Sin especificar</option>
+                    <option value="coffee">Café</option>
+                    <option value="tea">Té</option>
+                    <option value="juice">Jugo</option>
+                    <option value="smoothie">Smoothie</option>
+                    <option value="other">Otro</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="is_available"
+                      checked={formData.is_available}
+                      onChange={(e) => setFormData({...formData, is_available: e.target.checked})}
+                      className="rounded border-gray-300 text-primary focus:ring-primary"
+                    />
+                    <label htmlFor="is_available" className="ml-2 text-sm text-gray-700">
+                      Disponible
+                    </label>
+                  </div>
+
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="is_featured"
+                      checked={formData.is_featured}
+                      onChange={(e) => setFormData({...formData, is_featured: e.target.checked})}
+                      className="rounded border-gray-300 text-primary focus:ring-primary"
+                    />
+                    <label htmlFor="is_featured" className="ml-2 text-sm text-gray-700">
+                      Destacado
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Descripción
+              </label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                rows={3}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                placeholder="Describe el producto, ingredientes, etc."
+              />
+            </div>
+
+            <div className="flex space-x-3 pt-4">
               <button
+                type="button"
                 onClick={closeModal}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <X className="w-5 h-5" />
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
+              >
+                <Save className="w-4 h-4" />
+                <span>{editingProduct ? 'Actualizar' : 'Crear'}</span>
               </button>
             </div>
-            
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Información básica */}
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Nombre *
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => handleNameChange(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="Ej: Latte Especial"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Slug
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.slug}
-                      onChange={(e) => setFormData({...formData, slug: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="latte-especial"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Categoría *
-                    </label>
-                    <select
-                      value={formData.category_id}
-                      onChange={(e) => setFormData({...formData, category_id: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                    >
-                      <option value="">Seleccionar categoría</option>
-                      {categories.map(category => (
-                        <option key={category.id} value={category.id}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Precio *
-                      </label>
-                      <input
-                        type="number"
-                        value={formData.price}
-                        onChange={(e) => setFormData({...formData, price: e.target.value})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                        placeholder="0"
-                        min="0"
-                        step="10"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Tiempo prep. (min)
-                      </label>
-                      <input
-                        type="number"
-                        value={formData.preparation_time}
-                        onChange={(e) => setFormData({...formData, preparation_time: parseInt(e.target.value)})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                        min="1"
-                        max="60"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Imagen y opciones */}
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Imagen del producto
-                    </label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-                      {formData.image_url ? (
-                        <div className="relative">
-                          <img
-                            src={formData.image_url}
-                            alt="Preview"
-                            className="w-full h-32 object-cover rounded"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setFormData({...formData, image_url: ''})}
-                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
-                          >
-                            <X className="w-3 h-3" />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="text-center">
-                          <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                          <div className="flex flex-col space-y-2">
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleImageUpload}
-                              disabled={imageUploading}
-                              className="hidden"
-                              id="image-upload"
-                            />
-                            <label
-                              htmlFor="image-upload"
-                              className="cursor-pointer bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors inline-flex items-center justify-center space-x-2"
-                            >
-                              <Upload className="w-4 h-4" />
-                              <span>{imageUploading ? 'Subiendo...' : 'Subir imagen'}</span>
-                            </label>
-                            <input
-                              type="url"
-                              placeholder="O pegar URL de imagen"
-                              value={formData.image_url}
-                              onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-                              className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Tipo de bebida (opcional)
-                    </label>
-                    <select
-                      value={formData.beverage_type}
-                      onChange={(e) => setFormData({...formData, beverage_type: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    >
-                      <option value="">Sin especificar</option>
-                      <option value="coffee">Café</option>
-                      <option value="tea">Té</option>
-                      <option value="juice">Jugo</option>
-                      <option value="smoothie">Smoothie</option>
-                      <option value="other">Otro</option>
-                    </select>
-                  </div>
-
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="is_available"
-                        checked={formData.is_available}
-                        onChange={(e) => setFormData({...formData, is_available: e.target.checked})}
-                        className="rounded border-gray-300 text-primary focus:ring-primary"
-                      />
-                      <label htmlFor="is_available" className="ml-2 text-sm text-gray-700">
-                        Disponible
-                      </label>
-                    </div>
-
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="is_featured"
-                        checked={formData.is_featured}
-                        onChange={(e) => setFormData({...formData, is_featured: e.target.checked})}
-                        className="rounded border-gray-300 text-primary focus:ring-primary"
-                      />
-                      <label htmlFor="is_featured" className="ml-2 text-sm text-gray-700">
-                        Destacado
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Descripción
-                </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  rows={3}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                  placeholder="Describe el producto, ingredientes, etc."
-                />
-              </div>
-
-              <div className="flex space-x-3 pt-4">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{editingProduct ? 'Actualizar' : 'Crear'}</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+          </form>
+        </Modal>
       )}
     </div>
   )
