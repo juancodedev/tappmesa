@@ -13,7 +13,7 @@ const TableApp = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-orange-50 to-red-50 flex items-center justify-center">
+      <div className="min-h-dvh bg-linear-to-br from-orange-50 to-red-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Conectando con la mesa...</p>
@@ -24,9 +24,9 @@ const TableApp = () => {
 
   if (!tenant || !table) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-dvh bg-gray-100 flex items-center justify-center">
         <div className="text-center px-4">
-          <div className="text-6xl mb-4">❌</div>
+          <div className="text-6xl mb-4" aria-hidden="true">❌</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
             Mesa no encontrada
           </h1>
@@ -48,7 +48,7 @@ const TableApp = () => {
 
   return (
     <CartProvider>
-      <div className="min-h-screen bg-gray-50 pb-24">
+      <div className="min-h-dvh bg-gray-50 pb-24">
         {/* Header específico de mesa */}
         <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
           <div className="px-4 py-3">
@@ -65,8 +65,10 @@ const TableApp = () => {
           </div>
 
           {/* Tabs de navegación */}
-          <div className="flex border-t border-gray-200">
+          <div className="flex border-t border-gray-200" role="tablist" aria-label="Secciones de la mesa">
             <button
+              role="tab"
+              aria-selected={activeTab === 'menu'}
               onClick={() => setActiveTab('menu')}
               className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 text-sm font-medium transition-colors ${
                 activeTab === 'menu'
@@ -74,10 +76,12 @@ const TableApp = () => {
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
             >
-              <UtensilsCrossed className="w-4 h-4" />
+              <UtensilsCrossed className="w-4 h-4" aria-hidden="true" />
               <span>Menú</span>
             </button>
             <button
+              role="tab"
+              aria-selected={activeTab === 'orders'}
               onClick={() => setActiveTab('orders')}
               className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 text-sm font-medium transition-colors ${
                 activeTab === 'orders'
@@ -85,7 +89,7 @@ const TableApp = () => {
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
             >
-              <Receipt className="w-4 h-4" />
+              <Receipt className="w-4 h-4" aria-hidden="true" />
               <span>Mis Pedidos</span>
             </button>
           </div>
@@ -108,7 +112,7 @@ const TableApp = () => {
               <span className="font-semibold text-gray-900">
                 {table.number}
               </span>
-              <span className="text-gray-400">•</span>
+              <span className="text-gray-400" aria-hidden="true">•</span>
               <span className="text-gray-600">Capacidad:</span>
               <span className="font-semibold text-gray-900">
                 {table.capacity} personas
