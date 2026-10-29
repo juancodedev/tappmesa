@@ -6,6 +6,7 @@ import { SuperAdminContext } from '../../context/SuperAdminContext'
 import SuperAdminNoTenantMessage from './SuperAdminNoTenantMessage'
 import { QrCode, Download, Eye, Copy, Check, ArrowLeft } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { buildTableMenuUrl } from '../../utils/tableMenuUrl'
 
 const QRGenerator = () => {
   const { user, isSuperAdmin } = useAuth()
@@ -85,63 +86,11 @@ const QRGenerator = () => {
 
   const generateQRUrl = (table) => {
     if (!currentTenant) return '#'
-
-    const hostname = window.location.hostname
-    const protocol = window.location.protocol
-    const port = window.location.port
-    const tenantSlug = currentTenant.subdomain || currentTenant.slug
-
-    // En desarrollo local con .localhost (método recomendado)
-    if (hostname.endsWith('.localhost')) {
-      // Si ya estamos en el subdominio correcto, usar hostname actual
-      if (hostname.startsWith(tenantSlug)) {
-        return `${protocol}//${hostname}${port ? ':' + port : ''}/${table.unique_code}/menu`
-      }
-      const baseUrl = `http://${tenantSlug}.localhost${port ? ':' + port : ''}`
-      return `${baseUrl}/${table.unique_code}/menu`
-    }
-
-    // En desarrollo local con .local
-    if (hostname.endsWith('.local')) {
-      // Si ya estamos en el subdominio correcto, usar hostname actual
-      if (hostname.startsWith(tenantSlug)) {
-        return `${protocol}//${hostname}${port ? ':' + port : ''}/${table.unique_code}/menu`
-      }
-      const baseUrl = `http://${tenantSlug}.tappmesa.local${port ? ':' + port : ''}`
-      return `${baseUrl}/${table.unique_code}/menu`
-    }
-
-    // En desarrollo con localhost (fallback con query params)
-    if (hostname === 'localhost' || hostname.match(/^\d/)) {
-      const baseUrl = `${protocol}//${hostname}${port ? ':' + port : ''}`
-      return `${baseUrl}?cafe=${tenantSlug}&table=${table.unique_code}`
-    }
-
-    // En producción con Vercel: formato [nombre]-tappmesa.vercel.app
-    if (hostname.includes('.vercel.app')) {
-      // Si ya estamos en el subdominio correcto del tenant, usar hostname actual
-      if (hostname.startsWith(tenantSlug)) {
-        return `${protocol}//${hostname}/${table.unique_code}/menu`
-      }
-      // Si no, construir la URL con el formato correcto
-      return `${protocol}//${tenantSlug}.vercel.app/${table.unique_code}/menu`
-    }
-
-    // En producción con dominio personalizado tappmesa.com
-    if (hostname.includes('tappmesa.com')) {
-      // Si ya estamos en el subdominio correcto, usar hostname actual
-      if (hostname.startsWith(tenantSlug)) {
-        return `${protocol}//${hostname}/${table.unique_code}/menu`
-      }
-      return `https://${tenantSlug}.tappmesa.com/${table.unique_code}/menu`
-    }
-
-    // Otros dominios personalizados
-    // Si ya estamos en el subdominio correcto, usar hostname actual
-    if (hostname.startsWith(tenantSlug)) {
-      return `${protocol}//${hostname}/${table.unique_code}/menu`
-    }
-    return `${protocol}//${tenantSlug}.${hostname}/${table.unique_code}/menu`
+    return buildTableMenuUrl(
+      window.location,
+      currentTenant.subdomain || currentTenant.slug,
+      table.unique_code
+    )
   }
 
   const copyToClipboard = async (text, tableId) => {
