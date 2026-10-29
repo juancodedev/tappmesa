@@ -4,6 +4,7 @@ import { useEscapeKey } from '../../hooks/useEscapeKey'
 import { useTenant } from '../../hooks/useTenant'
 import { X, Plus, Minus, ShoppingCart, Trash2, MessageSquare, CheckCircle, Clock } from 'lucide-react'
 import CartItem from '../../features/cart/components/CartItem'
+import { Button } from '../ui/Button'
 const Cart = () => {
   const { table } = useTenant()
   const { 
@@ -143,12 +144,9 @@ const Cart = () => {
 
           {/* Close Button */}
           <div className="p-6 border-t border-gray-200">
-            <button
-              onClick={handleClose}
-              className="w-full bg-primary text-white py-3 border border-gray-500 rounded-lg font-semibold hover:text-white hover:bg-primary-700 transition-colors"
-            >
+            <Button variant="brand" onClick={handleClose} className="w-full py-3 font-semibold">
               Continuar
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -176,13 +174,9 @@ const Cart = () => {
               </span>
             )}
           </h2>
-          <button
-            onClick={handleClose}
-            aria-label="Cerrar carrito"
-            className="touch-target justify-center hover:bg-gray-100 rounded-lg transition-colors"
-          >
+          <Button variant="ghost" size="icon" onClick={handleClose} aria-label="Cerrar carrito" className="touch-target">
             <X className="w-5 h-5 text-gray-600" aria-hidden="true" />
-          </button>
+          </Button>
         </div>
 
         {/* Contenido */}
@@ -331,16 +325,14 @@ const Cart = () => {
 
             {/* Botones */}
             <div className="flex space-x-3">
-              <button
-                onClick={clearCart}
-                className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-              >
+              <Button variant="outline" onClick={clearCart} className="flex-1 py-3">
                 Limpiar
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="brand"
                 onClick={handlePlaceOrder}
                 disabled={!customerInfo.name || !customerInfo.phone || placingOrder}
-                className="flex-1 bg-primary text-white border border-gray-700 py-3 rounded-lg font-medium hover:bg-primary-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                className="flex-1 py-3"
               >
                 {placingOrder ? (
                   <>
@@ -350,7 +342,7 @@ const Cart = () => {
                 ) : (
                   <span>Enviar Pedido</span>
                 )}
-              </button>
+              </Button>
             </div>
           </div>
         )}

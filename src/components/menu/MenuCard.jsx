@@ -3,6 +3,7 @@ import { Plus, Minus, Clock, Thermometer, Flame, Snowflake, Coffee, Leaf, CupSod
 import { useTenant } from '../../hooks/useTenant'
 import { useCart } from '../../hooks/useCart'
 import { getOptimalTextClass } from '../../utils/helpers'
+import { Button } from '../ui/Button'
 
 const MenuCard = ({ product }) => {
   const { tenant } = useTenant()
@@ -187,11 +188,11 @@ const MenuCard = ({ product }) => {
                 </span>
               )}
               
-              <button
+              <Button
+                variant="brand"
                 onClick={handleAdd}
                 aria-label={`Agregar un ${product.name}`}
-                className={`px-4 py-2 rounded-lg font-semibold ${textClass} transition-all duration-200 touch-target hover:shadow-md`}
-                style={{ backgroundColor: primaryColor }}
+                className="touch-target font-semibold"
               >
                 {quantity === 0 ? (
                   <div className="flex items-center space-x-1">
@@ -201,7 +202,7 @@ const MenuCard = ({ product }) => {
                 ) : (
                   <Plus className="w-4 h-4" aria-hidden="true" />
                 )}
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="text-sm text-gray-500 font-medium">

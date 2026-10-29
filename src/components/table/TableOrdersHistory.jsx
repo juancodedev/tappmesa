@@ -5,6 +5,7 @@ import { Clock, ChefHat, CheckCircle, XCircle, Package, RefreshCw, Edit2 } from 
 import { useCart } from '../../hooks/useCart'
 import { useToast } from '../../hooks/useToast'
 import { useConfirm } from '../../hooks/useConfirm'
+import { Button } from '../ui/Button'
 
 const TableOrdersHistory = () => {
   const confirm = useConfirm()
@@ -174,13 +175,9 @@ const TableOrdersHistory = () => {
             {orders.length} pedido{orders.length !== 1 ? 's' : ''}
           </p>
         </div>
-        <button
-          onClick={loadSessionOrders}
-          className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-          title="Actualizar"
-        >
-          <RefreshCw className="w-5 h-5" />
-        </button>
+        <Button variant="ghost" size="icon" onClick={loadSessionOrders} aria-label="Actualizar pedidos" title="Actualizar">
+          <RefreshCw className="w-5 h-5" aria-hidden="true" />
+        </Button>
       </div>
 
       <div className="divide-y divide-gray-200">
@@ -210,13 +207,16 @@ const TableOrdersHistory = () => {
                 </div>
 
                 {canEditOrder(order) && (
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => handleEditOrder(order)}
-                    className="ml-2 p-2 text-primary hover:bg-red-50 rounded-lg transition-colors"
+                    aria-label={`Editar pedido #${order.order_number}`}
                     title="Editar pedido"
+                    className="ml-2 text-primary"
                   >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
+                    <Edit2 className="w-4 h-4" aria-hidden="true" />
+                  </Button>
                 )}
               </div>
 

@@ -5,6 +5,7 @@ import { CartProvider } from "../context/CartContext";
 import MenuLayout from "./layout/MenuLayout";
 import TableOrdersHistory from "./table/TableOrdersHistory";
 import { AlertTriangle, Receipt, UtensilsCrossed } from 'lucide-react';
+import { Button } from './ui/Button';
 
 const TableApp = () => {
   const { tenant, table, tableSessionError, loading } = useTenant();
@@ -33,14 +34,9 @@ const TableApp = () => {
           <p className="text-gray-600 mb-4">
             El código de mesa no es válido o la mesa no está disponible.
           </p>
-          <button
-            onClick={() =>
-              (window.location.href = tenantUrl || "/")
-            }
-            className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
-          >
+          <Button variant="brand" onClick={() => (window.location.href = tenantUrl || "/")} className="px-6">
             Volver al menú principal
-          </button>
+          </Button>
         </div>
       </div>
     );

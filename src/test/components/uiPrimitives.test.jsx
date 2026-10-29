@@ -31,4 +31,29 @@ describe('ui primitives', () => {
     expect(screen.getByRole('button', { name: 'Guardar' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Ir al panel' })).toHaveClass('inline-flex')
   })
+
+  it('maps variants to theme tokens that exist in index.css', async () => {
+    const { buttonVariants } = await import('../../components/ui/Button')
+
+    expect(buttonVariants()).toMatch(/\bbg-primary\b/)
+    expect(buttonVariants()).toMatch(/\btext-white\b/)
+    expect(buttonVariants({ variant: 'destructive' })).toMatch(/\bbg-red-600\b/)
+    // shadcn tokens missing from the theme must not leak in
+    expect(buttonVariants({ variant: 'destructive' })).not.toMatch(/destructive/)
+    expect(buttonVariants()).not.toMatch(/primary-foreground|ring-ring/)
+  })
+
+  it('offers a brand variant driven by the tenant color with readable text', async () => {
+    const { buttonVariants } = await import('../../components/ui/Button')
+    const brand = buttonVariants({ variant: 'brand' })
+
+    expect(brand).toContain('bg-[var(--primary-color,var(--color-primary))]')
+    expect(brand).toContain('text-[color:var(--primary-foreground,white)]')
+  })
+
+  it('uses 44px touch targets by default', async () => {
+    const { buttonVariants } = await import('../../components/ui/Button')
+    expect(buttonVariants()).toMatch(/\bmin-h-11\b/)
+    expect(buttonVariants({ size: 'icon' })).toMatch(/\bmin-h-11\b.*\bmin-w-11\b|\bmin-w-11\b.*\bmin-h-11\b/)
+  })
 })
