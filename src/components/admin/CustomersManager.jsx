@@ -510,7 +510,7 @@ const CustomersManager = () => {
       </div>
 
       {/* Modal de detalles del cliente */}
-      {selectedCustomer && (
+      {selectedCustomer && !showEditModal && (
         <Modal
           isOpen
           onClose={() => setSelectedCustomer(null)}
