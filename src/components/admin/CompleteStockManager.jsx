@@ -22,6 +22,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import Modal from '../ui/Modal';
+import { Button } from '../ui/Button';
 import { useToast } from '../../hooks/useToast';
 
 const CompleteStockManager = () => {
@@ -444,13 +445,10 @@ const CompleteStockManager = () => {
             Controla el inventario de {currentTenant?.name || "tu local"}
           </p>
         </div>
-        <button
-          onClick={loadAllData}
-          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
-        >
-          <RefreshCw className="w-4 h-4" />
+        <Button onClick={loadAllData}>
+          <RefreshCw className="w-4 h-4" aria-hidden="true" />
           <span>Actualizar</span>
-        </button>
+        </Button>
       </div>
 
       {/* Alertas */}
@@ -469,12 +467,9 @@ const CompleteStockManager = () => {
                 className="flex items-center justify-between text-sm"
               >
                 <span className="text-red-800">{alert.message}</span>
-                <button
-                  onClick={() => resolveAlert(alert.id)}
-                  className="text-red-600 hover:text-red-800 text-xs"
-                >
+                <Button variant="ghost" onClick={() => resolveAlert(alert.id)} className="text-red-600 hover:text-red-800">
                   Resolver
-                </button>
+                </Button>
               </div>
             ))}
             {alerts.length > 3 && (
@@ -677,41 +672,56 @@ const CompleteStockManager = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-1">
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => openMovementModal(item, "in")}
-                          className="text-green-600 hover:text-green-900 p-1 rounded transition-colors"
+                          aria-label={`Agregar stock de ${item.products?.name || 'producto'}`}
                           title="Agregar stock"
+                          className="text-green-600 hover:text-green-900"
                         >
-                          <Plus className="w-4 h-4" />
-                        </button>
-                        <button
+                          <Plus className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => openMovementModal(item, "out")}
-                          className="text-red-600 hover:text-red-900 p-1 rounded transition-colors"
+                          aria-label={`Reducir stock de ${item.products?.name || 'producto'}`}
                           title="Reducir stock"
+                          className="text-red-600 hover:text-red-900"
                         >
-                          <Minus className="w-4 h-4" />
-                        </button>
-                        <button
+                          <Minus className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => openMovementModal(item, "adjustment")}
-                          className="text-blue-600 hover:text-blue-900 p-1 rounded transition-colors"
+                          aria-label={`Ajustar stock de ${item.products?.name || 'producto'}`}
                           title="Ajustar stock"
+                          className="text-blue-600 hover:text-blue-900"
                         >
-                          <ArrowUpDown className="w-4 h-4" />
-                        </button>
-                        <button
+                          <ArrowUpDown className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => openHistoryModal(item)}
-                          className="text-gray-600 hover:text-gray-900 p-1 rounded transition-colors"
+                          aria-label={`Historial de ${item.products?.name || 'producto'}`}
                           title="Ver historial"
+                          className="text-gray-600 hover:text-gray-900"
                         >
-                          <History className="w-4 h-4" />
-                        </button>
-                        <button
+                          <History className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => openEditModal(item)}
-                          className="text-indigo-600 hover:text-indigo-900 p-1 rounded transition-colors"
+                          aria-label={`Editar ${item.products?.name || 'producto'}`}
                           title="Editar"
+                          className="text-indigo-600 hover:text-indigo-900"
                         >
-                          <Edit className="w-4 h-4" />
-                        </button>
+                          <Edit className="w-4 h-4" aria-hidden="true" />
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -855,20 +865,17 @@ const CompleteStockManager = () => {
             </div>
 
             <div className="flex space-x-3 pt-4">
-              <button
-                type="button"
-                onClick={() => setShowMovementModal(false)}
-                className="flex-1 border border-primary-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-cream-50 transition-colors"
-              >
+              <Button type="button" variant="outline" onClick={() => setShowMovementModal(false)} className="flex-1">
                 Cancelar
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
-                className={`flex-1 px-4 py-2 rounded-lg transition-colors text-white ${
+                variant={movementForm.type === "out" ? "destructive" : "default"}
+                className={`flex-1 ${
                   movementForm.type === "in"
                     ? "bg-green-600 hover:bg-green-700"
                     : movementForm.type === "out"
-                    ? "bg-red-600 hover:bg-primary-700"
+                    ? ""
                     : "bg-blue-600 hover:bg-blue-700"
                 }`}
               >
@@ -877,7 +884,7 @@ const CompleteStockManager = () => {
                   : movementForm.type === "out"
                   ? "Reducir"
                   : "Ajustar"}
-              </button>
+              </Button>
             </div>
           </form>
         </Modal>
@@ -1045,20 +1052,13 @@ const CompleteStockManager = () => {
             </div>
 
             <div className="md:col-span-2 flex space-x-3 pt-4">
-              <button
-                type="button"
-                onClick={() => setShowEditModal(false)}
-                className="flex-1 border border-primary-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-cream-50 transition-colors"
-              >
+              <Button type="button" variant="outline" onClick={() => setShowEditModal(false)} className="flex-1">
                 Cancelar
-              </button>
-              <button
-                type="submit"
-                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2"
-              >
-                <Save className="w-4 h-4" />
+              </Button>
+              <Button type="submit" className="flex-1">
+                <Save className="w-4 h-4" aria-hidden="true" />
                 <span>Guardar Cambios</span>
-              </button>
+              </Button>
             </div>
           </form>
         </Modal>
@@ -1147,12 +1147,9 @@ const CompleteStockManager = () => {
           )}
 
           <div className="mt-6 flex justify-end">
-            <button
-              onClick={() => setShowHistoryModal(false)}
-              className="bg-primary text-gray-700 px-6 py-2 rounded-lg border border-primary-300 bg-primary hover:text-white hover:bg-primary-700 transition-colors"
-            >
+            <Button variant="outline" onClick={() => setShowHistoryModal(false)} className="px-6">
               Cerrar
-            </button>
+            </Button>
           </div>
         </Modal>
       )}
