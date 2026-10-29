@@ -20,6 +20,7 @@ import {
   Edit
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { Button } from '../ui/Button'
 import { useToast } from '../../hooks/useToast'
 
 const ReservationsManager = () => {
@@ -264,7 +265,7 @@ const ReservationsManager = () => {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <button
+          <Button
             onClick={() => {
               const today = new Date().toISOString().split('T')[0]
               setEditingReservation({
@@ -278,18 +279,14 @@ const ReservationsManager = () => {
               })
               setShowEditModal(true)
             }}
-            className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
           >
-            <Calendar className="w-4 h-4" />
+            <Calendar className="w-4 h-4" aria-hidden="true" />
             <span>Nueva Reserva</span>
-          </button>
-          <button
-            onClick={loadReservations}
-            className="flex items-center space-x-2 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            <RefreshCw className="w-4 h-4" />
+          </Button>
+          <Button variant="outline" onClick={loadReservations}>
+            <RefreshCw className="w-4 h-4" aria-hidden="true" />
             <span>Actualizar</span>
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -340,7 +337,7 @@ const ReservationsManager = () => {
 
           <div className="md:ml-auto">
             <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
-            {selectedDate && (<button onClick={() => setSelectedDate('')} className="ml-2 text-sm text-gray-600 hover:text-gray-900">Limpiar</button>)}
+            {selectedDate && (<Button variant="ghost" onClick={() => setSelectedDate('')} className="ml-2">Limpiar</Button>)}
           </div>
         </div>
       </div>
@@ -424,25 +421,25 @@ const ReservationsManager = () => {
 
                   <div className="flex flex-col space-y-2 ml-4">
                     {reservation.status !== 'cancelled' && reservation.status !== 'completed' && (
-                      <button onClick={() => openEditModal(reservation)} className="px-3 py-1.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-1">
-                        <Edit className="w-4 h-4" />
+                      <Button variant="outline" onClick={() => openEditModal(reservation)}>
+                        <Edit className="w-4 h-4" aria-hidden="true" />
                         <span>Editar</span>
-                      </button>
+                      </Button>
                     )}
                     {reservation.status === 'pending' && (
-                      <button onClick={() => updateReservationStatus(reservation.id, 'confirmed')} className="px-3 py-1.5 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 transition-colors flex items-center space-x-1">
-                        <CheckCircle className="w-4 h-4" />
+                      <Button onClick={() => updateReservationStatus(reservation.id, 'confirmed')} className="bg-green-500 hover:bg-green-600">
+                        <CheckCircle className="w-4 h-4" aria-hidden="true" />
                         <span>Confirmar</span>
-                      </button>
+                      </Button>
                     )}
                     {reservation.status === 'confirmed' && (
-                      <button onClick={() => updateReservationStatus(reservation.id, 'completed')} className="px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors">Completar</button>
+                      <Button onClick={() => updateReservationStatus(reservation.id, 'completed')} className="bg-blue-500 hover:bg-blue-600">Completar</Button>
                     )}
                     {reservation.status !== 'cancelled' && (
-                      <button onClick={() => updateReservationStatus(reservation.id, 'cancelled')} className="px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-colors flex items-center space-x-1">
-                        <XCircle className="w-4 h-4" />
+                      <Button variant="destructive" onClick={() => updateReservationStatus(reservation.id, 'cancelled')}>
+                        <XCircle className="w-4 h-4" aria-hidden="true" />
                         <span>Cancelar</span>
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -570,19 +567,12 @@ const ReservationsManager = () => {
             </div>
 
             <div className="flex items-center justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
-              <button
-                type="button"
-                onClick={closeEditModal}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-              >
+              <Button type="button" variant="outline" onClick={closeEditModal}>
                 Cancelar
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-              >
+              </Button>
+              <Button type="submit">
                 Guardar Cambios
-              </button>
+              </Button>
             </div>
           </form>
         </Modal>
