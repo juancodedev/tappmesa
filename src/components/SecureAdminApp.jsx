@@ -53,6 +53,7 @@ import SuperAdminReservationsManager from './admin/SuperAdminReservationsManager
 import SuperAdminCustomersManager from './admin/SuperAdminCustomersManager'
 import SuperAdminCategoriesManager from './admin/SuperAdminCategoriesManager'
 import SuperAdminStockManager from './admin/SuperAdminStockManager'
+import { Button } from './ui/Button'
 
 const SecureAdminApp = () => {
   const { isSuperAdmin } = useAuth()
@@ -311,12 +312,15 @@ const SecureAdminAppContent = () => {
       <div className="lg:pl-64">
         {/* Top bar */}
         <div className="sticky top-0 z-40 flex h-16 bg-white/90 backdrop-blur-md shadow-md border-b border-primary-200/50">
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setSidebarOpen(true)}
-            className="px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary lg:hidden"
+            aria-label="Abrir menú"
+            className="h-auto rounded-none px-4 text-gray-500 lg:hidden"
           >
-            <Menu className="h-6 w-6" />
-          </button>
+            <Menu className="h-6 w-6" aria-hidden="true" />
+          </Button>
           
           <div className="flex flex-1 justify-between px-4 lg:px-6">
             <div className="flex flex-1 items-center space-x-4">
@@ -348,13 +352,16 @@ const SecureAdminAppContent = () => {
                 <div className="font-semibold">{user?.full_name}</div>
                 <div className="text-xs text-primary-700 capitalize">{user?.role?.replace('_', ' ')}</div>
               </div>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={handleLogout}
-                className="p-2 text-primary-700 hover:text-primary-900 hover:bg-primary-100 rounded-lg transition-all"
+                aria-label="Cerrar sesión"
                 title="Cerrar sesión"
+                className="text-primary-700 hover:text-primary-900 hover:bg-primary-100"
               >
-                <LogOut className="h-5 w-5" />
-              </button>
+                <LogOut className="h-5 w-5" aria-hidden="true" />
+              </Button>
             </div>
           </div>
         </div>
@@ -541,9 +548,9 @@ const SidebarContent = ({ navigation, user, onLogout, closeSidebar, isNavigation
         </div>
       </div>
       {closeSidebar && (
-        <button onClick={closeSidebar} className="lg:hidden p-1 hover:bg-primary-800 rounded-lg transition-colors">
-          <X className="h-6 w-6 text-primary-300" />
-        </button>
+        <Button variant="ghost" size="icon" onClick={closeSidebar} aria-label="Cerrar menú" className="lg:hidden hover:bg-primary-800">
+          <X className="h-6 w-6 text-primary-300" aria-hidden="true" />
+        </Button>
       )}
     </div>
 
