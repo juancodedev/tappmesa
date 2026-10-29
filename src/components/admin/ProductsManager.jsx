@@ -21,6 +21,7 @@ import {
   Upload
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { Button } from '../ui/Button'
 import { useToast } from '../../hooks/useToast'
 import { useConfirm } from '../../hooks/useConfirm'
 
@@ -418,13 +419,10 @@ const ProductsManager = () => {
             Administra el menú de {currentTenant?.name || 'tu local'}
           </p>
         </div>
-        <button
-          onClick={() => openModal()}
-          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-        >
-          <Plus className="w-4 h-4" />
+        <Button onClick={() => openModal()}>
+          <Plus className="w-4 h-4" aria-hidden="true" />
           <span>Nuevo Producto</span>
-        </button>
+        </Button>
       </div>
 
       {/* Filtros */}
@@ -466,12 +464,9 @@ const ProductsManager = () => {
           <p className="text-gray-600 mb-4">
             {searchTerm ? 'No se encontraron productos con ese criterio' : 'Crea tu primer producto para el menú'}
           </p>
-          <button
-            onClick={() => openModal()}
-            className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-          >
+          <Button onClick={() => openModal()}>
             Crear Producto
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -521,28 +516,28 @@ const ProductsManager = () => {
                     {product.name}
                   </h3>
                   <div className="flex items-center space-x-1 ml-2">
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => toggleAvailability(product)}
-                      className={`p-1 rounded transition-colors ${
-                        product.is_available 
-                          ? 'text-green-600 hover:text-green-800' 
-                          : 'text-red-600 hover:text-red-800'
-                      }`}
+                      aria-label={`${product.is_available ? 'Ocultar' : 'Mostrar'} ${product.name}`}
+                      aria-pressed={!!product.is_available}
                       title={product.is_available ? 'Ocultar producto' : 'Mostrar producto'}
+                      className={product.is_available ? 'text-green-600 hover:text-green-800' : 'text-red-600 hover:text-red-800'}
                     >
-                      {product.is_available ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                    </button>
-                    <button
+                      {product.is_available ? <Eye className="w-4 h-4" aria-hidden="true" /> : <EyeOff className="w-4 h-4" aria-hidden="true" />}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => toggleFeatured(product)}
-                      className={`p-1 rounded transition-colors ${
-                        product.is_featured 
-                          ? 'text-yellow-600 hover:text-yellow-800' 
-                          : 'text-gray-400 hover:text-gray-600'
-                      }`}
+                      aria-label={`${product.is_featured ? 'Quitar de destacados' : 'Destacar'} ${product.name}`}
+                      aria-pressed={!!product.is_featured}
                       title={product.is_featured ? 'Quitar de destacados' : 'Marcar como destacado'}
+                      className={product.is_featured ? 'text-yellow-600 hover:text-yellow-800' : 'text-gray-400 hover:text-gray-600'}
                     >
-                      <Star className={`w-4 h-4 ${product.is_featured ? 'fill-current' : ''}`} />
-                    </button>
+                      <Star className={`w-4 h-4 ${product.is_featured ? 'fill-current' : ''}`} aria-hidden="true" />
+                    </Button>
                   </div>
                 </div>
 
@@ -581,19 +576,24 @@ const ProductsManager = () => {
 
                 {/* Acciones */}
                 <div className="flex space-x-2">
-                  <button
+                  <Button
+                    variant="ghost"
                     onClick={() => openModal(product)}
-                    className="flex-1 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center space-x-2"
+                    aria-label={`Editar ${product.name}`}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200"
                   >
-                    <Edit className="w-4 h-4" />
+                    <Edit className="w-4 h-4" aria-hidden="true" />
                     <span>Editar</span>
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => handleDelete(product.id)}
-                    className="bg-red-100 text-red-700 px-3 py-2 rounded-lg hover:bg-red-200 transition-colors"
+                    aria-label={`Eliminar ${product.name}`}
+                    className="bg-red-100 text-red-700 hover:bg-red-200"
                   >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                    <Trash2 className="w-4 h-4" aria-hidden="true" />
+                  </Button>
                 </div>
               </div>
             </div>
@@ -707,13 +707,16 @@ const ProductsManager = () => {
                           alt="Preview"
                           className="w-full h-32 object-cover rounded"
                         />
-                        <button
+                        <Button
                           type="button"
+                          variant="destructive"
+                          size="icon"
                           onClick={() => setFormData({...formData, image_url: ''})}
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                          aria-label="Quitar imagen"
+                          className="absolute top-1 right-1 rounded-full"
                         >
-                          <X className="w-3 h-3" />
-                        </button>
+                          <X className="w-3 h-3" aria-hidden="true" />
+                        </Button>
                       </div>
                     ) : (
                       <div className="text-center">
@@ -809,20 +812,13 @@ const ProductsManager = () => {
             </div>
 
             <div className="flex space-x-3 pt-4">
-              <button
-                type="button"
-                onClick={closeModal}
-                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-              >
+              <Button type="button" variant="outline" onClick={closeModal} className="flex-1">
                 Cancelar
-              </button>
-              <button
-                type="submit"
-                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
-              >
-                <Save className="w-4 h-4" />
+              </Button>
+              <Button type="submit" className="flex-1">
+                <Save className="w-4 h-4" aria-hidden="true" />
                 <span>{editingProduct ? 'Actualizar' : 'Crear'}</span>
-              </button>
+              </Button>
             </div>
           </form>
         </Modal>

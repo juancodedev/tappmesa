@@ -15,6 +15,7 @@ import {
   Package
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { Button } from '../ui/Button'
 import { useToast } from '../../hooks/useToast'
 import { useConfirm } from '../../hooks/useConfirm'
 
@@ -276,13 +277,10 @@ const CategoriesManager = () => {
             Organiza el menú de {currentTenant?.name || 'tu local'}
           </p>
         </div>
-        <button
-          onClick={() => openModal()}
-          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
+        <Button onClick={() => openModal()}>
+          <Plus className="w-4 h-4" aria-hidden="true" />
           <span>Nueva Categoría</span>
-        </button>
+        </Button>
       </div>
 
       {/* Lista de categorías */}
@@ -296,12 +294,9 @@ const CategoriesManager = () => {
             <p className="text-gray-600 mb-4">
               Crea tu primera categoría para organizar los productos del menú
             </p>
-            <button
-              onClick={() => openModal()}
-              className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-            >
+            <Button onClick={() => openModal()}>
               Crear Categoría
-            </button>
+            </Button>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -337,20 +332,26 @@ const CategoriesManager = () => {
                           {category.display_order + 1}
                         </span>
                         <div className="flex flex-col space-y-1">
-                          <button
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => moveCategory(index, 'up')}
                             disabled={index === 0}
-                            className="text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                            aria-label={`Subir ${category.name}`}
+                            className="text-gray-400 hover:text-gray-600 disabled:opacity-30"
                           >
-                            <ArrowUp className="w-3 h-3" />
-                          </button>
-                          <button
+                            <ArrowUp className="w-3 h-3" aria-hidden="true" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => moveCategory(index, 'down')}
                             disabled={index === categories.length - 1}
-                            className="text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                            aria-label={`Bajar ${category.name}`}
+                            className="text-gray-400 hover:text-gray-600 disabled:opacity-30"
                           >
-                            <ArrowDown className="w-3 h-3" />
-                          </button>
+                            <ArrowDown className="w-3 h-3" aria-hidden="true" />
+                          </Button>
                         </div>
                       </div>
                     </td>
@@ -386,20 +387,26 @@ const CategoriesManager = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2">
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => openModal(category)}
-                          className="text-indigo-600 hover:text-indigo-900 p-1 rounded transition-colors"
+                          aria-label={`Editar ${category.name}`}
                           title="Editar"
+                          className="text-indigo-600 hover:text-indigo-900"
                         >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
+                          <Edit className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleDelete(category.id)}
-                          className="text-red-600 hover:text-red-900 p-1 rounded transition-colors"
+                          aria-label={`Eliminar ${category.name}`}
                           title="Eliminar"
+                          className="text-red-600 hover:text-red-900"
                         >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                          <Trash2 className="w-4 h-4" aria-hidden="true" />
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -476,20 +483,13 @@ const CategoriesManager = () => {
             </div>
 
             <div className="flex space-x-3 pt-4">
-              <button
-                type="button"
-                onClick={closeModal}
-                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-              >
+              <Button type="button" variant="outline" onClick={closeModal} className="flex-1">
                 Cancelar
-              </button>
-              <button
-                type="submit"
-                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
-              >
-                <Save className="w-4 h-4" />
+              </Button>
+              <Button type="submit" className="flex-1">
+                <Save className="w-4 h-4" aria-hidden="true" />
                 <span>{editingCategory ? 'Actualizar' : 'Crear'}</span>
-              </button>
+              </Button>
             </div>
           </form>
         </Modal>
