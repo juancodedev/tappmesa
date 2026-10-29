@@ -3,6 +3,7 @@ import { Plus, Minus, Search, ShoppingCart, Trash2 } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
 import Modal from '../../../components/ui/Modal'
 import { useToast } from '../../../hooks/useToast'
+import { Button } from '../../../components/ui/Button'
 
 const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess }) => {
   const toast = useToast()
@@ -399,29 +400,36 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
                         <h4 className="font-medium text-gray-900 text-sm flex-1">
                           {item.product.name}
                         </h4>
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => removeFromCart(item.product.id)}
-                          className="text-red-600 hover:text-red-700 ml-2"
+                          aria-label={`Quitar ${item.product.name}`}
+                          className="ml-2 text-red-600 hover:text-red-700"
                         >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                          <Trash2 className="w-4 h-4" aria-hidden="true" />
+                        </Button>
                       </div>
 
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                          <button
+                          <Button
+                            variant="outline"
+                            size="icon"
                             onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                            className="w-7 h-7 bg-white border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100"
+                            aria-label={`Restar un ${item.product.name}`}
                           >
-                            <Minus className="w-3 h-3" />
-                          </button>
+                            <Minus className="w-3 h-3" aria-hidden="true" />
+                          </Button>
                           <span className="w-8 text-center font-semibold">{item.quantity}</span>
-                          <button
+                          <Button
+                            variant="outline"
+                            size="icon"
                             onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                            className="w-7 h-7 bg-white border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100"
+                            aria-label={`Sumar un ${item.product.name}`}
                           >
-                            <Plus className="w-3 h-3" />
-                          </button>
+                            <Plus className="w-3 h-3" aria-hidden="true" />
+                          </Button>
                         </div>
                         <p className="font-bold text-gray-900">
                           {formatPrice(item.product.price * item.quantity)}
@@ -453,13 +461,14 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
                 </span>
               </div>
 
-              <button
+              <Button
+                size="lg"
                 onClick={handleSubmit}
                 disabled={cart.length === 0 || submitting}
-                className="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full font-semibold"
               >
                 {submitting ? 'Creando pedido...' : 'Crear Pedido'}
-              </button>
+              </Button>
             </div>
           </div>
         )}
