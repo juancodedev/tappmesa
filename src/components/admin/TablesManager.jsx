@@ -18,8 +18,10 @@ import {
 } from 'lucide-react'
 import Modal from '../ui/Modal'
 import { useToast } from '../../hooks/useToast'
+import { useConfirm } from '../../hooks/useConfirm'
 
 const TablesManager = () => {
+  const confirm = useConfirm()
   const toast = useToast()
   const { tenant: currentTenant } = useTenant()
   const { isSuperAdmin } = useAuth()
@@ -151,7 +153,7 @@ const TablesManager = () => {
 
   // Regenerar código de una mesa específica
   const handleRegenerateCode = async (tableId) => {
-    if (!confirm('¿Regenerar el código QR de esta mesa? El código antiguo dejará de funcionar.')) {
+    if (!await confirm('¿Regenerar el código QR de esta mesa? El código antiguo dejará de funcionar.', { confirmLabel: 'Regenerar', tone: 'danger' })) {
       return
     }
 
@@ -236,10 +238,10 @@ const TablesManager = () => {
         return
       }
 
-      if (!confirm(
+      if (!await confirm(
         `¿Actualizar ${oldCodeTables.length} códigos antiguos a formato nuevo?\n\n` +
         `ADVERTENCIA: Los códigos QR impresos antiguos dejarán de funcionar.`
-      )) {
+      , { confirmLabel: 'Actualizar', tone: 'danger' })) {
         return
       }
 
@@ -438,7 +440,7 @@ const TablesManager = () => {
   }
 
   const handleDeleteTable = async (tableId) => {
-    if (!confirm('¿Estás seguro de eliminar esta mesa? Esta acción no se puede deshacer.')) {
+    if (!await confirm('¿Estás seguro de eliminar esta mesa? Esta acción no se puede deshacer.', { confirmLabel: 'Eliminar', tone: 'danger' })) {
       return
     }
 
@@ -460,7 +462,7 @@ const TablesManager = () => {
   }
 
   const handleGenerateQR = async (tableId) => {
-    if (!confirm('¿Generar código QR para esta mesa?')) {
+    if (!await confirm('¿Generar código QR para esta mesa?', { confirmLabel: 'Generar' })) {
       return
     }
 
@@ -485,9 +487,9 @@ const TablesManager = () => {
     }
   }
 
-  const handleViewQR = (table) => {
+  const handleViewQR = async (table) => {
     if (!table.unique_code) {
-      if (confirm('Esta mesa no tiene código QR. ¿Deseas generarlo ahora?')) {
+      if (await confirm('Esta mesa no tiene código QR. ¿Deseas generarlo ahora?', { confirmLabel: 'Generar' })) {
         handleGenerateQR(table.id)
       }
       setShowActionsMenu(null)

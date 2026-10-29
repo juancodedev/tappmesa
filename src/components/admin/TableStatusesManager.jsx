@@ -20,6 +20,7 @@ import {
   AlertCircle
 } from 'lucide-react'
 import { useToast } from '../../hooks/useToast'
+import { useConfirm } from '../../hooks/useConfirm'
 
 const AVAILABLE_COLORS = [
   { value: '#22c55e', label: 'Verde', bg: 'bg-green-500' },
@@ -43,6 +44,7 @@ const AVAILABLE_ICONS = [
 ]
 
 const TableStatusesManager = () => {
+  const confirm = useConfirm()
   const toast = useToast()
   const { user, isSuperAdmin } = useAuth()
   const superAdminContext = useContext(SuperAdminContext)
@@ -151,7 +153,7 @@ const TableStatusesManager = () => {
       return
     }
 
-    if (!confirm('¿Estás seguro de eliminar este estado?')) {
+    if (!await confirm('¿Estás seguro de eliminar este estado?', { confirmLabel: 'Eliminar', tone: 'danger' })) {
       return
     }
 

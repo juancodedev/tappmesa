@@ -22,8 +22,10 @@ import {
 } from 'lucide-react'
 import Modal from '../ui/Modal'
 import { useToast } from '../../hooks/useToast'
+import { useConfirm } from '../../hooks/useConfirm'
 
 const ProductsManager = () => {
+  const confirm = useConfirm()
   const toast = useToast()
   const { tenant: currentTenant } = useTenant()
   const { isSuperAdmin } = useAuth()
@@ -254,7 +256,7 @@ const ProductsManager = () => {
   }
 
   const handleDelete = async (productId) => {
-    if (!confirm('¿Estás seguro de que quieres eliminar este producto?')) {
+    if (!await confirm('¿Estás seguro de que quieres eliminar este producto?', { confirmLabel: 'Eliminar', tone: 'danger' })) {
       return
     }
 
