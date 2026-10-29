@@ -21,6 +21,7 @@ import {
 } from 'lucide-react'
 import { useToast } from '../../hooks/useToast'
 import { useConfirm } from '../../hooks/useConfirm'
+import { Button } from '../ui/Button'
 
 const AVAILABLE_COLORS = [
   { value: '#22c55e', label: 'Verde', bg: 'bg-green-500' },
@@ -290,13 +291,10 @@ const TableStatusesManager = () => {
               Gestiona los estados disponibles para las mesas. El orden define el flujo de estados.
             </p>
           </div>
-          <button
-            onClick={() => setCreating(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
+          <Button onClick={() => setCreating(true)}>
+            <Plus className="w-4 h-4" aria-hidden="true" />
             <span>Nuevo Estado</span>
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -367,42 +365,42 @@ const TableStatusesManager = () => {
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => handleUpdate(status.id)}
-                      className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                    >
-                      <Save className="w-4 h-4" />
+                    <Button onClick={() => handleUpdate(status.id)}>
+                      <Save className="w-4 h-4" aria-hidden="true" />
                       <span>Guardar</span>
-                    </button>
-                    <button
-                      onClick={cancelEdit}
-                      className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-                    >
-                      <X className="w-4 h-4" />
+                    </Button>
+                    <Button variant="outline" onClick={cancelEdit}>
+                      <X className="w-4 h-4" aria-hidden="true" />
                       <span>Cancelar</span>
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ) : (
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4 flex-1">
                     <div className="flex flex-col space-y-1">
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleMoveUp(status)}
                         disabled={index === 0}
-                        className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                        aria-label={`Subir ${status.name}`}
                         title="Mover arriba"
+                        className="text-gray-400 hover:text-gray-600 disabled:opacity-30"
                       >
-                        <ChevronUp className="w-4 h-4" />
-                      </button>
-                      <button
+                        <ChevronUp className="w-4 h-4" aria-hidden="true" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleMoveDown(status)}
                         disabled={index === statuses.length - 1}
-                        className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                        aria-label={`Bajar ${status.name}`}
                         title="Mover abajo"
+                        className="text-gray-400 hover:text-gray-600 disabled:opacity-30"
                       >
-                        <ChevronDown className="w-4 h-4" />
-                      </button>
+                        <ChevronDown className="w-4 h-4" aria-hidden="true" />
+                      </Button>
                     </div>
 
                     <div
@@ -431,21 +429,27 @@ const TableStatusesManager = () => {
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => startEdit(status)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="Editar-----"
+                      aria-label={`Editar ${status.name}`}
+                      title="Editar"
+                      className="text-blue-600 hover:bg-blue-50"
                     >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button
+                      <Edit2 className="w-4 h-4" aria-hidden="true" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => handleDelete(status.id, status.is_system)}
                       disabled={status.is_system}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                      aria-label={`Eliminar ${status.name}`}
                       title={status.is_system ? 'No se puede eliminar estado del sistema' : 'Eliminar'}
+                      className="text-red-600 hover:bg-red-50 disabled:opacity-30"
                     >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                      <Trash2 className="w-4 h-4" aria-hidden="true" />
+                    </Button>
                   </div>
                 </div>
               )}
@@ -517,20 +521,14 @@ const TableStatusesManager = () => {
               </div>
 
               <div className="flex items-center space-x-2">
-                <button
-                  onClick={handleCreate}
-                  className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors"
-                >
-                  <Plus className="w-4 h-4" />
+                <Button onClick={handleCreate}>
+                  <Plus className="w-4 h-4" aria-hidden="true" />
                   <span>Crear Estado</span>
-                </button>
-                <button
-                  onClick={cancelEdit}
-                  className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-                >
-                  <X className="w-4 h-4" />
+                </Button>
+                <Button variant="outline" onClick={cancelEdit}>
+                  <X className="w-4 h-4" aria-hidden="true" />
                   <span>Cancelar</span>
-                </button>
+                </Button>
               </div>
             </div>
           </div>
