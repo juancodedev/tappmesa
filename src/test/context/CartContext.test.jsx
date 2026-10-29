@@ -30,6 +30,21 @@ const PlaceCartComponent = () => {
   )
 }
 
+// Muestra el mensaje de error de placeOrder (texto visible para el cliente)
+const PlaceErrorComponent = () => {
+  const cart = useCart()
+  const [result, setResult] = useState(null)
+  return (
+    <div>
+      <button data-testid="add-item" onClick={() => cart.addItem(mockProduct, 1, 'hot')}>Add</button>
+      <button data-testid="place-order" onClick={() => cart.placeOrder({ name: 'Ana', phone: '+56912345678' }).then(setResult)}>
+        Place
+      </button>
+      <div data-testid="place-error">{result && !result.success ? result.error : ''}</div>
+    </div>
+  )
+}
+
 // Test component to interact with cart
 const TestCartComponent = ({ testType = 'basic' }) => {
   const cart = useCart()
@@ -107,10 +122,10 @@ const TestCartComponent = ({ testType = 'basic' }) => {
 
 // Mock TenantProvider: provee el contexto de tenant directamente (el tenant
 // real no se monta — estas pruebas cubren solo CartProvider; 2.4/2.5)
-const MockTenantProvider = ({ children, tableSession = null }) => {
+const MockTenantProvider = ({ children, tableSession = null, table }) => {
   const mockTenantContext = {
     tenant: mockTenant,
-    table: tableSession ? { id: 1, number: 5 } : null,
+    table: table !== undefined ? table : tableSession ? { id: 1, number: 5 } : null,
     tableSession,
     loading: false,
     error: null,
@@ -510,6 +525,66 @@ describe('CartContext', () => {
 
       // El carrito NO se limpia si el pedido falla
       expect(screen.getByTestId('items-count')).toHaveTextContent('2')
+    })
+
+    describe('table flow without capability (legacy session / failed session)', () => {
+      const placeAndReadError = async (props) => {
+        stubResponse(201, { order: { order_number: 'x' }, duplicate: false })
+        render(
+          <MockTenantProvider {...props}>
+            <CartProvider>
+              <PlaceErrorComponent />
+            </CartProvider>
+          </MockTenantProvider>
+        )
+        await user.click(screen.getByTestId('add-item'))
+        await user.click(screen.getByTestId('place-order'))
+        await waitFor(() => expect(screen.getByTestId('place-error')).not.toBeEmptyDOMElement())
+        return screen.getByTestId('place-error').textContent
+      }
+
+      it('never falls back to takeout when the session has no capability_token', async () => {
+        const message = await placeAndReadError({ tableSession: { ...mockTableSession, capability_token: null } })
+        expect(fetch).not.toHaveBeenCalled()
+        expect(message).toMatch(/no pudimos conectar con la mesa/i)
+      })
+
+      it('never falls back to takeout when the table session could not be created', async () => {
+        const message = await placeAndReadError({ tableSession: null, table: { id: 1, number: 1 } })
+        expect(fetch).not.toHaveBeenCalled()
+        expect(message).toMatch(/no pudimos conectar con la mesa/i)
+      })
+    })
+
+    describe('customer-facing error messages', () => {
+      const failWith = async (status, error) => {
+        stubResponse(status, { error })
+        render(
+          <MockTenantProvider tableSession={mockTableSession}>
+            <CartProvider>
+              <PlaceErrorComponent />
+            </CartProvider>
+          </MockTenantProvider>
+        )
+        await user.click(screen.getByTestId('add-item'))
+        await user.click(screen.getByTestId('place-order'))
+        await waitFor(() => expect(screen.getByTestId('place-error')).not.toBeEmptyDOMElement())
+        return screen.getByTestId('place-error').textContent
+      }
+
+      it('hides technical server errors behind a generic message', async () => {
+        const message = await failWith(400, 'Se requiere capability o un tenant reconocible por Host')
+        expect(message).not.toMatch(/capability|host/i)
+        expect(message).toMatch(/no pudimos enviar tu pedido/i)
+      })
+
+      it('explains a closed or invalid table session', async () => {
+        expect(await failWith(409, 'La sesión de mesa está cerrada')).toMatch(/sesión de esta mesa/i)
+      })
+
+      it('asks to retry on temporary unavailability', async () => {
+        expect(await failWith(503, 'Reintenta en unos segundos')).toMatch(/intenta de nuevo en unos segundos/i)
+      })
     })
 
     it('returns error without calling the route when cart is empty', async () => {

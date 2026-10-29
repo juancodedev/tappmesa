@@ -68,6 +68,7 @@ function fakeSupabase() {
       capability_token: 'ts_.minted.in.test',
     },
     insertError: null,
+    updateError: null,
   }
 
   const from = vi.fn((table) => {
@@ -83,8 +84,19 @@ function fakeSupabase() {
       chain.isInsert = true
       return chain
     })
+    chain.update = vi.fn((payload) => {
+      chain.isUpdate = true
+      chain.updatePayload = payload
+      return chain
+    })
+    chain.is = vi.fn(() => chain)
+    const updateResult = () =>
+      state.updateError
+        ? { data: null, error: state.updateError }
+        : { data: { ...state.existingResult.data, ...chain.updatePayload }, error: null }
     chain.maybeSingle = vi.fn(async () => {
       if (table === 'tables') return state.tableResult
+      if (chain.isUpdate) return updateResult()
       if (chain.isInsert) {
         if (state.insertError) return { data: null, error: state.insertError }
         return { data: state.newSession, error: null }
@@ -95,6 +107,7 @@ function fakeSupabase() {
     // Terminal: `await from(...)...` resuelve según operación.
     chain.then = function (resolve) {
       if (table === 'tables') return resolve(state.tableResult)
+      if (chain.isUpdate) return resolve(updateResult())
       if (chain.isInsert) {
         if (state.insertError) return resolve({ data: null, error: state.insertError })
         return resolve({ data: state.newSession, error: null })
@@ -162,6 +175,66 @@ describe('POST /api/table-sessions (task 1.8)', () => {
     const insertCalls = supabase.from.mock.calls.filter(([t]) => t === 'table_sessions')
     const chain = supabase.from.mock.results[supabase.from.mock.calls.indexOf(insertCalls[0])].value
     expect(chain.insert).not.toHaveBeenCalled()
+  })
+
+  // Sesiones creadas antes de add-idempotency-capability-columns.sql tienen
+  // capability_token NULL: el resume debe mintarla y persistirla (backfill
+  // lazy), o el carrito cae a takeout sin mesa.
+  it('backfills a missing capability_token when resuming a legacy session', async () => {
+    supabase.state.existingResult = { data: { ...activeSession, capability_token: null }, error: null }
+    const res = makeRes()
+    await handler(
+      makeReq({ body: { table_id: '11111111-1111-1111-1111-111111111111', tenant_id: '22222222-2222-2222-2222-222222222222' } }),
+      res,
+    )
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body.resumed).toBe(true)
+    expect(res.body.session.id).toBe('ts-1')
+    expect(res.body.session.capability_token).toMatch(/^ts_/)
+
+    const updateChain = supabase.from.mock.results
+      .map((r) => r.value)
+      .find((c) => c.isUpdate)
+    expect(updateChain).toBeDefined()
+    expect(updateChain.updatePayload).toEqual({ capability_token: res.body.session.capability_token })
+    expect(updateChain.eq).toHaveBeenCalledWith('id', 'ts-1')
+    expect(updateChain.eq).toHaveBeenCalledWith('tenant_id', '22222222-2222-2222-2222-222222222222')
+  })
+
+  it('mints a deterministic token for the legacy session (same session → same token)', async () => {
+    supabase.state.existingResult = { data: { ...activeSession, capability_token: null }, error: null }
+    const first = makeRes()
+    const second = makeRes()
+    const body = { table_id: '11111111-1111-1111-1111-111111111111', tenant_id: '22222222-2222-2222-2222-222222222222' }
+    await handler(makeReq({ body }), first)
+    await handler(makeReq({ body }), second)
+    expect(first.body.session.capability_token).toMatch(/^ts_/)
+    expect(first.body.session.capability_token).toBe(second.body.session.capability_token)
+  })
+
+  it('does not rewrite an existing capability_token on resume', async () => {
+    supabase.state.existingResult = { data: { ...activeSession, capability_token: 'ts_existing' }, error: null }
+    const res = makeRes()
+    await handler(
+      makeReq({ body: { table_id: '11111111-1111-1111-1111-111111111111', tenant_id: '22222222-2222-2222-2222-222222222222' } }),
+      res,
+    )
+    expect(res.statusCode).toBe(200)
+    expect(res.body.session.capability_token).toBe('ts_existing')
+    expect(supabase.from.mock.results.some((r) => r.value.isUpdate)).toBe(false)
+  })
+
+  it('returns 500 when the legacy backfill cannot be persisted', async () => {
+    supabase.state.existingResult = { data: { ...activeSession, capability_token: null }, error: null }
+    supabase.state.updateError = { message: 'update failed' }
+    const res = makeRes()
+    await handler(
+      makeReq({ body: { table_id: '11111111-1111-1111-1111-111111111111', tenant_id: '22222222-2222-2222-2222-222222222222' } }),
+      res,
+    )
+    expect(res.statusCode).toBe(500)
+    expect(res.body.session).toBeUndefined()
   })
 
   it('rejects a table that does not exist (400)', async () => {

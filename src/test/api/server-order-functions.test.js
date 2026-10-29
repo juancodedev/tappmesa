@@ -48,4 +48,13 @@ describe('database/server-order-functions.sql (task 1.2)', () => {
     expect(sql).toMatch(/FROM\s+public\.tables/)
     expect(sql).toMatch(/v_table_number\s+text/)
   })
+
+  it('never uses transaction control inside the plpgsql body (42601 on apply)', () => {
+    // PL/pgSQL rejects SAVEPOINT / RELEASE / ROLLBACK TO inside a function.
+    // The BEGIN ... EXCEPTION block already runs as an implicit subtransaction.
+    const body = sql.slice(sql.indexOf('AS $$'), sql.lastIndexOf('$$;'))
+    expect(body).not.toMatch(/\bSAVEPOINT\b/i)
+    expect(body).not.toMatch(/\bROLLBACK\b/i)
+    expect(body).toMatch(/EXCEPTION\s+WHEN OTHERS THEN/)
+  })
 })

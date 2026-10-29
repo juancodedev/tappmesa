@@ -372,6 +372,7 @@ Configurar en dashboard de Vercel (ver `.env.local.sample` para descripciones):
 - `SUPABASE_JWT_SECRET` — solo server-side, para JWT signing
 
 **Recomendadas:**
+- `TENANT_BASE_DOMAINS` — dominios base propios separados por coma (ej. `juancode.dev`). Permite que `POST /api/orders` resuelva el tenant de pedidos para llevar desde `<tenant>.<dominio>`; sin esto, solo se reconocen `*.tappmesa.com`, `*.vercel.app` y los dominios locales
 - `EMAIL_PROVIDER=resend` + `RESEND_API_KEY` + `FROM_EMAIL` — emails transaccionales
 - `KV_REST_API_URL` + `KV_REST_API_TOKEN` — rate limiting persistente (correr `vercel kv create`)
 

@@ -6,8 +6,23 @@ import logger from '../utils/logger'
 
 export const CartContext = createContext()
 
+const TABLE_SESSION_UNAVAILABLE =
+  'No pudimos conectar con la mesa. Recarga la página o avisa al personal.'
+
+// Mensaje visible para el cliente según el status HTTP: los errores del
+// server son técnicos (capability, Host, etc.) y solo van al log.
+const customerOrderError = (error) => {
+  if (error?.status === 401 || error?.status === 409) {
+    return 'La sesión de esta mesa ya no está activa. Recarga la página o avisa al personal.'
+  }
+  if (error?.status === 429 || error?.status === 503) {
+    return 'Hay mucha demanda en este momento. Intenta de nuevo en unos segundos.'
+  }
+  return 'No pudimos enviar tu pedido. Intenta nuevamente o avisa al personal.'
+}
+
 export const CartProvider = ({ children }) => {
-  const { tenant, tableSession } = useTenant()
+  const { tenant, table, tableSession } = useTenant()
   const [items, setItems] = useState([])
   const [isOpen, setIsOpen] = useState(false)
   const [placingOrder, setPlacingOrder] = useState(false)
@@ -165,6 +180,13 @@ export const CartProvider = ({ children }) => {
     // if (isEmpty || !tenant) return { success: false, error: 'Carrito vacío o sin cafetería' }
     if (items.length === 0 || !tenant) return { success: false, error: 'Carrito vacío o sin cafetería' }
 
+    // Flujo de mesa sin capability (sesión legacy o que no se pudo crear):
+    // NUNCA caer a takeout, el pedido quedaría sin mesa.
+    if (table && !tableSession?.capability_token) {
+      logger.error('❌ Table flow without capability_token, refusing takeout fallback')
+      return { success: false, error: TABLE_SESSION_UNAVAILABLE }
+    }
+
     try {
       setPlacingOrder(true)
 
@@ -216,9 +238,9 @@ export const CartProvider = ({ children }) => {
 
     } catch (error) {
       logger.error('❌ Error creating order:', error)
-      return { 
-        success: false, 
-        error: 'Error al procesar el pedido: ' + error.message 
+      return {
+        success: false,
+        error: customerOrderError(error)
       }
     } finally {
       setPlacingOrder(false)

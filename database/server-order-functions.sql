@@ -8,7 +8,8 @@
 --   * SECURITY INVOKER + EXECUTE sólo para service_role (las rutas
 --     server de Vercel lo invocan vía RPC; el cliente anónimo NUNCA
 --     toca orders/order_items directamente — cero acceso anónimo).
---   * Transactional: savepoint interno, rollback parcial ante error.
+--   * Transactional: el bloque EXCEPTION es una subtransacción implícita;
+--     ante error se revierte todo lo escrito por la función.
 --   * Precios, IVA (19%) y totales se calculan AQUÍ (server-authoritative);
 --     el cliente jamás envía subtotal/tax/total.
 --   * Número de orden YYMMDD-XXXXXX único (unique index) con retry ×3,
@@ -106,8 +107,6 @@ BEGIN
     END IF;
   END IF;
 
-  SAVEPOINT sp_place_order;
-
   -- 3) Validar items contra el catálogo del tenant (precio server-side).
   FOR v_item IN SELECT * FROM jsonb_array_elements(p_items) LOOP
     v_product_id := (v_item->>'product_id')::uuid;
@@ -190,12 +189,12 @@ BEGIN
     VALUES (v_order_id, v_product_id, v_quantity, v_price, round(v_quantity * v_price, 2), v_notes);
   END LOOP;
 
-  RELEASE SAVEPOINT sp_place_order;
-
   RETURN QUERY SELECT o.* FROM public.orders o WHERE o.id = v_order_id;
 EXCEPTION
   WHEN OTHERS THEN
-    ROLLBACK TO SAVEPOINT sp_place_order;
+    -- PL/pgSQL: el bloque BEGIN ... EXCEPTION corre como subtransacción
+    -- implícita; al entrar aquí, todo lo escrito en el bloque ya se revirtió
+    -- (el control de transacciones no es válido dentro de una función: 42601).
     -- Carrera de doble submit concurrente: la idempotency_key ya existe →
     -- devolver la orden original (replay) en lugar de fallar.
     IF SQLSTATE = '23505' AND p_idempotency_key IS NOT NULL THEN

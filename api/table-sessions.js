@@ -136,7 +136,29 @@ function createTableSessionsHandler({ supabase, jwtSecret } = {}) {
         .maybeSingle();
 
       if (existing) {
-        return res.status(200).json({ session: existing, resumed: true });
+        if (existing.capability_token) {
+          return res.status(200).json({ session: existing, resumed: true });
+        }
+
+        // Sesión legacy (creada antes de add-idempotency-capability-columns.sql):
+        // capability_token NULL. Backfill lazy: el token es HMAC del uuid, así
+        // que es determinista y resumes concurrentes escriben el mismo valor.
+        const capabilityToken = mintCapabilityToken(existing.id, effectiveSecret);
+        const { error: updateError } = await supabase
+          .from('table_sessions')
+          .update({ capability_token: capabilityToken })
+          .eq('id', existing.id)
+          .eq('tenant_id', tenantId);
+
+        if (updateError) {
+          logger.error('table_sessions capability backfill error', updateError);
+          return res.status(500).json({ error: 'Error interno del servidor' });
+        }
+
+        return res.status(200).json({
+          session: { ...existing, capability_token: capabilityToken },
+          resumed: true,
+        });
       }
 
       // Create: el session uuid se genera acá (HMAC del propio uuid; RTE-004),
