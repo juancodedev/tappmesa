@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useCart } from '../../hooks/useCart'
 import { useEscapeKey } from '../../hooks/useEscapeKey'
 import { useTenant } from '../../hooks/useTenant'
-import { supabase } from '../../lib/supabase'
 import { X, Plus, Minus, ShoppingCart, Trash2, MessageSquare, CheckCircle, Clock } from 'lucide-react'
 import CartItem from '../../features/cart/components/CartItem'
 const Cart = () => {
-  const { tenant, table } = useTenant()
+  const { table } = useTenant()
   const { 
     items, 
     isOpen, 
@@ -30,8 +29,6 @@ const Cart = () => {
   })
 
   const [orderResult, setOrderResult] = useState(null)
-  const [isReturningCustomer, setIsReturningCustomer] = useState(false)
-  const [checkingCustomer, setCheckingCustomer] = useState(false)
   // Error inline en lugar de alert(): { field: 'name' | 'phone' | 'order', message }
   const [formError, setFormError] = useState(null)
 
@@ -48,51 +45,15 @@ const Cart = () => {
     if (formError?.field === field) setFormError(null)
   }
 
-  // Auto-fill table number when table context changes
-  useEffect(() => {
+  // Auto-fill table number when table context changes (adjusted during
+  // render instead of in an effect to avoid a cascading re-render)
+  const [syncedTableNumber, setSyncedTableNumber] = useState(table?.number)
+  if (table?.number !== syncedTableNumber) {
+    setSyncedTableNumber(table?.number)
     if (table?.number) {
-      setCustomerInfo(prev => ({
-        ...prev,
-        tableNumber: table.number
-      }))
+      setCustomerInfo(prev => ({ ...prev, tableNumber: table.number }))
     }
-  }, [table])
-
-  // Check if customer is returning when phone number is entered
-  useEffect(() => {
-    const checkReturningCustomer = async () => {
-      if (!customerInfo.phone || customerInfo.phone.length < 8 || !tenant) return
-
-      setCheckingCustomer(true)
-      try {
-        const { data, error } = await supabase
-          .from('customers')
-          .select('name, phone, total_orders')
-          .eq('tenant_id', tenant.id)
-          .eq('phone', customerInfo.phone)
-          .single()
-
-        if (!error && data) {
-          setIsReturningCustomer(true)
-          setCustomerInfo(prev => ({
-            ...prev,
-            name: data.name || prev.name
-          }))
-        } else {
-          setIsReturningCustomer(false)
-        }
-      } catch {
-        console.log('No customer found, treating as new customer')
-        setIsReturningCustomer(false)
-      } finally {
-        setCheckingCustomer(false)
-      }
-    }
-
-    // Debounce: solo buscar cuando el usuario deja de escribir por 1 segundo
-    const timeoutId = setTimeout(checkReturningCustomer, 1000)
-    return () => clearTimeout(timeoutId)
-  }, [customerInfo.phone, tenant])
+  }
 
   const handlePlaceOrder = async () => {
     if (isEmpty) return
@@ -289,17 +250,6 @@ const Cart = () => {
                         </div>
                       </div>
                     )}
-                    {checkingCustomer && (
-                      <p className="text-xs text-gray-600 mt-1" aria-live="polite">Verificando...</p>
-                    )}
-                    {isReturningCustomer && (
-                      <div className="mt-2 bg-green-50 border border-green-200 rounded-lg p-2">
-                        <p className="text-xs text-green-700 font-medium flex items-center space-x-1">
-                          <span>✅</span>
-                          <span>¡Bienvenido de nuevo! Gracias por tu preferencia</span>
-                        </p>
-                      </div>
-                    )}
                   </div>
 
                   {/* Nombre */}
@@ -318,16 +268,10 @@ const Cart = () => {
                       aria-invalid={formError?.field === 'name'}
                       aria-describedby={formError?.field === 'name' ? 'cart-name-error' : undefined}
                       className={`w-full border rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${formError?.field === 'name' ? 'border-red-500' : 'border-gray-300'}`}
-                      disabled={isReturningCustomer && !!customerInfo.name}
                     />
                     {formError?.field === 'name' && (
                       <p id="cart-name-error" role="alert" className="text-sm text-red-700 mt-1">
                         {formError.message}
-                      </p>
-                    )}
-                    {isReturningCustomer && customerInfo.name && (
-                      <p className="text-xs text-gray-600 mt-1">
-                        Nombre guardado de tu última visita
                       </p>
                     )}
                   </div>

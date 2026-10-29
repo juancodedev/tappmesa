@@ -14,6 +14,7 @@ vi.mock('../../hooks/useTenant', () => ({ useTenant: () => tenantValue }))
 vi.mock('../../hooks/useCart', () => ({ useCart: () => cartValue }))
 vi.mock('../../lib/supabase', () => ({ supabase: { from: vi.fn() } }))
 
+import { supabase } from '../../lib/supabase'
 import Cart from '../../components/cart/Cart'
 import CartItem from '../../features/cart/components/CartItem'
 import MenuCard from '../../components/menu/MenuCard'
@@ -140,6 +141,20 @@ describe('Cart dialog', () => {
     expect(cartValue.placeOrder).toHaveBeenCalledWith(
       expect.objectContaining({ name: 'Ana', phone: '912345678', tableNumber: '4' })
     )
+  })
+})
+
+describe('Cart customer lookup', () => {
+  it('never queries customers from the browser (anon is denied after the RLS lockdown)', async () => {
+    supabase.from.mockClear()
+    const user = userEvent.setup()
+    render(<Cart />)
+
+    await user.type(screen.getByLabelText(/teléfono/i), '+56998307778')
+    await new Promise((resolve) => setTimeout(resolve, 1100))
+
+    expect(supabase.from).not.toHaveBeenCalled()
+    expect(screen.getByLabelText(/nombre/i)).toBeEnabled()
   })
 })
 
