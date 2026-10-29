@@ -46,7 +46,7 @@ CREATE OR REPLACE FUNCTION public.tappmesa_place_order(
 RETURNS SETOF public.orders
 LANGUAGE plpgsql
 SECURITY INVOKER
-SET search_path = public
+SET search_path = public, extensions
 AS $$
 DECLARE
   v_session      public.table_sessions%ROWTYPE;
