@@ -129,4 +129,3 @@ ALTER TABLE table_sessions
 
 - Ver `prisma/schema.prisma` para el modelo completo de datos
 - Ver `src/services/planLimitsService.js` para lógica de límites
-- Ver `src/services/preBillService.js` para lógica de pre-cuentas
