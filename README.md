@@ -136,49 +136,94 @@ Acceder a: `http://localhost:5173`
 
 ## 🚀 Desarrollo Local
 
-### URLs de Desarrollo
+### Formato de URLs
 
-#### Landing Page
-```
-http://localhost:5173
-```
+Cada local (tenant) vive en su propio subdominio. El subdominio guardado en la base **incluye el sufijo `-tappmesa`** (ej. `bistro-sunrise-tappmesa`):
 
-#### Tenant (Cafetería) - Subdominios Locales
-```
-http://cafe-central-tappmesa.localhost:5173
-http://teteria-luna-tappmesa.localhost:5173
-http://bistro-sunrise-tappmesa.localhost:5173
-http://coffee-co-tappmesa.localhost:5173
-```
+| Entorno | Base | Ejemplo de tenant |
+|---|---|---|
+| Local | `localhost:5173` | `http://bistro-sunrise-tappmesa.localhost:5173` |
+| Producción (dominio propio) | `juancode.dev` | `https://bistro-sunrise-tappmesa.juancode.dev` |
+| Vercel | `vercel.app` | `https://bistro-sunrise-tappmesa.vercel.app` |
 
-#### Admin de Tenant - Local
+> El tenant reemplaza al subdominio, no se anida: `bistro-sunrise-tappmesa.tappmesa.juancode.dev` es incorrecto.
+> En producción con dominio propio, `TENANT_BASE_DOMAINS` debe incluir el dominio base (ver Variables de Entorno).
 
-```
-http://cafe-central-tappmesa.localhost:5173/admin
-http://teteria-luna-tappmesa.localhost:5173/admin
-```
+Los navegadores modernos resuelven `*.localhost` a `127.0.0.1` sin configuración. Ver `DESARROLLO-LOCAL-SUBDOMINIOS.md`.
 
-#### Super Admin (Global) - Local
+### 🗺️ Mapa de Vistas
 
-```
-http://localhost:5173/admin
-```
+En las tablas, `<tenant>` es la URL base del local (ej. `http://bistro-sunrise-tappmesa.localhost:5173`).
 
-### Subdominios Locales
+#### Públicas (sin login)
 
-Los navegadores modernos resuelven automáticamente `*.localhost` a `127.0.0.1`.
+| Vista | URL | Notas |
+|---|---|---|
+| Landing | `http://localhost:5173/` | Sin subdominio |
+| Menú del local (para llevar) | `<tenant>/` | |
+| Menú de una mesa (QR) | `<tenant>/<CODIGO_MESA>/menu` | Código de 8-12 caracteres `A-Z0-9`, se ve en Admin → Mesas / QR |
+| Reservas | `<tenant>/reservas` (o `/reservations`) | |
+| Registro / Login | `/register`, `/login` | |
+| Contacto ventas | `/contact-sales` | |
+| Legales | `/privacy`, `/terms`, `/help`, `/contact` | |
 
-Ver `DESARROLLO-LOCAL-SUBDOMINIOS.md` para configuración detallada.
+#### Personal del local (requieren login)
 
-**⚠️ Nota importante sobre el formato del subdominio:**
+| Vista | URL | Rol requerido |
+|---|---|---|
+| Cocina | `<tenant>/kitchen` (o `/cocina`) | `cocina` (exacto) |
+| Garzón | `<tenant>/waiter` (o `/garzon`) | `staff` (exacto) |
+| Login de personal / admin | `<tenant>/admin/login` | — |
 
-Es normal ver URLs con un patrón que parece duplicado (ej. `cafe-central-tappmesa.tappmesa.juancode.dev`). Esto obedece a una necesidad técnica:
+> Cocina y Garzón comparan el rol de forma exacta: un `admin` o `super_admin` ve "Acceso Denegado". Para revisarlas, creá un usuario con ese rol en Admin → Usuarios.
 
-- El sufijo `-tappmesa` es obligatorio para el aislamiento de bases de datos en Supabase
-- Sin este sufijo, las políticas RLS no pueden diferenciar entre tenants en una base de datos compartida
-- Todo el código base y migraciones asumen este patrón
+#### Admin del local (`<tenant>/admin/...`)
 
-En producción, la URL completa es `https://<tenant-identifier>-tappmesa.tappmesa.juancode.dev/`, pero para presentaciones o documentación al cliente, se puede mostrar el nombre simplificado `cafe-central.tappmesa.juancode.dev` manteniendo el `-tappmesa` en la configuración interna.
+| Sección | Ruta | Permiso |
+|---|---|---|
+| Dashboard | `/admin` | login |
+| Pedidos | `/admin/orders` | `orders:read` |
+| Reservas | `/admin/reservations` | `reservations:read` |
+| Clientes | `/admin/customers` | `customers:read` |
+| Usuarios | `/admin/users` | `users:read` |
+| Categorías | `/admin/categories` | `categories:read` |
+| Productos | `/admin/products` | `products:read` |
+| Stock | `/admin/stock` | `stock:read` |
+| Mesas | `/admin/tables` | `tables:read` |
+| Estados de mesa | `/admin/table-statuses` | `tables:read` |
+| Códigos QR | `/admin/qr` | `qr:read` |
+| Analíticas | `/admin/analytics` | `analytics:read` |
+| Configuración | `/admin/settings` | login |
+| Pre-cuenta | `/admin/prebill-settings` | admin del local |
+
+#### Super Admin (`http://localhost:5173/admin/...`, sin subdominio)
+
+| Sección | Ruta |
+|---|---|
+| Tenants | `/admin/tenants` |
+| Planes / Suscripciones | `/admin/subscription-plans`, `/admin/tenant-subscriptions` |
+| Usuarios del sistema | `/admin/system-users` |
+| Vistas globales | `/admin/all-orders`, `/admin/all-products`, `/admin/all-tables`, `/admin/all-reservations`, `/admin/all-customers`, `/admin/all-categories`, `/admin/all-stock` |
+| Prueba de tenant | `/admin/tenant-test` |
+
+### 🔌 Endpoints de la API
+
+Funciones serverless en `api/` (en local, `npm run dev:api` en `:3001`). Todo acceso a datos sensibles pasa por estas rutas con `service_role`; el navegador solo lee el menú con la anon key.
+
+| Método | Endpoint | Uso | Auth |
+|---|---|---|---|
+| `POST` | `/api/table-sessions` | Crear o reanudar la sesión de una mesa; devuelve `capability_token` | `table_id` + `tenant_id` |
+| `POST` | `/api/orders` | Crear pedido (idempotente por `idempotency_key`) | `capability` de mesa, o tenant por Host (para llevar) |
+| `GET` | `/api/orders/my?capability=…` | Pedidos de la sesión de mesa | `capability` |
+| `POST` | `/api/orders/:id/cancel` | Cancelar un pedido propio `pending` | `capability` |
+| `POST` | `/api/auth/signup` | Crear tenant + admin | — |
+| `POST` | `/api/auth/signin` | Login, devuelve token de sesión | — |
+| `GET` | `/api/auth/session` | Validar sesión | token de sesión |
+| `POST` | `/api/auth/signout` | Cerrar sesión | token de sesión |
+| `POST` | `/api/auth/token` | Emitir JWT (claims de tenant/rol) para PostgREST | token de sesión |
+| `POST` | `/api/auth/reset-password` | Solicitar / completar reseteo de contraseña | — |
+| `GET` `POST` `PUT` `PATCH` `DELETE` | `/api/admin/users[/:id]` | CRUD de usuarios del local | JWT de staff |
+| `GET` | `/api/test` | Health check | — |
 
 ## 🔐 Credenciales de Prueba
 
@@ -326,12 +371,7 @@ Ver `TESTING.md` para guías detalladas.
 - Reset de password seguro (server-minted tokens)
 
 ### Server Routes (todo via API, nada directo a Supabase)
-- `POST /api/orders` — place order (capability o takeout via Host header)
-- `GET /api/orders/my` — claim-scoped order history
-- `POST /api/orders/:id/cancel` — cancel own orders
-- `POST /api/table-sessions` — create/resume table session
-- `POST /api/auth/token` — mint JWT for authenticated users
-- `POST /api/admin/users` — CRUD usuarios (bcrypt, claim-scoped)
+Ver la tabla completa en [Endpoints de la API](#-endpoints-de-la-api).
 
 ### Base de Datos
 - Claim-scoped Row Level Security (`app_claim_tenant_id()`, `app_is_super_admin()`)
