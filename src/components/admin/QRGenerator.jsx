@@ -6,6 +6,7 @@ import { SuperAdminContext } from '../../context/SuperAdminContext'
 import SuperAdminNoTenantMessage from './SuperAdminNoTenantMessage'
 import { QrCode, Download, Eye, Copy, Check, ArrowLeft } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { Button } from '../ui/Button'
 import { buildTableMenuUrl } from '../../utils/tableMenuUrl'
 
 const QRGenerator = () => {
@@ -210,17 +211,20 @@ const QRGenerator = () => {
                     <code className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
                       {table.unique_code}
                     </code>
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => copyToClipboard(table.unique_code, table.id)}
-                      className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                      aria-label={`Copiar código de ${table.number}`}
                       title="Copiar código"
+                      className="text-gray-400 hover:text-gray-600"
                     >
                       {copiedCode === table.id ? (
-                        <Check className="w-4 h-4 text-green-500" />
+                        <Check className="w-4 h-4 text-green-500" aria-hidden="true" />
                       ) : (
-                        <Copy className="w-4 h-4" />
+                        <Copy className="w-4 h-4" aria-hidden="true" />
                       )}
-                    </button>
+                    </Button>
                   </div>
                 </div>
 
@@ -231,17 +235,20 @@ const QRGenerator = () => {
                     <code className="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded max-w-full truncate">
                       {qrUrl}
                     </code>
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => copyToClipboard(qrUrl, `url_${table.id}`)}
-                      className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                      aria-label={`Copiar URL de ${table.number}`}
                       title="Copiar URL"
+                      className="text-gray-400 hover:text-gray-600"
                     >
                       {copiedCode === `url_${table.id}` ? (
-                        <Check className="w-4 h-4 text-green-500" />
+                        <Check className="w-4 h-4 text-green-500" aria-hidden="true" />
                       ) : (
-                        <Copy className="w-4 h-4" />
+                        <Copy className="w-4 h-4" aria-hidden="true" />
                       )}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -249,20 +256,14 @@ const QRGenerator = () => {
               {/* Acciones */}
               <div className="p-4 border-t border-gray-100">
                 <div className="flex space-x-2">
-                  <button
-                    onClick={() => previewQR(table)}
-                    className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
-                  >
-                    <Eye className="w-4 h-4" />
+                  <Button variant="outline" onClick={() => previewQR(table)} className="flex-1">
+                    <Eye className="w-4 h-4" aria-hidden="true" />
                     <span>Vista previa</span>
-                  </button>
-                  <button
-                    onClick={() => downloadQR(table)}
-                    className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors shadow-sm"
-                  >
-                    <Download className="w-4 h-4" />
+                  </Button>
+                  <Button onClick={() => downloadQR(table)} className="flex-1">
+                    <Download className="w-4 h-4" aria-hidden="true" />
                     <span>Descargar</span>
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -293,18 +294,12 @@ const QRGenerator = () => {
             </div>
             
             <div className="flex space-x-3">
-              <button
-                onClick={() => downloadQR(selectedTable)}
-                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-              >
+              <Button onClick={() => downloadQR(selectedTable)} className="flex-1">
                 Descargar QR
-              </button>
-              <button
-                onClick={() => setSelectedTable(null)}
-                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-              >
+              </Button>
+              <Button variant="outline" onClick={() => setSelectedTable(null)} className="flex-1">
                 Cerrar
-              </button>
+              </Button>
             </div>
           </div>
         </Modal>

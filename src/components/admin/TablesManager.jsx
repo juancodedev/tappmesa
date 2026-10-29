@@ -17,6 +17,7 @@ import {
   Save
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { Button } from '../ui/Button'
 import { useToast } from '../../hooks/useToast'
 import { useConfirm } from '../../hooks/useConfirm'
 
@@ -624,13 +625,10 @@ const TablesManager = () => {
             </div>
           )}
         </div>
-        <button
-          onClick={handleAddTable}
-          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-        >
-          <Plus className="w-4 h-4" />
+        <Button onClick={handleAddTable}>
+          <Plus className="w-4 h-4" aria-hidden="true" />
           <span>Agregar Mesa</span>
-        </button>
+        </Button>
       </div>
 
       {/* Stats */}
@@ -676,12 +674,17 @@ const TablesManager = () => {
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-gray-900">{table.number}</h3>
                 <div className="relative">
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setShowActionsMenu(showActionsMenu === table.id ? null : table.id)}
-                    className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                    aria-label={`Más acciones de ${table.number}`}
+                    aria-haspopup="true"
+                    aria-expanded={showActionsMenu === table.id}
+                    className="text-gray-400 hover:text-gray-600"
                   >
-                    <MoreVertical className="w-4 h-4" />
-                  </button>
+                    <MoreVertical className="w-4 h-4" aria-hidden="true" />
+                  </Button>
                   
                   {/* Actions Menu */}
                   {showActionsMenu === table.id && (
@@ -762,20 +765,23 @@ const TablesManager = () => {
             {/* Actions */}
             <div className="p-4 border-t border-gray-100 bg-gray-50">
               <div className="flex space-x-2">
-                <button
+                <Button
+                  variant="outline"
                   onClick={() => handleViewQR(table)}
-                  className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  aria-label={`Ver QR de ${table.number}`}
+                  className="flex-1"
                 >
-                  <QrCode className="w-4 h-4" />
+                  <QrCode className="w-4 h-4" aria-hidden="true" />
                   <span>QR</span>
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => handleEditTable(table)}
-                  className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
+                  aria-label={`Editar ${table.number}`}
+                  className="flex-1"
                 >
-                  <Edit className="w-4 h-4" />
+                  <Edit className="w-4 h-4" aria-hidden="true" />
                   <span>Editar</span>
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -869,17 +875,13 @@ const TablesManager = () => {
           </div>
           
           <div className="flex space-x-3">
-            <button
-              onClick={() => setShowAddModal(false)}
-              disabled={saving}
-              className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
-            >
+            <Button variant="outline" onClick={() => setShowAddModal(false)} disabled={saving} className="flex-1">
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleSaveTable}
               disabled={saving || !formData.number.trim()}
-              className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-sm"
+              className="flex-1"
             >
               {saving ? (
                 <>
@@ -888,11 +890,11 @@ const TablesManager = () => {
                 </>
               ) : (
                 <>
-                  <Save className="w-4 h-4" />
+                  <Save className="w-4 h-4" aria-hidden="true" />
                   <span>{selectedTable ? 'Actualizar Mesa' : 'Crear Mesa'}</span>
                 </>
               )}
-            </button>
+            </Button>
           </div>
           
           {/* Validaciones */}
