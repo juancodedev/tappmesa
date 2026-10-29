@@ -21,7 +21,7 @@ Branch per slice off `main` · Delivery: one PR per task · Test runner: Vitest 
 | T4 | StockManager, CompleteStockManager | 21 | S2-S5 | inline | done | 7bff64ea |
 | T5 | UsersManager, Settings, PreBillSettings, SecureAdminApp (Analytics deferred, Dashboard n/a) | 23 | S2-S5 | inline | done | 3e6bcc73 |
 | T6 | Waiter (dashboard, CreateOrderModal, TablesGrid, ActiveOrdersPanel), KitchenDashboard | 25 | S2-S5 | inline | done | c0a8d6d2 |
-| T7 | Super admin managers | 29 | S2-S5 | inline | pending | |
+| T7 | Super admin managers | 29 | S2-S5 | inline | done | 520ba28b |
 
 ## Log
 
@@ -35,3 +35,5 @@ Branch per slice off `main` · Delivery: one PR per task · Test runner: Vitest 
 - L8: T5 done (3e6bcc73): RED 5/5 → GREEN; suite 363/364 (known flaky reset-password 429 timeout; passes isolated 17/17), lint, build OK. Kept per S3: users active/inactive pill toggle, sidebar nav logout row; the password toggle keeps its in-input markup but gets aria-label + aria-pressed.
 - L9: Dashboard's only button is inside a JSX comment (not rendered). Analytics deferred: `/admin/analytics` ("Analíticas", permission analytics:read) renders a "Gestión de Stock" screen (a third stock copy with a dead "Historial" button) that can mutate inventory. Needs a product decision before investing in its buttons.
 - L10: T6 done (c0a8d6d2): RED 5/5 → GREEN; suite 369/369, lint, build OK. Kept per S3: grid/list segmented toggle (named + aria-pressed), table/category/product picker cards, kitchen filter tabs. Mobile-hidden labels (Admin, Actualizar, Salir) now keep an accessible name via aria-label.
+- L11: T7 done (520ba28b): RED 13/13 → GREEN; suite 382/382, lint, build OK. The refresh button block was byte-identical in 8 managers.
+- L12: Feature closed. 138 `<Button>` across admin/staff. Remaining raw `<button>` are S3 by design (tabs, segmented toggles, picker cards, dropdown items, inline links, nav rows, in-input password toggle) plus Analytics.jsx (8, deferred pending the product decision in L9) and a commented-out one in Dashboard.jsx.

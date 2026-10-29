@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { useToast } from '../../hooks/useToast'
 import { useConfirm } from '../../hooks/useConfirm'
+import { Button } from '../ui/Button'
 
 const SubscriptionPlansManager = () => {
   const confirm = useConfirm()
@@ -180,13 +181,10 @@ const SubscriptionPlansManager = () => {
           <h2 className="text-2xl font-bold text-gray-900">Planes de Suscripción</h2>
           <p className="text-gray-600 mt-1">Gestiona los planes disponibles para los tenants</p>
         </div>
-        <button
-          onClick={() => setShowNewPlanForm(true)}
-          className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
-        >
-          <Plus className="h-5 w-5" />
+        <Button onClick={() => setShowNewPlanForm(true)}>
+          <Plus className="h-5 w-5" aria-hidden="true" />
           <span>Nuevo Plan</span>
-        </button>
+        </Button>
       </div>
 
       {/* Nuevo Plan Form */}
@@ -194,15 +192,18 @@ const SubscriptionPlansManager = () => {
         <div className="mb-6 bg-white border-2 border-primary-500 rounded-lg p-6 shadow-lg">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Crear Nuevo Plan</h3>
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => {
                 setShowNewPlanForm(false)
                 setNewPlan(emptyPlan)
               }}
+              aria-label="Cerrar formulario"
               className="text-gray-500 hover:text-gray-700"
             >
-              <X className="h-5 w-5" />
-            </button>
+              <X className="h-5 w-5" aria-hidden="true" />
+            </Button>
           </div>
 
           <form onSubmit={handleCreatePlan} className="space-y-4">
@@ -333,23 +334,20 @@ const SubscriptionPlansManager = () => {
             </div>
 
             <div className="flex justify-end space-x-3 pt-4 border-t">
-              <button
+              <Button
                 type="button"
+                variant="outline"
                 onClick={() => {
                   setShowNewPlanForm(false)
                   setNewPlan(emptyPlan)
                 }}
-                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors"
               >
                 Cancelar
-              </button>
-              <button
-                type="submit"
-                className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
-              >
-                <Save className="h-4 w-4" />
+              </Button>
+              <Button type="submit">
+                <Save className="h-4 w-4" aria-hidden="true" />
                 <span>Crear Plan</span>
-              </button>
+              </Button>
             </div>
           </form>
         </div>
@@ -575,46 +573,45 @@ const SubscriptionPlansManager = () => {
               <div className="px-4 py-3 bg-gray-50 border-t flex items-center justify-between">
                 {editingPlan === plan.id ? (
                   <>
-                    <button
-                      onClick={() => setEditingPlan(null)}
-                      className="text-sm text-gray-600 hover:text-gray-900"
-                    >
+                    <Button variant="ghost" onClick={() => setEditingPlan(null)}>
                       Cancelar
-                    </button>
-                    <button
-                      onClick={() => handleUpdatePlan(plan.id)}
-                      className="flex items-center space-x-1 text-sm px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded transition-colors"
-                    >
-                      <Save className="h-4 w-4" />
+                    </Button>
+                    <Button onClick={() => handleUpdatePlan(plan.id)}>
+                      <Save className="h-4 w-4" aria-hidden="true" />
                       <span>Guardar</span>
-                    </button>
+                    </Button>
                   </>
                 ) : (
                   <>
-                    <button
+                    <Button
+                      variant="ghost"
                       onClick={() => handleToggleActive(plan.id, plan.is_active)}
-                      className={`text-xs px-3 py-1 rounded transition-colors ${
-                        plan.is_active
-                          ? 'bg-yellow-100 hover:bg-yellow-200 text-yellow-800'
-                          : 'bg-green-100 hover:bg-green-200 text-green-800'
-                      }`}
+                      className={plan.is_active
+                        ? 'bg-yellow-100 hover:bg-yellow-200 text-yellow-800'
+                        : 'bg-green-100 hover:bg-green-200 text-green-800'}
                     >
                       {plan.is_active ? 'Desactivar' : 'Activar'}
-                    </button>
+                    </Button>
 
                     <div className="flex items-center space-x-2">
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => setEditingPlan(plan.id)}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                        aria-label={`Editar plan ${plan.name}`}
+                        className="text-blue-600 hover:bg-blue-50"
                       >
-                        <Edit2 className="h-4 w-4" />
-                      </button>
-                      <button
+                        <Edit2 className="h-4 w-4" aria-hidden="true" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleDeletePlan(plan.id)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+                        aria-label={`Eliminar plan ${plan.name}`}
+                        className="text-red-600 hover:bg-red-50"
                       >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                      </Button>
                     </div>
                   </>
                 )}

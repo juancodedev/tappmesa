@@ -26,6 +26,7 @@ import {
 import Modal from '../ui/Modal'
 import { useToast } from '../../hooks/useToast'
 import { useConfirm } from '../../hooks/useConfirm'
+import { Button } from '../ui/Button'
 
 const SuperAdminTenantsManager = () => {
   const confirm = useConfirm()
@@ -249,13 +250,10 @@ const SuperAdminTenantsManager = () => {
             </p>
           </div>
 
-          <button
-            onClick={loadData}
-            className="flex items-center space-x-2 px-4 py-2 bg-primary-50 hover:bg-primary-200 rounded-lg transition-colors"
-          >
-            <RefreshCw className="h-5 w-5" />
+          <Button variant="outline" onClick={loadData}>
+            <RefreshCw className="h-5 w-5" aria-hidden="true" />
             <span>Actualizar</span>
-          </button>
+          </Button>
         </div>
 
         {/* Filters */}
@@ -457,27 +455,36 @@ const SuperAdminTenantsManager = () => {
                   {/* Actions */}
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-2">
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleViewTenant(tenant)}
-                        className="text-blue-600 hover:text-blue-900"
+                        aria-label={`Ver sitio de ${tenant.name}`}
                         title="Ver sitio del tenant"
+                        className="text-blue-600 hover:text-blue-900"
                       >
-                        <ExternalLink className="h-5 w-5" />
-                      </button>
-                      <button
+                        <ExternalLink className="h-5 w-5" aria-hidden="true" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleManageSubscription(tenant)}
-                        className="text-primary-600 hover:text-primary-900"
+                        aria-label={`Gestionar suscripción de ${tenant.name}`}
                         title="Gestionar suscripción"
+                        className="text-primary-600 hover:text-primary-900"
                       >
-                        <Package className="h-5 w-5" />
-                      </button>
-                      <button
+                        <Package className="h-5 w-5" aria-hidden="true" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleToggleActive(tenant)}
-                        className={tenant.is_active ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900'}
+                        aria-label={`${tenant.is_active ? 'Desactivar' : 'Activar'} ${tenant.name}`}
                         title={tenant.is_active ? 'Desactivar' : 'Activar'}
+                        className={tenant.is_active ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900'}
                       >
-                        {tenant.is_active ? <PowerOff className="h-5 w-5" /> : <Power className="h-5 w-5" />}
-                      </button>
+                        {tenant.is_active ? <PowerOff className="h-5 w-5" aria-hidden="true" /> : <Power className="h-5 w-5" aria-hidden="true" />}
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -591,13 +598,9 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
               </option>
             ))}
           </select>
-          <button
-            onClick={handleAssignPlan}
-            disabled={loading || !selectedPlanId}
-            className="mt-2 w-full px-4 py-2 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
-          >
+          <Button onClick={handleAssignPlan} disabled={loading || !selectedPlanId} className="mt-2 w-full">
             {loading ? 'Asignando...' : 'Asignar Plan'}
-          </button>
+          </Button>
         </div>
 
         {/* Custom Limits */}
@@ -649,13 +652,9 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
               />
             </div>
           </div>
-          <button
-            onClick={handleUpdateLimits}
-            disabled={loading}
-            className="mt-3 w-full px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
-          >
+          <Button onClick={handleUpdateLimits} disabled={loading} className="mt-3 w-full">
             {loading ? 'Actualizando...' : 'Actualizar Límites'}
-          </button>
+          </Button>
         </div>
 
         {/* Stats */}

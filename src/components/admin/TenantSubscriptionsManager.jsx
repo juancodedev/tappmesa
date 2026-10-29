@@ -13,6 +13,7 @@ import {
   RefreshCw
 } from 'lucide-react'
 import { useToast } from '../../hooks/useToast'
+import { Button } from '../ui/Button'
 
 const TenantSubscriptionsManager = () => {
   const toast = useToast()
@@ -163,13 +164,10 @@ const TenantSubscriptionsManager = () => {
             Gestiona los planes y límites personalizados de cada tenant
           </p>
         </div>
-        <button
-          onClick={loadData}
-          className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-        >
-          <RefreshCw className="h-5 w-5" />
+        <Button variant="outline" onClick={loadData}>
+          <RefreshCw className="h-5 w-5" aria-hidden="true" />
           <span>Actualizar</span>
-        </button>
+        </Button>
       </div>
 
       {/* Tenants List */}
@@ -262,13 +260,15 @@ const TenantSubscriptionsManager = () => {
                           Límites Personalizados
                         </label>
                         {!isEditing && subscription && (
-                          <button
+                          <Button
+                            variant="ghost"
                             onClick={() => startEditingTenant(tenant)}
-                            className="flex items-center space-x-1 text-xs text-blue-600 hover:text-blue-700"
+                            aria-label={`Editar límites de ${tenant.name}`}
+                            className="text-blue-600 hover:text-blue-700"
                           >
-                            <Edit2 className="h-3 w-3" />
+                            <Edit2 className="h-3 w-3" aria-hidden="true" />
                             <span>Editar</span>
-                          </button>
+                          </Button>
                         )}
                       </div>
 
@@ -336,23 +336,21 @@ const TenantSubscriptionsManager = () => {
 
                       {isEditing && (
                         <div className="flex space-x-2 mt-3">
-                          <button
+                          <Button
+                            variant="outline"
                             onClick={() => {
                               setEditingTenant(null)
                               setCustomLimits({})
                             }}
-                            className="flex-1 flex items-center justify-center space-x-1 px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded text-sm transition-colors"
+                            className="flex-1"
                           >
-                            <X className="h-4 w-4" />
+                            <X className="h-4 w-4" aria-hidden="true" />
                             <span>Cancelar</span>
-                          </button>
-                          <button
-                            onClick={() => handleUpdateCustomLimits(tenant.id)}
-                            className="flex-1 flex items-center justify-center space-x-1 px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm transition-colors"
-                          >
-                            <Save className="h-4 w-4" />
+                          </Button>
+                          <Button onClick={() => handleUpdateCustomLimits(tenant.id)} className="flex-1">
+                            <Save className="h-4 w-4" aria-hidden="true" />
                             <span>Guardar</span>
-                          </button>
+                          </Button>
                         </div>
                       )}
                     </div>

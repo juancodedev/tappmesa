@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { useToast } from '../../hooks/useToast'
 import { useConfirm } from '../../hooks/useConfirm'
+import { Button } from '../ui/Button'
 
 const SystemUsersManager = () => {
   const confirm = useConfirm()
@@ -188,13 +189,10 @@ const SystemUsersManager = () => {
             </p>
           </div>
 
-          <button
-            onClick={loadData}
-            className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-          >
-            <RefreshCw className="h-5 w-5" />
+          <Button variant="outline" onClick={loadData}>
+            <RefreshCw className="h-5 w-5" aria-hidden="true" />
             <span>Actualizar</span>
-          </button>
+          </Button>
         </div>
 
         {/* Filters */}
@@ -414,17 +412,16 @@ const SystemUsersManager = () => {
 
                   {/* Actions */}
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => handleToggleActive(user.id, user.is_active)}
-                      className={`${
-                        user.is_active
-                          ? 'text-red-600 hover:text-red-900'
-                          : 'text-green-600 hover:text-green-900'
-                      } mr-3`}
+                      aria-label={`${user.is_active ? 'Desactivar' : 'Activar'} ${user.full_name || user.email}`}
                       title={user.is_active ? 'Desactivar' : 'Activar'}
+                      className={`${user.is_active ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900'} mr-3`}
                     >
-                      {user.is_active ? <Lock className="h-5 w-5" /> : <Unlock className="h-5 w-5" />}
-                    </button>
+                      {user.is_active ? <Lock className="h-5 w-5" aria-hidden="true" /> : <Unlock className="h-5 w-5" aria-hidden="true" />}
+                    </Button>
                   </td>
                 </tr>
               ))}
