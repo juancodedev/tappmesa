@@ -22,8 +22,10 @@ import {
   RefreshCw,
 } from "lucide-react";
 import Modal from '../ui/Modal';
+import { useToast } from '../../hooks/useToast';
 
 const CompleteStockManager = () => {
+  const toast = useToast()
   const { tenant: currentTenant } = useTenant();
   const [inventory, setInventory] = useState([]);
   const [movements, setMovements] = useState([]);
@@ -180,7 +182,7 @@ const CompleteStockManager = () => {
     e.preventDefault();
 
     if (!selectedItem || !movementForm.quantity) {
-      alert("Por favor completa todos los campos requeridos");
+      toast.error("Por favor completa todos los campos requeridos");
       return;
     }
 
@@ -221,7 +223,7 @@ const CompleteStockManager = () => {
       await loadAlerts();
     } catch (error) {
       console.error("Error registering movement:", error);
-      alert("Error al registrar el movimiento: " + error.message);
+      toast.error("Error al registrar el movimiento: " + error.message);
     }
   };
 
@@ -255,7 +257,7 @@ const CompleteStockManager = () => {
       await loadInventory();
     } catch (error) {
       console.error("Error updating inventory:", error);
-      alert("Error al actualizar el inventario: " + error.message);
+      toast.error("Error al actualizar el inventario: " + error.message);
     }
   };
 

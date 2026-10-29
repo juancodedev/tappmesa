@@ -3,8 +3,10 @@ import { useTenant } from '../../hooks/useTenant'
 import { api } from '../../services/api'
 import { Clock, ChefHat, CheckCircle, XCircle, Package, RefreshCw, Edit2 } from 'lucide-react'
 import { useCart } from '../../hooks/useCart'
+import { useToast } from '../../hooks/useToast'
 
 const TableOrdersHistory = () => {
+  const toast = useToast()
   const { tableSession } = useTenant()
   const { addItem } = useCart()
   const [orders, setOrders] = useState([])
@@ -86,7 +88,7 @@ const TableOrdersHistory = () => {
 
   const handleEditOrder = async (order) => {
     if (!canEditOrder(order)) {
-      alert('Este pedido ya no se puede modificar')
+      toast.error('Este pedido ya no se puede modificar')
       return
     }
 

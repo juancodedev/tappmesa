@@ -14,8 +14,10 @@ import {
   Table,
   ShoppingBag
 } from 'lucide-react'
+import { useToast } from '../../hooks/useToast'
 
 const SubscriptionPlansManager = () => {
+  const toast = useToast()
   const [plans, setPlans] = useState([])
   const [loading, setLoading] = useState(true)
   const [editingPlan, setEditingPlan] = useState(null)
@@ -39,6 +41,7 @@ const SubscriptionPlansManager = () => {
 
   useEffect(() => {
     loadPlans()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar; toast es estable
   }, [])
 
   const loadPlans = async () => {
@@ -53,7 +56,7 @@ const SubscriptionPlansManager = () => {
       setPlans(data || [])
     } catch (error) {
       console.error('Error loading plans:', error)
-      alert('Error al cargar los planes')
+      toast.error('Error al cargar los planes')
     } finally {
       setLoading(false)
     }
@@ -74,10 +77,10 @@ const SubscriptionPlansManager = () => {
       setPlans([...plans, data])
       setNewPlan(emptyPlan)
       setShowNewPlanForm(false)
-      alert('Plan creado exitosamente')
+      toast.success('Plan creado exitosamente')
     } catch (error) {
       console.error('Error creating plan:', error)
-      alert('Error al crear el plan')
+      toast.error('Error al crear el plan')
     }
   }
 
@@ -96,11 +99,11 @@ const SubscriptionPlansManager = () => {
       if (error) throw error
 
       setEditingPlan(null)
-      alert('Plan actualizado exitosamente')
+      toast.success('Plan actualizado exitosamente')
       loadPlans()
     } catch (error) {
       console.error('Error updating plan:', error)
-      alert('Error al actualizar el plan')
+      toast.error('Error al actualizar el plan')
     }
   }
 
@@ -118,10 +121,10 @@ const SubscriptionPlansManager = () => {
       if (error) throw error
 
       setPlans(plans.filter(p => p.id !== planId))
-      alert('Plan eliminado exitosamente')
+      toast.success('Plan eliminado exitosamente')
     } catch (error) {
       console.error('Error deleting plan:', error)
-      alert('Error al eliminar el plan. Puede que tenga tenants asociados.')
+      toast.error('Error al eliminar el plan. Puede que tenga tenants asociados.')
     }
   }
 
@@ -140,7 +143,7 @@ const SubscriptionPlansManager = () => {
       loadPlans()
     } catch (error) {
       console.error('Error toggling plan status:', error)
-      alert('Error al cambiar el estado del plan')
+      toast.error('Error al cambiar el estado del plan')
     }
   }
 

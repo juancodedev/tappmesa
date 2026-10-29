@@ -20,8 +20,10 @@ import {
   Edit
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { useToast } from '../../hooks/useToast'
 
 const ReservationsManager = () => {
+  const toast = useToast()
   const { tenant } = useTenant()
   const { isSuperAdmin } = useAuth()
   const superAdminContext = useContext(SuperAdminContext)
@@ -97,7 +99,7 @@ const ReservationsManager = () => {
       await loadReservations()
     } catch (error) {
       logger.error('Error updating reservation:', error)
-      alert('Error al actualizar la reserva')
+      toast.error('Error al actualizar la reserva')
     }
   }
 
@@ -153,7 +155,7 @@ const ReservationsManager = () => {
       closeEditModal()
     } catch (error) {
       logger.error('Error saving reservation:', error)
-      alert('Error al guardar la reserva: ' + error.message)
+      toast.error('Error al guardar la reserva: ' + error.message)
     }
   }
 

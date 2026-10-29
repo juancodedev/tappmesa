@@ -13,8 +13,10 @@ import {
   BarChart3
 } from 'lucide-react'
 import TenantSelector from './TenantSelector'
+import { useToast } from '../../hooks/useToast'
 
 const SuperAdminStockManager = () => {
+  const toast = useToast()
   const [inventory, setInventory] = useState([])
   const [tenants, setTenants] = useState([])
   const [loading, setLoading] = useState(true)
@@ -79,7 +81,7 @@ const SuperAdminStockManager = () => {
       setInventory(transformedData)
     } catch (error) {
       console.error('Error loading inventory:', error)
-      alert('Error al cargar inventario: ' + error.message)
+      toast.error('Error al cargar inventario: ' + error.message)
     } finally {
       setLoading(false)
     }

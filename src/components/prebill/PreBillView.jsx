@@ -3,8 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { preBillService } from '../../services/preBillService'
 import { useTenant } from '../../hooks/useTenant'
 import { Printer, Download, Edit2, QrCode, ArrowLeft, CheckCircle } from 'lucide-react'
+import { useToast } from '../../hooks/useToast'
 
 const PreBillView = () => {
+  const toast = useToast()
   const { preBillId } = useParams()
   const navigate = useNavigate()
   const { tenant: _tenant } = useTenant()
@@ -55,10 +57,10 @@ const PreBillView = () => {
         setIsEditingTip(false)
         loadPreBill() // Reload to get updated data
       } else {
-        alert('Error al actualizar la propina')
+        toast.error('Error al actualizar la propina')
       }
     } catch (err) {
-      alert('Error al actualizar la propina')
+      toast.error('Error al actualizar la propina')
       console.error(err)
     }
   }

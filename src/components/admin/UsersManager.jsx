@@ -20,8 +20,10 @@ import {
   EyeOff
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { useToast } from '../../hooks/useToast'
 
 const UsersManager = () => {
+  const toast = useToast()
   const { tenant } = useTenant()
   const { user, isSuperAdmin } = useAuth()
   const superAdminContext = useContext(SuperAdminContext)
@@ -102,7 +104,7 @@ const UsersManager = () => {
       console.log('✅ Usuarios cargados:', data.users?.length || 0)
     } catch (error) {
       console.error('Error loading users:', error)
-      alert('Error al cargar usuarios: ' + error.message)
+      toast.error('Error al cargar usuarios: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -142,25 +144,25 @@ const UsersManager = () => {
 
   const validateForm = () => {
     if (!formData.full_name.trim()) {
-      alert('El nombre completo es requerido')
+      toast.error('El nombre completo es requerido')
       return false
     }
 
     if (!formData.email.trim()) {
-      alert('El email es requerido')
+      toast.error('El email es requerido')
       return false
     }
 
     // Validar formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(formData.email)) {
-      alert('Ingresa un email válido')
+      toast.error('Ingresa un email válido')
       return false
     }
 
     // Validar contraseña solo para nuevos usuarios
     if (!selectedUser && (!formData.password || formData.password.length < 6)) {
-      alert('La contraseña debe tener al menos 6 caracteres')
+      toast.error('La contraseña debe tener al menos 6 caracteres')
       return false
     }
 
@@ -221,7 +223,7 @@ const UsersManager = () => {
       
     } catch (error) {
       console.error('Error saving user:', error)
-      alert('Error al guardar el usuario: ' + error.message)
+      toast.error('Error al guardar el usuario: ' + error.message)
     } finally {
       setSaving(false)
     }
@@ -239,7 +241,7 @@ const UsersManager = () => {
       await loadUsers()
     } catch (error) {
       console.error('Error deleting user:', error)
-      alert('Error al eliminar el usuario: ' + error.message)
+      toast.error('Error al eliminar el usuario: ' + error.message)
     }
   }
 
@@ -254,7 +256,7 @@ const UsersManager = () => {
       await loadUsers()
     } catch (error) {
       console.error('Error toggling user status:', error)
-      alert('Error al cambiar el estado del usuario: ' + error.message)
+      toast.error('Error al cambiar el estado del usuario: ' + error.message)
     }
   }
 

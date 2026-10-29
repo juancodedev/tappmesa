@@ -24,8 +24,10 @@ import {
   BarChart3
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { useToast } from '../../hooks/useToast'
 
 const SuperAdminTenantsManager = () => {
+  const toast = useToast()
   const _navigate = useNavigate()
   const [tenants, setTenants] = useState([])
   const [plans, setPlans] = useState([])
@@ -37,6 +39,7 @@ const SuperAdminTenantsManager = () => {
 
   useEffect(() => {
     loadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar; toast es estable
   }, [])
 
   const loadData = async () => {
@@ -143,7 +146,7 @@ const SuperAdminTenantsManager = () => {
     } catch (error) {
       console.error('Error loading tenants:', error)
       const errorMessage = error.message || 'Error desconocido al cargar tenants'
-      alert(`Error al cargar tenants: ${errorMessage}\n\nVerifica la consola para más detalles.`)
+      toast.error(`Error al cargar tenants: ${errorMessage}\n\nVerifica la consola para más detalles.`)
     } finally {
       setLoading(false)
     }
@@ -165,11 +168,11 @@ const SuperAdminTenantsManager = () => {
 
       if (error) throw error
 
-      alert(`Tenant ${tenant.is_active ? 'desactivado' : 'activado'} exitosamente`)
+      toast.success(`Tenant ${tenant.is_active ? 'desactivado' : 'activado'} exitosamente`)
       loadData()
     } catch (error) {
       console.error('Error toggling tenant status:', error)
-      alert('Error al cambiar el estado del tenant')
+      toast.error('Error al cambiar el estado del tenant')
     }
   }
 
@@ -497,6 +500,7 @@ const SuperAdminTenantsManager = () => {
 
 // Modal de detalles y gestión de suscripción
 const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
+  const toast = useToast()
   const [selectedPlanId, setSelectedPlanId] = useState(
     tenant.tenant_subscriptions?.[0]?.plan_id || ''
   )
@@ -509,7 +513,7 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
 
   const handleAssignPlan = async () => {
     if (!selectedPlanId) {
-      alert('Selecciona un plan')
+      toast.error('Selecciona un plan')
       return
     }
 
@@ -518,15 +522,15 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
       const result = await planLimitsService.changeTenantPlan(tenant.id, selectedPlanId)
 
       if (result.success) {
-        alert('Plan asignado exitosamente')
+        toast.success('Plan asignado exitosamente')
         onUpdate()
         onClose()
       } else {
-        alert('Error al asignar plan: ' + result.error)
+        toast.error('Error al asignar plan: ' + result.error)
       }
     } catch (error) {
       console.error('Error assigning plan:', error)
-      alert('Error al asignar plan')
+      toast.error('Error al asignar plan')
     } finally {
       setLoading(false)
     }
@@ -538,15 +542,15 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
       const result = await planLimitsService.updateTenantLimits(tenant.id, customLimits)
 
       if (result.success) {
-        alert('Límites actualizados exitosamente')
+        toast.success('Límites actualizados exitosamente')
         onUpdate()
         onClose()
       } else {
-        alert('Error al actualizar límites: ' + result.error)
+        toast.error('Error al actualizar límites: ' + result.error)
       }
     } catch (error) {
       console.error('Error updating limits:', error)
-      alert('Error al actualizar límites')
+      toast.error('Error al actualizar límites')
     } finally {
       setLoading(false)
     }

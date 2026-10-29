@@ -17,8 +17,10 @@ import {
   Save
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { useToast } from '../../hooks/useToast'
 
 const TablesManager = () => {
+  const toast = useToast()
   const { tenant: currentTenant } = useTenant()
   const { isSuperAdmin } = useAuth()
   const superAdminContext = useContext(SuperAdminContext)
@@ -91,7 +93,7 @@ const TablesManager = () => {
           const wrongTenantTables = data.filter(t => t.tenant_id !== tenantId)
           if (wrongTenantTables.length > 0) {
             console.error('🚨 ALERTA DE SEGURIDAD: Se cargaron mesas de otros tenants:', wrongTenantTables)
-            alert('Error de seguridad: Se detectaron mesas de otros locales. Contacta a soporte.')
+            toast.error('Error de seguridad: Se detectaron mesas de otros locales. Contacta a soporte.')
           }
         }
       }
@@ -182,18 +184,18 @@ const TablesManager = () => {
       if (error) throw error
 
       console.log('✅ Código regenerado:', newCode)
-      alert(`Código regenerado exitosamente: ${newCode}`)
+      toast.success(`Código regenerado exitosamente: ${newCode}`)
       await loadTables()
     } catch (error) {
       console.error('Error regenerating code:', error)
-      alert('Error al regenerar el código: ' + error.message)
+      toast.error('Error al regenerar el código: ' + error.message)
     }
   }
 
   // Regenerar todos los códigos antiguos
   const handleRegenerateAllOldCodes = async () => {
     if (!tenantId) {
-      alert('Error: No se ha cargado el tenant')
+      toast.error('Error: No se ha cargado el tenant')
       return
     }
 
@@ -208,14 +210,14 @@ const TablesManager = () => {
 
       if (loadError) {
         console.error('Error cargando mesas:', loadError)
-        alert('Error al cargar mesas: ' + loadError.message)
+        toast.error('Error al cargar mesas: ' + loadError.message)
         return
       }
 
       console.log('📊 Total de mesas en BD:', allTables?.length || 0)
 
       if (!allTables || allTables.length === 0) {
-        alert('No se encontraron mesas para actualizar')
+        toast.error('No se encontraron mesas para actualizar')
         return
       }
 
@@ -230,7 +232,7 @@ const TablesManager = () => {
       console.log('📋 Mesas con código antiguo encontradas:', oldCodeTables.length)
 
       if (oldCodeTables.length === 0) {
-        alert('No hay códigos antiguos para actualizar')
+        toast.error('No hay códigos antiguos para actualizar')
         return
       }
 
@@ -290,15 +292,15 @@ const TablesManager = () => {
 
       if (errors.length > 0) {
         console.error('❌ Errores:', errors)
-        alert(`${updated} códigos actualizados, ${errors.length} errores:\n${errors.join('\n')}`)
+        toast.error(`${updated} códigos actualizados, ${errors.length} errores:\n${errors.join('\n')}`)
       } else {
-        alert(`✅ ${updated} códigos actualizados correctamente. Recarga la página para ver los cambios.`)
+        toast.success(`✅ ${updated} códigos actualizados correctamente. Recarga la página para ver los cambios.`)
       }
 
       await loadTables()
     } catch (error) {
       console.error('💥 Error crítico:', error)
-      alert('Error al regenerar códigos: ' + error.message)
+      toast.error('Error al regenerar códigos: ' + error.message)
     }
   }
 
@@ -331,7 +333,7 @@ const TablesManager = () => {
 
   const handleSaveTable = async () => {
     if (!tenantId) {
-      alert('Error: No se ha cargado el tenant. Por favor, recarga la página.')
+      toast.error('Error: No se ha cargado el tenant. Por favor, recarga la página.')
       return
     }
 
@@ -340,12 +342,12 @@ const TablesManager = () => {
 
       // Validaciones
       if (!formData.number.trim()) {
-        alert('El número de mesa es requerido')
+        toast.error('El número de mesa es requerido')
         return
       }
 
       if (formData.capacity < 1 || formData.capacity > 20) {
-        alert('La capacidad debe estar entre 1 y 20 personas')
+        toast.error('La capacidad debe estar entre 1 y 20 personas')
         return
       }
 
@@ -379,7 +381,7 @@ const TablesManager = () => {
           .single()
 
         if (existingTable) {
-          alert('Ya existe una mesa con ese número')
+          toast.error('Ya existe una mesa con ese número')
           return
         }
 
@@ -429,7 +431,7 @@ const TablesManager = () => {
       
     } catch (error) {
       console.error('Error saving table:', error)
-      alert('Error al guardar la mesa: ' + error.message)
+      toast.error('Error al guardar la mesa: ' + error.message)
     } finally {
       setSaving(false)
     }
@@ -452,7 +454,7 @@ const TablesManager = () => {
       await loadTables()
     } catch (error) {
       console.error('Error deleting table:', error)
-      alert('Error al eliminar la mesa: ' + error.message)
+      toast.error('Error al eliminar la mesa: ' + error.message)
     }
     setShowActionsMenu(null)
   }
@@ -475,11 +477,11 @@ const TablesManager = () => {
 
       if (error) throw error
 
-      alert('¡Código QR generado exitosamente!')
+      toast.success('¡Código QR generado exitosamente!')
       await loadTables()
     } catch (error) {
       console.error('Error generating QR:', error)
-      alert('Error al generar el código QR: ' + error.message)
+      toast.error('Error al generar el código QR: ' + error.message)
     }
   }
 

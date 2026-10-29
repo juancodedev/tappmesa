@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
+import { useToast } from '../../../hooks/useToast';
 
 const BusinessInfoForm = ({
   formData,
@@ -12,6 +13,7 @@ const BusinessInfoForm = ({
   currentStep,
   totalSteps,
 }) => {
+  const toast = useToast()
   const [logoPreview, setLogoPreview] = useState(null);
 
   const businessTypes = [
@@ -54,13 +56,13 @@ const BusinessInfoForm = ({
     if (file) {
       // Validar tipo de archivo
       if (!file.type.startsWith("image/")) {
-        alert("Por favor selecciona un archivo de imagen válido");
+        toast.error("Por favor selecciona un archivo de imagen válido");
         return;
       }
 
       // Validar tamaño (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert("El archivo debe ser menor a 5MB");
+        toast.error("El archivo debe ser menor a 5MB");
         return;
       }
 

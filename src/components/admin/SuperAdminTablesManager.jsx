@@ -12,8 +12,10 @@ import {
   Calendar
 } from 'lucide-react'
 import TenantSelector from './TenantSelector'
+import { useToast } from '../../hooks/useToast'
 
 const SuperAdminTablesManager = () => {
+  const toast = useToast()
   const [tables, setTables] = useState([])
   const [tenants, setTenants] = useState([])
   const [loading, setLoading] = useState(true)
@@ -65,7 +67,7 @@ const SuperAdminTablesManager = () => {
       setTenants(tenantsData || [])
     } catch (error) {
       console.error('Error loading tables:', error)
-      alert(`Error al cargar mesas: ${error.message}`)
+      toast.error(`Error al cargar mesas: ${error.message}`)
     } finally {
       setLoading(false)
     }

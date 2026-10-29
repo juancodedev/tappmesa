@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Clock, ChefHat, CheckCircle, Package, AlertCircle } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
+import { useToast } from '../../../hooks/useToast'
 
 const ActiveOrdersPanel = ({ activeSessions, onRefresh }) => {
+  const toast = useToast()
   const [updatingOrder, setUpdatingOrder] = useState(null)
 
   // Obtener todos los pedidos activos de todas las sesiones
@@ -54,7 +56,7 @@ const ActiveOrdersPanel = ({ activeSessions, onRefresh }) => {
       onRefresh()
     } catch (error) {
       // console.error('Error updating order:', error)
-      alert('Error al actualizar el pedido: ' + error.message)
+      toast.error('Error al actualizar el pedido: ' + error.message)
     } finally {
       setUpdatingOrder(null)
     }

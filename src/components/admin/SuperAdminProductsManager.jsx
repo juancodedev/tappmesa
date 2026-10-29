@@ -14,8 +14,10 @@ import {
   BarChart3
 } from 'lucide-react'
 import TenantSelector from './TenantSelector'
+import { useToast } from '../../hooks/useToast'
 
 const SuperAdminProductsManager = () => {
+  const toast = useToast()
   const [products, setProducts] = useState([])
   const [tenants, setTenants] = useState([])
   const [categories, setCategories] = useState([])
@@ -84,7 +86,7 @@ const SuperAdminProductsManager = () => {
       setCategories(categoriesData || [])
     } catch (error) {
       console.error('Error loading products:', error)
-      alert(`Error al cargar productos: ${error.message}`)
+      toast.error(`Error al cargar productos: ${error.message}`)
     } finally {
       setLoading(false)
     }

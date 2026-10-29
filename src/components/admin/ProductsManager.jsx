@@ -21,8 +21,10 @@ import {
   Upload
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { useToast } from '../../hooks/useToast'
 
 const ProductsManager = () => {
+  const toast = useToast()
   const { tenant: currentTenant } = useTenant()
   const { isSuperAdmin } = useAuth()
   const superAdminContext = useContext(SuperAdminContext)
@@ -203,7 +205,7 @@ const ProductsManager = () => {
     e.preventDefault()
     
     if (!formData.name.trim() || !formData.price || !formData.category_id) {
-      alert('Por favor completa todos los campos requeridos')
+      toast.error('Por favor completa todos los campos requeridos')
       return
     }
 
@@ -247,7 +249,7 @@ const ProductsManager = () => {
       await loadProducts()
     } catch (error) {
       console.error('Error saving product:', error)
-      alert('Error al guardar el producto: ' + error.message)
+      toast.error('Error al guardar el producto: ' + error.message)
     }
   }
 
@@ -268,7 +270,7 @@ const ProductsManager = () => {
       await loadProducts()
     } catch (error) {
       console.error('Error deleting product:', error)
-      alert('Error al eliminar el producto: ' + error.message)
+      toast.error('Error al eliminar el producto: ' + error.message)
     }
   }
 
@@ -308,13 +310,13 @@ const ProductsManager = () => {
 
     // Validar tipo de archivo
     if (!file.type.startsWith('image/')) {
-      alert('Por favor selecciona un archivo de imagen')
+      toast.error('Por favor selecciona un archivo de imagen')
       return
     }
 
     // Validar tamaño (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
-      alert('La imagen no debe superar los 2MB')
+      toast.error('La imagen no debe superar los 2MB')
       return
     }
 
@@ -343,7 +345,7 @@ const ProductsManager = () => {
       
     } catch (error) {
       console.error('Error uploading image:', error)
-      alert('Error al subir la imagen: ' + error.message)
+      toast.error('Error al subir la imagen: ' + error.message)
     } finally {
       setImageUploading(false)
     }

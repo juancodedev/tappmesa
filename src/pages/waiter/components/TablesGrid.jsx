@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Clock, Users, DollarSign, Edit, XCircle, CheckCircle } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
+import { useToast } from '../../../hooks/useToast'
 
 const TablesGrid = ({ tables, activeSessions, view, onCreateOrder, onRefresh }) => {
+  const toast = useToast()
   const [updatingTable, setUpdatingTable] = useState(null)
 
   const getTableSession = (tableId) => {
@@ -66,7 +68,7 @@ const TablesGrid = ({ tables, activeSessions, view, onCreateOrder, onRefresh }) 
       onRefresh()
     } catch (error) {
       // console.error('Error closing session:', error)
-      alert('Error al cerrar la sesión: ' + error.message)
+      toast.error('Error al cerrar la sesión: ' + error.message)
     } finally {
       setUpdatingTable(null)
     }

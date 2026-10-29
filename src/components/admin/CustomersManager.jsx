@@ -20,8 +20,10 @@ import {
   Save,
 } from "lucide-react";
 import Modal from '../ui/Modal';
+import { useToast } from '../../hooks/useToast';
 
 const CustomersManager = () => {
+  const toast = useToast()
   const { tenant: currentTenant } = useTenant();
   const { isSuperAdmin } = useAuth();
   const superAdminContext = useContext(SuperAdminContext);
@@ -137,7 +139,7 @@ const CustomersManager = () => {
       await loadCustomers();
     } catch (error) {
       console.error("Error actualizando cliente:", error);
-      alert("Error al actualizar cliente: " + error.message);
+      toast.error("Error al actualizar cliente: " + error.message);
     } finally {
       setSaving(false);
     }

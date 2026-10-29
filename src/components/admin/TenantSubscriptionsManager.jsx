@@ -12,8 +12,10 @@ import {
   Package,
   RefreshCw
 } from 'lucide-react'
+import { useToast } from '../../hooks/useToast'
 
 const TenantSubscriptionsManager = () => {
+  const toast = useToast()
   const [tenants, setTenants] = useState([])
   const [plans, setPlans] = useState([])
   const [loading, setLoading] = useState(true)
@@ -22,6 +24,7 @@ const TenantSubscriptionsManager = () => {
 
   useEffect(() => {
     loadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar; toast es estable
   }, [])
 
   const loadData = async () => {
@@ -64,7 +67,7 @@ const TenantSubscriptionsManager = () => {
       setPlans(plansData || [])
     } catch (error) {
       console.error('Error loading data:', error)
-      alert('Error al cargar datos')
+      toast.error('Error al cargar datos')
     } finally {
       setLoading(false)
     }
@@ -75,14 +78,14 @@ const TenantSubscriptionsManager = () => {
       const result = await planLimitsService.changeTenantPlan(tenantId, planId)
 
       if (result.success) {
-        alert('Plan asignado exitosamente')
+        toast.success('Plan asignado exitosamente')
         loadData()
       } else {
-        alert('Error al asignar plan: ' + result.error)
+        toast.error('Error al asignar plan: ' + result.error)
       }
     } catch (error) {
       console.error('Error assigning plan:', error)
-      alert('Error al asignar plan')
+      toast.error('Error al asignar plan')
     }
   }
 
@@ -93,16 +96,16 @@ const TenantSubscriptionsManager = () => {
       const result = await planLimitsService.updateTenantLimits(tenantId, limits)
 
       if (result.success) {
-        alert('Límites personalizados actualizados')
+        toast.success('Límites personalizados actualizados')
         setEditingTenant(null)
         setCustomLimits({})
         loadData()
       } else {
-        alert('Error al actualizar límites: ' + result.error)
+        toast.error('Error al actualizar límites: ' + result.error)
       }
     } catch (error) {
       console.error('Error updating limits:', error)
-      alert('Error al actualizar límites')
+      toast.error('Error al actualizar límites')
     }
   }
 

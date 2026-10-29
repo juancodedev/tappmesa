@@ -12,8 +12,10 @@ import {
   AlertCircle,
   Flame
 } from 'lucide-react'
+import { useToast } from '../../hooks/useToast'
 
 const KitchenDashboard = () => {
+  const toast = useToast()
   const { tenant, loading: tenantLoading } = useTenant()
   const { user, logout } = useAuth()
   const [orders, setOrders] = useState([])
@@ -83,7 +85,7 @@ const KitchenDashboard = () => {
       setOrders(data || [])
     } catch (error) {
       console.error('Error loading kitchen orders:', error)
-      alert('Error al cargar pedidos: ' + error.message)
+      toast.error('Error al cargar pedidos: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -105,7 +107,7 @@ const KitchenDashboard = () => {
       // Reload orders
       loadOrders()
     } catch {
-      alert('Error al actualizar el pedido')
+      toast.error('Error al actualizar el pedido')
     }
   }
 

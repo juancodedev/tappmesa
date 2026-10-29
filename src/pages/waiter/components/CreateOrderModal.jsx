@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import { Plus, Minus, Search, ShoppingCart, Trash2 } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
 import Modal from '../../../components/ui/Modal'
+import { useToast } from '../../../hooks/useToast'
 
 const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess }) => {
+  const toast = useToast()
   const [currentStep, setCurrentStep] = useState(selectedTable ? 'menu' : 'table')
   const [selectedTableId, setSelectedTableId] = useState(selectedTable?.id || '')
   const [products, setProducts] = useState([])
@@ -60,7 +62,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
       //   stack: error?.stack,
       //   fullError: error
       // })
-      alert('Error al cargar productos: ' + (error?.message || 'Error desconocido'))
+      toast.error('Error al cargar productos: ' + (error?.message || 'Error desconocido'))
     } finally {
       setLoading(false)
     }
@@ -125,7 +127,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
 
   const handleSubmit = async () => {
     if (!selectedTableId || cart.length === 0) {
-      alert('Selecciona una mesa y agrega productos')
+      toast.error('Selecciona una mesa y agrega productos')
       return
     }
 
@@ -234,7 +236,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
       onSuccess()
     } catch (error) {
       // console.error('Error creating order:', error)
-      alert('Error al crear el pedido: ' + error.message)
+      toast.error('Error al crear el pedido: ' + error.message)
     } finally {
       setSubmitting(false)
     }

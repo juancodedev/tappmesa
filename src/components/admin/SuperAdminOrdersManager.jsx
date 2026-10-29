@@ -16,8 +16,10 @@ import {
   Eye,
   Package
 } from 'lucide-react'
+import { useToast } from '../../hooks/useToast'
 
 const SuperAdminOrdersManager = () => {
+  const toast = useToast()
   const { selectedTenantId } = useContext(SuperAdminContext)
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
@@ -92,7 +94,7 @@ const SuperAdminOrdersManager = () => {
       setOrders(ordersData || [])
     } catch (error) {
       console.error('Error loading orders:', error)
-      alert(`Error al cargar pedidos: ${error.message}`)
+      toast.error(`Error al cargar pedidos: ${error.message}`)
     } finally {
       setLoading(false)
     }
