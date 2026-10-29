@@ -21,8 +21,10 @@ import {
 } from 'lucide-react'
 import Modal from '../ui/Modal'
 import { useToast } from '../../hooks/useToast'
+import { useConfirm } from '../../hooks/useConfirm'
 
 const UsersManager = () => {
+  const confirm = useConfirm()
   const toast = useToast()
   const { tenant } = useTenant()
   const { user, isSuperAdmin } = useAuth()
@@ -230,7 +232,7 @@ const UsersManager = () => {
   }
 
   const handleDeleteUser = async (userId) => {
-    if (!confirm('¿Estás seguro de eliminar este usuario? Esta acción no se puede deshacer.')) {
+    if (!await confirm('¿Estás seguro de eliminar este usuario? Esta acción no se puede deshacer.', { confirmLabel: 'Eliminar', tone: 'danger' })) {
       return
     }
 

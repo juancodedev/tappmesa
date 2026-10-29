@@ -6,6 +6,7 @@ import { useTenant } from "./hooks/useTenant";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
+import { ConfirmProvider } from './context/ConfirmContext';
 import ErrorBoundary from './components/ErrorBoundary';
 
 // Lazy-loaded components for better code splitting
@@ -103,6 +104,7 @@ function App() {
   return (
     <ErrorBoundary>
       <ToastProvider>
+      <ConfirmProvider>
       <AuthProvider>
         <TenantProvider>
           <Routes>
@@ -168,6 +170,7 @@ function App() {
         </TenantProvider>
         <Analytics />
       </AuthProvider>
+      </ConfirmProvider>
       </ToastProvider>
     </ErrorBoundary>
   );

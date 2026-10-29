@@ -25,8 +25,10 @@ import {
 } from 'lucide-react'
 import Modal from '../ui/Modal'
 import { useToast } from '../../hooks/useToast'
+import { useConfirm } from '../../hooks/useConfirm'
 
 const SuperAdminTenantsManager = () => {
+  const confirm = useConfirm()
   const toast = useToast()
   const _navigate = useNavigate()
   const [tenants, setTenants] = useState([])
@@ -153,7 +155,7 @@ const SuperAdminTenantsManager = () => {
   }
 
   const handleToggleActive = async (tenant) => {
-    if (!confirm(`¿Está seguro de ${tenant.is_active ? 'desactivar' : 'activar'} el tenant "${tenant.name}"?`)) {
+    if (!await confirm(`¿Está seguro de ${tenant.is_active ? 'desactivar' : 'activar'} el tenant "${tenant.name}"?`, { tone: tenant.is_active ? 'danger' : 'default' })) {
       return
     }
 

@@ -110,7 +110,7 @@ const Modal = ({
               {title}
             </h2>
             {description && (
-              <p id={descriptionId} className="text-sm text-gray-600">
+              <p id={descriptionId} className="text-sm text-gray-600 whitespace-pre-line">
                 {description}
               </p>
             )}

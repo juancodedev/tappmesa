@@ -13,8 +13,10 @@ import {
   Flame
 } from 'lucide-react'
 import { useToast } from '../../hooks/useToast'
+import { useConfirm } from '../../hooks/useConfirm'
 
 const KitchenDashboard = () => {
+  const confirm = useConfirm()
   const toast = useToast()
   const { tenant, loading: tenantLoading } = useTenant()
   const { user, logout } = useAuth()
@@ -396,8 +398,8 @@ const KitchenDashboard = () => {
 
                   {(order.status === 'pending' || order.status === 'preparing') && (
                     <button
-                      onClick={() => {
-                        if (confirm('¿Cancelar este pedido?')) {
+                      onClick={async () => {
+                        if (await confirm('¿Cancelar este pedido?', { confirmLabel: 'Cancelar pedido', cancelLabel: 'Volver', tone: 'danger' })) {
                           updateOrderStatus(order.id, 'cancelled')
                         }
                       }}

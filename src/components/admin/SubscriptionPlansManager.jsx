@@ -15,8 +15,10 @@ import {
   ShoppingBag
 } from 'lucide-react'
 import { useToast } from '../../hooks/useToast'
+import { useConfirm } from '../../hooks/useConfirm'
 
 const SubscriptionPlansManager = () => {
+  const confirm = useConfirm()
   const toast = useToast()
   const [plans, setPlans] = useState([])
   const [loading, setLoading] = useState(true)
@@ -108,7 +110,7 @@ const SubscriptionPlansManager = () => {
   }
 
   const handleDeletePlan = async (planId) => {
-    if (!confirm('¿Está seguro de eliminar este plan? Esta acción no se puede deshacer.')) {
+    if (!await confirm('¿Está seguro de eliminar este plan? Esta acción no se puede deshacer.', { confirmLabel: 'Eliminar', tone: 'danger' })) {
       return
     }
 

@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { Clock, Users, DollarSign, Edit, XCircle, CheckCircle } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
 import { useToast } from '../../../hooks/useToast'
+import { useConfirm } from '../../../hooks/useConfirm'
 
 const TablesGrid = ({ tables, activeSessions, view, onCreateOrder, onRefresh }) => {
+  const confirm = useConfirm()
   const toast = useToast()
   const [updatingTable, setUpdatingTable] = useState(null)
 
@@ -40,7 +42,7 @@ const TablesGrid = ({ tables, activeSessions, view, onCreateOrder, onRefresh }) 
   }
 
   const handleCloseSession = async (session) => {
-    if (!confirm(`¿Cerrar la sesión de la Mesa ${session.table.number}?`)) {
+    if (!await confirm(`¿Cerrar la sesión de la Mesa ${session.table.number}?`, { confirmLabel: 'Cerrar sesión', tone: 'danger' })) {
       return
     }
 

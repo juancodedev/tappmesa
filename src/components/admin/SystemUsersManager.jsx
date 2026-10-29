@@ -18,8 +18,10 @@ import {
   Unlock
 } from 'lucide-react'
 import { useToast } from '../../hooks/useToast'
+import { useConfirm } from '../../hooks/useConfirm'
 
 const SystemUsersManager = () => {
+  const confirm = useConfirm()
   const toast = useToast()
   const [users, setUsers] = useState([])
   const [tenants, setTenants] = useState([])
@@ -76,7 +78,7 @@ const SystemUsersManager = () => {
   }
 
   const handleToggleActive = async (userId, currentStatus) => {
-    if (!confirm(`¿Está seguro de ${currentStatus ? 'desactivar' : 'activar'} este usuario?`)) {
+    if (!await confirm(`¿Está seguro de ${currentStatus ? 'desactivar' : 'activar'} este usuario?`, { tone: currentStatus ? 'danger' : 'default' })) {
       return
     }
 

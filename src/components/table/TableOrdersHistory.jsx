@@ -4,8 +4,10 @@ import { api } from '../../services/api'
 import { Clock, ChefHat, CheckCircle, XCircle, Package, RefreshCw, Edit2 } from 'lucide-react'
 import { useCart } from '../../hooks/useCart'
 import { useToast } from '../../hooks/useToast'
+import { useConfirm } from '../../hooks/useConfirm'
 
 const TableOrdersHistory = () => {
+  const confirm = useConfirm()
   const toast = useToast()
   const { tableSession } = useTenant()
   const { addItem } = useCart()
@@ -93,7 +95,7 @@ const TableOrdersHistory = () => {
     }
 
     // Agregar items del pedido al carrito
-    if (confirm('¿Deseas agregar los items de este pedido al carrito para modificarlos?')) {
+    if (await confirm('¿Deseas agregar los items de este pedido al carrito para modificarlos?', { confirmLabel: 'Agregar al carrito' })) {
       order.order_items.forEach(item => {
         if (item.product) {
           // Extraer temperatura de las notas si existe
