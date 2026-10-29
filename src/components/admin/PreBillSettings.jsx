@@ -15,6 +15,7 @@ import {
   Building2
 } from 'lucide-react'
 import { useToast } from '../../hooks/useToast'
+import { Button } from '../ui/Button'
 
 const PreBillSettings = () => {
   const toast = useToast()
@@ -240,12 +241,9 @@ const PreBillSettings = () => {
               <p className="text-red-700 text-sm">
                 No se pudo cargar la información del local. Por favor, recarga la página o contacta a soporte si el problema persiste.
               </p>
-              <button
-                onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-red-600 hover:bg-primary-700 text-white rounded-lg text-sm transition-colors"
-              >
+              <Button variant="destructive" onClick={() => window.location.reload()} className="mt-4">
                 Recargar página
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -269,20 +267,16 @@ const PreBillSettings = () => {
           </p>
         </div>
 
-        <button
+        <Button
           onClick={handleSave}
           disabled={loading || !effectiveTenant}
-          className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-            saved
-              ? 'bg-green-600 text-white'
-              : 'bg-orange-600 hover:bg-primary-700 text-white'
-          } ${loading || !effectiveTenant ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={saved ? 'bg-green-600 hover:bg-green-600' : ''}
         >
-          <Save className="h-4 w-4" />
+          <Save className="h-4 w-4" aria-hidden="true" />
           <span>
             {loading ? 'Guardando...' : saved ? 'Guardado ✓' : 'Guardar Cambios'}
           </span>
-        </button>
+        </Button>
       </div>
 
       <div className="space-y-6">

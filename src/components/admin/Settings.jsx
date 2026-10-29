@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button } from "../ui/Button";
 import {
   Save,
   Upload,
@@ -147,20 +148,16 @@ const Settings = () => {
           <p className="text-gray-600">Gestiona la configuración de tu local</p>
         </div>
 
-        <button
+        <Button
           onClick={handleSave}
           disabled={loading}
-          className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-            saved
-              ? "bg-green-600 text-white"
-              : "bg-primary text-white hover:bg-primary-700"
-          } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={saved ? "bg-green-600 hover:bg-green-600" : ""}
         >
-          <Save className="w-4 h-4" />
+          <Save className="w-4 h-4" aria-hidden="true" />
           <span>
             {loading ? "Guardando..." : saved ? "Guardado" : "Guardar Cambios"}
           </span>
-        </button>
+        </Button>
       </div>
 
       <div className="space-y-8">

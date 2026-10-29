@@ -20,6 +20,7 @@ import {
   EyeOff
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { Button } from '../ui/Button'
 import { useToast } from '../../hooks/useToast'
 import { useConfirm } from '../../hooks/useConfirm'
 
@@ -331,13 +332,10 @@ const UsersManager = () => {
             Administra los usuarios de {tenant?.name || 'tu local'}
           </p>
         </div>
-        <button
-          onClick={handleAddUser}
-          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-        >
-          <Plus className="w-4 h-4" />
+        <Button onClick={handleAddUser}>
+          <Plus className="w-4 h-4" aria-hidden="true" />
           <span>Agregar Usuario</span>
-        </button>
+        </Button>
       </div>
 
       {/* Filters */}
@@ -462,20 +460,26 @@ const UsersManager = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2">
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleEditUser(user)}
-                          className="text-indigo-600 hover:text-indigo-900 p-1 rounded transition-colors"
+                          aria-label={`Editar ${user.full_name}`}
                           title="Editar usuario"
+                          className="text-indigo-600 hover:text-indigo-900"
                         >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
+                          <Edit className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleDeleteUser(user.id)}
-                          className="text-red-600 hover:text-red-900 p-1 rounded transition-colors"
+                          aria-label={`Eliminar ${user.full_name}`}
                           title="Eliminar usuario"
+                          className="text-red-600 hover:text-red-900"
                         >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                          <Trash2 className="w-4 h-4" aria-hidden="true" />
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -582,12 +586,14 @@ const UsersManager = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  aria-pressed={showPassword}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
                   {showPassword ? (
-                    <EyeOff className="w-4 h-4 text-gray-400" />
+                    <EyeOff className="w-4 h-4 text-gray-400" aria-hidden="true" />
                   ) : (
-                    <Eye className="w-4 h-4 text-gray-400" />
+                    <Eye className="w-4 h-4 text-gray-400" aria-hidden="true" />
                   )}
                 </button>
               </div>
@@ -632,17 +638,13 @@ const UsersManager = () => {
           {/* Footer */}
           <div className="p-6 border-t border-gray-200">
             <div className="flex space-x-3">
-              <button
-                onClick={() => setShowAddModal(false)}
-                disabled={saving}
-                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
-              >
+              <Button variant="outline" onClick={() => setShowAddModal(false)} disabled={saving} className="flex-1">
                 Cancelar
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleSaveUser}
                 disabled={saving || !formData.full_name.trim() || !formData.email.trim() || (!selectedUser && !formData.password.trim())}
-                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-sm"
+                className="flex-1"
               >
                 {saving ? (
                   <>
@@ -651,11 +653,11 @@ const UsersManager = () => {
                   </>
                 ) : (
                   <>
-                    <Save className="w-4 h-4" />
+                    <Save className="w-4 h-4" aria-hidden="true" />
                     <span>{selectedUser ? 'Actualizar Usuario' : 'Crear Usuario'}</span>
                   </>
                 )}
-              </button>
+              </Button>
             </div>
             
             {/* Validaciones */}
