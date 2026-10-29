@@ -18,6 +18,7 @@ import {
   ShoppingBag
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { Button } from '../ui/Button'
 import { useToast } from '../../hooks/useToast'
 
 const OrdersManager = () => {
@@ -279,14 +280,10 @@ const OrdersManager = () => {
             }
           </p>
         </div>
-        <button
-          onClick={loadOrders}
-          disabled={loading}
-          className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm disabled:opacity-50"
-        >
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+        <Button onClick={loadOrders} disabled={loading}>
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} aria-hidden="true" />
           <span>Actualizar</span>
-        </button>
+        </Button>
       </div>
 
       {/* Filtros */}
@@ -418,60 +415,57 @@ const OrdersManager = () => {
                 <div className="grid grid-cols-2 gap-2">
                   {order.status === 'pending' && (
                     <>
-                      <button
+                      <Button
                         onClick={() => updateOrderStatus(order.id, 'preparing')}
                         disabled={updating}
-                        className="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+                        className="bg-blue-600 hover:bg-blue-700"
                       >
                         {updating ? 'Actualizando...' : 'Preparar'}
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        variant="destructive"
                         onClick={() => updateOrderStatus(order.id, 'cancelled')}
                         disabled={updating}
-                        className="bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
                       >
                         {updating ? 'Actualizando...' : 'Cancelar'}
-                      </button>
+                      </Button>
                     </>
                   )}
                   
                   {order.status === 'preparing' && (
                     <>
-                      <button
+                      <Button
                         onClick={() => updateOrderStatus(order.id, 'ready')}
                         disabled={updating}
-                        className="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
+                        className="bg-green-600 hover:bg-green-700"
                       >
                         {updating ? 'Actualizando...' : 'Marcar Listo'}
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        variant="destructive"
                         onClick={() => updateOrderStatus(order.id, 'cancelled')}
                         disabled={updating}
-                        className="bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
                       >
                         {updating ? 'Actualizando...' : 'Cancelar'}
-                      </button>
+                      </Button>
                     </>
                   )}
                   
                   {order.status === 'ready' && (
-                    <button
+                    <Button
                       onClick={() => updateOrderStatus(order.id, 'delivered')}
                       disabled={updating}
-                      className="col-span-2 bg-gray-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors disabled:opacity-50"
+                      className="col-span-2 bg-gray-600 hover:bg-gray-700"
                     >
                       {updating ? 'Actualizando...' : 'Marcar Entregado'}
-                    </button>
+                    </Button>
                   )}
 
                   {(order.status === 'delivered' || order.status === 'cancelled') && (
-                    <button
-                      onClick={() => setSelectedOrder(order)}
-                      className="col-span-2 border border-gray-300 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2"
-                    >
-                      <Eye className="w-4 h-4" />
+                    <Button variant="outline" onClick={() => setSelectedOrder(order)} className="col-span-2">
+                      <Eye className="w-4 h-4" aria-hidden="true" />
                       <span>Ver Detalles</span>
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>
@@ -547,12 +541,9 @@ const OrdersManager = () => {
             </div>
           </div>
 
-          <button
-            onClick={() => setSelectedOrder(null)}
-            className="w-full mt-6 bg-primary text-white py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-          >
+          <Button onClick={() => setSelectedOrder(null)} className="w-full mt-6">
             Cerrar
-          </button>
+          </Button>
         </Modal>
       )}
     </div>

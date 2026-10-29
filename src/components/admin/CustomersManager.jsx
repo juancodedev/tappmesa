@@ -20,6 +20,7 @@ import {
   Save,
 } from "lucide-react";
 import Modal from '../ui/Modal';
+import { Button } from '../ui/Button';
 import { useToast } from '../../hooks/useToast';
 
 const CustomersManager = () => {
@@ -464,20 +465,26 @@ const CustomersManager = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2">
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => setSelectedCustomer(customer)}
-                          className="text-indigo-600 hover:text-indigo-900 p-1 rounded transition-colors"
+                          aria-label={`Ver detalles de ${customer.name}`}
                           title="Ver detalles"
+                          className="text-indigo-600 hover:text-indigo-900"
                         >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button
+                          <Eye className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleEditCustomer(customer)}
-                          className="text-gray-600 hover:text-gray-900 p-1 rounded transition-colors"
+                          aria-label={`Editar ${customer.name}`}
                           title="Editar"
+                          className="text-gray-600 hover:text-gray-900"
                         >
-                          <Edit className="w-4 h-4" />
-                        </button>
+                          <Edit className="w-4 h-4" aria-hidden="true" />
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -503,7 +510,7 @@ const CustomersManager = () => {
       </div>
 
       {/* Modal de detalles del cliente */}
-      {selectedCustomer && (
+      {selectedCustomer && !showEditModal && (
         <Modal
           isOpen
           onClose={() => setSelectedCustomer(null)}
@@ -596,12 +603,9 @@ const CustomersManager = () => {
           </div>
 
           <div className="mt-6 flex justify-end">
-            <button
-              onClick={() => setSelectedCustomer(null)}
-              className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-            >
+            <Button onClick={() => setSelectedCustomer(null)} className="px-6">
               Cerrar
-            </button>
+            </Button>
           </div>
         </Modal>
       )}
@@ -681,28 +685,25 @@ const CustomersManager = () => {
             </div>
 
             <div className="flex space-x-3 pt-4">
-              <button
+              <Button
                 type="button"
+                variant="outline"
                 onClick={() => {
                   setShowEditModal(false);
                   setSelectedCustomer(null);
                 }}
-                className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1"
               >
                 Cancelar
-              </button>
-              <button
-                type="submit"
-                disabled={saving}
-                className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 shadow-sm"
-              >
+              </Button>
+              <Button type="submit" disabled={saving} className="flex-1">
                 {saving ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                 ) : (
-                  <Save className="w-4 h-4" />
+                  <Save className="w-4 h-4" aria-hidden="true" />
                 )}
                 <span>{saving ? 'Guardando...' : 'Guardar Cambios'}</span>
-              </button>
+              </Button>
             </div>
           </form>
         </Modal>
