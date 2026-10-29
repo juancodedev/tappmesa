@@ -15,6 +15,9 @@ export const TenantProvider = ({ children }) => {
   const [tenant, setTenant] = useState(null)
   const [table, setTable] = useState(null)
   const [tableSession, setTableSession] = useState(null)
+  // Error visible de la sesión de mesa: sin sesión con capability el carrito
+  // no puede enviar pedidos (CartContext), así que la UI debe avisarlo.
+  const [tableSessionError, setTableSessionError] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [appType, setAppType] = useState('landing')
@@ -44,6 +47,7 @@ export const TenantProvider = ({ children }) => {
         setTenant(null)
         setTable(null)
         setTableSession(null)
+        setTableSessionError(null)
         return
       }
 
@@ -74,6 +78,7 @@ export const TenantProvider = ({ children }) => {
         setTenant(null)
         setTable(null)
         setTableSession(null)
+        setTableSessionError(null)
         return
       }
 
@@ -149,6 +154,7 @@ export const TenantProvider = ({ children }) => {
       setTenant(null)
       setTable(null)
       setTableSession(null)
+      setTableSessionError(null)
     } finally {
       setLoading(false)
     }
@@ -166,11 +172,17 @@ export const TenantProvider = ({ children }) => {
       })
 
       if (!data?.session) throw new Error('No se pudo crear la sesión de mesa')
+      if (!data.session.capability_token) {
+        throw new Error('La sesión de mesa no tiene capability_token')
+      }
 
       setTableSession(data.session)
+      setTableSessionError(null)
       logger.dev('✅ Table session ready:', data.session.session_code)
     } catch (error) {
       logger.error('❌ Error managing table session:', error)
+      setTableSession(null)
+      setTableSessionError('No pudimos conectar con la mesa. Recarga la página o avisa al personal.')
     }
   }
 
@@ -193,6 +205,7 @@ export const TenantProvider = ({ children }) => {
     tenant,
     table,
     tableSession,
+    tableSessionError,
     loading,
     error,
     appType,
@@ -201,7 +214,7 @@ export const TenantProvider = ({ children }) => {
     subdomain: getSubdomain(),
     tableCode: getTableCode()
   // eslint-disable-next-line react-hooks/exhaustive-deps -- loadTenant es estable en la practica, agregarlo invalidaria el memo cada render
-  }), [tenant, table, tableSession, loading, error, appType])
+  }), [tenant, table, tableSession, tableSessionError, loading, error, appType])
 
   return (
     <TenantContext.Provider value={value}>

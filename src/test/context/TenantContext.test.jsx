@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { render, screen, waitFor} from '@testing-library/react'
 import { TenantProvider } from '../../context/TenantContext'
 import { useTenant } from '../../hooks/useTenant'
@@ -31,6 +31,7 @@ const TestComponent = ({ testType = 'basic' }) => {
         <div data-testid="table-code">{context.tableCode || 'no-table-code'}</div>
         <div data-testid="tenant-name">{context.tenant?.name || 'no-tenant'}</div>
         <div data-testid="error">{context.error || 'no-error'}</div>
+        <div data-testid="session-error">{context.tableSessionError || 'no-session-error'}</div>
       </div>
     )
   }
@@ -163,6 +164,52 @@ describe('TenantContext', () => {
         expect.objectContaining({ method: 'POST' })
       )
       vi.unstubAllGlobals()
+    })
+
+    describe('table session failures are surfaced, not swallowed', () => {
+      const renderTableFlow = (fetchResponse) => {
+        mockLocation({ hostname: 'cafe-central.tappmesa.local', pathname: '/ABCD1234/menu' })
+        const query = (data) => ({
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          single: vi.fn().mockResolvedValue({ data, error: null })
+        })
+        mockSupabase.from
+          .mockReturnValueOnce(query(mockTenant))
+          .mockReturnValueOnce(query(mockTable))
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue(fetchResponse))
+        render(
+          <TenantProvider>
+            <TestComponent />
+          </TenantProvider>
+        )
+      }
+
+      afterEach(() => vi.unstubAllGlobals())
+
+      it('exposes tableSessionError when POST /api/table-sessions fails', async () => {
+        renderTableFlow({ ok: false, status: 500, json: vi.fn().mockResolvedValue({ error: 'Error interno del servidor' }) })
+        await waitFor(() => {
+          expect(screen.getByTestId('session-error')).toHaveTextContent(/no pudimos conectar con la mesa/i)
+        })
+        // El menú sigue disponible: la mesa y el tenant cargaron
+        expect(screen.getByTestId('tenant-name')).toHaveTextContent('Café Central')
+        expect(screen.getByTestId('error')).toHaveTextContent('no-error')
+      })
+
+      it('exposes tableSessionError when the session has no capability_token', async () => {
+        renderTableFlow({ ok: true, json: vi.fn().mockResolvedValue({ session: { ...mockTableSession, capability_token: null } }) })
+        await waitFor(() => {
+          expect(screen.getByTestId('session-error')).toHaveTextContent(/no pudimos conectar con la mesa/i)
+        })
+      })
+
+      it('keeps tableSessionError empty for a valid session', async () => {
+        renderTableFlow({ ok: true, json: vi.fn().mockResolvedValue({ session: mockTableSession }) })
+        await waitFor(() => expect(fetch).toHaveBeenCalled())
+        await waitFor(() => expect(screen.getByTestId('loading')).toHaveTextContent('not-loading'))
+        expect(screen.getByTestId('session-error')).toHaveTextContent('no-session-error')
+      })
     })
 
     it('should handle tenant not found error', async () => {

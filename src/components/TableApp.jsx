@@ -4,10 +4,10 @@ import { useTenantUrl } from "../hooks/useTenantHooks";
 import { CartProvider } from "../context/CartContext";
 import MenuLayout from "./layout/MenuLayout";
 import TableOrdersHistory from "./table/TableOrdersHistory";
-import { Receipt, UtensilsCrossed } from 'lucide-react';
+import { AlertTriangle, Receipt, UtensilsCrossed } from 'lucide-react';
 
 const TableApp = () => {
-  const { tenant, table, loading } = useTenant();
+  const { tenant, table, tableSessionError, loading } = useTenant();
   const tenantUrl = useTenantUrl();
   const [activeTab, setActiveTab] = useState('menu'); // 'menu' | 'orders'
 
@@ -94,6 +94,23 @@ const TableApp = () => {
             </button>
           </div>
         </div>
+
+        {tableSessionError && (
+          <div
+            role="alert"
+            className="mx-4 mt-4 flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900"
+          >
+            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
+            <p className="flex-1">{tableSessionError}</p>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="touch-target shrink-0 rounded-lg px-3 font-medium underline"
+            >
+              Recargar
+            </button>
+          </div>
+        )}
 
         {/* Contenido según tab activo */}
         <div className="p-4">
