@@ -17,8 +17,10 @@ import {
   Lock,
   Unlock
 } from 'lucide-react'
+import { useToast } from '../../hooks/useToast'
 
 const SystemUsersManager = () => {
+  const toast = useToast()
   const [users, setUsers] = useState([])
   const [tenants, setTenants] = useState([])
   const [loading, setLoading] = useState(true)
@@ -29,6 +31,7 @@ const SystemUsersManager = () => {
 
   useEffect(() => {
     loadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar; toast es estable
   }, [])
 
   const loadData = async () => {
@@ -66,7 +69,7 @@ const SystemUsersManager = () => {
       setTenants(tenantsData || [])
     } catch (error) {
       console.error('Error loading system users:', error)
-      alert(`Error al cargar usuarios del sistema: ${error.message}`)
+      toast.error(`Error al cargar usuarios del sistema: ${error.message}`)
     } finally {
       setLoading(false)
     }
@@ -92,11 +95,11 @@ const SystemUsersManager = () => {
         throw new Error(message)
       }
 
-      alert('Usuario actualizado exitosamente')
+      toast.success('Usuario actualizado exitosamente')
       loadData()
     } catch (error) {
       console.error('Error toggling user status:', error)
-      alert('Error al cambiar el estado del usuario')
+      toast.error('Error al cambiar el estado del usuario')
     }
   }
 

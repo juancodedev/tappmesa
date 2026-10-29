@@ -14,8 +14,10 @@ import {
   ExternalLink,
   Building2
 } from 'lucide-react'
+import { useToast } from '../../hooks/useToast'
 
 const PreBillSettings = () => {
+  const toast = useToast()
   const { user, isSuperAdmin } = useAuth()
   const { tenant, loading: tenantLoading, loadTenant } = useTenant()
   const superAdminContext = useContext(SuperAdminContext)
@@ -105,7 +107,7 @@ const PreBillSettings = () => {
     // Validar que tenant esté cargado
     if (!effectiveTenant || !effectiveTenant.id) {
       console.error('Error: Tenant not loaded yet')
-      alert('Error: No se ha cargado la información del local. Por favor, recarga la página.')
+      toast.error('Error: No se ha cargado la información del local. Por favor, recarga la página.')
       return
     }
 
@@ -182,7 +184,7 @@ const PreBillSettings = () => {
       }
     } catch (error) {
       console.error('Error saving settings:', error)
-      alert('Error al guardar configuraciones')
+      toast.error('Error al guardar configuraciones')
     } finally {
       setLoading(false)
     }

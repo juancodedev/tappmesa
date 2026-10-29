@@ -15,8 +15,10 @@ import {
   Save
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { useToast } from '../../hooks/useToast'
 
 const Analytics = () => {
+  const toast = useToast()
   const { tenant } = useTenant()
   const [inventory, setInventory] = useState([])
   const [loading, setLoading] = useState(true)
@@ -171,7 +173,7 @@ const Analytics = () => {
       await loadInventory()
     } catch (error) {
       console.error('Error updating inventory:', error)
-      alert('Error updating inventory: ' + error.message)
+      toast.error('Error updating inventory: ' + error.message)
     } finally {
       setSaving(false)
     }
@@ -190,7 +192,7 @@ const Analytics = () => {
         : selectedProduct.current_stock - quantity
 
       if (newStock < 0) {
-        alert('Stock insuficiente')
+        toast.error('Stock insuficiente')
         return
       }
 
@@ -227,7 +229,7 @@ const Analytics = () => {
       await loadInventory()
     } catch (error) {
       console.error('Error processing movement:', error)
-      alert('Error processing movement: ' + error.message)
+      toast.error('Error processing movement: ' + error.message)
     } finally {
       setSaving(false)
     }

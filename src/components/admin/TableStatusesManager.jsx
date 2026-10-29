@@ -19,6 +19,7 @@ import {
   Sparkles,
   AlertCircle
 } from 'lucide-react'
+import { useToast } from '../../hooks/useToast'
 
 const AVAILABLE_COLORS = [
   { value: '#22c55e', label: 'Verde', bg: 'bg-green-500' },
@@ -42,6 +43,7 @@ const AVAILABLE_ICONS = [
 ]
 
 const TableStatusesManager = () => {
+  const toast = useToast()
   const { user, isSuperAdmin } = useAuth()
   const superAdminContext = useContext(SuperAdminContext)
   const [statuses, setStatuses] = useState([])
@@ -83,7 +85,7 @@ const TableStatusesManager = () => {
       setStatuses(data || [])
     } catch (error) {
       console.error('Error loading statuses:', error)
-      alert('Error al cargar estados: ' + error.message)
+      toast.error('Error al cargar estados: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -91,7 +93,7 @@ const TableStatusesManager = () => {
 
   const handleCreate = async () => {
     if (!formData.name.trim()) {
-      alert('El nombre es requerido')
+      toast.error('El nombre es requerido')
       return
     }
 
@@ -116,7 +118,7 @@ const TableStatusesManager = () => {
       loadStatuses()
     } catch (error) {
       console.error('Error creating status:', error)
-      alert('Error al crear estado: ' + error.message)
+      toast.error('Error al crear estado: ' + error.message)
     }
   }
 
@@ -139,13 +141,13 @@ const TableStatusesManager = () => {
       loadStatuses()
     } catch (error) {
       console.error('Error updating status:', error)
-      alert('Error al actualizar estado: ' + error.message)
+      toast.error('Error al actualizar estado: ' + error.message)
     }
   }
 
   const handleDelete = async (id, isSystem) => {
     if (isSystem) {
-      alert('No se pueden eliminar estados del sistema')
+      toast.error('No se pueden eliminar estados del sistema')
       return
     }
 
@@ -163,7 +165,7 @@ const TableStatusesManager = () => {
       if (checkError) throw checkError
 
       if (tables && tables.length > 0) {
-        alert(`No se puede eliminar: ${tables.length} mesa(s) están usando este estado`)
+        toast.error(`No se puede eliminar: ${tables.length} mesa(s) están usando este estado`)
         return
       }
 
@@ -177,7 +179,7 @@ const TableStatusesManager = () => {
       loadStatuses()
     } catch (error) {
       console.error('Error deleting status:', error)
-      alert('Error al eliminar estado: ' + error.message)
+      toast.error('Error al eliminar estado: ' + error.message)
     }
   }
 
@@ -202,7 +204,7 @@ const TableStatusesManager = () => {
       loadStatuses()
     } catch (error) {
       console.error('Error reordering:', error)
-      alert('Error al reordenar: ' + error.message)
+      toast.error('Error al reordenar: ' + error.message)
     }
   }
 
@@ -227,7 +229,7 @@ const TableStatusesManager = () => {
       loadStatuses()
     } catch (error) {
       console.error('Error reordering:', error)
-      alert('Error al reordenar: ' + error.message)
+      toast.error('Error al reordenar: ' + error.message)
     }
   }
 

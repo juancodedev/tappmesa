@@ -16,8 +16,10 @@ import {
   Search
 } from 'lucide-react'
 import TenantSelector from './TenantSelector'
+import { useToast } from '../../hooks/useToast'
 
 const SuperAdminReservationsManager = () => {
+  const toast = useToast()
   const [reservations, setReservations] = useState([])
   const [tenants, setTenants] = useState([])
   const [loading, setLoading] = useState(true)
@@ -78,7 +80,7 @@ const SuperAdminReservationsManager = () => {
       setReservations(reservationsData || [])
     } catch (error) {
       console.error('Error loading reservations:', error)
-      alert('Error al cargar reservas: ' + error.message)
+      toast.error('Error al cargar reservas: ' + error.message)
     } finally {
       setLoading(false)
     }

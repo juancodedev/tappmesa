@@ -14,8 +14,10 @@ import {
   DollarSign
 } from 'lucide-react'
 import TenantSelector from './TenantSelector'
+import { useToast } from '../../hooks/useToast'
 
 const SuperAdminCustomersManager = () => {
+  const toast = useToast()
   const [customers, setCustomers] = useState([])
   const [tenants, setTenants] = useState([])
   const [loading, setLoading] = useState(true)
@@ -76,7 +78,7 @@ const SuperAdminCustomersManager = () => {
       setCustomers(customersData || [])
     } catch (error) {
       console.error('Error loading customers:', error)
-      alert('Error al cargar clientes: ' + error.message)
+      toast.error('Error al cargar clientes: ' + error.message)
     } finally {
       setLoading(false)
     }

@@ -15,8 +15,10 @@ import {
   Package
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { useToast } from '../../hooks/useToast'
 
 const CategoriesManager = () => {
+  const toast = useToast()
   const { tenant: currentTenant } = useTenant()
   const { isSuperAdmin } = useAuth()
   const superAdminContext = useContext(SuperAdminContext)
@@ -132,7 +134,7 @@ const CategoriesManager = () => {
     e.preventDefault()
     
     if (!formData.name.trim()) {
-      alert('El nombre es requerido')
+      toast.error('El nombre es requerido')
       return
     }
 
@@ -171,7 +173,7 @@ const CategoriesManager = () => {
       await loadCategories()
     } catch (error) {
       console.error('Error saving category:', error)
-      alert('Error al guardar la categoría: ' + error.message)
+      toast.error('Error al guardar la categoría: ' + error.message)
     }
   }
 
@@ -192,7 +194,7 @@ const CategoriesManager = () => {
       await loadCategories()
     } catch (error) {
       console.error('Error deleting category:', error)
-      alert('Error al eliminar la categoría: ' + error.message)
+      toast.error('Error al eliminar la categoría: ' + error.message)
     }
   }
 

@@ -18,8 +18,10 @@ import {
   ShoppingBag
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { useToast } from '../../hooks/useToast'
 
 const OrdersManager = () => {
+  const toast = useToast()
   const { tenant: currentTenant } = useTenant()
   const { isSuperAdmin } = useAuth()
   const superAdminContext = useContext(SuperAdminContext)
@@ -150,7 +152,7 @@ const OrdersManager = () => {
       
     } catch (error) {
       console.error('Error updating order status:', error)
-      alert(`Error al actualizar el pedido: ${error.message}`)
+      toast.error(`Error al actualizar el pedido: ${error.message}`)
     } finally {
       setUpdating(false)
     }

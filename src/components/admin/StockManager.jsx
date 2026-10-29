@@ -17,8 +17,10 @@ import {
   ArrowDown
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { useToast } from '../../hooks/useToast'
 
 const StockManager = () => {
+  const toast = useToast()
   const { tenant } = useTenant()
   const [inventory, setInventory] = useState([])
   const [loading, setLoading] = useState(true)
@@ -86,7 +88,7 @@ const StockManager = () => {
       setInventory(transformedData)
     } catch (error) {
       logger.error('Error loading inventory:', error)
-      alert('Error al cargar el inventario: ' + error.message)
+      toast.error('Error al cargar el inventario: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -153,7 +155,7 @@ const StockManager = () => {
       setMovementHistory(data || [])
     } catch (error) {
       logger.error('Error loading movement history:', error)
-      alert('Error al cargar el historial: ' + error.message)
+      toast.error('Error al cargar el historial: ' + error.message)
     }
   }
 
@@ -203,7 +205,7 @@ const StockManager = () => {
       await loadInventory()
     } catch (error) {
       logger.error('Error updating inventory:', error)
-      alert('Error al actualizar el inventario: ' + error.message)
+      toast.error('Error al actualizar el inventario: ' + error.message)
     }
   }
 
@@ -215,13 +217,13 @@ const StockManager = () => {
 
   const handleSubmitMovement = async () => {
     if (!selectedProduct || !movementForm.quantity) {
-      alert('Por favor ingresa la cantidad')
+      toast.error('Por favor ingresa la cantidad')
       return
     }
 
     const quantity = parseFloat(movementForm.quantity)
     if (quantity <= 0) {
-      alert('La cantidad debe ser mayor a 0')
+      toast.error('La cantidad debe ser mayor a 0')
       return
     }
 
@@ -232,7 +234,7 @@ const StockManager = () => {
         : selectedProduct.current_stock - quantity
 
       if (newStock < 0) {
-        alert('No puedes reducir el stock a un valor negativo')
+        toast.error('No puedes reducir el stock a un valor negativo')
         return
       }
 
@@ -269,7 +271,7 @@ const StockManager = () => {
       await loadInventory()
     } catch (error) {
       logger.error('Error processing stock movement:', error)
-      alert('Error al procesar el movimiento: ' + error.message)
+      toast.error('Error al procesar el movimiento: ' + error.message)
     }
   }
 
