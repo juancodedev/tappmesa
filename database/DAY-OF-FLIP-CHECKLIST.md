@@ -138,6 +138,18 @@ select count(*) from tables;                -- > 0 (unique_code lookup)
 - **Staff dashboard**: staff login → JWT attach (`tappmesa-jwt`) → claim-scoped
   reads/writes work (orders, stock, session totals via `CreateOrderModal`).
 
+## 7b. POST — hardening (SEC-007)
+
+The lockdown leaves `tenants`, `user_migration_status` and `subscription_plans`
+without RLS, `admin_users_backup_insecure` readable by anon, and leftover anon
+write grants. Export `admin_users_backup_insecure` if you need it, then:
+
+```bash
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f database/harden-anon-grants.sql
+```
+Re-run step 4 (PART A, expect 14/14) and step 6. Rollback:
+`database/rollback-harden-anon-grants.sql` (does not restore the dropped backup table).
+
 ## 8. POST — regression suite
 
 ```bash
