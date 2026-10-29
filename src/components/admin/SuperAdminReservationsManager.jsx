@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import TenantSelector from './TenantSelector'
 import { useToast } from '../../hooks/useToast'
+import { Button } from '../ui/Button'
 
 const SuperAdminReservationsManager = () => {
   const toast = useToast()
@@ -184,13 +185,10 @@ const SuperAdminReservationsManager = () => {
             </p>
           </div>
 
-          <button
-            onClick={loadData}
-            className="flex items-center space-x-2 px-4 py-2 bg-primary-50 hover:bg-primary-200 rounded-lg transition-colors"
-          >
-            <RefreshCw className="h-5 w-5" />
+          <Button variant="outline" onClick={loadData}>
+            <RefreshCw className="h-5 w-5" aria-hidden="true" />
             <span>Actualizar</span>
-          </button>
+          </Button>
         </div>
 
         {/* Tenant Selector */}
@@ -235,12 +233,9 @@ const SuperAdminReservationsManager = () => {
               className="flex-1 px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             />
             {selectedDate && (
-              <button
-                onClick={() => setSelectedDate('')}
-                className="text-sm text-gray-600 hover:text-gray-900"
-              >
+              <Button variant="ghost" onClick={() => setSelectedDate('')}>
                 Limpiar
-              </button>
+              </Button>
             )}
           </div>
         </div>

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import TenantSelector from './TenantSelector'
 import { useToast } from '../../hooks/useToast'
+import { Button } from '../ui/Button'
 
 const SuperAdminCustomersManager = () => {
   const toast = useToast()
@@ -174,13 +175,10 @@ const SuperAdminCustomersManager = () => {
             </p>
           </div>
 
-          <button
-            onClick={loadData}
-            className="flex items-center space-x-2 px-4 py-2 bg-primary-50 hover:bg-primary-200 rounded-lg transition-colors"
-          >
-            <RefreshCw className="h-5 w-5" />
+          <Button variant="outline" onClick={loadData}>
+            <RefreshCw className="h-5 w-5" aria-hidden="true" />
             <span>Actualizar</span>
-          </button>
+          </Button>
         </div>
 
         {/* Tenant Selector */}
