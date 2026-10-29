@@ -16,7 +16,7 @@ Branch per slice off `main` · Delivery: one PR per task · Test runner: Vitest 
 | ID | Screens | Buttons | Specs | Route | Status | Commit |
 |---|---|---|---|---|---|---|
 | T1 | ProductsManager, CategoriesManager | 17 | S2-S5 | inline | done | a17723d2 |
-| T2 | TablesManager, TableStatusesManager, QRGenerator | 30 | S2-S5 | inline | pending | |
+| T2 | TablesManager, TableStatusesManager, QRGenerator | 30 | S2-S5 | inline | done | e1b17140 |
 | T3 | OrdersManager, ReservationsManager, CustomersManager | 26 | S2-S5 | inline | pending | |
 | T4 | StockManager, CompleteStockManager | 21 | S2-S5 | inline | pending | |
 | T5 | UsersManager, Analytics, Settings, Dashboard, PreBillSettings, SecureAdminApp | 23 | S2-S5 | inline | pending | |
@@ -28,3 +28,4 @@ Branch per slice off `main` · Delivery: one PR per task · Test runner: Vitest 
 - L1 (2026-10-29): "ramas mezcladas, sigamos con los botones del admin" — previously agreed: "me gusta tu vision, avancemos asi, por parte" (table flow first, then admin per screen).
 - L2: Inventory: 171 `<button>` in 32 files. No writer delegation: slices are small and sequential.
 - L3: T1 done (a17723d2): RED 4/4 (missing classes and names) → GREEN; suite 342/342, lint, build OK. Delete-product button had no accessible name at all.
+- L4: T2 done (e1b17140): RED 7/7 → GREEN; suite 349/349, lint, build OK. Kept per S3: actions dropdown items, inline "Actualizar" text links, color/icon pickers.
