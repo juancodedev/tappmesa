@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { useToast } from '../../hooks/useToast'
 import { useConfirm } from '../../hooks/useConfirm'
+import { Button } from '../../components/ui/Button'
 
 const KitchenDashboard = () => {
   const confirm = useConfirm()
@@ -250,21 +251,15 @@ const KitchenDashboard = () => {
             </div>
 
             <div className="flex items-center space-x-3">
-              <button
-                onClick={loadOrders}
-                className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-              >
-                <RefreshCw className="h-4 w-4" />
+              <Button variant="ghost" onClick={loadOrders} aria-label="Actualizar pedidos" className="bg-gray-100 hover:bg-gray-200">
+                <RefreshCw className="h-4 w-4" aria-hidden="true" />
                 <span className="hidden sm:inline">Actualizar</span>
-              </button>
+              </Button>
 
-              <button
-                onClick={logout}
-                className="flex items-center space-x-2 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-colors"
-              >
-                <LogOut className="h-4 w-4" />
+              <Button variant="ghost" onClick={logout} aria-label="Salir" className="bg-red-100 text-red-700 hover:bg-red-200">
+                <LogOut className="h-4 w-4" aria-hidden="true" />
                 <span className="hidden sm:inline">Salir</span>
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -370,23 +365,17 @@ const KitchenDashboard = () => {
                 {/* Action Buttons */}
                 <div className="px-4 py-3 bg-gray-50 border-t flex space-x-2">
                   {order.status === 'pending' && (
-                    <button
-                      onClick={() => updateOrderStatus(order.id, 'preparing')}
-                      className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                    >
-                      <Flame className="h-4 w-4" />
+                    <Button onClick={() => updateOrderStatus(order.id, 'preparing')} className="flex-1 bg-blue-600 hover:bg-blue-700">
+                      <Flame className="h-4 w-4" aria-hidden="true" />
                       <span>Comenzar</span>
-                    </button>
+                    </Button>
                   )}
 
                   {order.status === 'preparing' && (
-                    <button
-                      onClick={() => updateOrderStatus(order.id, 'ready')}
-                      className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
-                    >
-                      <CheckCircle className="h-4 w-4" />
+                    <Button onClick={() => updateOrderStatus(order.id, 'ready')} className="flex-1 bg-green-600 hover:bg-green-700">
+                      <CheckCircle className="h-4 w-4" aria-hidden="true" />
                       <span>Marcar Listo</span>
-                    </button>
+                    </Button>
                   )}
 
                   {order.status === 'ready' && (
@@ -397,16 +386,19 @@ const KitchenDashboard = () => {
                   )}
 
                   {(order.status === 'pending' || order.status === 'preparing') && (
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={async () => {
                         if (await confirm('¿Cancelar este pedido?', { confirmLabel: 'Cancelar pedido', cancelLabel: 'Volver', tone: 'danger' })) {
                           updateOrderStatus(order.id, 'cancelled')
                         }
                       }}
-                      className="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-colors"
+                      aria-label={`Cancelar pedido #${order.order_number}`}
+                      className="bg-red-100 text-red-700 hover:bg-red-200"
                     >
-                      <XCircle className="h-4 w-4" />
-                    </button>
+                      <XCircle className="h-4 w-4" aria-hidden="true" />
+                    </Button>
                   )}
                 </div>
               </div>

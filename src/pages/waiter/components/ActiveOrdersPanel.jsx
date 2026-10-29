@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Clock, ChefHat, CheckCircle, Package, AlertCircle } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
 import { useToast } from '../../../hooks/useToast'
+import { Button } from '../../../components/ui/Button'
 
 const ActiveOrdersPanel = ({ activeSessions, onRefresh }) => {
   const toast = useToast()
@@ -145,13 +146,13 @@ const ActiveOrdersPanel = ({ activeSessions, onRefresh }) => {
 
                   {/* Actions */}
                   {order.status !== 'delivered' && (
-                    <button
+                    <Button
                       onClick={() => handleUpdateStatus(order.id, statusInfo.nextStatus)}
                       disabled={updatingOrder === order.id}
-                      className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                      className="w-full"
                     >
                       {updatingOrder === order.id ? 'Actualizando...' : statusInfo.nextLabel}
-                    </button>
+                    </Button>
                   )}
                 </div>
               )

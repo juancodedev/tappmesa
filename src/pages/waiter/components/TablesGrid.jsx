@@ -3,6 +3,7 @@ import { Clock, Users, DollarSign, Edit, XCircle, CheckCircle } from 'lucide-rea
 import { supabase } from '../../../lib/supabase'
 import { useToast } from '../../../hooks/useToast'
 import { useConfirm } from '../../../hooks/useConfirm'
+import { Button } from '../../../components/ui/Button'
 
 const TablesGrid = ({ tables, activeSessions, view, onCreateOrder, onRefresh }) => {
   const confirm = useConfirm()
@@ -145,30 +146,39 @@ const TablesGrid = ({ tables, activeSessions, view, onCreateOrder, onRefresh }) 
                   <div className="flex items-center space-x-2">
                     {session ? (
                       <>
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => onCreateOrder(table)}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          aria-label={`Agregar pedido a Mesa ${table.number}`}
                           title="Agregar pedido"
+                          className="text-blue-600 hover:bg-blue-50"
                         >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
+                          <Edit className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleCloseSession(session)}
                           disabled={updatingTable === table.id}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                          aria-label={`Cerrar sesión de Mesa ${table.number}`}
                           title="Cerrar sesión"
+                          className="text-red-600 hover:bg-red-50"
                         >
-                          <XCircle className="w-4 h-4" />
-                        </button>
+                          <XCircle className="w-4 h-4" aria-hidden="true" />
+                        </Button>
                       </>
                     ) : (
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => onCreateOrder(table)}
-                        className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                        aria-label={`Iniciar sesión en Mesa ${table.number}`}
                         title="Iniciar sesión"
+                        className="text-green-600 hover:bg-green-50"
                       >
-                        <CheckCircle className="w-4 h-4" />
-                      </button>
+                        <CheckCircle className="w-4 h-4" aria-hidden="true" />
+                      </Button>
                     )}
                   </div>
                 </div>

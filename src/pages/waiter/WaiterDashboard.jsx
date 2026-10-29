@@ -15,6 +15,7 @@ import TablesGrid from './components/TablesGrid'
 import ActiveOrdersPanel from './components/ActiveOrdersPanel'
 import CreateOrderModal from './components/CreateOrderModal'
 import CreateReservationModal from './components/CreateReservationModal'
+import { Button } from '../../components/ui/Button'
 
 const WaiterDashboard = () => {
   const { tenant, loading: tenantLoading } = useTenant()
@@ -141,21 +142,14 @@ const WaiterDashboard = () => {
             </div>
 
             <div className="flex items-center space-x-3">
-              <button
-                onClick={handleRefresh}
-                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-                title="Actualizar"
-              >
-                <RefreshCw className="w-5 h-5" />
-              </button>
+              <Button variant="ghost" size="icon" onClick={handleRefresh} aria-label="Actualizar" title="Actualizar">
+                <RefreshCw className="w-5 h-5" aria-hidden="true" />
+              </Button>
 
-              <button
-                onClick={() => window.location.href = '/admin'}
-                className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <LogOut className="w-4 h-4" />
+              <Button variant="ghost" onClick={() => window.location.href = '/admin'} aria-label="Volver al admin">
+                <LogOut className="w-4 h-4" aria-hidden="true" />
                 <span className="hidden sm:inline">Admin</span>
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -179,21 +173,15 @@ const WaiterDashboard = () => {
 
             {/* Actions */}
             <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setShowCreateReservation(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <Calendar className="w-4 h-4" />
+              <Button variant="outline" onClick={() => setShowCreateReservation(true)}>
+                <Calendar className="w-4 h-4" aria-hidden="true" />
                 <span>Nueva Reserva</span>
-              </button>
+              </Button>
 
-              <button
-                onClick={() => setShowCreateOrder(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors"
-              >
-                <Plus className="w-4 h-4" />
+              <Button onClick={() => setShowCreateOrder(true)}>
+                <Plus className="w-4 h-4" aria-hidden="true" />
                 <span>Nuevo Pedido</span>
-              </button>
+              </Button>
 
               {/* View Toggle */}
               <div className="flex bg-gray-200 rounded-lg p-1">
@@ -201,15 +189,19 @@ const WaiterDashboard = () => {
                   onClick={() => setView('grid')}
                   className={`p-2 rounded ${view === 'grid' ? 'bg-white text-gray-900 shadow' : 'text-gray-600'}`}
                   title="Vista cuadrícula"
+                  aria-label="Vista cuadrícula"
+                  aria-pressed={view === 'grid'}
                 >
-                  <Grid className="w-4 h-4" />
+                  <Grid className="w-4 h-4" aria-hidden="true" />
                 </button>
                 <button
                   onClick={() => setView('list')}
                   className={`p-2 rounded ${view === 'list' ? 'bg-white text-gray-900 shadow' : 'text-gray-600'}`}
                   title="Vista lista"
+                  aria-label="Vista lista"
+                  aria-pressed={view === 'list'}
                 >
-                  <List className="w-4 h-4" />
+                  <List className="w-4 h-4" aria-hidden="true" />
                 </button>
               </div>
             </div>
