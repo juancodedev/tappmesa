@@ -158,6 +158,22 @@ describe('Cart customer lookup', () => {
   })
 })
 
+describe('Action buttons use the shared Button', () => {
+  const BRAND = 'bg-[var(--primary-color,var(--color-primary))]'
+
+  it('styles the cart actions with the tenant brand and 44px targets', () => {
+    render(<Cart />)
+    const send = screen.getByRole('button', { name: /enviar pedido/i })
+    expect(send).toHaveClass(BRAND, 'min-h-11')
+    expect(screen.getByRole('button', { name: /limpiar/i })).toHaveClass('min-h-11')
+  })
+
+  it('styles the menu add button with the tenant brand', () => {
+    render(<MenuCard product={product} />)
+    expect(screen.getByRole('button', { name: /agregar un latte/i })).toHaveClass(BRAND, 'min-h-11')
+  })
+})
+
 describe('CartItem', () => {
   it('uses 44px touch targets for every control', () => {
     render(<CartItem item={cartItem} />)

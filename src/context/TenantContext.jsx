@@ -5,6 +5,7 @@ import { api } from '../services/api'
 import { AuthContext } from './AuthContext'
 import logger from '../utils/logger'
 import { getSubdomain, getTableCode, getAppType } from '../utils/tenantUtils'
+import { getOptimalTextColor } from '../utils/helpers'
 
 export const TenantContext = createContext()
 
@@ -143,6 +144,7 @@ export const TenantProvider = ({ children }) => {
       document.title = `${tenantData.name} - Tappmesa`
       if (tenantData.primary_color) {
         document.documentElement.style.setProperty('--primary-color', tenantData.primary_color)
+        document.documentElement.style.setProperty('--primary-foreground', getOptimalTextColor(tenantData.primary_color))
       }
       if (tenantData.secondary_color) {
         document.documentElement.style.setProperty('--secondary-color', tenantData.secondary_color)

@@ -264,6 +264,8 @@ describe('TenantContext', () => {
         expect(titleSetter).toHaveBeenCalledWith('Café Central - Tappmesa')
         expect(document.documentElement.style.setProperty).toHaveBeenCalledWith('--primary-color', '#dc2626')
         expect(document.documentElement.style.setProperty).toHaveBeenCalledWith('--secondary-color', '#f97316')
+        // readable text over the brand color (#dc2626 is dark → white)
+        expect(document.documentElement.style.setProperty).toHaveBeenCalledWith('--primary-foreground', 'white')
       })
     })
   })
