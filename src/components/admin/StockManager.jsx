@@ -17,6 +17,7 @@ import {
   ArrowDown
 } from 'lucide-react'
 import Modal from '../ui/Modal'
+import { Button } from '../ui/Button'
 import { useToast } from '../../hooks/useToast'
 
 const StockManager = () => {
@@ -471,34 +472,46 @@ const StockManager = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2">
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleStockMovement(item, 'add')}
-                          className="text-green-600 hover:text-green-900 p-1 rounded transition-colors"
+                          aria-label={`Agregar stock de ${item.product.name}`}
                           title="Agregar stock"
+                          className="text-green-600 hover:text-green-900"
                         >
-                          <Plus className="w-4 h-4" />
-                        </button>
-                        <button
+                          <Plus className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleStockMovement(item, 'remove')}
-                          className="text-red-600 hover:text-red-900 p-1 rounded transition-colors"
+                          aria-label={`Reducir stock de ${item.product.name}`}
                           title="Reducir stock"
+                          className="text-red-600 hover:text-red-900"
                         >
-                          <Minus className="w-4 h-4" />
-                        </button>
-                        <button
+                          <Minus className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleShowHistory(item)}
-                          className="text-gray-600 hover:text-gray-900 p-1 rounded transition-colors"
+                          aria-label={`Historial de ${item.product.name}`}
                           title="Historial"
+                          className="text-gray-600 hover:text-gray-900"
                         >
-                          <History className="w-4 h-4" />
-                        </button>
-                        <button
+                          <History className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleOpenEdit(item)}
-                          className="text-indigo-600 hover:text-indigo-900 p-1 rounded transition-colors"
+                          aria-label={`Editar ${item.product.name}`}
                           title="Editar"
+                          className="text-indigo-600 hover:text-indigo-900"
                         >
-                          <Edit className="w-4 h-4" />
-                        </button>
+                          <Edit className="w-4 h-4" aria-hidden="true" />
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -589,22 +602,16 @@ const StockManager = () => {
           </div>
           
           <div className="flex space-x-3">
-            <button
-              onClick={() => setShowMovementModal(false)}
-              className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-            >
+            <Button variant="outline" onClick={() => setShowMovementModal(false)} className="flex-1">
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
+              variant={selectedProduct.movementType === 'add' ? 'default' : 'destructive'}
               onClick={handleSubmitMovement}
-              className={`flex-1 px-4 py-2 rounded-lg transition-colors text-white ${
-                selectedProduct.movementType === 'add'
-                  ? 'bg-green-600 hover:bg-green-700'
-                  : 'bg-red-600 hover:bg-red-700'
-              }`}
+              className={`flex-1 ${selectedProduct.movementType === 'add' ? 'bg-green-600 hover:bg-green-700' : ''}`}
             >
               {selectedProduct.movementType === 'add' ? 'Agregar Stock' : 'Reducir Stock'}
-            </button>
+            </Button>
           </div>
         </Modal>
       )}
@@ -679,12 +686,9 @@ const StockManager = () => {
           </div>
 
           <div className="border-t border-gray-200 px-6 py-4">
-            <button
-              onClick={() => setShowHistoryModal(false)}
-              className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-            >
+            <Button variant="outline" onClick={() => setShowHistoryModal(false)} className="w-full">
               Cerrar
-            </button>
+            </Button>
           </div>
         </Modal>
       )}
@@ -819,18 +823,12 @@ const StockManager = () => {
             </div>
 
             <div className="flex items-center justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
-              <button
-                onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-              >
+              <Button variant="outline" onClick={() => setShowEditModal(false)}>
                 Cancelar
-              </button>
-              <button
-                onClick={handleSubmitEdit}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-              >
+              </Button>
+              <Button onClick={handleSubmitEdit}>
                 Guardar Cambios
-              </button>
+              </Button>
             </div>
           </div>
         </Modal>
