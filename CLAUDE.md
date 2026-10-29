@@ -72,7 +72,7 @@ The app uses React Context for global state:
 - **TenantContext** (`src/context/TenantContext.jsx`): Loads tenant data based on subdomain, manages table sessions, applies dynamic branding (colors, title)
 - **AuthContext** (`src/context/AuthContext.jsx`): Manages user authentication state and session tokens
 - **CartContext** (`src/context/CartContext.jsx`): Shopping cart state with localStorage persistence
-- **ReservationsContext** (`src/context/ReservationsContext.jsx`): Reservation management
+- **ToastContext** (`src/context/ToastContext.jsx`): Non-blocking notifications; use `useToast()` (`toast.success` / `toast.error`) instead of `alert()`
 
 **Important**: TenantContext automatically reloads when `authContext.user.tenant_id` changes (see lines 346-351).
 
@@ -134,9 +134,8 @@ Tables have:
 
 ### Cart System with Temperature Variants
 
-Cart (src/features/cart/) treats items with different temperatures as separate line items:
+Cart (`src/context/CartContext.jsx`, UI in `src/components/cart/`) treats items with different temperatures as separate line items:
 - Same product + different temp = 2 cart items
-- Uses `createCartItem(product, quantity, temperature, notes)` utility
 - Calculates 19% Chilean IVA (tax)
 - Persists to localStorage with tenant isolation
 
@@ -215,37 +214,21 @@ VITE_API_BASE_URL=<vercel-deployment-url>
 src/
 ├── components/          # Shared UI components
 │   ├── admin/          # Admin dashboard components
-│   ├── Auth/           # Auth modals/forms
+│   ├── cart/           # Cart drawer and floating button
 │   ├── Landing/        # Landing page sections
-│   ├── common/         # Reusable components (Logo, ContactInfo)
-│   └── layout/         # Layout components (Header, MenuLayout)
+│   ├── layout/         # Layout components (MenuLayout, CustomerMenuHeader)
+│   ├── menu/           # Menu cards, search, category tabs
+│   ├── reservations/   # Public reservation form
+│   ├── table/          # Table session UI (orders history)
+│   └── ui/             # Primitives (Modal, Button, Input, Card, LoadingSpinner)
 ├── context/            # React Context providers
-├── features/           # Feature-based modules
-│   ├── cart/          # Cart system (components, hooks, services)
-│   ├── menu/          # Menu display and filtering
-│   ├── orders/        # Order management
-│   └── reservations/  # Reservation system
+├── features/cart/      # CartItem (shared by the cart drawer)
 ├── hooks/             # Custom React hooks
 ├── lib/               # Core libraries (supabase, authService)
-├── pages/             # Top-level page components
-│   ├── auth/          # Login/Register pages
-│   ├── dashboard/     # Admin dashboard
-│   └── landing/       # Marketing landing
+├── pages/             # Top-level pages (auth, kitchen, waiter, landing, reservations)
 ├── services/          # API service layers
-├── store/             # State management (if using Redux)
-├── styles/            # Global CSS
 ├── test/              # Test setup and utilities
 └── utils/             # Helper functions
-```
-
-### Feature Modules
-
-Features follow a consistent structure:
-```
-src/features/[feature]/
-├── components/        # Feature-specific components
-├── hooks/            # Feature-specific hooks
-└── services/         # Feature-specific API calls
 ```
 
 ## Important Patterns
