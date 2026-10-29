@@ -57,4 +57,11 @@ describe('database/server-order-functions.sql (task 1.2)', () => {
     expect(body).not.toMatch(/\bROLLBACK\b/i)
     expect(body).toMatch(/EXCEPTION\s+WHEN OTHERS THEN/)
   })
+
+  it('resolves pgcrypto from the Supabase extensions schema (42883 in prod)', () => {
+    // Supabase installs pgcrypto in `extensions`; a search_path pinned to
+    // `public` alone hides gen_random_bytes. Missing schemas are ignored by
+    // Postgres, so this stays valid on vanilla installs.
+    expect(sql).toMatch(/SET search_path = public, extensions/)
+  })
 })
