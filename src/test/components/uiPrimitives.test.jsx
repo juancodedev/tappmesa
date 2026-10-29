@@ -18,4 +18,17 @@ describe('ui primitives', () => {
     )
     expect(screen.getByText('contenido')).toBeInTheDocument()
   })
+
+  it('renders Button, including asChild links', async () => {
+    const { Button } = await import('../../components/ui/Button')
+
+    render(
+      <>
+        <Button>Guardar</Button>
+        <Button asChild variant="outline"><a href="/admin">Ir al panel</a></Button>
+      </>
+    )
+    expect(screen.getByRole('button', { name: 'Guardar' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Ir al panel' })).toHaveClass('inline-flex')
+  })
 })
