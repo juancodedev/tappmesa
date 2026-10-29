@@ -212,4 +212,6 @@ $$;
 
 -- 6) Exponer ÚNICAMENTE a service_role (rutas server). Cero acceso anónimo.
 REVOKE ALL ON FUNCTION public.tappmesa_place_order(uuid, uuid, text, text, jsonb, text) FROM PUBLIC;
+-- Supabase default privileges grant EXECUTE to anon/authenticated directly.
+REVOKE ALL ON FUNCTION public.tappmesa_place_order(uuid, uuid, text, text, jsonb, text) FROM anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.tappmesa_place_order(uuid, uuid, text, text, jsonb, text) TO service_role;
