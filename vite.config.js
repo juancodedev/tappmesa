@@ -3,6 +3,9 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from '@tailwindcss/vite'
 
+// recharts and the packages only it brings in (see `pnpm why`).
+const CHART_DEPS = /[\\/]node_modules[\\/](recharts|d3-[^\\/]+|victory-vendor|react-redux|@reduxjs|redux|redux-thunk|reselect|immer|decimal\.js-light|es-toolkit|eventemitter3|use-sync-external-store|tiny-invariant)[\\/]/
+
 export default defineConfig({
   plugins: [react(),
     tailwindcss(),
@@ -14,6 +17,12 @@ export default defineConfig({
         manualChunks(id) {
           // Vendor libraries - Split by categories
           if (id.includes('node_modules')) {
+            // Charts: left unassigned so they stay in the lazy analytics chunk.
+            // Naming a group here would also pull its dependencies (react-dom)
+            // into it, and every page would then preload the charts.
+            if (CHART_DEPS.test(id)) {
+              return undefined;
+            }
             // React ecosystem
             if (id.includes('react') || id.includes('react-dom')) {
               return 'react-vendor';
@@ -39,6 +48,11 @@ export default defineConfig({
           }
           
           // Feature-based splitting for our code
+          // Analytics screen: unassigned so the lazy import gets its own chunk
+          if (id.includes('/admin/analytics/') || id.endsWith('/admin/Analytics.jsx')) {
+            return undefined;
+          }
+
           // Admin features
           if (id.includes('/admin/') || id.includes('AdminApp') || id.includes('SecureAdminApp')) {
             return 'admin';

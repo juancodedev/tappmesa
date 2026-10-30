@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { 
   LayoutDashboard, 
@@ -21,7 +21,6 @@ import Dashboard from './admin/Dashboard'
 import TablesManagerComponent from './admin/TablesManager'
 import QRGenerator from './admin/QRGenerator'
 import UsersManagerComponent from './admin/UsersManager'
-import AnalyticsComponent from './admin/Analytics'
 import StockManagerComponent from './admin/StockManager'
 import SettingsComponent from './admin/Settings'
 import OrdersManagerComponent from './admin/OrdersManager'
@@ -31,6 +30,9 @@ import CategoriesManager from './admin/CategoriesManager'
 import ProductsManager from './admin/ProductsManager'
 import TenantTester from './TenantTester'
 import CompleteStockManager from './admin/CompleteStockManager'
+
+// Lazy: the analytics screen pulls in the chart library (charts-vendor chunk).
+const AnalyticsComponent = lazy(() => import('./admin/Analytics'))
 
 // Importar supabase para obtener tenant ID
 // import { supabase } from '../lib/supabase'
@@ -153,7 +155,7 @@ const AdminApp = () => {
             <Route path="/tables" element={<TablesManagerComponent />} />
             <Route path="/qr" element={<QRGeneratorWrapper />} />
             <Route path="/users" element={<UsersManagerComponent />} />
-            <Route path="/analytics" element={<AnalyticsComponent />} />
+            <Route path="/analytics" element={<Suspense fallback={null}><AnalyticsComponent /></Suspense>} />
             {/* <Route path="/stock" element={<StockManagerComponent />} /> */}
             <Route path="/stock" element={<CompleteStockManager />} />
             <Route path="/settings" element={<SettingsComponent />} />

@@ -192,7 +192,7 @@ En las tablas, `<tenant>` es la URL base del local (ej. `http://bistro-sunrise-t
 | Mesas | `/admin/tables` | `tables:read` |
 | Estados de mesa | `/admin/table-statuses` | `tables:read` |
 | Códigos QR | `/admin/qr` | `qr:read` |
-| Analíticas | `/admin/analytics` | `analytics:read` |
+| Analíticas (ventas, flujo por día y hora, productos, mesas; el super admin ve todos los locales con ranking o el local elegido en el selector) | `/admin/analytics` | `analytics:read` |
 | Configuración | `/admin/settings` | login |
 | Pre-cuenta | `/admin/prebill-settings` | admin del local |
 
