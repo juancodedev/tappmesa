@@ -177,6 +177,24 @@ describe('Analytics (super admin)', () => {
     expect(screen.getByText('Todos los locales')).toBeInTheDocument()
   })
 
+  it('drops the previous local numbers when the new local fails to load', async () => {
+    rpc.mockResolvedValueOnce({
+      data: analytics({ summary: { ...analytics().summary, current: { ...analytics().summary.current, sales: 7777 } } }),
+      error: null,
+    })
+    const view = renderAsSuperAdmin('tA')
+    await screen.findByText('$7.777')
+    rpc.mockResolvedValueOnce({ data: null, error: { message: 'boom' } })
+    auth = { user: { tenant_id: null, role: 'super_admin' }, isSuperAdmin: true }
+    view.rerender(
+      <SuperAdminContext.Provider value={{ selectedTenantId: 'tB', tenants: [] }}>
+        <Analytics />
+      </SuperAdminContext.Provider>
+    )
+    expect(await screen.findByRole('alert')).toHaveTextContent('No se pudieron cargar las analíticas')
+    expect(screen.queryByText('$7.777')).not.toBeInTheDocument()
+  })
+
   it('follows the selected tenant', async () => {
     renderAsSuperAdmin('t9')
     await screen.findByRole('group', { name: 'Ventas' })

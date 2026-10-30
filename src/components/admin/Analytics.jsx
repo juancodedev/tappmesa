@@ -43,7 +43,8 @@ const Analytics = () => {
       })
       .then(({ data, error }) => {
         if (ignore) return
-        setResult((prev) => (error ? { request, data: prev.data, error } : { request, data, error: null }))
+        // On error drop the old numbers: they belong to another local or period.
+        setResult(error ? { request, data: null, error } : { request, data, error: null })
       })
     return () => {
       ignore = true
