@@ -194,50 +194,50 @@ BEGIN
     RAISE EXCEPTION 'B1 FAILED: tenant_a call returned no result (error: %)',
       (SELECT error FROM analytics_results WHERE gate = 'tenant_a');
   END IF;
-  IF a #> '{summary,current}' <> '{"sales": 3000, "orders": 2, "average_ticket": 1500, "cancelled": 1, "total_orders": 4, "cancellation_rate": 0.25}'::jsonb THEN
+  IF a #> '{summary,current}' IS DISTINCT FROM '{"sales": 3000, "orders": 2, "average_ticket": 1500, "cancelled": 1, "total_orders": 4, "cancellation_rate": 0.25}'::jsonb THEN
     v_failed := v_failed || format('B1_summary_current %s', a #> '{summary,current}');
   END IF;
-  IF a #> '{summary,previous}' <> '{"sales": 300, "orders": 1, "average_ticket": 300, "cancelled": 0, "total_orders": 1, "cancellation_rate": 0}'::jsonb THEN
+  IF a #> '{summary,previous}' IS DISTINCT FROM '{"sales": 300, "orders": 1, "average_ticket": 300, "cancelled": 0, "total_orders": 1, "cancellation_rate": 0}'::jsonb THEN
     v_failed := v_failed || format('B1_summary_previous %s', a #> '{summary,previous}');
   END IF;
 
   -- B1 · daily series in America/Santiago, zero days included
-  IF a -> 'daily' <> '[{"date": "2001-01-01", "sales": 3000, "orders": 2}, {"date": "2001-01-02", "sales": 0, "orders": 0}]'::jsonb THEN
+  IF a -> 'daily' IS DISTINCT FROM '[{"date": "2001-01-01", "sales": 3000, "orders": 2}, {"date": "2001-01-02", "sales": 0, "orders": 0}]'::jsonb THEN
     v_failed := v_failed || format('B1_daily %s', a -> 'daily');
   END IF;
 
   -- B1 · hourly flow: 24 buckets, local hours 10 and 23
-  IF jsonb_array_length(a -> 'hourly') <> 24
-     OR a #> '{hourly,10}' <> '{"hour": 10, "sales": 1000, "orders": 1}'::jsonb
-     OR a #> '{hourly,23}' <> '{"hour": 23, "sales": 2000, "orders": 1}'::jsonb
-     OR (SELECT sum((h ->> 'orders')::int) FROM jsonb_array_elements(a -> 'hourly') h) <> 2 THEN
+  IF jsonb_array_length(a -> 'hourly') IS DISTINCT FROM 24
+     OR a #> '{hourly,10}' IS DISTINCT FROM '{"hour": 10, "sales": 1000, "orders": 1}'::jsonb
+     OR a #> '{hourly,23}' IS DISTINCT FROM '{"hour": 23, "sales": 2000, "orders": 1}'::jsonb
+     OR (SELECT sum((h ->> 'orders')::int) FROM jsonb_array_elements(a -> 'hourly') h) IS DISTINCT FROM 2 THEN
     v_failed := v_failed || format('B1_hourly %s', a -> 'hourly');
   END IF;
 
   -- B1 · in progress (independent of the period)
-  IF a -> 'in_progress' <> '{"pending": 1, "preparing": 0, "ready": 0}'::jsonb THEN
+  IF a -> 'in_progress' IS DISTINCT FROM '{"pending": 1, "preparing": 0, "ready": 0}'::jsonb THEN
     v_failed := v_failed || format('B1_in_progress %s', a -> 'in_progress');
   END IF;
 
   -- B1 · top products, categories, tables (delivered only)
-  IF a -> 'top_products' <> '[
+  IF a -> 'top_products' IS DISTINCT FROM '[
       {"product_id": "a0000000-0000-4000-8000-0000000000f1", "name": "Gate Latte", "category": "Gate Coffee", "units": 6, "revenue": 1800},
       {"product_id": "a0000000-0000-4000-8000-0000000000f2", "name": "Gate Brownie", "category": "Gate Cake", "units": 3, "revenue": 1200}
     ]'::jsonb THEN
     v_failed := v_failed || format('B1_top_products %s', a -> 'top_products');
   END IF;
-  IF a -> 'categories' <> '[
+  IF a -> 'categories' IS DISTINCT FROM '[
       {"category_id": "a0000000-0000-4000-8000-0000000000c1", "name": "Gate Coffee", "units": 6, "revenue": 1800},
       {"category_id": "a0000000-0000-4000-8000-0000000000c2", "name": "Gate Cake", "units": 3, "revenue": 1200}
     ]'::jsonb THEN
     v_failed := v_failed || format('B1_categories %s', a -> 'categories');
   END IF;
-  IF a -> 'tables' <> '[{"table_number": null, "sales": 2000, "orders": 1}, {"table_number": "5", "sales": 1000, "orders": 1}]'::jsonb THEN
+  IF a -> 'tables' IS DISTINCT FROM '[{"table_number": null, "sales": 2000, "orders": 1}, {"table_number": "5", "sales": 1000, "orders": 1}]'::jsonb THEN
     v_failed := v_failed || format('B1_tables %s', a -> 'tables');
   END IF;
 
   -- B1 · no locals ranking for a single tenant
-  IF a -> 'locals' <> 'null'::jsonb THEN
+  IF a -> 'locals' IS DISTINCT FROM 'null'::jsonb THEN
     v_failed := v_failed || format('B1_locals_null %s', a -> 'locals');
   END IF;
 
@@ -256,35 +256,35 @@ BEGIN
   END LOOP;
 
   -- B3 · super admin: consolidated summary and locals ranking (sales desc)
-  IF s #> '{summary,current,sales}' <> '8000'::jsonb OR s #> '{summary,current,orders}' <> '3'::jsonb THEN
+  IF s #> '{summary,current,sales}' IS DISTINCT FROM '8000'::jsonb OR s #> '{summary,current,orders}' IS DISTINCT FROM '3'::jsonb THEN
     v_failed := v_failed || format('B3_super_summary %s', s #> '{summary,current}');
   END IF;
-  IF sb -> 'in_progress' <> '{"pending": 0, "preparing": 1, "ready": 0}'::jsonb THEN
+  IF sb -> 'in_progress' IS DISTINCT FROM '{"pending": 0, "preparing": 1, "ready": 0}'::jsonb THEN
     v_failed := v_failed || format('B3_super_in_progress %s', sb -> 'in_progress');
   END IF;
   IF (SELECT jsonb_agg(l.value - 'is_active' ORDER BY l.ordinality)
       FROM jsonb_array_elements(s -> 'locals') WITH ORDINALITY l
       WHERE l.value ->> 'tenant_id' IN ('a0000000-0000-4000-8000-000000000001', 'b0000000-0000-4000-8000-000000000001'))
-     <> '[
+     IS DISTINCT FROM '[
       {"tenant_id": "b0000000-0000-4000-8000-000000000001", "name": "Gate Cafe B", "sales": 5000, "orders": 1, "average_ticket": 5000, "cancellation_rate": 0},
       {"tenant_id": "a0000000-0000-4000-8000-000000000001", "name": "Gate Cafe A", "sales": 3000, "orders": 2, "average_ticket": 1500, "cancellation_rate": 0.25}
     ]'::jsonb THEN
     v_failed := v_failed || format('B3_super_locals %s', s -> 'locals');
   END IF;
-  IF sb #> '{summary,current,sales}' <> '5000'::jsonb OR sb -> 'locals' <> 'null'::jsonb THEN
+  IF sb #> '{summary,current,sales}' IS DISTINCT FROM '5000'::jsonb OR sb -> 'locals' IS DISTINCT FROM 'null'::jsonb THEN
     v_failed := v_failed || format('B3_super_single_tenant %s', sb -> 'summary');
   END IF;
 
   -- B3 · ties are broken by id, so equal rows never swap between calls
   IF (SELECT jsonb_agg(p -> 'product_id') FROM jsonb_array_elements(sb -> 'top_products') p
       WHERE p ->> 'name' = 'Gate Twin')
-     <> '["b0000000-0000-4000-8000-0000000000f2", "b0000000-0000-4000-8000-0000000000f3"]'::jsonb THEN
+     IS DISTINCT FROM '["b0000000-0000-4000-8000-0000000000f2", "b0000000-0000-4000-8000-0000000000f3"]'::jsonb THEN
     v_failed := v_failed || format('B3_tie_break_by_id %s', sb -> 'top_products');
   END IF;
 
   -- B4 · DST range under a Santiago session keeps every local day
   IF (SELECT result -> 'daily' FROM analytics_results WHERE gate = 'dst_santiago_session')
-     <> '[{"date": "2001-10-13", "sales": 0, "orders": 0}, {"date": "2001-10-14", "sales": 0, "orders": 0}, {"date": "2001-10-15", "sales": 100, "orders": 1}]'::jsonb THEN
+     IS DISTINCT FROM '[{"date": "2001-10-13", "sales": 0, "orders": 0}, {"date": "2001-10-14", "sales": 0, "orders": 0}, {"date": "2001-10-15", "sales": 100, "orders": 1}]'::jsonb THEN
     v_failed := v_failed || format('B4_dst_daily %s',
       (SELECT result -> 'daily' FROM analytics_results WHERE gate = 'dst_santiago_session'));
   END IF;
