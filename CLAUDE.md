@@ -110,7 +110,7 @@ Serverless functions in `api/auth/`:
 - `orderService`: Order CRUD operations
 - `menuService`: Menu/product operations (by subdomain or tenant ID)
 - `configService`: Tenant settings and tables
-- `analyticsService`: Sales metrics and top products
+- `analyticsService`: Sales metrics and top products (legacy; `/admin/analytics` calls the `get_analytics` RPC from `database/analytics-functions.sql`)
 - `customerService`: Customer management
 - `utils`: Price/date formatting, QR code generation
 

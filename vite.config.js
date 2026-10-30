@@ -14,6 +14,10 @@ export default defineConfig({
         manualChunks(id) {
           // Vendor libraries - Split by categories
           if (id.includes('node_modules')) {
+            // Charts: only the lazy analytics screen needs them
+            if (/[\\/]node_modules[\\/](recharts|d3-[^\\/]+|victory-vendor|react-redux|@reduxjs|redux|redux-thunk|reselect|immer|decimal\.js-light|es-toolkit|eventemitter3|use-sync-external-store)[\\/]/.test(id)) {
+              return 'charts-vendor';
+            }
             // React ecosystem
             if (id.includes('react') || id.includes('react-dom')) {
               return 'react-vendor';
@@ -39,6 +43,11 @@ export default defineConfig({
           }
           
           // Feature-based splitting for our code
+          // Analytics screen, lazy-loaded with its charts
+          if (id.includes('/admin/analytics/') || id.endsWith('/admin/Analytics.jsx')) {
+            return 'analytics';
+          }
+
           // Admin features
           if (id.includes('/admin/') || id.includes('AdminApp') || id.includes('SecureAdminApp')) {
             return 'admin';

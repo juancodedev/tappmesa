@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, lazy, Suspense } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard,
@@ -32,7 +32,6 @@ import TablesManagerComponent from './admin/TablesManager'
 import TableStatusesManager from './admin/TableStatusesManager'
 import QRGenerator from './admin/QRGenerator'
 import UsersManagerComponent from './admin/UsersManager'
-import AnalyticsComponent from './admin/Analytics'
 import StockManagerComponent from './admin/StockManager'
 import SettingsComponent from './admin/Settings'
 import OrdersManagerComponent from './admin/OrdersManager'
@@ -54,6 +53,10 @@ import SuperAdminCustomersManager from './admin/SuperAdminCustomersManager'
 import SuperAdminCategoriesManager from './admin/SuperAdminCategoriesManager'
 import SuperAdminStockManager from './admin/SuperAdminStockManager'
 import { Button } from './ui/Button'
+
+import LoadingSpinner from './ui/LoadingSpinner'
+// Lazy: the analytics screen pulls in the chart library (charts-vendor chunk).
+const AnalyticsComponent = lazy(() => import('./admin/Analytics'))
 
 const SecureAdminApp = () => {
   const { isSuperAdmin } = useAuth()
@@ -437,7 +440,9 @@ const SecureAdminAppContent = () => {
             
             <Route path="/analytics" element={
               <TenantAdminRoute requirePermissions={['analytics:read']}>
-                <AnalyticsComponent />
+                <Suspense fallback={<div className="flex justify-center py-16"><LoadingSpinner size="lg" /></div>}>
+                  <AnalyticsComponent />
+                </Suspense>
               </TenantAdminRoute>
             } />
             
