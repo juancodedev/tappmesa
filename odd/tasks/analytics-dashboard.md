@@ -16,8 +16,8 @@ Branches: `feat/analytics-sql` (T1), `feat/analytics-ui` (T2). Delivery: one PR 
 
 | ID | Specs | Route | Status | Evidence |
 |----|-------|-------|--------|----------|
-| T1 | S2-S5, S6(1) | inline | done, PR #220; prod apply pending authorization | 36f7e388 + correction commit |
-| T2 | S1, S6(2) | inline | pending | |
+| T1 | S2-S5, S6(1) | inline | done, PR #220, applied in prod | 36f7e388 + correction commit |
+| T2 | S1, S6(2) | inline | in progress | |
 
 ## Log
 
@@ -29,3 +29,5 @@ Branches: `feat/analytics-sql` (T1), `feat/analytics-ui` (T2). Delivery: one PR 
 - L6: T1 (36f7e388, PR #220): local Postgres 17 gates RED -> GREEN -> rollback RED -> idempotent; mutation (count non-delivered) caught by B1_daily/B1_hourly/B1_tables. Branch had been created on top of another session's `chore/deps-batch` commit; rebased onto main.
 - L7: Independent verifier: PASS on S2-S6(1), no blockers. Advisories fixed in a correction commit with RED gates first: daily series depended on session TimeZone across DST (B4), ties now broken by id (B3), `-v lab=0` no longer runs PART B. Left as is: unbounded range (statement timeout bounds it), all-locals 1-year ~0.8 s at 50k orders (RLS per-item check), previous period not aligned to local midnight across DST. T2 must label `table_number: null` as "Sin mesa" and `name: null` products.
 - L8: Native review (risk + reliability) approved and acknowledged on 36f7e388..ce4caa1a. Advisory fixed: PART B gates now compare with IS DISTINCT FROM, so a missing section fails (proved by renaming `locals`: B1_locals_null, B3_super_locals, B3_super_single_tenant fail). Advisory dismissed: average_ticket cannot truncate because orders.total is numeric(10,2).
+- L9 (2026-10-30): User: "aplica el database/analytics-functions.sql contra produccion". Applied in one transaction with lock_timeout=5s (orders 2 rows, order_items 3). PART A before: A1_function_exists FAILED; after: PART A PASSED. Read-only smoke (rolled back): super_admin 90 days -> 91 daily rows, 10 locals; anon -> permission denied for function get_analytics.
+- L10: User: "luego de ello, avanza con la otra etapa" — T2 starts.
