@@ -16,7 +16,7 @@ Branches: `feat/analytics-sql` (T1), `feat/analytics-ui` (T2). Delivery: one PR 
 
 | ID | Specs | Route | Status | Evidence |
 |----|-------|-------|--------|----------|
-| T1 | S2-S5, S6(1) | inline | in progress | |
+| T1 | S2-S5, S6(1) | inline | done, PR #220; prod apply pending authorization | 36f7e388 + correction commit |
 | T2 | S1, S6(2) | inline | pending | |
 
 ## Log
@@ -26,3 +26,5 @@ Branches: `feat/analytics-sql` (T1), `feat/analytics-ui` (T2). Delivery: one PR 
 - L3 (2026-10-30): "si, me parece bien la propuesta, procede" — approves the metrics table and SECURITY INVOKER.
 - L4: Mapping: admin screens read via the reassignable `supabase` client with the custom JWT (`app_tenant_id`, `app_role`); RLS `orders_claim` = own tenant OR `app_is_super_admin()`. No code sets `completed`; realized sales are `delivered`. Orders have no `table_id`/payment/order_type columns. Only `(tenant_id, status)` index exists on orders; order_items has no `order_id` index in the Prisma schema.
 - L5: Decision: KPIs, daily series and hourly flow all count `delivered` orders so the numbers agree; open orders show in "in progress". Ranges are half-open `[p_from, p_to)`.
+- L6: T1 (36f7e388, PR #220): local Postgres 17 gates RED -> GREEN -> rollback RED -> idempotent; mutation (count non-delivered) caught by B1_daily/B1_hourly/B1_tables. Branch had been created on top of another session's `chore/deps-batch` commit; rebased onto main.
+- L7: Independent verifier: PASS on S2-S6(1), no blockers. Advisories fixed in a correction commit with RED gates first: daily series depended on session TimeZone across DST (B4), ties now broken by id (B3), `-v lab=0` no longer runs PART B. Left as is: unbounded range (statement timeout bounds it), all-locals 1-year ~0.8 s at 50k orders (RLS per-item check), previous period not aligned to local midnight across DST. T2 must label `table_number: null` as "Sin mesa" and `name: null` products.

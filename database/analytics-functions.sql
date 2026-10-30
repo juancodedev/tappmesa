@@ -111,8 +111,10 @@ BEGIN
         'orders', coalesce(x.orders, 0)
       ) ORDER BY d.day)
       FROM generate_series(
-        (p_from AT TIME ZONE v_tz)::date,
-        ((p_to - interval '1 microsecond') AT TIME ZONE v_tz)::date,
+        -- timestamp (not date) bounds pick the timestamp overload, so the
+        -- session TimeZone cannot drop a day across a DST change
+        (p_from AT TIME ZONE v_tz)::date::timestamp,
+        ((p_to - interval '1 microsecond') AT TIME ZONE v_tz)::date::timestamp,
         interval '1 day'
       ) AS d(day)
       LEFT JOIN (
@@ -145,18 +147,18 @@ BEGIN
         AND o.status IN ('pending', 'preparing', 'ready')
     ),
     'top_products', (
-      SELECT coalesce(jsonb_agg(t ORDER BY t.units DESC, t.revenue DESC, t.name), '[]'::jsonb)
+      SELECT coalesce(jsonb_agg(t ORDER BY t.units DESC, t.revenue DESC, t.name, t.product_id), '[]'::jsonb)
       FROM (
         SELECT product_id, product_name AS name, category_name AS category,
                sum(quantity) AS units, sum(total_price) AS revenue
         FROM items
         GROUP BY product_id, product_name, category_name
-        ORDER BY units DESC, revenue DESC, name
+        ORDER BY units DESC, revenue DESC, name, product_id
         LIMIT 10
       ) t
     ),
     'categories', (
-      SELECT coalesce(jsonb_agg(c ORDER BY c.revenue DESC, c.name), '[]'::jsonb)
+      SELECT coalesce(jsonb_agg(c ORDER BY c.revenue DESC, c.name, c.category_id), '[]'::jsonb)
       FROM (
         SELECT category_id, category_name AS name, sum(quantity) AS units, sum(total_price) AS revenue
         FROM items
@@ -181,7 +183,7 @@ BEGIN
         'average_ticket', CASE WHEN l.orders > 0 THEN round(l.sales / l.orders, 2) ELSE 0 END,
         'cancellation_rate', CASE WHEN l.total_orders > 0
                                   THEN round(l.cancelled::numeric / l.total_orders, 4) ELSE 0 END
-      ) ORDER BY coalesce(l.sales, 0) DESC, tn.name), '[]'::jsonb)
+      ) ORDER BY coalesce(l.sales, 0) DESC, tn.name, tn.id), '[]'::jsonb)
       FROM tenants tn
       LEFT JOIN (
         SELECT tenant_id,

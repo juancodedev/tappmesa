@@ -68,6 +68,11 @@ BEGIN
 END $$;
 
 \if :{?lab}
+SELECT :'lab' = '1' AS run_lab \gset
+\else
+\set run_lab false
+\endif
+\if :run_lab
 \else
 \echo 'PART A only (pass -v lab=1 against a lab database to run PART B).'
 \quit
@@ -95,7 +100,10 @@ INSERT INTO categories (id, tenant_id, name, slug) VALUES
 INSERT INTO products (id, tenant_id, category_id, name, slug, price) VALUES
   ('a0000000-0000-4000-8000-0000000000f1', 'a0000000-0000-4000-8000-000000000001', 'a0000000-0000-4000-8000-0000000000c1', 'Gate Latte', 'gate-latte', 300),
   ('a0000000-0000-4000-8000-0000000000f2', 'a0000000-0000-4000-8000-000000000001', 'a0000000-0000-4000-8000-0000000000c2', 'Gate Brownie', 'gate-brownie', 400),
-  ('b0000000-0000-4000-8000-0000000000f1', 'b0000000-0000-4000-8000-000000000001', 'b0000000-0000-4000-8000-0000000000c1', 'Gate Chai', 'gate-chai', 5000);
+  ('b0000000-0000-4000-8000-0000000000f1', 'b0000000-0000-4000-8000-000000000001', 'b0000000-0000-4000-8000-0000000000c1', 'Gate Chai', 'gate-chai', 5000),
+  -- same name, units and revenue: only the id can order them
+  ('b0000000-0000-4000-8000-0000000000f3', 'b0000000-0000-4000-8000-000000000001', 'b0000000-0000-4000-8000-0000000000c1', 'Gate Twin', 'gate-twin-2', 50),
+  ('b0000000-0000-4000-8000-0000000000f2', 'b0000000-0000-4000-8000-000000000001', 'b0000000-0000-4000-8000-0000000000c1', 'Gate Twin', 'gate-twin-1', 50);
 
 INSERT INTO orders (id, tenant_id, status, subtotal, total, table_number, created_at) VALUES
   -- tenant A, current period
@@ -109,7 +117,9 @@ INSERT INTO orders (id, tenant_id, status, subtotal, total, table_number, create
   ('a0000000-0000-4000-8000-0000000000a6', 'a0000000-0000-4000-8000-000000000001', 'delivered', 999,  999,  '1',  '2001-01-03 00:00-03'),
   -- tenant B
   ('b0000000-0000-4000-8000-0000000000b1', 'b0000000-0000-4000-8000-000000000001', 'delivered', 5000, 5000, '1',  '2001-01-02 15:00-03'),
-  ('b0000000-0000-4000-8000-0000000000b2', 'b0000000-0000-4000-8000-000000000001', 'preparing', 100,  100,  '1',  '2001-01-02 16:00-03');
+  ('b0000000-0000-4000-8000-0000000000b2', 'b0000000-0000-4000-8000-000000000001', 'preparing', 100,  100,  '1',  '2001-01-02 16:00-03'),
+  -- tenant A, inside a range crossing the 2001-10-14 DST change (-04 -> -03)
+  ('a0000000-0000-4000-8000-0000000000a7', 'a0000000-0000-4000-8000-000000000001', 'delivered', 100,  100,  '1',  '2001-10-15 12:00-03');
 
 INSERT INTO order_items (order_id, product_id, quantity, unit_price, total_price) VALUES
   ('a0000000-0000-4000-8000-0000000000a1', 'a0000000-0000-4000-8000-0000000000f1', 2, 300, 600),
@@ -117,7 +127,9 @@ INSERT INTO order_items (order_id, product_id, quantity, unit_price, total_price
   ('a0000000-0000-4000-8000-0000000000a2', 'a0000000-0000-4000-8000-0000000000f1', 4, 300, 1200),
   ('a0000000-0000-4000-8000-0000000000a2', 'a0000000-0000-4000-8000-0000000000f2', 2, 400, 800),
   ('a0000000-0000-4000-8000-0000000000a3', 'a0000000-0000-4000-8000-0000000000f1', 1, 500, 500),
-  ('b0000000-0000-4000-8000-0000000000b1', 'b0000000-0000-4000-8000-0000000000f1', 1, 5000, 5000);
+  ('b0000000-0000-4000-8000-0000000000b1', 'b0000000-0000-4000-8000-0000000000f1', 1, 5000, 5000),
+  ('b0000000-0000-4000-8000-0000000000b1', 'b0000000-0000-4000-8000-0000000000f3', 1, 50, 50),
+  ('b0000000-0000-4000-8000-0000000000b1', 'b0000000-0000-4000-8000-0000000000f2', 1, 50, 50);
 
 -- Results land here so the authenticated role can write them.
 CREATE TEMP TABLE analytics_results (gate text PRIMARY KEY, result jsonb, error text);
@@ -161,6 +173,11 @@ INSERT INTO analytics_results (gate, result)
 SELECT 'super_all', public.get_analytics(NULL, '2001-01-01 00:00-03', '2001-01-03 00:00-03');
 INSERT INTO analytics_results (gate, result)
 SELECT 'super_b', public.get_analytics('b0000000-0000-4000-8000-000000000001', '2001-01-01 00:00-03', '2001-01-03 00:00-03');
+
+-- B4 · daily buckets must not depend on the session time zone across DST
+SET LOCAL TIME ZONE 'America/Santiago';
+INSERT INTO analytics_results (gate, result)
+SELECT 'dst_santiago_session', public.get_analytics('a0000000-0000-4000-8000-000000000001', '2001-10-13 00:00-04', '2001-10-16 00:00-03');
 
 RESET ROLE;
 
@@ -256,6 +273,20 @@ BEGIN
   END IF;
   IF sb #> '{summary,current,sales}' <> '5000'::jsonb OR sb -> 'locals' <> 'null'::jsonb THEN
     v_failed := v_failed || format('B3_super_single_tenant %s', sb -> 'summary');
+  END IF;
+
+  -- B3 · ties are broken by id, so equal rows never swap between calls
+  IF (SELECT jsonb_agg(p -> 'product_id') FROM jsonb_array_elements(sb -> 'top_products') p
+      WHERE p ->> 'name' = 'Gate Twin')
+     <> '["b0000000-0000-4000-8000-0000000000f2", "b0000000-0000-4000-8000-0000000000f3"]'::jsonb THEN
+    v_failed := v_failed || format('B3_tie_break_by_id %s', sb -> 'top_products');
+  END IF;
+
+  -- B4 · DST range under a Santiago session keeps every local day
+  IF (SELECT result -> 'daily' FROM analytics_results WHERE gate = 'dst_santiago_session')
+     <> '[{"date": "2001-10-13", "sales": 0, "orders": 0}, {"date": "2001-10-14", "sales": 0, "orders": 0}, {"date": "2001-10-15", "sales": 100, "orders": 1}]'::jsonb THEN
+    v_failed := v_failed || format('B4_dst_daily %s',
+      (SELECT result -> 'daily' FROM analytics_results WHERE gate = 'dst_santiago_session'));
   END IF;
 
   IF cardinality(v_failed) > 0 THEN
