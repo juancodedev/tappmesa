@@ -186,6 +186,15 @@ Si ya tienes un sistema funcionando y solo quieres agregar features:
 1. fix-rls-orders.sql
 ```
 
+### Para Analíticas (`/admin/analytics`):
+Requiere `secure-data-access.sql` aplicado (helpers `app_claim_tenant_id` / `app_is_super_admin`).
+```sql
+1. analytics-functions.sql    -- get_analytics(tenant, desde, hasta) + índices
+```
+Verificación: `psql -f scripts/verify-analytics.sql` (solo lectura, apto para producción).
+En un laboratorio, `psql -v lab=1 -f scripts/verify-analytics.sql` corre además las pruebas funcionales.
+Rollback: `rollback-analytics-functions.sql`.
+
 ---
 
 ## 📊 Scripts de Diagnóstico (No Ejecutar - Solo Consulta)
