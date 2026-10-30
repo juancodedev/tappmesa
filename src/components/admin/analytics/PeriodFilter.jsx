@@ -26,7 +26,9 @@ const PeriodFilter = ({ period, custom, onChange }) => {
     <div className="flex flex-wrap items-end gap-3">
       <div role="group" aria-label="Período" className="inline-flex rounded-lg border border-gray-200 bg-white p-1">
         {PERIODS.map(({ id, label }) => {
-          const active = id === 'custom' ? showCustom : !showCustom && period === id
+          // Pressed = the period the data on screen belongs to; opening the
+          // custom form does not change it until Aplicar.
+          const active = period === id
           return (
             <Button
               key={id}
