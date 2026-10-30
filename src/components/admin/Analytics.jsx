@@ -46,6 +46,9 @@ const Analytics = () => {
         // On error drop the old numbers: they belong to another local or period.
         setResult(error ? { request, data: null, error } : { request, data, error: null })
       })
+      .catch((error) => {
+        if (!ignore) setResult({ request, data: null, error })
+      })
     return () => {
       ignore = true
     }
