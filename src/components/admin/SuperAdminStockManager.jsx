@@ -191,7 +191,7 @@ const SuperAdminStockManager = () => {
         {/* Filters */}
         <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
             <input
               type="text"
               placeholder="Buscar productos..."
@@ -222,7 +222,7 @@ const SuperAdminStockManager = () => {
               <p className="text-sm text-gray-600">Total Items</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</p>
             </div>
-            <Package className="h-8 w-8 text-gray-400" />
+            <Package className="h-8 w-8 text-gray-500" />
           </div>
         </div>
 
@@ -262,7 +262,7 @@ const SuperAdminStockManager = () => {
       {/* Inventory Table */}
       {filteredInventory.length === 0 ? (
         <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-12 text-center">
-          <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <Package className="w-16 h-16 text-gray-500 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No hay items de inventario</h3>
           <p className="text-gray-600">
             No se encontró inventario con los filtros seleccionados
@@ -304,7 +304,7 @@ const SuperAdminStockManager = () => {
                     <tr key={item.id} className="hover:bg-cream-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <Package className="h-5 w-5 text-gray-400 mr-3" />
+                          <Package className="h-5 w-5 text-gray-500 mr-3" />
                           <div>
                             <div className="text-sm font-medium text-gray-900">
                               {item.product?.name || 'Producto sin nombre'}
@@ -344,7 +344,7 @@ const SuperAdminStockManager = () => {
 
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                         <div className="flex items-center space-x-2">
-                          <TrendingUp className="h-4 w-4 text-gray-400" />
+                          <TrendingUp className="h-4 w-4 text-gray-500" />
                           <span>{item.min_stock} / {item.max_stock}</span>
                         </div>
                       </td>
@@ -358,7 +358,7 @@ const SuperAdminStockManager = () => {
 
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <Building2 className="h-4 w-4 text-gray-400 mr-2" />
+                          <Building2 className="h-4 w-4 text-gray-500 mr-2" />
                           <div>
                             <div className="text-sm font-medium text-gray-900">
                               {item.tenant?.name}

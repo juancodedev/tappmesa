@@ -203,7 +203,7 @@ const SuperAdminReservationsManager = () => {
         {/* Filters */}
         <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
             <input
               type="text"
               placeholder="Buscar por nombre, teléfono..."
@@ -251,7 +251,7 @@ const SuperAdminReservationsManager = () => {
                 {filteredReservations.length}
               </p>
             </div>
-            <Calendar className="h-8 w-8 text-gray-400" />
+            <Calendar className="h-8 w-8 text-gray-500" />
           </div>
         </div>
 
@@ -295,7 +295,7 @@ const SuperAdminReservationsManager = () => {
       {/* Reservations List */}
       {filteredReservations.length === 0 ? (
         <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-12 text-center">
-          <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <Calendar className="w-16 h-16 text-gray-500 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No hay reservas</h3>
           <p className="text-gray-600">
             No se encontraron reservas con los filtros seleccionados
@@ -339,7 +339,7 @@ const SuperAdminReservationsManager = () => {
                     <tr key={reservation.id} className="hover:bg-cream-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <Users className="h-5 w-5 text-gray-400 mr-2" />
+                          <Users className="h-5 w-5 text-gray-500 mr-2" />
                           <div>
                             <div className="text-sm font-medium text-gray-900">
                               {reservation.customer_name}
@@ -356,12 +356,12 @@ const SuperAdminReservationsManager = () => {
 
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900 flex items-center">
-                          <Phone className="h-4 w-4 text-gray-400 mr-1" />
+                          <Phone className="h-4 w-4 text-gray-500 mr-1" />
                           {reservation.customer_phone}
                         </div>
                         {reservation.customer_email && (
                           <div className="text-xs text-gray-500 flex items-center mt-1">
-                            <Mail className="h-3 w-3 text-gray-400 mr-1" />
+                            <Mail className="h-3 w-3 text-gray-500 mr-1" />
                             {reservation.customer_email}
                           </div>
                         )}
@@ -369,11 +369,11 @@ const SuperAdminReservationsManager = () => {
 
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900 flex items-center">
-                          <Calendar className="h-4 w-4 text-gray-400 mr-1" />
+                          <Calendar className="h-4 w-4 text-gray-500 mr-1" />
                           {formatDate(reservation.reservation_date)}
                         </div>
                         <div className="text-xs text-gray-500 flex items-center mt-1">
-                          <Clock className="h-3 w-3 text-gray-400 mr-1" />
+                          <Clock className="h-3 w-3 text-gray-500 mr-1" />
                           {formatTime(reservation.reservation_time)}
                         </div>
                       </td>
@@ -388,7 +388,7 @@ const SuperAdminReservationsManager = () => {
 
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <Building2 className="h-4 w-4 text-gray-400 mr-2" />
+                          <Building2 className="h-4 w-4 text-gray-500 mr-2" />
                           <div>
                             <div className="text-sm font-medium text-gray-900">
                               {reservation.tenant?.name}

@@ -356,7 +356,7 @@ const SubscriptionPlansManager = () => {
       {/* Plans List */}
       {plans.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+          <Package className="h-16 w-16 text-gray-500 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             No hay planes creados
           </h3>
@@ -528,9 +528,9 @@ const SubscriptionPlansManager = () => {
                         {plan.has_paper_prebill ? (
                           <Check className="h-3 w-3 text-green-600" />
                         ) : (
-                          <X className="h-3 w-3 text-gray-400" />
+                          <X className="h-3 w-3 text-gray-500" />
                         )}
-                        <span className={plan.has_paper_prebill ? 'text-gray-700' : 'text-gray-400'}>
+                        <span className={plan.has_paper_prebill ? 'text-gray-700' : 'text-gray-500'}>
                           Pre-cuentas en papel
                         </span>
                       </div>
@@ -538,9 +538,9 @@ const SubscriptionPlansManager = () => {
                         {plan.has_paper_command ? (
                           <Check className="h-3 w-3 text-green-600" />
                         ) : (
-                          <X className="h-3 w-3 text-gray-400" />
+                          <X className="h-3 w-3 text-gray-500" />
                         )}
-                        <span className={plan.has_paper_command ? 'text-gray-700' : 'text-gray-400'}>
+                        <span className={plan.has_paper_command ? 'text-gray-700' : 'text-gray-500'}>
                           Comandas en papel
                         </span>
                       </div>
@@ -548,9 +548,9 @@ const SubscriptionPlansManager = () => {
                         {plan.has_surveys ? (
                           <Check className="h-3 w-3 text-green-600" />
                         ) : (
-                          <X className="h-3 w-3 text-gray-400" />
+                          <X className="h-3 w-3 text-gray-500" />
                         )}
-                        <span className={plan.has_surveys ? 'text-gray-700' : 'text-gray-400'}>
+                        <span className={plan.has_surveys ? 'text-gray-700' : 'text-gray-500'}>
                           Encuestas
                         </span>
                       </div>
@@ -558,9 +558,9 @@ const SubscriptionPlansManager = () => {
                         {plan.has_analytics ? (
                           <Check className="h-3 w-3 text-green-600" />
                         ) : (
-                          <X className="h-3 w-3 text-gray-400" />
+                          <X className="h-3 w-3 text-gray-500" />
                         )}
-                        <span className={plan.has_analytics ? 'text-gray-700' : 'text-gray-400'}>
+                        <span className={plan.has_analytics ? 'text-gray-700' : 'text-gray-500'}>
                           Analíticas avanzadas
                         </span>
                       </div>
