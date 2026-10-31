@@ -100,4 +100,13 @@ describe('KitchenDashboard orders', () => {
     expect(await screen.findByText('Mesa 5')).toBeInTheDocument()
     expect(selects.join(' ')).not.toMatch(/tables\s*\(/)
   })
+
+  // Prod 2026-10-31: order_items has no temperature column (42703); the API
+  // stores the temperature in notes ("Temperatura: ..."), which the card shows.
+  it('does not select order_items.temperature', async () => {
+    asRole('kitchen')
+    render(<KitchenDashboard />)
+    await screen.findByText('Mesa 5')
+    expect(selects.join(' ')).not.toMatch(/\btemperature\b/)
+  })
 })
