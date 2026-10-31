@@ -799,10 +799,11 @@ const TablesManager = () => {
           <div className="space-y-4 mb-6">
             {/* Número de Mesa */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="table-number" className="block text-sm font-medium text-gray-700 mb-1">
                 Número de Mesa *
               </label>
               <input
+                id="table-number"
                 type="text"
                 value={formData.number}
                 onChange={(e) => setFormData({ ...formData, number: e.target.value })}
@@ -813,10 +814,11 @@ const TablesManager = () => {
             
             {/* Capacidad */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="table-capacity" className="block text-sm font-medium text-gray-700 mb-1">
                 Capacidad (personas) *
               </label>
               <input
+                id="table-capacity"
                 type="number"
                 min="1"
                 max="20"
@@ -828,10 +830,11 @@ const TablesManager = () => {
             
             {/* Ubicación */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="table-location" className="block text-sm font-medium text-gray-700 mb-1">
                 Ubicación *
               </label>
               <select
+                id="table-location"
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -847,10 +850,11 @@ const TablesManager = () => {
             {/* Estado */}
             {tableStatuses.length > 0 && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="table-status" className="block text-sm font-medium text-gray-700 mb-1">
                   Estado Inicial
                 </label>
                 <select
+                  id="table-status"
                   value={formData.status_id}
                   onChange={(e) => setFormData({ ...formData, status_id: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
