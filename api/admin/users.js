@@ -308,7 +308,11 @@ function createAdminUsersHandler({ supabase, requireAuth }) {
     if (corsMiddleware(req, res, ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'])) return;
 
     if (blacklistMiddleware(req, res)) return;
-    if (await requireAuth(req, res)) return; // 401 gestionado por el middleware
+    // requireAuth es estilo Express: llama next() si la sesión es válida y
+    // responde 401 por su cuenta si no (mismo patrón que api/auth/token.js).
+    let authorized = false;
+    await requireAuth(req, res, () => { authorized = true; });
+    if (!authorized) return;
 
     if (await rateLimiter('admin/users')(req, res)) return; // 429
 

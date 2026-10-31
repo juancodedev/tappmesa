@@ -3,6 +3,7 @@ import { createAdminUsersHandler } from '../../../api/admin/users.js'
 // Default export = handler real de producción (client service-role del módulo
 // + createRequireAuth real). Se usa en el test C1 para probar el wiring real.
 import defaultUsersHandler from '../../../api/admin/users.js'
+import { createRequireAuth } from '../../../lib/middleware/requireAuth.js'
 
 // C2 (JD round 1): DELETE /api/admin/users/:id must chain `.select()` so the
 // response is the real postgrest-js >= 2.105.1 shape ({data:[row]}) instead of
@@ -132,15 +133,15 @@ function fakeSupabase() {
   return { state, from }
 }
 
-// requireAuth falso: deja pasar y estampa claims (o rechaza 401 si se pide).
+// requireAuth falso con el mismo contrato que el real (lib/middleware/requireAuth.js):
+// responde 401 por su cuenta, o estampa claims y llama next().
 function fakeRequireAuth(claims) {
-  return vi.fn(async (req, res) => {
+  return vi.fn(async (req, res, next) => {
     if (claims === null) {
-      res.status(401).json({ error: 'No autorizado' })
-      return true
+      return res.status(401).json({ error: 'No autorizado' })
     }
     req.adminSession = claims
-    return false
+    return next()
   })
 }
 
@@ -467,5 +468,35 @@ describe('CRUD /api/admin/users (task 1.9, ADM-001)', () => {
         vi.unstubAllGlobals()
       }
     })
+  })
+})
+
+// Prod 2026-10-31: `TypeError: next is not a function` at requireAuth.js:63.
+// The real middleware is Express-style (calls next() on success); the fake
+// above returns true/false, so the handler was only ever tested against it.
+describe('GET /api/admin/users with the real requireAuth', () => {
+  it('lists users for a valid session instead of failing with 500', async () => {
+    const session = {
+      session_token: 'sess-real',
+      admin_user: { ...superAdminClaims.admin, is_active: true, tenant: null },
+    }
+    const chain = {
+      select: () => chain,
+      eq: () => chain,
+      gt: () => chain,
+      single: async () => ({ data: session, error: null }),
+    }
+    const sessionClient = { from: () => chain }
+    const handler = createAdminUsersHandler({
+      supabase: fakeSupabase(),
+      requireAuth: createRequireAuth(sessionClient),
+    })
+    const res = makeRes()
+    await handler(
+      makeReq({ method: 'GET', headers: { authorization: 'Bearer sess-real' }, query: { tenant_id: TENANT_A } }),
+      res,
+    )
+    expect(res.statusCode).toBe(200)
+    expect(Array.isArray(res.body.users)).toBe(true)
   })
 })
