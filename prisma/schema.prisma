@@ -503,6 +503,7 @@ model admin_users {
   email                 String                  @unique @db.VarChar
   password_hash         String                  @db.VarChar
   full_name             String                  @db.VarChar
+  phone                 String?                 @db.VarChar
   role                  String?                 @default("tenant_admin") @db.VarChar
   tenant_id             String?                 @db.Uuid
   is_active             Boolean?                @default(true)
