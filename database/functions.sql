@@ -299,7 +299,7 @@ BEGIN
     IF NEW.customer_phone IS NOT NULL THEN
       INSERT INTO customers (tenant_id, phone, name, total_orders, total_spent, last_order_date)
       VALUES (NEW.tenant_id, NEW.customer_phone, NEW.customer_name, 1, NEW.total, NEW.created_at)
-      ON CONFLICT (phone)
+      ON CONFLICT (tenant_id, phone)
       DO UPDATE SET
         total_orders = customers.total_orders + 1,
         total_spent = customers.total_spent + NEW.total,

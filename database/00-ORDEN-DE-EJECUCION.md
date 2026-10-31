@@ -195,6 +195,14 @@ Verificación: `psql -f scripts/verify-analytics.sql` (solo lectura, apto para p
 En un laboratorio, `psql -v lab=1 -f scripts/verify-analytics.sql` corre además las pruebas funcionales.
 Rollback: `rollback-analytics-functions.sql`.
 
+### Si marcar un pedido como entregado falla con `42P10`:
+`there is no unique or exclusion constraint matching the ON CONFLICT specification`
+```sql
+1. fix-customer-stats-on-conflict.sql   -- UNIQUE (tenant_id, phone) en customers + trigger corregido
+```
+Si el índice falla por duplicados, el propio script indica la consulta para listarlos.
+Rollback: `rollback-fix-customer-stats-on-conflict.sql`.
+
 ---
 
 ## 📊 Scripts de Diagnóstico (No Ejecutar - Solo Consulta)
