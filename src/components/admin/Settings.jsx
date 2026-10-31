@@ -171,10 +171,11 @@ const Settings = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="settings-name" className="block text-sm font-medium text-gray-700 mb-1">
                 Nombre del Local
               </label>
               <input
+                id="settings-name"
                 type="text"
                 value={settings.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
@@ -183,11 +184,12 @@ const Settings = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="settings-phone" className="block text-sm font-medium text-gray-700 mb-1">
                 <Phone className="w-4 h-4 inline mr-1" />
                 Teléfono
               </label>
               <input
+                id="settings-phone"
                 type="tel"
                 value={settings.phone}
                 onChange={(e) => handleInputChange("phone", e.target.value)}
@@ -196,11 +198,12 @@ const Settings = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="settings-email" className="block text-sm font-medium text-gray-700 mb-1">
                 <Mail className="w-4 h-4 inline mr-1" />
                 Email
               </label>
               <input
+                id="settings-email"
                 type="email"
                 value={settings.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
@@ -209,10 +212,11 @@ const Settings = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="settings-website" className="block text-sm font-medium text-gray-700 mb-1">
                 Sitio Web
               </label>
               <input
+                id="settings-website"
                 type="url"
                 value={settings.website}
                 onChange={(e) => handleInputChange("website", e.target.value)}
@@ -221,10 +225,11 @@ const Settings = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="settings-description" className="block text-sm font-medium text-gray-700 mb-1">
                 Descripción
               </label>
               <textarea
+                id="settings-description"
                 value={settings.description}
                 onChange={(e) =>
                   handleInputChange("description", e.target.value)
@@ -235,11 +240,12 @@ const Settings = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="settings-address" className="block text-sm font-medium text-gray-700 mb-1">
                 <MapPin className="w-4 h-4 inline mr-1" />
                 Dirección
               </label>
               <input
+                id="settings-address"
                 type="text"
                 value={settings.address}
                 onChange={(e) => handleInputChange("address", e.target.value)}
@@ -258,11 +264,12 @@ const Settings = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="settings-primary-color" className="block text-sm font-medium text-gray-700 mb-1">
                 Color Primario
               </label>
               <div className="flex items-center space-x-3">
                 <input
+                  id="settings-primary-color"
                   type="color"
                   value={settings.primary_color}
                   onChange={(e) =>
@@ -272,6 +279,7 @@ const Settings = () => {
                 />
                 <input
                   type="text"
+                  aria-label="Código del color primario"
                   value={settings.primary_color}
                   onChange={(e) =>
                     handleInputChange("primary_color", e.target.value)
@@ -282,11 +290,12 @@ const Settings = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="settings-secondary-color" className="block text-sm font-medium text-gray-700 mb-1">
                 Color Secundario
               </label>
               <div className="flex items-center space-x-3">
                 <input
+                  id="settings-secondary-color"
                   type="color"
                   value={settings.secondary_color}
                   onChange={(e) =>
@@ -296,6 +305,7 @@ const Settings = () => {
                 />
                 <input
                   type="text"
+                  aria-label="Código del color secundario"
                   value={settings.secondary_color}
                   onChange={(e) =>
                     handleInputChange("secondary_color", e.target.value)
@@ -306,7 +316,7 @@ const Settings = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="settings-logo" className="block text-sm font-medium text-gray-700 mb-1">
                 Logo
               </label>
               <div className="flex items-center space-x-3">
@@ -321,6 +331,7 @@ const Settings = () => {
                   <Upload className="w-4 h-4" />
                   <span className="text-sm">Subir Logo</span>
                   <input
+                    id="settings-logo"
                     type="file"
                     accept="image/*"
                     onChange={handleLogoUpload}
@@ -401,10 +412,11 @@ const Settings = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="settings-tax-rate" className="block text-sm font-medium text-gray-700 mb-1">
                 IVA (%)
               </label>
               <input
+                id="settings-tax-rate"
                 type="number"
                 min="0"
                 max="100"
@@ -418,10 +430,11 @@ const Settings = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="settings-currency" className="block text-sm font-medium text-gray-700 mb-1">
                 Moneda
               </label>
               <select
+                id="settings-currency"
                 value={settings.currency}
                 onChange={(e) => handleInputChange("currency", e.target.value)}
                 className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -433,10 +446,11 @@ const Settings = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="settings-timezone" className="block text-sm font-medium text-gray-700 mb-1">
                 Zona Horaria
               </label>
               <select
+                id="settings-timezone"
                 value={settings.timezone}
                 onChange={(e) => handleInputChange("timezone", e.target.value)}
                 className="w-full border border-primary-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -550,10 +564,11 @@ const Settings = () => {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="settings-qr-expiration-days" className="block text-sm font-medium text-gray-700 mb-1">
                 Días de expiración de códigos QR
               </label>
               <input
+                id="settings-qr-expiration-days"
                 type="number"
                 min="0"
                 value={settings.qr_code_expiration_days || ''}

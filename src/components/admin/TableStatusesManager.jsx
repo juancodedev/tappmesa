@@ -309,10 +309,11 @@ const TableStatusesManager = () => {
               {isEditing ? (
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="table-status-edit-name" className="block text-sm font-medium text-gray-700 mb-1">
                       Nombre
                     </label>
                     <input
+                      id="table-status-edit-name"
                       type="text"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -321,10 +322,10 @@ const TableStatusesManager = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <span id="table-status-edit-color-label" className="block text-sm font-medium text-gray-700 mb-2">
                       Color
-                    </label>
-                    <div className="grid grid-cols-4 gap-2">
+                    </span>
+                    <div role="group" aria-labelledby="table-status-edit-color-label" className="grid grid-cols-4 gap-2">
                       {AVAILABLE_COLORS.map((color) => (
                         <button
                           key={color.value}
@@ -343,10 +344,10 @@ const TableStatusesManager = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <span id="table-status-edit-icon-label" className="block text-sm font-medium text-gray-700 mb-2">
                       Icono
-                    </label>
-                    <div className="grid grid-cols-4 gap-2">
+                    </span>
+                    <div role="group" aria-labelledby="table-status-edit-icon-label" className="grid grid-cols-4 gap-2">
                       {AVAILABLE_ICONS.map((icon) => (
                         <button
                           key={icon.value}
@@ -464,10 +465,11 @@ const TableStatusesManager = () => {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="table-status-new-name" className="block text-sm font-medium text-gray-700 mb-1">
                   Nombre *
                 </label>
                 <input
+                  id="table-status-new-name"
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -477,10 +479,10 @@ const TableStatusesManager = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <span id="table-status-new-color-label" className="block text-sm font-medium text-gray-700 mb-2">
                   Color *
-                </label>
-                <div className="grid grid-cols-4 gap-2">
+                </span>
+                <div role="group" aria-labelledby="table-status-new-color-label" className="grid grid-cols-4 gap-2">
                   {AVAILABLE_COLORS.map((color) => (
                     <button
                       key={color.value}
@@ -499,10 +501,10 @@ const TableStatusesManager = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <span id="table-status-new-icon-label" className="block text-sm font-medium text-gray-700 mb-2">
                   Icono *
-                </label>
-                <div className="grid grid-cols-4 gap-2">
+                </span>
+                <div role="group" aria-labelledby="table-status-new-icon-label" className="grid grid-cols-4 gap-2">
                   {AVAILABLE_ICONS.map((icon) => (
                     <button
                       key={icon.value}

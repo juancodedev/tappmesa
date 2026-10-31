@@ -290,12 +290,13 @@ const PreBillSettings = () => {
           <div className="space-y-4">
             {/* Tip Percentage */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="prebill-tip-percentage" className="block text-sm font-medium text-gray-700 mb-2">
                 <Percent className="h-4 w-4 inline mr-1" />
                 Porcentaje de Propina Sugerido
               </label>
               <div className="flex items-center space-x-4">
                 <input
+                  id="prebill-tip-percentage"
                   type="number"
                   min="0"
                   max="100"
@@ -376,11 +377,12 @@ const PreBillSettings = () => {
 
               {/* Survey URL */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="prebill-survey-url" className="block text-sm font-medium text-gray-700 mb-2">
                   URL de la Encuesta
                 </label>
                 <div className="flex items-center space-x-2">
                   <input
+                    id="prebill-survey-url"
                     type="url"
                     value={surveyUrl}
                     onChange={(e) => setSurveyUrl(e.target.value)}
@@ -406,10 +408,11 @@ const PreBillSettings = () => {
 
               {/* Benefit Text */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="prebill-benefit-text" className="block text-sm font-medium text-gray-700 mb-2">
                   Texto del Beneficio
                 </label>
                 <input
+                  id="prebill-benefit-text"
                   type="text"
                   value={benefitText}
                   onChange={(e) => setBenefitText(e.target.value)}
