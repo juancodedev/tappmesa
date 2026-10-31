@@ -213,12 +213,13 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Nombre */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="reservation-name" className="block text-sm font-medium text-gray-700 mb-1">
             Nombre completo *
           </label>
           <div className="relative">
             <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
             <input
+              id="reservation-name"
               type="text"
               name="customer_name"
               value={formData.customer_name}
@@ -232,12 +233,13 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
 
         {/* Teléfono */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="reservation-phone" className="block text-sm font-medium text-gray-700 mb-1">
             Teléfono *
           </label>
           <div className="relative">
             <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
             <input
+              id="reservation-phone"
               type="tel"
               name="customer_phone"
               value={formData.customer_phone}
@@ -251,12 +253,13 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
 
         {/* Email */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="reservation-email" className="block text-sm font-medium text-gray-700 mb-1">
             Email (opcional)
           </label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
             <input
+              id="reservation-email"
               type="email"
               name="customer_email"
               value={formData.customer_email}
@@ -270,12 +273,13 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
         {/* Fecha y Hora */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="reservation-date" className="block text-sm font-medium text-gray-700 mb-1">
               Fecha *
             </label>
             <div className="relative">
               <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <input
+                id="reservation-date"
                 type="date"
                 name="reservation_date"
                 value={formData.reservation_date}
@@ -288,12 +292,13 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="reservation-time" className="block text-sm font-medium text-gray-700 mb-1">
               Hora *
             </label>
             <div className="relative">
               <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <input
+                id="reservation-time"
                 type="time"
                 name="reservation_time"
                 value={formData.reservation_time}
@@ -307,12 +312,13 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
 
         {/* Número de personas */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="reservation-party-size" className="block text-sm font-medium text-gray-700 mb-1">
             Número de personas *
           </label>
           <div className="relative">
             <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
             <select
+              id="reservation-party-size"
               name="party_size"
               value={formData.party_size}
               onChange={handleChange}
@@ -331,12 +337,13 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
         {/* Selección de mesa */}
         {formData.reservation_date && formData.reservation_time && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="reservation-table" className="block text-sm font-medium text-gray-700 mb-1">
               Mesa preferida (opcional)
             </label>
             <div className="relative">
               <Armchair className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <select
+                id="reservation-table"
                 name="table_id"
                 value={formData.table_id}
                 onChange={handleChange}
@@ -369,12 +376,13 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
 
         {/* Solicitudes especiales */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="reservation-special-requests" className="block text-sm font-medium text-gray-700 mb-1">
             Solicitudes especiales (opcional)
           </label>
           <div className="relative">
             <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-gray-500" />
             <textarea
+              id="reservation-special-requests"
               name="special_requests"
               value={formData.special_requests}
               onChange={handleChange}
