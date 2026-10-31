@@ -28,7 +28,10 @@ const { validatePassword } = require('../../lib/middleware/validation');
 const logger = require('../../lib/utils/logger');
 
 const BCRYPT_ROUNDS = 12;
-const TENANT_ROLE_ALLOWLIST = ['staff', 'waiter', 'kitchen', 'manager', 'cashier', 'tenant_admin'];
+// Must match admin_users_role_check (database/fix-admin-users-role-check.sql):
+// a role the database rejects fails the insert.
+const TENANT_ROLE_ALLOWLIST = ['staff', 'waiter', 'kitchen', 'tenant_admin'];
+const isRoleCheckViolation = (error) => error.code === '23514' && /admin_users_role_check/.test(error.message || '');
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SAFE_FIELDS = [
   'id', 'tenant_id', 'email', 'full_name', 'phone', 'role', 'is_active',
@@ -142,6 +145,9 @@ async function createUser(supabase, req, res) {
     if (/23505|duplicate/.test(error.message || '')) {
       return res.status(400).json({ error: 'Ya existe un usuario con ese email' });
     }
+    if (isRoleCheckViolation(error)) {
+      return res.status(400).json({ error: 'Rol no permitido' });
+    }
     logger.error('admin_users create error', error);
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
@@ -241,6 +247,9 @@ async function updateUser(supabase, req, res, userId) {
     }
     if (/23505|duplicate/.test(error.message || '')) {
       return res.status(400).json({ error: 'Ya existe un usuario con ese email' });
+    }
+    if (isRoleCheckViolation(error)) {
+      return res.status(400).json({ error: 'Rol no permitido' });
     }
     logger.error('admin_users update error', error);
     return res.status(500).json({ error: 'Error interno del servidor' });

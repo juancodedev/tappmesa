@@ -36,7 +36,7 @@ LANGUAGE plpgsql
 IMMUTABLE
 AS $$
 BEGIN
-  RETURN role_name IN ('super_admin', 'tenant_admin', 'staff', 'waiter');
+  RETURN role_name IN ('super_admin', 'tenant_admin', 'staff', 'waiter', 'kitchen');
 END;
 $$;
 
@@ -50,7 +50,7 @@ BEGIN
   ) THEN
     ALTER TABLE admin_users
     ADD CONSTRAINT admin_users_role_check
-    CHECK (role IN ('super_admin', 'tenant_admin', 'staff', 'waiter'));
+    CHECK (role IN ('super_admin', 'tenant_admin', 'staff', 'waiter', 'kitchen'));
 
     RAISE NOTICE '✓ Constraint de roles agregado';
   ELSE
@@ -58,7 +58,7 @@ BEGIN
     ALTER TABLE admin_users DROP CONSTRAINT IF EXISTS admin_users_role_check;
     ALTER TABLE admin_users
     ADD CONSTRAINT admin_users_role_check
-    CHECK (role IN ('super_admin', 'tenant_admin', 'staff', 'waiter'));
+    CHECK (role IN ('super_admin', 'tenant_admin', 'staff', 'waiter', 'kitchen'));
 
     RAISE NOTICE '✓ Constraint de roles actualizado';
   END IF;
