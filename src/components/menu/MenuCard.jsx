@@ -4,6 +4,7 @@ import { useTenant } from '../../hooks/useTenant'
 import { useCart } from '../../hooks/useCart'
 import { getOptimalTextClass } from '../../utils/helpers'
 import { Button } from '../ui/Button'
+import { DEFAULT_PRIMARY_COLOR } from '../../utils/brandColors'
 
 const MenuCard = ({ product }) => {
   const { tenant } = useTenant()
@@ -11,7 +12,7 @@ const MenuCard = ({ product }) => {
   const [selectedTemp, setSelectedTemp] = useState(product.temperature_options?.[0] || 'hot')
 
   // Calcular color de texto óptimo basado en el color principal del tenant
-  const primaryColor = tenant?.primary_color || '#dc2626'
+  const primaryColor = tenant?.primary_color || DEFAULT_PRIMARY_COLOR
   const textClass = getOptimalTextClass(primaryColor)
 
   // Cantidad derivada del carrito (evita setState en effect)
