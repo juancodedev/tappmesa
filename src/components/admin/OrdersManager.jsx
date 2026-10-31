@@ -289,7 +289,7 @@ const OrdersManager = () => {
       {/* Filtros */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
         <div className="flex items-center space-x-4">
-          <Filter className="w-4 h-4 text-gray-400" />
+          <Filter className="w-4 h-4 text-gray-500" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}

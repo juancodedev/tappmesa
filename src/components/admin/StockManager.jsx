@@ -283,7 +283,7 @@ const StockManager = () => {
     return (
       <div className="p-6">
         <div className="text-center py-12">
-          <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <Package className="w-16 h-16 text-gray-500 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             No hay información disponible
           </h3>
@@ -365,7 +365,7 @@ const StockManager = () => {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
         <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
             <input
               type="text"
               placeholder="Buscar productos..."
@@ -376,7 +376,7 @@ const StockManager = () => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <Filter className="w-4 h-4 text-gray-400" />
+            <Filter className="w-4 h-4 text-gray-500" />
             <select
               value={stockFilter}
               onChange={(e) => setStockFilter(e.target.value)}
@@ -523,7 +523,7 @@ const StockManager = () => {
 
         {filteredInventory.length === 0 && (
           <div className="text-center py-12">
-            <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <Package className="w-12 h-12 text-gray-500 mx-auto mb-4" />
             <p className="text-gray-500">No se encontraron productos</p>
           </div>
         )}
@@ -628,7 +628,7 @@ const StockManager = () => {
           <div className="flex-1 overflow-y-auto p-6">
             {movementHistory.length === 0 ? (
               <div className="text-center py-12">
-                <History className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <History className="w-12 h-12 text-gray-500 mx-auto mb-4" />
                 <p className="text-gray-600">No hay movimientos registrados</p>
               </div>
             ) : (

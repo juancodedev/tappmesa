@@ -442,7 +442,7 @@ const PreBillSettings = () => {
                 <div className="bg-cream-50 rounded-lg p-6 border-2 border-dashed border-primary-300">
                   <div className="text-center">
                     <div className="inline-block p-4 bg-white rounded-lg shadow-sm">
-                      <QrCode className="h-20 w-20 mx-auto text-gray-400 mb-2" />
+                      <QrCode className="h-20 w-20 mx-auto text-gray-500 mb-2" />
                       <p className="text-sm font-medium text-gray-900 mb-1">
                         Escanea para responder nuestra encuesta
                       </p>

@@ -22,6 +22,22 @@ const MIGRATED = {
     'pages/waiter/components/ActiveOrdersPanel.jsx',
     'pages/kitchen/KitchenDashboard.jsx',
   ],
+  'T2 tenant admin': [
+    'components/admin/ReservationsManager.jsx',
+    'components/admin/UsersManager.jsx',
+    'components/admin/CustomersManager.jsx',
+    'components/admin/StockManager.jsx',
+    'components/admin/CompleteStockManager.jsx',
+    'components/admin/ProductsManager.jsx',
+    'components/admin/CategoriesManager.jsx',
+    'components/admin/TableStatusesManager.jsx',
+    'components/admin/QRGenerator.jsx',
+    'components/admin/TenantSubscriptionsManager.jsx',
+    'components/admin/TablesManager.jsx',
+    'components/admin/PreBillSettings.jsx',
+    'components/admin/OrdersManager.jsx',
+    'components/AdminApp.jsx',
+  ],
 }
 
 const read = (file) => readFileSync(path.resolve(process.cwd(), 'src', file), 'utf8')

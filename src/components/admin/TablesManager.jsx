@@ -681,7 +681,7 @@ const TablesManager = () => {
                     aria-label={`Más acciones de ${table.number}`}
                     aria-haspopup="true"
                     aria-expanded={showActionsMenu === table.id}
-                    className="text-gray-400 hover:text-gray-600"
+                    className="text-gray-500 hover:text-gray-600"
                   >
                     <MoreVertical className="w-4 h-4" aria-hidden="true" />
                   </Button>

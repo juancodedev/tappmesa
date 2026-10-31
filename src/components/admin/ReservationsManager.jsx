@@ -223,7 +223,7 @@ const ReservationsManager = () => {
     return (
       <div className="p-6">
         <div className="text-center py-12">
-          <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <Calendar className="w-16 h-16 text-gray-500 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             No hay información disponible
           </h3>
@@ -324,7 +324,7 @@ const ReservationsManager = () => {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
         <div className="flex flex-col md:flex-row md:items-center md:space-x-4 space-y-4 md:space-y-0">
           <div className="flex items-center space-x-2">
-            <Filter className="w-5 h-5 text-gray-400" />
+            <Filter className="w-5 h-5 text-gray-500" />
             <span className="text-sm font-medium text-gray-700">Filtros:</span>
           </div>
 
@@ -344,7 +344,7 @@ const ReservationsManager = () => {
 
       {reservations.length === 0 ? (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-          <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <Calendar className="w-16 h-16 text-gray-500 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No hay reservas</h3>
           <p className="text-gray-600">{filter !== 'all' || selectedDate ? 'No se encontraron reservas con los filtros seleccionados' : 'Las reservas que recibas aparecerán aquí'}</p>
         </div>
@@ -369,16 +369,16 @@ const ReservationsManager = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
                         <div className="flex items-center space-x-2 text-gray-700 mb-2">
-                          <Users className="w-5 h-5 text-gray-400" />
+                          <Users className="w-5 h-5 text-gray-500" />
                           <span className="font-semibold">{reservation.customer_name}</span>
                         </div>
                         <div className="flex items-center space-x-2 text-gray-600 text-sm mb-1">
-                          <Phone className="w-4 h-4 text-gray-400" />
+                          <Phone className="w-4 h-4 text-gray-500" />
                           <a href={`tel:${reservation.customer_phone}`} className="hover:text-primary">{reservation.customer_phone}</a>
                         </div>
                         {reservation.customer_email && (
                           <div className="flex items-center space-x-2 text-gray-600 text-sm">
-                            <Mail className="w-4 h-4 text-gray-400" />
+                            <Mail className="w-4 h-4 text-gray-500" />
                             <a href={`mailto:${reservation.customer_email}`} className="hover:text-primary">{reservation.customer_email}</a>
                           </div>
                         )}
@@ -386,15 +386,15 @@ const ReservationsManager = () => {
 
                       <div>
                         <div className="flex items-center space-x-2 text-gray-700 mb-2">
-                          <Calendar className="w-5 h-5 text-gray-400" />
+                          <Calendar className="w-5 h-5 text-gray-500" />
                           <span className="font-medium capitalize">{formatDate(reservation.reservation_date)}</span>
                         </div>
                         <div className="flex items-center space-x-2 text-gray-600 text-sm mb-1">
-                          <Clock className="w-4 h-4 text-gray-400" />
+                          <Clock className="w-4 h-4 text-gray-500" />
                           <span>{formatTime(reservation.reservation_time)}</span>
                         </div>
                         <div className="flex items-center space-x-2 text-gray-600 text-sm">
-                          <Users className="w-4 h-4 text-gray-400" />
+                          <Users className="w-4 h-4 text-gray-500" />
                           <span>{reservation.party_size} {reservation.party_size === 1 ? 'persona' : 'personas'}</span>
                         </div>
                       </div>
@@ -403,7 +403,7 @@ const ReservationsManager = () => {
                     {reservation.special_requests && (
                       <div className="mb-4 p-3 bg-gray-50 rounded-lg">
                         <div className="flex items-start space-x-2">
-                          <MessageSquare className="w-4 h-4 text-gray-400 mt-0.5" />
+                          <MessageSquare className="w-4 h-4 text-gray-500 mt-0.5" />
                           <div>
                             <p className="text-xs font-medium text-gray-700 mb-1">Solicitudes especiales:</p>
                             <p className="text-sm text-gray-600">{reservation.special_requests}</p>

@@ -287,7 +287,7 @@ const CategoriesManager = () => {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         {categories.length === 0 ? (
           <div className="text-center py-12">
-            <Tag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <Tag className="w-12 h-12 text-gray-500 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               No hay categorías
             </h3>
@@ -338,7 +338,7 @@ const CategoriesManager = () => {
                             onClick={() => moveCategory(index, 'up')}
                             disabled={index === 0}
                             aria-label={`Subir ${category.name}`}
-                            className="text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                            className="text-gray-500 hover:text-gray-600 disabled:opacity-30"
                           >
                             <ArrowUp className="w-3 h-3" aria-hidden="true" />
                           </Button>
@@ -348,7 +348,7 @@ const CategoriesManager = () => {
                             onClick={() => moveCategory(index, 'down')}
                             disabled={index === categories.length - 1}
                             aria-label={`Bajar ${category.name}`}
-                            className="text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                            className="text-gray-500 hover:text-gray-600 disabled:opacity-30"
                           >
                             <ArrowDown className="w-3 h-3" aria-hidden="true" />
                           </Button>
@@ -372,7 +372,7 @@ const CategoriesManager = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center text-sm text-gray-900">
-                        <Package className="w-4 h-4 mr-2 text-gray-400" />
+                        <Package className="w-4 h-4 mr-2 text-gray-500" />
                         {category.products?.[0]?.count || 0} productos
                       </div>
                     </td>

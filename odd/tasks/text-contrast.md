@@ -17,8 +17,8 @@ Branch per slice off `main` · Delivery: one PR per task · Test runner: Vitest 
 
 | ID | Screens | Uses | Specs | Route | Status | Commit |
 |---|---|---|---|---|---|---|
-| T1 | Customer and staff: menu, cart, table, reservations, login, register, contact sales, waiter, kitchen | 31 | S2-S4, S7 | inline | done | (this PR) |
-| T2 | Tenant admin managers, AdminApp | ~58 | S2-S4, S7 | inline | pending | |
+| T1 | Customer and staff: menu, cart, table, reservations, login, register, contact sales, waiter, kitchen | 31 | S2-S4, S7 | inline | done | 01384031 (#228) |
+| T2 | Tenant admin managers, AdminApp | 55 | S2-S4, S7 | inline | done | (this PR) |
 | T3 | Super admin managers, SystemUsersManager, SubscriptionPlansManager | ~53 | S2-S4, S7 | inline | pending | |
 | T4 | Brand fallbacks (Settings, MenuCard, FloatingCartButton) + global guard | 5 | S3, S5-S7 | inline | pending | |
 
@@ -27,3 +27,4 @@ Branch per slice off `main` · Delivery: one PR per task · Test runner: Vitest 
 - L1 (2026-10-30): "no veo mas errores, hasta ahora terminemos lo del diseño, paleta de colores y todo ello, que estabamos viendo o lo que nos quede sin cerrar" — then "si, tambien veamos esto" and "listo, mergeados, sigue con contraste y colores".
 - L2: Inventory on main d2515e16: 158 `text-gray-400` in 38 files; 19 in `Landing/v2/Footer.jsx` on `bg-gray-900` (S3, kept). 21 hex in JSX: 12 table-status data and 4 chart chrome (S6), 5 brand fallbacks (S5). Contrast ratios computed with the WCAG formula. No writer delegation: slices are small and mechanical.
 - L3: T1: all 31 uses sit on white surfaces (mostly decorative input and empty-state icons, the register stepper and a disabled back button) → gray-500. RED 13/13 → GREEN; suite 443/443, lint, build OK.
+- L4: T2: 55 uses. The product image placeholder sits on bg-gray-100 → gray-600 (S2); AdminApp logout hover gray-500 → gray-700 (S4); the rest on white → gray-500. RED 14/14 → GREEN; suite 470/470, lint, build OK.
