@@ -345,7 +345,7 @@ const UsersManager = () => {
         <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
           {/* Search */}
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
             <input
               type="text"
               placeholder="Buscar por nombre o email..."
@@ -357,7 +357,7 @@ const UsersManager = () => {
 
           {/* Role Filter */}
           <div className="flex items-center space-x-2">
-            <Filter className="w-4 h-4 text-gray-400" />
+            <Filter className="w-4 h-4 text-gray-500" />
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
@@ -426,18 +426,18 @@ const UsersManager = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="space-y-1">
                         <div className="flex items-center text-sm text-gray-900">
-                          <Mail className="w-4 h-4 text-gray-400 mr-2" />
+                          <Mail className="w-4 h-4 text-gray-500 mr-2" />
                           {user.email}
                         </div>
                         <div className="flex items-center text-sm text-gray-500">
-                          <Phone className="w-4 h-4 text-gray-400 mr-2" />
+                          <Phone className="w-4 h-4 text-gray-500 mr-2" />
                           {user.phone}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <RoleIcon className="w-4 h-4 text-gray-400 mr-2" />
+                        <RoleIcon className="w-4 h-4 text-gray-500 mr-2" />
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRoleColor(user.role)}`}>
                           {getRoleText(user.role)}
                         </span>
@@ -457,7 +457,7 @@ const UsersManager = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center text-sm text-gray-500">
-                        <Clock className="w-4 h-4 text-gray-400 mr-2" />
+                        <Clock className="w-4 h-4 text-gray-500 mr-2" />
                         {formatDate(user.last_login)}
                       </div>
                     </td>
@@ -596,9 +596,9 @@ const UsersManager = () => {
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
                   {showPassword ? (
-                    <EyeOff className="w-4 h-4 text-gray-400" aria-hidden="true" />
+                    <EyeOff className="w-4 h-4 text-gray-500" aria-hidden="true" />
                   ) : (
-                    <Eye className="w-4 h-4 text-gray-400" aria-hidden="true" />
+                    <Eye className="w-4 h-4 text-gray-500" aria-hidden="true" />
                   )}
                 </button>
               </div>

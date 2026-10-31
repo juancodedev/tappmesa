@@ -457,7 +457,7 @@ const ProductsManager = () => {
       {/* Grid de productos */}
       {filteredProducts.length === 0 ? (
         <div className="text-center py-12">
-          <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <Package className="w-12 h-12 text-gray-500 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             No hay productos
           </h3>
@@ -482,7 +482,7 @@ const ProductsManager = () => {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                    <ImageIcon className="w-12 h-12 text-gray-400" />
+                    <ImageIcon className="w-12 h-12 text-gray-600" />
                   </div>
                 )}
                 
@@ -534,7 +534,7 @@ const ProductsManager = () => {
                       aria-label={`${product.is_featured ? 'Quitar de destacados' : 'Destacar'} ${product.name}`}
                       aria-pressed={!!product.is_featured}
                       title={product.is_featured ? 'Quitar de destacados' : 'Marcar como destacado'}
-                      className={product.is_featured ? 'text-yellow-600 hover:text-yellow-800' : 'text-gray-400 hover:text-gray-600'}
+                      className={product.is_featured ? 'text-yellow-600 hover:text-yellow-800' : 'text-gray-500 hover:text-gray-600'}
                     >
                       <Star className={`w-4 h-4 ${product.is_featured ? 'fill-current' : ''}`} aria-hidden="true" />
                     </Button>
@@ -720,7 +720,7 @@ const ProductsManager = () => {
                       </div>
                     ) : (
                       <div className="text-center">
-                        <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                        <ImageIcon className="w-8 h-8 text-gray-500 mx-auto mb-2" />
                         <div className="flex flex-col space-y-2">
                           <input
                             type="file"

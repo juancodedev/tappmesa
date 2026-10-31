@@ -137,7 +137,7 @@ const AdminApp = () => {
               <div className="text-sm text-gray-700">
                 Admin User
               </div>
-              <button className="text-gray-400 hover:text-gray-500">
+              <button className="text-gray-500 hover:text-gray-700">
                 <LogOut className="h-5 w-5" />
               </button>
             </div>
@@ -180,7 +180,7 @@ const SidebarContent = ({ navigation, closeSidebar }) => (
       </div>
       {closeSidebar && (
         <button onClick={closeSidebar} className="lg:hidden">
-          <X className="h-6 w-6 text-gray-400" />
+          <X className="h-6 w-6 text-gray-500" />
         </button>
       )}
     </div>

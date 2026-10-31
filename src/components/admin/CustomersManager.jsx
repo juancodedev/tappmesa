@@ -334,7 +334,7 @@ const CustomersManager = () => {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
         <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
             <input
               type="text"
               placeholder="Buscar por nombre, teléfono o email..."
@@ -345,7 +345,7 @@ const CustomersManager = () => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <Filter className="w-4 h-4 text-gray-400" />
+            <Filter className="w-4 h-4 text-gray-500" />
             <select
               value={customerFilter}
               onChange={(e) => setCustomerFilter(e.target.value)}
@@ -419,12 +419,12 @@ const CustomersManager = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="space-y-1">
                         <div className="flex items-center text-sm text-gray-900">
-                          <Phone className="w-4 h-4 mr-2 text-gray-400" />
+                          <Phone className="w-4 h-4 mr-2 text-gray-500" />
                           {customer.phone}
                         </div>
                         {customer.email && (
                           <div className="flex items-center text-sm text-gray-500">
-                            <Mail className="w-4 h-4 mr-2 text-gray-400" />
+                            <Mail className="w-4 h-4 mr-2 text-gray-500" />
                             {customer.email}
                           </div>
                         )}
@@ -440,7 +440,7 @@ const CustomersManager = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <div className="flex items-center">
-                        <ShoppingBag className="w-4 h-4 mr-2 text-gray-400" />
+                        <ShoppingBag className="w-4 h-4 mr-2 text-gray-500" />
                         {customer.total_orders || 0}
                       </div>
                     </td>
@@ -450,7 +450,7 @@ const CustomersManager = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {customer.last_order_date ? (
                         <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-2 text-gray-400" />
+                          <Calendar className="w-4 h-4 mr-2 text-gray-500" />
                           {formatDate(customer.last_order_date)}
                         </div>
                       ) : (
@@ -459,7 +459,7 @@ const CustomersManager = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <div className="flex items-center">
-                        <Gift className="w-4 h-4 mr-2 text-gray-400" />
+                        <Gift className="w-4 h-4 mr-2 text-gray-500" />
                         {customer.loyalty_points || 0}
                       </div>
                     </td>
@@ -496,7 +496,7 @@ const CustomersManager = () => {
 
         {filteredCustomers.length === 0 && (
           <div className="text-center py-12">
-            <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <Users className="w-12 h-12 text-gray-500 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               No hay clientes
             </h3>

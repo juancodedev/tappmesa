@@ -386,7 +386,7 @@ const TableStatusesManager = () => {
                         disabled={index === 0}
                         aria-label={`Subir ${status.name}`}
                         title="Mover arriba"
-                        className="text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                        className="text-gray-500 hover:text-gray-600 disabled:opacity-30"
                       >
                         <ChevronUp className="w-4 h-4" aria-hidden="true" />
                       </Button>
@@ -397,7 +397,7 @@ const TableStatusesManager = () => {
                         disabled={index === statuses.length - 1}
                         aria-label={`Bajar ${status.name}`}
                         title="Mover abajo"
-                        className="text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                        className="text-gray-500 hover:text-gray-600 disabled:opacity-30"
                       >
                         <ChevronDown className="w-4 h-4" aria-hidden="true" />
                       </Button>
@@ -537,7 +537,7 @@ const TableStatusesManager = () => {
 
       {statuses.length === 0 && !creating && (
         <div className="p-12 text-center">
-          <Circle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+          <Circle className="w-12 h-12 text-gray-500 mx-auto mb-3" />
           <p className="text-gray-600">No hay estados configurados</p>
           <p className="text-sm text-gray-500 mt-1">
             Crea tu primer estado para comenzar

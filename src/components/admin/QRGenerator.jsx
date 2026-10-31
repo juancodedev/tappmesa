@@ -217,7 +217,7 @@ const QRGenerator = () => {
                       onClick={() => copyToClipboard(table.unique_code, table.id)}
                       aria-label={`Copiar código de ${table.number}`}
                       title="Copiar código"
-                      className="text-gray-400 hover:text-gray-600"
+                      className="text-gray-500 hover:text-gray-600"
                     >
                       {copiedCode === table.id ? (
                         <Check className="w-4 h-4 text-green-500" aria-hidden="true" />
@@ -241,7 +241,7 @@ const QRGenerator = () => {
                       onClick={() => copyToClipboard(qrUrl, `url_${table.id}`)}
                       aria-label={`Copiar URL de ${table.number}`}
                       title="Copiar URL"
-                      className="text-gray-400 hover:text-gray-600"
+                      className="text-gray-500 hover:text-gray-600"
                     >
                       {copiedCode === `url_${table.id}` ? (
                         <Check className="w-4 h-4 text-green-500" aria-hidden="true" />
