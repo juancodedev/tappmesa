@@ -15,6 +15,7 @@ import {
   Palette,
   QrCode,
 } from "lucide-react";
+import { DEFAULT_PRIMARY_COLOR, DEFAULT_SECONDARY_COLOR } from "../../utils/brandColors";
 
 const Settings = () => {
   const [settings, setSettings] = useState({
@@ -27,8 +28,8 @@ const Settings = () => {
     website: "https://cafecentral.cl",
 
     // Branding
-    primary_color: "#dc2626",
-    secondary_color: "#f97316",
+    primary_color: DEFAULT_PRIMARY_COLOR,
+    secondary_color: DEFAULT_SECONDARY_COLOR,
     logo_url: "",
 
     // Horarios

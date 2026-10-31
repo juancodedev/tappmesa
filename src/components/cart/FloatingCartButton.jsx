@@ -2,6 +2,7 @@ import { useCart } from "../../hooks/useCart";
 import { useTenant } from '../../hooks/useTenant';
 import { ShoppingCart } from "lucide-react";
 import { getOptimalTextClass } from "../../utils/helpers";
+import { DEFAULT_PRIMARY_COLOR } from "../../utils/brandColors";
 
 const FloatingCartButton = () => {
   const { tenant, table } = useTenant();
@@ -9,7 +10,7 @@ const FloatingCartButton = () => {
 
   if (isEmpty) return null;
 
-  const primaryColor = tenant?.primary_color || "#dc2626";
+  const primaryColor = tenant?.primary_color || DEFAULT_PRIMARY_COLOR;
   const textClass = getOptimalTextClass(primaryColor);
   // Sit above the fixed table info bar rendered by TableApp
   const offsetClass = table ? "bottom-20" : "bottom-6";
@@ -19,7 +20,7 @@ const FloatingCartButton = () => {
       onClick={openCart}
       aria-label={`Ver carrito: ${getTotalItems()} productos, total ${formatPrice(getTotal())}`}
       className={`fixed ${offsetClass} right-6 z-40 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 safe-area-bottom`}
-      style={{ backgroundColor: tenant?.primary_color || "#dc2626" }}
+      style={{ backgroundColor: primaryColor }}
     >
       <div className="flex items-center space-x-3 px-6 py-4">
         <div className="relative">
