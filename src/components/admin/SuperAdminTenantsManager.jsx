@@ -592,10 +592,11 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
       <div className="p-6 space-y-6">
         {/* Plan Selection */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="tenant-plan" className="block text-sm font-medium text-gray-700 mb-2">
             Plan de Suscripción
           </label>
           <select
+            id="tenant-plan"
             value={selectedPlanId}
             onChange={(e) => setSelectedPlanId(e.target.value)}
             className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:ring-2 focus:ring-primary-500"
@@ -623,8 +624,9 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
           </h3>
           <div className="space-y-3">
             <div>
-              <label className="text-xs text-gray-600">Máximo de Mesas</label>
+              <label htmlFor="tenant-max-tables" className="text-xs text-gray-600">Máximo de Mesas</label>
               <input
+                id="tenant-max-tables"
                 type="number"
                 min="1"
                 value={customLimits.custom_max_tables || ''}
@@ -637,8 +639,9 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
               />
             </div>
             <div>
-              <label className="text-xs text-gray-600">Máximo de Productos</label>
+              <label htmlFor="tenant-max-products" className="text-xs text-gray-600">Máximo de Productos</label>
               <input
+                id="tenant-max-products"
                 type="number"
                 min="1"
                 value={customLimits.custom_max_products || ''}
@@ -651,8 +654,9 @@ const TenantDetailsModal = ({ tenant, plans, onClose, onUpdate }) => {
               />
             </div>
             <div>
-              <label className="text-xs text-gray-600">Máximo de Personas por Mesa</label>
+              <label htmlFor="tenant-max-people" className="text-xs text-gray-600">Máximo de Personas por Mesa</label>
               <input
+                id="tenant-max-people"
                 type="number"
                 min="1"
                 value={customLimits.custom_max_people || ''}

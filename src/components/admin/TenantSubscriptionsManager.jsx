@@ -219,10 +219,11 @@ const TenantSubscriptionsManager = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Plan actual */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor={`subscription-plan-${tenant.id}`} className="block text-sm font-medium text-gray-700 mb-2">
                         Plan de Suscripción
                       </label>
                       <select
+                        id={`subscription-plan-${tenant.id}`}
                         value={subscription?.plan_id || ''}
                         onChange={(e) => handleAssignPlan(tenant.id, e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -256,9 +257,9 @@ const TenantSubscriptionsManager = () => {
                     {/* Límites personalizados */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <label className="block text-sm font-medium text-gray-700">
+                        <span id={`subscription-limits-${tenant.id}`} className="block text-sm font-medium text-gray-700">
                           Límites Personalizados
-                        </label>
+                        </span>
                         {!isEditing && subscription && (
                           <Button
                             variant="ghost"
@@ -272,13 +273,14 @@ const TenantSubscriptionsManager = () => {
                         )}
                       </div>
 
-                      <div className="space-y-2">
+                      <div role="group" aria-labelledby={`subscription-limits-${tenant.id}`} className="space-y-2">
                         <div>
-                          <label className="text-xs text-gray-600">
+                          <label htmlFor={`subscription-max-tables-${tenant.id}`} className="text-xs text-gray-600">
                             Mesas {isEditing ? '' : '(por defecto del plan)'}
                           </label>
                           {isEditing ? (
                             <input
+                              id={`subscription-max-tables-${tenant.id}`}
                               type="number"
                               min="1"
                               value={limits.custom_max_tables || ''}
@@ -294,11 +296,12 @@ const TenantSubscriptionsManager = () => {
                         </div>
 
                         <div>
-                          <label className="text-xs text-gray-600">
+                          <label htmlFor={`subscription-max-products-${tenant.id}`} className="text-xs text-gray-600">
                             Productos {isEditing ? '' : '(por defecto del plan)'}
                           </label>
                           {isEditing ? (
                             <input
+                              id={`subscription-max-products-${tenant.id}`}
                               type="number"
                               min="1"
                               value={limits.custom_max_products || ''}
@@ -314,11 +317,12 @@ const TenantSubscriptionsManager = () => {
                         </div>
 
                         <div>
-                          <label className="text-xs text-gray-600">
+                          <label htmlFor={`subscription-max-people-${tenant.id}`} className="text-xs text-gray-600">
                             Personas por mesa {isEditing ? '' : '(por defecto del plan)'}
                           </label>
                           {isEditing ? (
                             <input
+                              id={`subscription-max-people-${tenant.id}`}
                               type="number"
                               min="1"
                               value={limits.custom_max_people || ''}

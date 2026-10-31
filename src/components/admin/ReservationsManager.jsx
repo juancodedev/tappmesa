@@ -462,10 +462,11 @@ const ReservationsManager = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="reservation-admin-name" className="block text-sm font-medium text-gray-700 mb-2">
                     Nombre del Cliente *
                   </label>
                   <input
+                    id="reservation-admin-name"
                     type="text"
                     required
                     value={editingReservation.customer_name}
@@ -475,10 +476,11 @@ const ReservationsManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="reservation-admin-phone" className="block text-sm font-medium text-gray-700 mb-2">
                     Teléfono *
                   </label>
                   <input
+                    id="reservation-admin-phone"
                     type="tel"
                     required
                     value={editingReservation.customer_phone}
@@ -488,10 +490,11 @@ const ReservationsManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="reservation-admin-email" className="block text-sm font-medium text-gray-700 mb-2">
                     Email
                   </label>
                   <input
+                    id="reservation-admin-email"
                     type="email"
                     value={editingReservation.customer_email || ''}
                     onChange={(e) => setEditingReservation({ ...editingReservation, customer_email: e.target.value })}
@@ -500,10 +503,11 @@ const ReservationsManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="reservation-admin-table" className="block text-sm font-medium text-gray-700 mb-2">
                     Número de Mesa
                   </label>
                   <input
+                    id="reservation-admin-table"
                     type="text"
                     value={editingReservation.table_number || ''}
                     onChange={(e) => setEditingReservation({ ...editingReservation, table_number: e.target.value })}
@@ -512,10 +516,11 @@ const ReservationsManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="reservation-admin-date" className="block text-sm font-medium text-gray-700 mb-2">
                     Fecha *
                   </label>
                   <input
+                    id="reservation-admin-date"
                     type="date"
                     required
                     value={editingReservation.reservation_date}
@@ -525,10 +530,11 @@ const ReservationsManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="reservation-admin-time" className="block text-sm font-medium text-gray-700 mb-2">
                     Hora *
                   </label>
                   <input
+                    id="reservation-admin-time"
                     type="time"
                     required
                     value={editingReservation.reservation_time}
@@ -538,10 +544,11 @@ const ReservationsManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="reservation-admin-party-size" className="block text-sm font-medium text-gray-700 mb-2">
                     Número de Personas *
                   </label>
                   <input
+                    id="reservation-admin-party-size"
                     type="number"
                     required
                     min="1"
@@ -553,10 +560,11 @@ const ReservationsManager = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="reservation-admin-special-requests" className="block text-sm font-medium text-gray-700 mb-2">
                   Solicitudes Especiales
                 </label>
                 <textarea
+                  id="reservation-admin-special-requests"
                   rows="3"
                   value={editingReservation.special_requests || ''}
                   onChange={(e) => setEditingReservation({ ...editingReservation, special_requests: e.target.value })}

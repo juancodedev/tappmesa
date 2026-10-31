@@ -620,10 +620,11 @@ const CustomersManager = () => {
         >
           <form onSubmit={handleUpdateCustomer} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="customer-name" className="block text-sm font-medium text-gray-700 mb-1">
                 Nombre
               </label>
               <input
+                id="customer-name"
                 type="text"
                 value={editFormData.name}
                 onChange={(e) => setEditFormData({...editFormData, name: e.target.value})}
@@ -633,10 +634,11 @@ const CustomersManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="customer-phone" className="block text-sm font-medium text-gray-700 mb-1">
                 Teléfono
               </label>
               <input
+                id="customer-phone"
                 type="tel"
                 value={editFormData.phone}
                 onChange={(e) => setEditFormData({...editFormData, phone: e.target.value})}
@@ -646,10 +648,11 @@ const CustomersManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="customer-email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email
               </label>
               <input
+                id="customer-email"
                 type="email"
                 value={editFormData.email}
                 onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
@@ -672,10 +675,11 @@ const CustomersManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="customer-notes" className="block text-sm font-medium text-gray-700 mb-1">
                 Notas
               </label>
               <textarea
+                id="customer-notes"
                 value={editFormData.notes}
                 onChange={(e) => setEditFormData({...editFormData, notes: e.target.value})}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"

@@ -209,10 +209,11 @@ const SubscriptionPlansManager = () => {
           <form onSubmit={handleCreatePlan} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="plan-name" className="block text-sm font-medium text-gray-700 mb-1">
                   Nombre del Plan *
                 </label>
                 <input
+                  id="plan-name"
                   type="text"
                   required
                   value={newPlan.name}
@@ -223,10 +224,11 @@ const SubscriptionPlansManager = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="plan-price" className="block text-sm font-medium text-gray-700 mb-1">
                   Precio Mensual (CLP) *
                 </label>
                 <input
+                  id="plan-price"
                   type="number"
                   required
                   min="0"
@@ -238,10 +240,11 @@ const SubscriptionPlansManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="plan-description" className="block text-sm font-medium text-gray-700 mb-1">
                 Descripción
               </label>
               <textarea
+                id="plan-description"
                 value={newPlan.description}
                 onChange={(e) => setNewPlan({ ...newPlan, description: e.target.value })}
                 rows={2}
@@ -252,10 +255,11 @@ const SubscriptionPlansManager = () => {
 
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="plan-max-tables" className="block text-sm font-medium text-gray-700 mb-1">
                   Máx. Mesas
                 </label>
                 <input
+                  id="plan-max-tables"
                   type="number"
                   min="1"
                   value={newPlan.max_tables}
@@ -265,10 +269,11 @@ const SubscriptionPlansManager = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="plan-max-products" className="block text-sm font-medium text-gray-700 mb-1">
                   Máx. Productos
                 </label>
                 <input
+                  id="plan-max-products"
                   type="number"
                   min="1"
                   value={newPlan.max_products}
@@ -278,10 +283,11 @@ const SubscriptionPlansManager = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="plan-max-people" className="block text-sm font-medium text-gray-700 mb-1">
                   Máx. Personas/Mesa
                 </label>
                 <input
+                  id="plan-max-people"
                   type="number"
                   min="1"
                   value={newPlan.max_people_per_table}
