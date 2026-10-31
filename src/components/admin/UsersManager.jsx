@@ -274,7 +274,8 @@ const UsersManager = () => {
     switch (role) {
       case 'tenant_admin': return 'bg-purple-100 text-purple-800'
       case 'staff': return 'bg-blue-100 text-blue-800'
-      case 'customer': return 'bg-green-100 text-green-800'
+      case 'waiter': return 'bg-green-100 text-green-800'
+      case 'kitchen': return 'bg-orange-100 text-orange-800'
       default: return 'bg-gray-100 text-gray-800'
     }
   }
@@ -283,7 +284,8 @@ const UsersManager = () => {
     switch (role) {
       case 'tenant_admin': return 'Administrador'
       case 'staff': return 'Personal'
-      case 'customer': return 'Cliente'
+      case 'waiter': return 'Garzón'
+      case 'kitchen': return 'Cocina'
       default: return role
     }
   }
@@ -364,7 +366,8 @@ const UsersManager = () => {
               <option value="all">Todos los roles</option>
               <option value="tenant_admin">Administradores</option>
               <option value="staff">Personal</option>
-              <option value="customer">Clientes</option>
+              <option value="waiter">Garzones</option>
+              <option value="kitchen">Cocina</option>
             </select>
           </div>
         </div>
@@ -560,13 +563,15 @@ const UsersManager = () => {
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="staff">Personal</option>
+                <option value="waiter">Garzón</option>
+                <option value="kitchen">Cocina</option>
                 <option value="tenant_admin">Administrador</option>
-                <option value="customer">Cliente</option>
               </select>
               <p className="text-xs text-gray-500 mt-1">
                 {formData.role === 'tenant_admin' && '👑 Acceso completo al sistema'}
                 {formData.role === 'staff' && '👤 Acceso a operaciones diarias'}
-                {formData.role === 'customer' && '🛒 Solo acceso como cliente'}
+                {formData.role === 'waiter' && '🍽️ Vista de garzón: mesas y pedidos'}
+                {formData.role === 'kitchen' && '👨‍🍳 Vista de cocina: pedidos en preparación'}
               </p>
             </div>
 
