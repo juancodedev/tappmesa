@@ -38,6 +38,18 @@ const MIGRATED = {
     'components/admin/OrdersManager.jsx',
     'components/AdminApp.jsx',
   ],
+  'T3 super admin': [
+    'components/admin/SubscriptionPlansManager.jsx',
+    'components/admin/SuperAdminReservationsManager.jsx',
+    'components/admin/SuperAdminCustomersManager.jsx',
+    'components/admin/SuperAdminStockManager.jsx',
+    'components/admin/SuperAdminTenantsManager.jsx',
+    'components/admin/SuperAdminTablesManager.jsx',
+    'components/admin/SuperAdminCategoriesManager.jsx',
+    'components/admin/SystemUsersManager.jsx',
+    'components/admin/SuperAdminProductsManager.jsx',
+    'components/admin/SuperAdminOrdersManager.jsx',
+  ],
 }
 
 const read = (file) => readFileSync(path.resolve(process.cwd(), 'src', file), 'utf8')

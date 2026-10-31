@@ -273,7 +273,7 @@ const SuperAdminTenantsManager = () => {
         <div className="mt-4 flex flex-col sm:flex-row gap-4">
           {/* Search */}
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
             <input
               type="text"
               placeholder="Buscar por nombre, slug o subdomain..."
@@ -285,7 +285,7 @@ const SuperAdminTenantsManager = () => {
 
           {/* Status Filter */}
           <div className="flex items-center space-x-2">
-            <Filter className="h-5 w-5 text-gray-400" />
+            <Filter className="h-5 w-5 text-gray-500" />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -351,7 +351,7 @@ const SuperAdminTenantsManager = () => {
       {/* Tenants List */}
       {filteredTenants.length === 0 ? (
         <div className="text-center py-12 bg-cream-50 rounded-lg">
-          <Building2 className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+          <Building2 className="h-16 w-16 text-gray-500 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             No se encontraron tenants
           </h3>
@@ -460,7 +460,7 @@ const SuperAdminTenantsManager = () => {
                   {/* Created At */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div>{formatDate(tenant.created_at)}</div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs text-gray-500">
                       Hace {getDaysActive(tenant.created_at)} días
                     </div>
                   </td>

@@ -193,7 +193,7 @@ const SuperAdminCustomersManager = () => {
         {/* Filters */}
         <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
             <input
               type="text"
               placeholder="Buscar por nombre, teléfono, email..."
@@ -224,7 +224,7 @@ const SuperAdminCustomersManager = () => {
               <p className="text-sm text-gray-600">Total Clientes</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</p>
             </div>
-            <Users className="h-8 w-8 text-gray-400" />
+            <Users className="h-8 w-8 text-gray-500" />
           </div>
         </div>
 
@@ -264,7 +264,7 @@ const SuperAdminCustomersManager = () => {
       {/* Customers Grid */}
       {filteredCustomers.length === 0 ? (
         <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-12 text-center">
-          <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <Users className="w-16 h-16 text-gray-500 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No hay clientes</h3>
           <p className="text-gray-600">
             No se encontraron clientes con los filtros seleccionados
@@ -303,7 +303,7 @@ const SuperAdminCustomersManager = () => {
                   <div className="space-y-1">
                     {customer.phone && (
                       <div className="flex items-center text-sm text-gray-600">
-                        <Phone className="h-4 w-4 text-gray-400 mr-2" />
+                        <Phone className="h-4 w-4 text-gray-500 mr-2" />
                         <a href={`tel:${customer.phone}`} className="hover:text-orange-600">
                           {customer.phone}
                         </a>
@@ -312,7 +312,7 @@ const SuperAdminCustomersManager = () => {
 
                     {customer.email && (
                       <div className="flex items-center text-sm text-gray-600">
-                        <Mail className="h-4 w-4 text-gray-400 mr-2" />
+                        <Mail className="h-4 w-4 text-gray-500 mr-2" />
                         <a href={`mailto:${customer.email}`} className="hover:text-orange-600 truncate">
                           {customer.email}
                         </a>
@@ -324,7 +324,7 @@ const SuperAdminCustomersManager = () => {
                 {/* Tenant */}
                 <div className="mb-4 pb-4 border-b border-primary-200">
                   <div className="flex items-center text-sm text-gray-600">
-                    <Building2 className="h-4 w-4 text-gray-400 mr-2" />
+                    <Building2 className="h-4 w-4 text-gray-500 mr-2" />
                     <div>
                       <div className="font-medium text-gray-900">{customer.tenant?.name}</div>
                       <div className="text-xs text-gray-500">@{customer.tenant?.slug}</div>
@@ -335,13 +335,13 @@ const SuperAdminCustomersManager = () => {
                 {/* Stats */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="text-center p-2 bg-cream-50 rounded-lg">
-                    <ShoppingBag className="h-5 w-5 text-gray-400 mx-auto mb-1" />
+                    <ShoppingBag className="h-5 w-5 text-gray-500 mx-auto mb-1" />
                     <div className="text-lg font-bold text-gray-900">{customer.total_orders || 0}</div>
                     <div className="text-xs text-gray-500">Pedidos</div>
                   </div>
 
                   <div className="text-center p-2 bg-cream-50 rounded-lg">
-                    <DollarSign className="h-5 w-5 text-gray-400 mx-auto mb-1" />
+                    <DollarSign className="h-5 w-5 text-gray-500 mx-auto mb-1" />
                     <div className="text-lg font-bold text-gray-900">
                       {formatCurrency(customer.total_spent)}
                     </div>
