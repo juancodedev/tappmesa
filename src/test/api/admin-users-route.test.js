@@ -242,6 +242,35 @@ describe('CRUD /api/admin/users (task 1.9, ADM-001)', () => {
       expect(supabase.from.mock.results.find((r, i) => supabase.from.mock.calls[i][0] === 'admin_users' && r.value.isInsert)).toBeUndefined()
     })
 
+    // Prod 2026-10-31: creating a Cocina user returned 500 because
+    // admin_users_role_check did not allow 'kitchen'. Roles the database
+    // rejects must not reach the insert, and a CHECK violation is a 400.
+    it.each(['manager', 'cashier'])('rejects role %s, which admin_users does not allow (403)', async (role) => {
+      handler = createAdminUsersHandler({
+        supabase,
+        requireAuth: fakeRequireAuth(tenantAdminClaims),
+      })
+      const res = makeRes()
+      await handler(makeReq({ body: { ...createBody, role } }), res)
+      expect(res.statusCode).toBe(403)
+      expect(supabase.from.mock.results.find((r, i) => supabase.from.mock.calls[i][0] === 'admin_users' && r.value.isInsert)).toBeUndefined()
+    })
+
+    it('answers a role CHECK violation with 400 instead of 500', async () => {
+      supabase.state.singleResult = {
+        data: null,
+        error: { code: '23514', message: 'new row for relation "admin_users" violates check constraint "admin_users_role_check"' },
+      }
+      handler = createAdminUsersHandler({
+        supabase,
+        requireAuth: fakeRequireAuth(tenantAdminClaims),
+      })
+      const res = makeRes()
+      await handler(makeReq({ body: { ...createBody, role: 'kitchen' } }), res)
+      expect(res.statusCode).toBe(400)
+      expect(res.body).toEqual({ error: 'Rol no permitido' })
+    })
+
     it('validates email/password/full_name (400)', async () => {
       handler = createAdminUsersHandler({
         supabase,

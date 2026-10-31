@@ -203,6 +203,12 @@ Rollback: `rollback-analytics-functions.sql`.
 Si el índice falla por duplicados, el propio script indica la consulta para listarlos.
 Rollback: `rollback-fix-customer-stats-on-conflict.sql`.
 
+### Si crear un usuario de Cocina falla con 500 (`admin_users_role_check`):
+```sql
+1. fix-admin-users-role-check.sql   -- agrega 'kitchen' al CHECK de admin_users.role
+```
+Rollback: `rollback-fix-admin-users-role-check.sql` (falla si ya hay usuarios `kitchen`).
+
 ---
 
 ## 📊 Scripts de Diagnóstico (No Ejecutar - Solo Consulta)
