@@ -119,7 +119,7 @@ const MenuGrid = ({ activeCategory, searchTerm }) => {
       <div className="text-center py-12">
         {searchTerm ? (
           <>
-            <Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <Search className="w-12 h-12 text-gray-500 mx-auto mb-4" />
             <h3 className="text-gray-900 font-medium mb-1">No se encontraron resultados</h3>
             <p className="text-gray-600 text-sm">
               No hay productos que coincidan con "{searchTerm}"
@@ -127,7 +127,7 @@ const MenuGrid = ({ activeCategory, searchTerm }) => {
           </>
         ) : (
           <>
-            <Coffee className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <Coffee className="w-12 h-12 text-gray-500 mx-auto mb-4" />
             <h3 className="text-gray-900 font-medium mb-1">No hay productos</h3>
             <p className="text-gray-600 text-sm">
               Esta categoría aún no tiene productos disponibles

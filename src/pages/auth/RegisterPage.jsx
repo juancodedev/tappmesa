@@ -133,7 +133,7 @@ const RegisterPage = () => {
             <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
               currentStep >= step.number
                 ? 'bg-primary-500 border-primary-500 text-white'
-                : 'border-gray-300 text-gray-400'
+                : 'border-gray-300 text-gray-500'
             }`}>
               {currentStep > step.number ? (
                 <CheckCircle className="h-6 w-6" />
@@ -143,7 +143,7 @@ const RegisterPage = () => {
             </div>
             <div className="mt-2 text-center">
               <div className={`text-sm font-semibold ${
-                currentStep >= step.number ? 'text-primary-600' : 'text-gray-400'
+                currentStep >= step.number ? 'text-primary-600' : 'text-gray-500'
               }`}>
                 {step.title}
               </div>
@@ -641,7 +641,7 @@ const RegisterPage = () => {
                   disabled={currentStep === 1}
                   className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
                     currentStep === 1
-                      ? 'text-gray-400 cursor-not-allowed'
+                      ? 'text-gray-500 cursor-not-allowed'
                       : 'text-primary-600 hover:text-primary-500 hover:bg-primary-50'
                   }`}
                 >

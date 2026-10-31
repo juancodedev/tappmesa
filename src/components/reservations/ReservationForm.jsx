@@ -217,7 +217,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
             Nombre completo *
           </label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
             <input
               type="text"
               name="customer_name"
@@ -236,7 +236,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
             Teléfono *
           </label>
           <div className="relative">
-            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
             <input
               type="tel"
               name="customer_phone"
@@ -255,7 +255,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
             Email (opcional)
           </label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
             <input
               type="email"
               name="customer_email"
@@ -274,7 +274,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
               Fecha *
             </label>
             <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <input
                 type="date"
                 name="reservation_date"
@@ -292,7 +292,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
               Hora *
             </label>
             <div className="relative">
-              <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <input
                 type="time"
                 name="reservation_time"
@@ -311,7 +311,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
             Número de personas *
           </label>
           <div className="relative">
-            <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
             <select
               name="party_size"
               value={formData.party_size}
@@ -335,7 +335,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
               Mesa preferida (opcional)
             </label>
             <div className="relative">
-              <Armchair className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Armchair className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <select
                 name="table_id"
                 value={formData.table_id}
@@ -373,7 +373,7 @@ const ReservationForm = ({ tenantId, tenantName, onSuccess }) => {
             Solicitudes especiales (opcional)
           </label>
           <div className="relative">
-            <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+            <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-gray-500" />
             <textarea
               name="special_requests"
               value={formData.special_requests}

@@ -100,7 +100,7 @@ const ActiveOrdersPanel = ({ activeSessions, onRefresh }) => {
       <div className="max-h-[600px] overflow-y-auto">
         {activeOrders.length === 0 ? (
           <div className="p-8 text-center">
-            <Package className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+            <Package className="w-12 h-12 text-gray-500 mx-auto mb-3" />
             <p className="text-gray-600">No hay pedidos activos</p>
             <p className="text-sm text-gray-500 mt-1">
               Los nuevos pedidos aparecerán aquí

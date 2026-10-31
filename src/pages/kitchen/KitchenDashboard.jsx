@@ -295,7 +295,7 @@ const KitchenDashboard = () => {
       <main className="max-w-7xl mx-auto px-4 py-6">
         {prioritizedOrders.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-            <ChefHat className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <ChefHat className="h-16 w-16 text-gray-500 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               No hay pedidos {filter !== 'all' ? getStatusText(filter).toLowerCase() : ''}
             </h3>
