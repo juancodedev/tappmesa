@@ -766,12 +766,13 @@ const CompleteStockManager = () => {
 
           <form onSubmit={handleMovement} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="inventory-movement-quantity" className="block text-sm font-medium text-gray-700 mb-1">
                 {movementForm.type === "adjustment"
                   ? "Nuevo stock total"
                   : "Cantidad"}
               </label>
               <input
+                id="inventory-movement-quantity"
                 type="number"
                 step="0.1"
                 min={movementForm.type === "out" ? "0" : undefined}
@@ -794,10 +795,11 @@ const CompleteStockManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="inventory-movement-reason" className="block text-sm font-medium text-gray-700 mb-1">
                 Motivo
               </label>
               <select
+                id="inventory-movement-reason"
                 value={movementForm.reason}
                 onChange={(e) =>
                   setMovementForm({ ...movementForm, reason: e.target.value })
@@ -829,10 +831,11 @@ const CompleteStockManager = () => {
             {(movementForm.type === "in" ||
               movementForm.type === "adjustment") && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="inventory-movement-unit-cost" className="block text-sm font-medium text-gray-700 mb-1">
                   Costo unitario (opcional)
                 </label>
                 <input
+                  id="inventory-movement-unit-cost"
                   type="number"
                   step="0.01"
                   min="0"
@@ -850,10 +853,11 @@ const CompleteStockManager = () => {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="inventory-movement-notes" className="block text-sm font-medium text-gray-700 mb-1">
                 Notas (opcional)
               </label>
               <textarea
+                id="inventory-movement-notes"
                 rows={3}
                 value={movementForm.notes}
                 onChange={(e) =>
@@ -904,10 +908,11 @@ const CompleteStockManager = () => {
             className="grid grid-cols-1 md:grid-cols-2 gap-4"
           >
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="inventory-current-stock" className="block text-sm font-medium text-gray-700 mb-1">
                 Stock Actual
               </label>
               <input
+                id="inventory-current-stock"
                 type="number"
                 step="0.1"
                 min="0"
@@ -921,10 +926,11 @@ const CompleteStockManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="inventory-unit" className="block text-sm font-medium text-gray-700 mb-1">
                 Unidad
               </label>
               <select
+                id="inventory-unit"
                 value={editForm.unit}
                 onChange={(e) =>
                   setEditForm({ ...editForm, unit: e.target.value })
@@ -942,10 +948,11 @@ const CompleteStockManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="inventory-min-stock" className="block text-sm font-medium text-gray-700 mb-1">
                 Stock Mínimo
               </label>
               <input
+                id="inventory-min-stock"
                 type="number"
                 step="0.1"
                 min="0"
@@ -959,10 +966,11 @@ const CompleteStockManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="inventory-max-stock" className="block text-sm font-medium text-gray-700 mb-1">
                 Stock Máximo
               </label>
               <input
+                id="inventory-max-stock"
                 type="number"
                 step="0.1"
                 min="0"
@@ -976,10 +984,11 @@ const CompleteStockManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="inventory-unit-cost" className="block text-sm font-medium text-gray-700 mb-1">
                 Costo Unitario
               </label>
               <input
+                id="inventory-unit-cost"
                 type="number"
                 step="0.01"
                 min="0"
@@ -993,10 +1002,11 @@ const CompleteStockManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="inventory-supplier" className="block text-sm font-medium text-gray-700 mb-1">
                 Proveedor
               </label>
               <input
+                id="inventory-supplier"
                 type="text"
                 value={editForm.supplier}
                 onChange={(e) =>
@@ -1008,10 +1018,11 @@ const CompleteStockManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="inventory-location" className="block text-sm font-medium text-gray-700 mb-1">
                 Ubicación
               </label>
               <input
+                id="inventory-location"
                 type="text"
                 value={editForm.location}
                 onChange={(e) =>
@@ -1023,10 +1034,11 @@ const CompleteStockManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="inventory-expiry-date" className="block text-sm font-medium text-gray-700 mb-1">
                 Fecha de Vencimiento
               </label>
               <input
+                id="inventory-expiry-date"
                 type="date"
                 value={editForm.expiryDate}
                 onChange={(e) =>
@@ -1037,10 +1049,11 @@ const CompleteStockManager = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="inventory-notes" className="block text-sm font-medium text-gray-700 mb-1">
                 Notas
               </label>
               <textarea
+                id="inventory-notes"
                 rows={3}
                 value={editForm.notes}
                 onChange={(e) =>
