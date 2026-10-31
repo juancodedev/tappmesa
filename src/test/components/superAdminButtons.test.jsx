@@ -25,13 +25,14 @@ const chain = (t) => {
 }
 
 vi.mock('../../lib/supabase', () => ({
-  supabase: { from: (t) => chain(t) },
+  supabase: { from: vi.fn((t) => chain(t)) },
   authService: { authenticatedFetch: vi.fn(async () => ({ ok: true, status: 200, json: async () => ({ users }) })) },
 }))
 vi.mock('../../hooks/useAuth', () => ({ useAuth: () => ({ isSuperAdmin: true, user: { id: 'sa', role: 'super_admin' } }) }))
 vi.mock('../../hooks/useToast', () => ({ useToast: () => ({ success: vi.fn(), error: vi.fn() }) }))
 vi.mock('../../hooks/useConfirm', () => ({ useConfirm: () => vi.fn().mockResolvedValue(false) }))
 
+import { supabase, authService } from '../../lib/supabase'
 import SubscriptionPlansManager from '../../components/admin/SubscriptionPlansManager'
 import SuperAdminTenantsManager from '../../components/admin/SuperAdminTenantsManager'
 import TenantSubscriptionsManager from '../../components/admin/TenantSubscriptionsManager'
@@ -93,6 +94,16 @@ describe('SuperAdminTenantsManager rows', () => {
     expect(screen.getByRole('button', { name: 'Ver sitio de Bistro' })).toHaveClass(TOUCH)
     expect(screen.getByRole('button', { name: 'Gestionar suscripción de Bistro' })).toHaveClass(TOUCH)
     expect(screen.getByRole('button', { name: 'Desactivar Bistro' })).toHaveClass(TOUCH)
+  })
+
+  // admin_users is closed to the browser by the RLS lockdown (403), so the
+  // per-tenant user count comes from /api/admin/users.
+  it('counts users per tenant from the admin users API', async () => {
+    renderIn(<SuperAdminTenantsManager />)
+    await screen.findAllByText('Bistro')
+    expect(screen.getByTitle('Usuarios')).toHaveTextContent('1')
+    expect(authService.authenticatedFetch).toHaveBeenCalledWith('/api/admin/users', expect.objectContaining({ method: 'GET' }))
+    expect(supabase.from).not.toHaveBeenCalledWith('admin_users')
   })
 })
 
