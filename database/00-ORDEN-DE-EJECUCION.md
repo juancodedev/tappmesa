@@ -215,6 +215,12 @@ Rollback: `rollback-fix-admin-users-role-check.sql` (falla si ya hay usuarios `k
 ```
 Rollback: `rollback-add-admin-users-phone.sql` (borra los teléfonos guardados).
 
+### Si cambiar la contraseña de un usuario falla con 500 (`column "notes" ... does not exist`):
+```sql
+1. fix-clear-insecure-password-trigger.sql   -- el trigger de auditoría deja de usar la columna notes
+```
+Rollback: `rollback-fix-clear-insecure-password-trigger.sql`.
+
 ---
 
 ## 📊 Scripts de Diagnóstico (No Ejecutar - Solo Consulta)

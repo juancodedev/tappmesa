@@ -79,13 +79,15 @@ BEGIN
       tenant_id,
       action,
       resource,
-      notes
+      resource_id,
+      new_values
     ) VALUES (
       NEW.id,
       NEW.tenant_id,
       'password_updated',
       'admin_user',
-      'Password updated to secure bcrypt hash'
+      NEW.id,
+      jsonb_build_object('message', 'Password updated to secure bcrypt hash')
     );
   END IF;
 
