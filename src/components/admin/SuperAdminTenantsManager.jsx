@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../../lib/supabase'
+import { supabase, authService } from '../../lib/supabase'
 import { planLimitsService } from '../../services/planLimitsService'
 import {
   Building2,
@@ -101,6 +101,25 @@ const SuperAdminTenantsManager = () => {
         console.warn('Subscription plans table not available yet:', planError)
       }
 
+      // User counts come from the API: admin_users is closed to the browser
+      // by the RLS lockdown (a direct count returns 403).
+      const usersByTenant = {}
+      try {
+        const response = await authService.authenticatedFetch('/api/admin/users', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        })
+        if (response.ok) {
+          for (const user of (await response.json()).users || []) {
+            usersByTenant[user.tenant_id] = (usersByTenant[user.tenant_id] || 0) + 1
+          }
+        } else {
+          console.warn('Could not load user counts:', response.status)
+        }
+      } catch (usersError) {
+        console.warn('Could not load user counts:', usersError)
+      }
+
       // Get counts for each tenant
       const tenantsWithCounts = await Promise.all(
         (tenantsData || []).map(async (tenant) => {
@@ -113,12 +132,6 @@ const SuperAdminTenantsManager = () => {
           // Count products
           const { count: productsCount } = await supabase
             .from('products')
-            .select('*', { count: 'exact', head: true })
-            .eq('tenant_id', tenant.id)
-
-          // Count users
-          const { count: usersCount } = await supabase
-            .from('admin_users')
             .select('*', { count: 'exact', head: true })
             .eq('tenant_id', tenant.id)
 
@@ -137,7 +150,7 @@ const SuperAdminTenantsManager = () => {
             counts: {
               tables: tablesCount || 0,
               products: productsCount || 0,
-              users: usersCount || 0,
+              users: usersByTenant[tenant.id] || 0,
               orders: ordersCount || 0
             }
           }
