@@ -60,7 +60,6 @@ const KitchenDashboard = () => {
             product_id,
             quantity,
             unit_price,
-            temperature,
             notes,
             product:products (
               name,
@@ -343,11 +342,6 @@ const KitchenDashboard = () => {
                         <div className="flex-1">
                           <span className="font-medium">{item.quantity}x</span>{' '}
                           <span>{item.product?.name}</span>
-                          {item.temperature && (
-                            <span className="ml-2 text-xs px-2 py-0.5 bg-gray-100 rounded-full">
-                              {item.temperature}
-                            </span>
-                          )}
                           {item.notes && (
                             <p className="text-xs text-gray-600 mt-1">
                               📝 {item.notes}

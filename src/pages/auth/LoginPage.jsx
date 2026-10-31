@@ -13,6 +13,7 @@ import {
   Coffee,
   ArrowLeft
 } from 'lucide-react'
+import { buildTenantAdminUrl } from '../../utils/tenantAdminUrl'
 
 const LoginPage = () => {
   const { login, loading } = useAuth()
@@ -32,59 +33,7 @@ const LoginPage = () => {
   // Función para generar URL del tenant
   const generateTenantAdminUrl = (tenant) => {
     if (!tenant) return '/admin'
-
-    const hostname = window.location.hostname
-    const protocol = window.location.protocol
-    const port = window.location.port
-    const tenantSubdomain = tenant.subdomain || tenant.slug
-
-    console.log('🔄 Generating tenant URL:', {
-      hostname,
-      protocol,
-      port,
-      tenantSubdomain,
-      fullTenant: tenant
-    })
-
-    // En desarrollo local con .local
-    if (hostname.endsWith('.local')) {
-      const baseUrl = `${protocol}//${tenantSubdomain}.tappmesa.local${port ? ':' + port : ''}`
-      console.log('📍 Local .local URL:', baseUrl)
-      return `${baseUrl}/admin`
-    }
-
-    // En desarrollo local con .localhost
-    if (hostname.endsWith('.localhost')) {
-      const baseUrl = `${protocol}//${tenantSubdomain}.localhost${port ? ':' + port : ''}`
-      console.log('📍 Local .localhost URL:', baseUrl)
-      return `${baseUrl}/admin`
-    }
-
-    // En desarrollo con localhost o IP - redirigir al subdominio .localhost
-    if (hostname === 'localhost' || hostname.match(/^\d/)) {
-      const baseUrl = `${protocol}//${tenantSubdomain}.localhost${port ? ':' + port : ''}`
-      console.log('📍 Localhost redirect URL:', baseUrl)
-      return `${baseUrl}/admin`
-    }
-
-    // En producción con Vercel: formato [nombre]-tappmesa.vercel.app
-    if (hostname.includes('.vercel.app')) {
-      const url = `https://${tenantSubdomain}.vercel.app/admin`
-      console.log('📍 Vercel production URL:', url)
-      return url
-    }
-
-    // En producción con tappmesa.com
-    if (hostname.includes('tappmesa.com')) {
-      const url = `https://${tenantSubdomain}.tappmesa.com/admin`
-      console.log('📍 Production tappmesa.com URL:', url)
-      return url
-    }
-
-    // Otros dominios personalizados
-    const url = `${protocol}//${tenantSubdomain}.${hostname}/admin`
-    console.log('📍 Custom domain URL:', url)
-    return url
+    return buildTenantAdminUrl(window.location, tenant.subdomain || tenant.slug)
   }
 
   const validateForm = () => {
