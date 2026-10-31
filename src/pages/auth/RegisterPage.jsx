@@ -169,11 +169,12 @@ const RegisterPage = () => {
 
       <div className="grid md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-semibold text-primary-900 mb-2">
+          <label htmlFor="register-owner-name" className="block text-sm font-semibold text-primary-900 mb-2">
             <User className="inline h-4 w-4 mr-2" />
             Nombre Completo *
           </label>
           <input
+            id="register-owner-name"
             type="text"
             value={formData.ownerName}
             onChange={(e) => handleInputChange('ownerName', e.target.value)}
@@ -183,11 +184,12 @@ const RegisterPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-primary-900 mb-2">
+          <label htmlFor="register-phone" className="block text-sm font-semibold text-primary-900 mb-2">
             <Phone className="inline h-4 w-4 mr-2" />
             Teléfono *
           </label>
           <input
+            id="register-phone"
             type="tel"
             value={formData.phone}
             onChange={(e) => handleInputChange('phone', e.target.value)}
@@ -197,11 +199,12 @@ const RegisterPage = () => {
         </div>
 
         <div className="md:col-span-2">
-          <label className="block text-sm font-semibold text-primary-900 mb-2">
+          <label htmlFor="register-email" className="block text-sm font-semibold text-primary-900 mb-2">
             <Mail className="inline h-4 w-4 mr-2" />
             Email *
           </label>
           <input
+            id="register-email"
             type="email"
             value={formData.email}
             onChange={(e) => handleInputChange('email', e.target.value)}
@@ -214,10 +217,11 @@ const RegisterPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-primary-900 mb-2">
+          <label htmlFor="register-password" className="block text-sm font-semibold text-primary-900 mb-2">
             🔒 Contraseña *
           </label>
           <input
+            id="register-password"
             type="password"
             value={formData.password}
             onChange={(e) => handleInputChange('password', e.target.value)}
@@ -230,10 +234,11 @@ const RegisterPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-primary-900 mb-2">
+          <label htmlFor="register-confirm-password" className="block text-sm font-semibold text-primary-900 mb-2">
             🔒 Confirmar Contraseña *
           </label>
           <input
+            id="register-confirm-password"
             type="password"
             value={formData.confirmPassword}
             onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
@@ -274,11 +279,12 @@ const RegisterPage = () => {
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="md:col-span-2">
-          <label className="block text-sm font-semibold text-primary-900 mb-2">
+          <label htmlFor="register-cafe-name" className="block text-sm font-semibold text-primary-900 mb-2">
             <Store className="inline h-4 w-4 mr-2" />
             Nombre de la Cafetería *
           </label>
           <input
+            id="register-cafe-name"
             type="text"
             value={formData.cafeName}
             onChange={(e) => handleInputChange('cafeName', e.target.value)}
@@ -288,11 +294,12 @@ const RegisterPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-primary-900 mb-2">
+          <label htmlFor="register-address" className="block text-sm font-semibold text-primary-900 mb-2">
             <MapPin className="inline h-4 w-4 mr-2" />
             Dirección *
           </label>
           <input
+            id="register-address"
             type="text"
             value={formData.address}
             onChange={(e) => handleInputChange('address', e.target.value)}
@@ -302,10 +309,11 @@ const RegisterPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-primary-900 mb-2">
+          <label htmlFor="register-city" className="block text-sm font-semibold text-primary-900 mb-2">
             Ciudad *
           </label>
           <select
+            id="register-city"
             value={formData.city}
             onChange={(e) => handleInputChange('city', e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
@@ -323,11 +331,12 @@ const RegisterPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-primary-900 mb-2">
+          <label htmlFor="register-seating-capacity" className="block text-sm font-semibold text-primary-900 mb-2">
             <Users className="inline h-4 w-4 mr-2" />
             Capacidad de Asientos
           </label>
           <select
+            id="register-seating-capacity"
             value={formData.seatingCapacity}
             onChange={(e) => handleInputChange('seatingCapacity', e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors form-input-enhanced"
@@ -342,10 +351,10 @@ const RegisterPage = () => {
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-primary-900 mb-4">
+        <span id="register-cafe-type-label" className="block text-sm font-semibold text-primary-900 mb-4">
           Tipo de Cafetería *
-        </label>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+        </span>
+        <div role="group" aria-labelledby="register-cafe-type-label" className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
           {cafeTypes.map((type) => (
             <div
               key={type.id}
@@ -377,10 +386,10 @@ const RegisterPage = () => {
 
       <div className="space-y-6">
         <div>
-          <label className="block text-sm font-semibold text-primary-900 mb-4">
+          <span id="register-menu-size-label" className="block text-sm font-semibold text-primary-900 mb-4">
             ¿Cuántos productos tienes aproximadamente en tu menú?
-          </label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          </span>
+          <div role="group" aria-labelledby="register-menu-size-label" className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
               { value: '1-25', label: '1-25 productos', desc: 'Menú básico' },
               { value: '26-50', label: '26-50 productos', desc: 'Menú mediano' },
@@ -404,10 +413,10 @@ const RegisterPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-primary-900 mb-4">
+          <span id="register-current-system-label" className="block text-sm font-semibold text-primary-900 mb-4">
             ¿Qué sistema usas actualmente para tomar pedidos?
-          </label>
-          <div className="grid md:grid-cols-2 gap-3">
+          </span>
+          <div role="group" aria-labelledby="register-current-system-label" className="grid md:grid-cols-2 gap-3">
             {[
               { value: 'paper', label: '📝 Papel y lápiz', desc: 'Método tradicional' },
               { value: 'pos', label: '💻 Sistema POS', desc: 'Terminal punto de venta' },
@@ -433,10 +442,10 @@ const RegisterPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-primary-900 mb-4">
+          <span id="register-priority-label" className="block text-sm font-semibold text-primary-900 mb-4">
             ¿Cuál es tu prioridad principal?
-          </label>
-          <div className="grid md:grid-cols-2 gap-3">
+          </span>
+          <div role="group" aria-labelledby="register-priority-label" className="grid md:grid-cols-2 gap-3">
             {[
               { value: 'efficiency', label: '⚡ Eficiencia en pedidos', desc: 'Reducir tiempos de espera' },
               { value: 'sales', label: '📈 Aumentar ventas', desc: 'Crecer ingresos' },
