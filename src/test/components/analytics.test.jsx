@@ -148,6 +148,52 @@ describe('Analytics (tenant admin)', () => {
     expect(screen.queryByText(/Gestión de Stock/i)).not.toBeInTheDocument()
   })
 
+  it('shows the error when the request itself rejects', async () => {
+    rpc.mockRejectedValue(new Error('network down'))
+    renderAsTenant()
+    expect(await screen.findByRole('alert')).toHaveTextContent('No se pudieron cargar las analíticas')
+  })
+
+  it('retries after an error', async () => {
+    const user = userEvent.setup()
+    rpc.mockResolvedValueOnce({ data: null, error: { message: 'boom' } })
+    renderAsTenant()
+    await user.click(await screen.findByRole('button', { name: 'Reintentar' }))
+    expect(await screen.findByRole('group', { name: 'Ventas' })).toBeInTheDocument()
+    expect(rpc).toHaveBeenCalledTimes(2)
+  })
+
+  it('ignores a response that arrives after a newer request', async () => {
+    const user = userEvent.setup()
+    let resolveSlow
+    rpc.mockReturnValueOnce(new Promise((resolve) => { resolveSlow = resolve }))
+    rpc.mockResolvedValueOnce({
+      data: analytics({ summary: { ...analytics().summary, current: { ...analytics().summary.current, sales: 1111 } } }),
+      error: null,
+    })
+    renderAsTenant()
+    await user.click(screen.getByRole('button', { name: 'Hoy' }))
+    await screen.findByText('$1.111')
+    resolveSlow({
+      data: analytics({ summary: { ...analytics().summary, current: { ...analytics().summary.current, sales: 9999 } } }),
+      error: null,
+    })
+    await new Promise((r) => setTimeout(r, 0))
+    expect(screen.getByText('$1.111')).toBeInTheDocument()
+    expect(screen.queryByText('$9.999')).not.toBeInTheDocument()
+  })
+
+  it('keeps the applied period pressed until a custom range is applied', async () => {
+    const user = userEvent.setup()
+    renderAsTenant()
+    await screen.findByRole('group', { name: 'Ventas' })
+    await user.click(screen.getByRole('button', { name: 'Personalizado' }))
+    expect(screen.getByRole('button', { name: '7 días' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: 'Personalizado' })).toHaveAttribute('aria-pressed', 'false')
+    await user.click(screen.getByRole('button', { name: 'Aplicar' }))
+    expect(screen.getByRole('button', { name: 'Personalizado' })).toHaveAttribute('aria-pressed', 'true')
+  })
+
   it('has no locals ranking', async () => {
     renderAsTenant()
     await screen.findByRole('group', { name: 'Ventas' })
