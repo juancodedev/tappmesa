@@ -427,10 +427,11 @@ const CategoriesManager = () => {
         >
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="category-name" className="block text-sm font-medium text-gray-700 mb-1">
                 Nombre *
               </label>
               <input
+                id="category-name"
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleNameChange(e.target.value)}
@@ -441,10 +442,11 @@ const CategoriesManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="category-slug" className="block text-sm font-medium text-gray-700 mb-1">
                 Slug
               </label>
               <input
+                id="category-slug"
                 type="text"
                 value={formData.slug}
                 onChange={(e) => setFormData({...formData, slug: e.target.value})}
@@ -457,10 +459,11 @@ const CategoriesManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="category-display-order" className="block text-sm font-medium text-gray-700 mb-1">
                 Orden de visualización
               </label>
               <input
+                id="category-display-order"
                 type="number"
                 value={formData.display_order}
                 onChange={(e) => setFormData({...formData, display_order: parseInt(e.target.value)})}

@@ -615,10 +615,11 @@ const ProductsManager = () => {
               {/* Información básica */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="product-name" className="block text-sm font-medium text-gray-700 mb-1">
                     Nombre *
                   </label>
                   <input
+                    id="product-name"
                     type="text"
                     value={formData.name}
                     onChange={(e) => handleNameChange(e.target.value)}
@@ -629,10 +630,11 @@ const ProductsManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="product-slug" className="block text-sm font-medium text-gray-700 mb-1">
                     Slug
                   </label>
                   <input
+                    id="product-slug"
                     type="text"
                     value={formData.slug}
                     onChange={(e) => setFormData({...formData, slug: e.target.value})}
@@ -642,10 +644,11 @@ const ProductsManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="product-category" className="block text-sm font-medium text-gray-700 mb-1">
                     Categoría *
                   </label>
                   <select
+                    id="product-category"
                     value={formData.category_id}
                     onChange={(e) => setFormData({...formData, category_id: e.target.value})}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -662,10 +665,11 @@ const ProductsManager = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="product-price" className="block text-sm font-medium text-gray-700 mb-1">
                       Precio *
                     </label>
                     <input
+                      id="product-price"
                       type="number"
                       value={formData.price}
                       onChange={(e) => setFormData({...formData, price: e.target.value})}
@@ -678,10 +682,11 @@ const ProductsManager = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="product-prep-time" className="block text-sm font-medium text-gray-700 mb-1">
                       Tiempo prep. (min)
                     </label>
                     <input
+                      id="product-prep-time"
                       type="number"
                       value={formData.preparation_time}
                       onChange={(e) => setFormData({...formData, preparation_time: parseInt(e.target.value)})}
@@ -696,10 +701,10 @@ const ProductsManager = () => {
               {/* Imagen y opciones */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <span id="product-image-caption" className="block text-sm font-medium text-gray-700 mb-1">
                     Imagen del producto
-                  </label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                  </span>
+                  <div role="group" aria-labelledby="product-image-caption" className="border-2 border-dashed border-gray-300 rounded-lg p-4">
                     {formData.image_url ? (
                       <div className="relative">
                         <img
@@ -751,10 +756,11 @@ const ProductsManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="product-beverage-type" className="block text-sm font-medium text-gray-700 mb-1">
                     Tipo de bebida (opcional)
                   </label>
                   <select
+                    id="product-beverage-type"
                     value={formData.beverage_type}
                     onChange={(e) => setFormData({...formData, beverage_type: e.target.value})}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -799,10 +805,11 @@ const ProductsManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="product-description" className="block text-sm font-medium text-gray-700 mb-1">
                 Descripción
               </label>
               <textarea
+                id="product-description"
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
                 rows={3}

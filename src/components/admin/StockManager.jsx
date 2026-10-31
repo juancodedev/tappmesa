@@ -547,10 +547,11 @@ const StockManager = () => {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="stock-movement-quantity" className="block text-sm font-medium text-gray-700 mb-1">
                   Cantidad
                 </label>
                 <input
+                  id="stock-movement-quantity"
                   type="number"
                   min="1"
                   step="0.01"
@@ -562,10 +563,11 @@ const StockManager = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="stock-movement-reason" className="block text-sm font-medium text-gray-700 mb-1">
                   Motivo
                 </label>
                 <select
+                  id="stock-movement-reason"
                   value={movementForm.reason}
                   onChange={(e) => setMovementForm({ ...movementForm, reason: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -587,10 +589,11 @@ const StockManager = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="stock-movement-notes" className="block text-sm font-medium text-gray-700 mb-1">
                   Notas (opcional)
                 </label>
                 <textarea
+                  id="stock-movement-notes"
                   rows={3}
                   value={movementForm.notes}
                   onChange={(e) => setMovementForm({ ...movementForm, notes: e.target.value })}
@@ -706,10 +709,11 @@ const StockManager = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="stock-min" className="block text-sm font-medium text-gray-700 mb-2">
                     Stock Mínimo *
                   </label>
                   <input
+                    id="stock-min"
                     type="number"
                     required
                     min="0"
@@ -721,10 +725,11 @@ const StockManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="stock-max" className="block text-sm font-medium text-gray-700 mb-2">
                     Stock Máximo *
                   </label>
                   <input
+                    id="stock-max"
                     type="number"
                     required
                     min="0"
@@ -736,10 +741,11 @@ const StockManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="stock-unit" className="block text-sm font-medium text-gray-700 mb-2">
                     Unidad de Medida *
                   </label>
                   <select
+                    id="stock-unit"
                     value={editForm.unit}
                     onChange={(e) => setEditForm({ ...editForm, unit: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
@@ -755,10 +761,11 @@ const StockManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="stock-unit-cost" className="block text-sm font-medium text-gray-700 mb-2">
                     Costo por Unidad *
                   </label>
                   <input
+                    id="stock-unit-cost"
                     type="number"
                     required
                     min="0"
@@ -770,10 +777,11 @@ const StockManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="stock-supplier" className="block text-sm font-medium text-gray-700 mb-2">
                     Proveedor
                   </label>
                   <input
+                    id="stock-supplier"
                     type="text"
                     value={editForm.supplier}
                     onChange={(e) => setEditForm({ ...editForm, supplier: e.target.value })}
@@ -783,10 +791,11 @@ const StockManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="stock-location" className="block text-sm font-medium text-gray-700 mb-2">
                     Ubicación
                   </label>
                   <input
+                    id="stock-location"
                     type="text"
                     value={editForm.location}
                     onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
@@ -796,10 +805,11 @@ const StockManager = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="stock-expiry-date" className="block text-sm font-medium text-gray-700 mb-2">
                     Fecha de Vencimiento
                   </label>
                   <input
+                    id="stock-expiry-date"
                     type="date"
                     value={editForm.expiry_date}
                     onChange={(e) => setEditForm({ ...editForm, expiry_date: e.target.value })}
@@ -809,10 +819,11 @@ const StockManager = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="stock-notes" className="block text-sm font-medium text-gray-700 mb-2">
                   Notas
                 </label>
                 <textarea
+                  id="stock-notes"
                   rows="3"
                   value={editForm.notes}
                   onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
