@@ -209,6 +209,12 @@ Rollback: `rollback-fix-customer-stats-on-conflict.sql`.
 ```
 Rollback: `rollback-fix-admin-users-role-check.sql` (falla si ya hay usuarios `kitchen`).
 
+### Si crear o editar un usuario falla con 500 (`column admin_users.phone does not exist`):
+```sql
+1. add-admin-users-phone.sql   -- agrega la columna phone (nullable) a admin_users
+```
+Rollback: `rollback-add-admin-users-phone.sql` (borra los teléfonos guardados).
+
 ---
 
 ## 📊 Scripts de Diagnóstico (No Ejecutar - Solo Consulta)
