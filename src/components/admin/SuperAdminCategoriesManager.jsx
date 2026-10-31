@@ -141,7 +141,7 @@ const SuperAdminCategoriesManager = () => {
         {/* Filters */}
         <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
             <input
               type="text"
               placeholder="Buscar categorías..."
@@ -171,7 +171,7 @@ const SuperAdminCategoriesManager = () => {
               <p className="text-sm text-gray-600">Total Categorías</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</p>
             </div>
-            <Tag className="h-8 w-8 text-gray-400" />
+            <Tag className="h-8 w-8 text-gray-500" />
           </div>
         </div>
 
@@ -214,7 +214,7 @@ const SuperAdminCategoriesManager = () => {
       {/* Categories Grid */}
       {filteredCategories.length === 0 ? (
         <div className="bg-white rounded-lg shadow-sm border border-primary-200 p-12 text-center">
-          <Tag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <Tag className="w-16 h-16 text-gray-500 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No hay categorías</h3>
           <p className="text-gray-600">
             No se encontraron categorías con los filtros seleccionados
@@ -262,7 +262,7 @@ const SuperAdminCategoriesManager = () => {
                 {/* Tenant */}
                 <div className="mb-4 pb-4 border-b border-primary-200">
                   <div className="flex items-center text-sm text-gray-600">
-                    <Building2 className="h-4 w-4 text-gray-400 mr-2" />
+                    <Building2 className="h-4 w-4 text-gray-500 mr-2" />
                     <div>
                       <div className="font-medium text-gray-900">{category.tenant?.name}</div>
                       <div className="text-xs text-gray-500">@{category.tenant?.slug}</div>
