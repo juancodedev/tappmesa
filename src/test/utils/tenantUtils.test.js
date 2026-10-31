@@ -102,6 +102,17 @@ describe('getSubdomain', () => {
       mockLocation({ hostname: 'midominio.com' })
       expect(getSubdomain()).toBeNull()
     })
+
+    // tappmesa.juancode.dev is the app's own host (landing + admin), not a local.
+    it('should return null for the app host on a custom domain', () => {
+      mockLocation({ hostname: 'tappmesa.juancode.dev' })
+      expect(getSubdomain()).toBeNull()
+    })
+
+    it('should treat /admin on the app host as the global admin', () => {
+      mockLocation({ hostname: 'tappmesa.juancode.dev', pathname: '/admin' })
+      expect(getAppType()).toBe('admin')
+    })
   })
 })
 

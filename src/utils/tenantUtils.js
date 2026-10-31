@@ -73,8 +73,9 @@ export const getSubdomain = () => {
   // Dominios personalizados (e.g., cafeteria1.midominio.com)
   if (parts.length >= 2) {
     const subdomain = parts[0]
-    // Solo considerar como subdomain si no es www y no es el dominio base
-    if (subdomain !== 'www' && parts.length > 2) {
+    // Solo considerar como subdomain si no es www, no es el host de la app
+    // (tappmesa.juancode.dev = landing + admin global) y no es el dominio base
+    if (subdomain !== 'www' && subdomain !== 'tappmesa' && parts.length > 2) {
       return subdomain
     }
   }
