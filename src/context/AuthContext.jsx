@@ -3,6 +3,7 @@
 import { createContext, useReducer, useEffect, useCallback } from "react";
 import { authService } from "../lib/supabase";
 import logger from "../utils/logger";
+import { hasStaffPermission } from "../utils/staffRoles";
 
 export const AuthContext = createContext();
 
@@ -216,28 +217,8 @@ export function AuthProvider({ children }) {
       return tenantAdminPermissions.includes(`${resource}:${action}`);
     }
 
-    // Permisos delegados para el personal (staff)
-    if (state.user.role === 'staff') {
-      const staffPermissions = [
-        'orders:read', 'orders:write',
-        'reservations:read', 'reservations:write',
-        'customers:read',
-        'tables:read'
-      ];
-      return staffPermissions.includes(`${resource}:${action}`);
-    }
-
-// Permisos delegados para el personal de cocina
-    if (state.user.role === 'cocina') {
-      const cocinaPermissions = [
-        'orders:read', 'orders:write',
-        'tables:read'
-      ];
-      return cocinaPermissions.includes(`${resource}:${action}`);
-    }
-
-// Default: no permissions for other roles
-    return false;
+    // Permisos delegados para el personal (garzón y cocina)
+    return hasStaffPermission(state.user.role, resource, action);
   };
 
   const value = {

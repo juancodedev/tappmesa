@@ -33,7 +33,9 @@ const ProtectedRoute = ({
   }
 
   // Verificar rol específico requerido
-  if (requireRole && user.role !== requireRole) {
+  // requireRole: one role or a list of accepted roles
+  const acceptedRoles = requireRole ? [].concat(requireRole) : []
+  if (requireRole && !acceptedRoles.includes(user.role)) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="text-center">
@@ -45,7 +47,7 @@ const ProtectedRoute = ({
             No tienes permisos para acceder a esta sección.
           </p>
           <p className="text-sm text-gray-500">
-            Rol requerido: {requireRole} | Tu rol: {user.role}
+            Rol requerido: {acceptedRoles.join(' o ')} | Tu rol: {user.role}
           </p>
         </div>
       </div>

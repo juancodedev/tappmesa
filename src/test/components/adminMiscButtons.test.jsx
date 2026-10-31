@@ -65,6 +65,17 @@ describe('UsersManager buttons', () => {
     expect(within(dialog).getByRole('button', { name: 'Cancelar' })).toHaveClass(TOUCH)
     expect(within(dialog).getByRole('button', { name: /crear usuario/i })).toHaveClass(TOUCH)
   })
+
+  // The form offered "customer", which /api/admin/users rejects, and not the
+  // waiter/kitchen roles the staff views require.
+  it('offers the staff roles the API accepts', async () => {
+    render(<UsersManager />)
+    await screen.findByText('Eva Soto')
+    await userEvent.click(screen.getByRole('button', { name: /agregar usuario/i }))
+    const select = within(screen.getByRole('dialog')).getByDisplayValue('Personal')
+    const values = within(select).getAllByRole('option').map((o) => o.value)
+    expect(values).toEqual(['staff', 'waiter', 'kitchen', 'tenant_admin'])
+  })
 })
 
 describe('Settings and PreBillSettings buttons', () => {

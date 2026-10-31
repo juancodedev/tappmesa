@@ -55,9 +55,6 @@ const KitchenDashboard = () => {
         .from('orders')
         .select(`
           *,
-          table:tables (
-            number
-          ),
           order_items (
             id,
             product_id,
@@ -323,7 +320,7 @@ const KitchenDashboard = () => {
                         Pedido #{order.order_number}
                       </h3>
                       <p className="text-sm">
-                        Mesa {order.table?.number || 'N/A'}
+                        Mesa {order.table_number || 'N/A'}
                       </p>
                     </div>
                     <div className="text-right">

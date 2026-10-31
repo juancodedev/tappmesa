@@ -30,6 +30,7 @@ import {
 
 // Keep ProtectedRoute as regular import since it's lightweight
 import ProtectedRoute from './components/ProtectedRoute';
+import { WAITER_ROLES, KITCHEN_ROLES } from './utils/staffRoles';
 
 // Componente para debugging
 // Debug panel visible solo en desarrollo (import.meta.env.DEV)
@@ -130,24 +131,24 @@ function App() {
 
             {/* Ruta para el dashboard del garzón */}
             <Route path="/waiter" element={
-              <ProtectedRoute requireRole="staff">
+              <ProtectedRoute requireRole={WAITER_ROLES}>
                 <WaiterDashboard />
               </ProtectedRoute>
             } />
             <Route path="/garzon" element={
-              <ProtectedRoute requireRole="staff">
+              <ProtectedRoute requireRole={WAITER_ROLES}>
                 <WaiterDashboard />
               </ProtectedRoute>
             } />
 
             {/* Ruta para el dashboard de cocina */}
             <Route path="/kitchen" element={
-              <ProtectedRoute requireRole="cocina">
+              <ProtectedRoute requireRole={KITCHEN_ROLES}>
                 <KitchenDashboard />
               </ProtectedRoute>
             } />
             <Route path="/cocina" element={
-              <ProtectedRoute requireRole="cocina">
+              <ProtectedRoute requireRole={KITCHEN_ROLES}>
                 <KitchenDashboard />
               </ProtectedRoute>
             } />

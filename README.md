@@ -171,11 +171,11 @@ En las tablas, `<tenant>` es la URL base del local (ej. `http://bistro-sunrise-t
 
 | Vista | URL | Rol requerido |
 |---|---|---|
-| Cocina | `<tenant>/kitchen` (o `/cocina`) | `cocina` (exacto) |
-| Garzón | `<tenant>/waiter` (o `/garzon`) | `staff` (exacto) |
+| Cocina | `<tenant>/kitchen` (o `/cocina`) | `kitchen` (o el antiguo `cocina`) |
+| Garzón | `<tenant>/waiter` (o `/garzon`) | `waiter` (o el antiguo `staff`) |
 | Login de personal / admin | `<tenant>/admin/login` | — |
 
-> Cocina y Garzón comparan el rol de forma exacta: un `admin` o `super_admin` ve "Acceso Denegado". Para revisarlas, creá un usuario con ese rol en Admin → Usuarios.
+> Los roles aceptados están en `src/utils/staffRoles.js`. Un `tenant_admin` ve "Acceso Denegado"; el `super_admin` entra a todas. Para revisarlas, creá un usuario con rol Garzón o Cocina en Admin → Usuarios: el login lo lleva directo a su vista.
 
 #### Admin del local (`<tenant>/admin/...`)
 
