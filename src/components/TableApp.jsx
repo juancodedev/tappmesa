@@ -125,7 +125,7 @@ const TableApp = () => {
               <span className="font-semibold text-gray-900">
                 {table.number}
               </span>
-              <span className="text-gray-400" aria-hidden="true">•</span>
+              <span className="text-gray-500" aria-hidden="true">•</span>
               <span className="text-gray-600">Capacidad:</span>
               <span className="font-semibold text-gray-900">
                 {table.capacity} personas

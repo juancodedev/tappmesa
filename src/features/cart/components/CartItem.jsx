@@ -29,7 +29,7 @@ const CartItem = ({ item }) => {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-2xl">
-              {item.product.beverage_type === 'cold' ? <Snowflake className="w-6 h-6 text-blue-400" /> : item.product.beverage_type === 'hot' ? <Coffee className="w-6 h-6 text-amber-600" /> : <Utensils className="w-6 h-6 text-gray-400" />}
+              {item.product.beverage_type === 'cold' ? <Snowflake className="w-6 h-6 text-blue-400" /> : item.product.beverage_type === 'hot' ? <Coffee className="w-6 h-6 text-amber-600" /> : <Utensils className="w-6 h-6 text-gray-500" />}
             </div>
           )}
         </div>

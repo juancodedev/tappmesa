@@ -155,7 +155,7 @@ const TableOrdersHistory = () => {
   if (orders.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow-sm p-6 text-center">
-        <Package className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+        <Package className="w-12 h-12 text-gray-500 mx-auto mb-3" />
         <p className="text-gray-600">No hay pedidos en esta sesión</p>
         <p className="text-sm text-gray-500 mt-1">
           Los pedidos que hagas aparecerán aquí

@@ -292,7 +292,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
               {/* Search */}
               <div className="mb-4">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                   <input
                     type="text"
                     placeholder="Buscar productos..."
@@ -339,7 +339,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
               ) : filteredProducts.length === 0 ? (
                 <div className="text-center py-12">
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Search className="w-8 h-8 text-gray-400" />
+                    <Search className="w-8 h-8 text-gray-500" />
                   </div>
                   <p className="text-gray-900 font-medium mb-2">No se encontraron productos</p>
                   <p className="text-sm text-gray-600">
@@ -388,7 +388,7 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
             <div className="flex-1 overflow-y-auto p-4 max-h-[calc(90vh-300px)]">
               {cart.length === 0 ? (
                 <div className="text-center py-12">
-                  <ShoppingCart className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <ShoppingCart className="w-12 h-12 text-gray-500 mx-auto mb-3" />
                   <p className="text-gray-600">Carrito vacío</p>
                   <p className="text-sm text-gray-500">Agrega productos al pedido</p>
                 </div>
