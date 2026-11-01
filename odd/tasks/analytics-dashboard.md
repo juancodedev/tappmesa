@@ -17,7 +17,7 @@ Branches: `feat/analytics-sql` (T1), `feat/analytics-ui` (T2). Delivery: one PR 
 | ID | Specs | Route | Status | Evidence |
 |----|-------|-------|--------|----------|
 | T1 | S2-S5, S6(1) | inline | done, PR #220, applied in prod | 36f7e388 + correction commit |
-| T2 | S1, S6(2) | inline | in progress | |
+| T2 | S1, S6(2) | inline | done, PR #221 | merged 2026-10-30 |
 
 ## Log
 
@@ -36,3 +36,4 @@ Branches: `feat/analytics-sql` (T1), `feat/analytics-ui` (T2). Delivery: one PR 
 - L13: #220 merged ("#220 mergeado, continúa con el #221"); #221 retargeted to main. Independent verifier on fc31b4ed: S1 PASS, S6(2) FAIL with 2 blockers. (1) rolldown's manualChunks pulls a named group's dependencies, so the `analytics` group took react-dom; react-vendor imported it statically and index.html preloaded the 374 kB chart chunk on every page. Fix: leave recharts deps and the analytics screen unassigned so the lazy import owns them; pinned by src/test/config/chunks.test.js (old config returns `charts-vendor`/`analytics`). After: no Analytics modulepreload, no static import of it, react-vendor back to ~195 kB. (2) An error after switching local kept the previous local's numbers undimmed; now data is dropped on error (RED test first). Suite 404/404, lint, build OK. Advisory kept: a tab left open past midnight keeps yesterday's window until the period changes.
 - L14: Merged origin/main (#219 deps batch) into feat/analytics-ui; lockfile conflict resolved by taking main's lockfile and re-adding recharts with the pinned pnpm@10.34.9 (frozen install OK). react-vendor 223 kB equals main's (deps bumps), no recharts in it.
 - L15: Gentle AI review (risk + reliability) of #221 approved and acknowledged. Advisories addressed with RED tests first: lazy chunk failure now shows a local "Recargar página" alert instead of unmounting the admin shell (`AnalyticsRoute` + `ChunkErrorBoundary`); a rejected RPC shows the error instead of an endless spinner; "Personalizado" is pressed only once applied; out-of-order and retry behavior now pinned by tests. R1 (server-side isolation) re-checked in prod read-only: tenant_admin gets its own local, `forbidden` for another tenant and for all locals. Suite 409/409, lint, build OK; Analytics chunk still not preloaded.
+- L16 (2026-10-31): Feature closed. #221 merged into main on 2026-10-30.
