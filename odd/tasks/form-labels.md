@@ -15,12 +15,13 @@ Branch per slice off `main` · Delivery: one PR per task, independent (disjoint 
 
 | ID | Screens | Labels | Specs | Route | Status | Commit |
 |---|---|---|---|---|---|---|
-| T1 | ReservationForm, RegisterPage | 21 | S2-S5 | delegated (parallel) | in progress | |
-| T2 | Settings, PreBillSettings, UsersManager, TableStatusesManager, TablesManager | 31 | S2-S5 | delegated (parallel) | in progress | |
-| T3 | ProductsManager, CategoriesManager, StockManager, CompleteStockManager | 35 | S2-S5 | delegated (parallel) | in progress | |
-| T4 | ReservationsManager, CustomersManager, TenantSubscriptionsManager, SubscriptionPlansManager, SuperAdminTenantsManager | 27 | S2-S5 | delegated (parallel) | in progress | |
+| T1 | ReservationForm, RegisterPage | 21 | S2-S5 | delegated (parallel) | done | PR #238 (fix/form-labels-public) |
+| T2 | Settings, PreBillSettings, UsersManager, TableStatusesManager, TablesManager | 31 | S2-S5 | delegated (parallel) | done | PR #239 (fix/form-labels-settings) |
+| T3 | ProductsManager, CategoriesManager, StockManager, CompleteStockManager | 35 | S2-S5 | delegated (parallel) | done | PR #240 (fix/form-labels-catalog) |
+| T4 | ReservationsManager, CustomersManager, TenantSubscriptionsManager, SubscriptionPlansManager, SuperAdminTenantsManager | 27 | S2-S5 | delegated (parallel) | done | PR #241 (fix/form-labels-admin) |
 
 ## Log
 
 - L1 (2026-10-31): "listo, mergeado, sigue con los labels".
 - L2: Inventory on main af864b39: 114 labels name no control (neither htmlFor nor a nested control) in 16 files. Route: four parallel writers (Writer trigger (a): independent units, disjoint files, ~30 labels each), parent owns git and opens one PR per slice from main.
+- L3 (2026-10-31): Feature closed. PRs #238, #239, #240, #241 merged into main (bfb10434).
