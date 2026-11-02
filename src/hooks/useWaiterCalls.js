@@ -24,6 +24,9 @@ export function useWaiterCalls(tenantId) {
   // Tenant whose results may still be applied; a slow load of a previous
   // tenant (or after unmount) is dropped.
   const activeTenantRef = useRef(tenantId)
+  // Only the most recent load may apply its result (Realtime bursts and the
+  // safety reload can overlap, and responses may arrive out of order).
+  const loadSeqRef = useRef(0)
 
   const load = useCallback(async () => {
     if (!tenantId) return
@@ -31,6 +34,7 @@ export function useWaiterCalls(tenantId) {
       setLoading(false) // no client configured: nothing will ever load
       return
     }
+    const seq = ++loadSeqRef.current
     const { data, error: loadError } = await supabase
       .from('waiter_calls')
       .select(CALL_COLUMNS)
@@ -39,7 +43,7 @@ export function useWaiterCalls(tenantId) {
       .gt('expires_at', new Date().toISOString())
       .order('created_at', { ascending: true })
 
-    if (activeTenantRef.current !== tenantId) return
+    if (activeTenantRef.current !== tenantId || seq !== loadSeqRef.current) return
     if (loadError) {
       setError(loadError)
     } else {

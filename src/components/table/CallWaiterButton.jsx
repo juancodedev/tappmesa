@@ -23,6 +23,9 @@ const CallWaiterButton = ({ tenant, tableSession }) => {
     callRef.current = next
     setCallState(next)
   }, [])
+  // Bumped by every call/cancel so a status read started earlier cannot
+  // overwrite the newer state when it finishes last.
+  const versionRef = useRef(0)
   const [message, setMessage] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [reason, setReason] = useState('assistance')
@@ -33,8 +36,10 @@ const CallWaiterButton = ({ tenant, tableSession }) => {
   // Latest call of the session; reports how a pending call ended.
   const refresh = useCallback(async () => {
     if (!capability) return
+    const version = versionRef.current
     try {
       const data = await api.get(`/api/waiter-calls/current?capability=${encodeURIComponent(capability)}`)
+      if (version !== versionRef.current) return
       const latest = data?.call || null
       const previous = callRef.current
       if (previous?.status === 'pending' && latest?.id === previous.id && latest.status !== 'pending') {
@@ -67,8 +72,10 @@ const CallWaiterButton = ({ tenant, tableSession }) => {
 
   const requestCall = async () => {
     setBusy(true)
+    versionRef.current += 1
     try {
       const data = await api.post('/api/waiter-calls', { capability, reason })
+      versionRef.current += 1
       setCall(data.call)
       setMessage('')
       setDialogOpen(false)
@@ -82,8 +89,10 @@ const CallWaiterButton = ({ tenant, tableSession }) => {
 
   const cancelCall = async () => {
     setBusy(true)
+    versionRef.current += 1
     try {
       const data = await api.post(`/api/waiter-calls/${call.id}/cancel`, { capability })
+      versionRef.current += 1
       if (data?.cancelled) {
         setCall(data.call)
         setMessage('Llamado cancelado.')
@@ -105,6 +114,11 @@ const CallWaiterButton = ({ tenant, tableSession }) => {
             Mesero en camino
           </p>
           <p className="text-xs text-gray-600">{reasonLabel(call.reason)}</p>
+          {message && (
+            <p role="alert" className="max-w-56 text-xs text-red-700">
+              {message}
+            </p>
+          )}
           <Button
             type="button"
             variant="outline"

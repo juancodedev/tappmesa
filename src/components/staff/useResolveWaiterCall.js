@@ -8,8 +8,14 @@ export function useResolveWaiterCall(resolve) {
 
   const handleResolve = async (callId) => {
     setResolvingId(callId)
-    const outcome = await resolve(callId)
-    setResolvingId(null)
+    let outcome
+    try {
+      outcome = await resolve(callId)
+    } catch (error) {
+      outcome = { ok: false, error }
+    } finally {
+      setResolvingId(null)
+    }
     if (outcome?.error) setMessage('No pudimos marcar el llamado. Intenta de nuevo.')
     else if (!outcome?.ok) setMessage('Ese llamado ya fue atendido o venció.')
     else setMessage('')

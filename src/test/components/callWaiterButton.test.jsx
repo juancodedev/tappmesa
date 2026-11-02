@@ -137,4 +137,37 @@ describe('CallWaiterButton', () => {
     await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent(/nadie respondió/i))
     expect(screen.getByRole('button', { name: /llamar al mesero/i })).toBeEnabled()
   })
+
+  it('shows a cancel error while the call is still pending', async () => {
+    api.get.mockResolvedValue({ call: pending() })
+    api.post.mockRejectedValue(new Error('Sin conexión'))
+    const user = userEvent.setup()
+    render(<CallWaiterButton tenant={tenant} tableSession={session} />)
+
+    await user.click(await screen.findByRole('button', { name: /cancelar llamado/i }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Sin conexión')
+    expect(screen.getByText(/mesero en camino/i)).toBeInTheDocument()
+  })
+
+  it('ignores a slow status read that started before a new call', async () => {
+    let releaseStale
+    api.get.mockReturnValueOnce(new Promise((resolve) => {
+      releaseStale = () => resolve({ call: null })
+    }))
+    api.post.mockResolvedValue({ call: pending() })
+    const user = userEvent.setup()
+    render(<CallWaiterButton tenant={tenant} tableSession={session} />)
+    await waitFor(() => expect(api.get).toHaveBeenCalled())
+
+    await user.click(screen.getByRole('button', { name: /llamar al mesero/i }))
+    await user.click(screen.getByRole('button', { name: /^llamar$/i }))
+    expect(await screen.findByText(/mesero en camino/i)).toBeInTheDocument()
+
+    await act(async () => {
+      releaseStale()
+    })
+
+    expect(screen.getByText(/mesero en camino/i)).toBeInTheDocument()
+  })
 })
