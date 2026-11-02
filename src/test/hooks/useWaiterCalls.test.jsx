@@ -197,6 +197,28 @@ describe('useWaiterCalls', () => {
     expect(result.current.calls.map((c) => c.id)).toEqual(['fresh'])
   })
 
+  it('keeps the newest load when an older one of the same tenant finishes last', async () => {
+    let releaseOld
+    mocks.state.listDeferred = new Promise((resolve) => {
+      releaseOld = () => resolve({ data: [call({ id: 'old' })], error: null })
+    })
+    const { result } = renderHook(() => useWaiterCalls('tenant-1'))
+    await waitFor(() => expect(mocks.current.client.from).toHaveBeenCalled())
+
+    mocks.state.listDeferred = null
+    mocks.state.listResult = { data: [call({ id: 'new' })], error: null }
+    await act(async () => {
+      mocks.current.client.channels[0].handlers[0].handler({ eventType: 'UPDATE' })
+    })
+    await waitFor(() => expect(result.current.calls.map((c) => c.id)).toEqual(['new']))
+
+    await act(async () => {
+      releaseOld()
+    })
+
+    expect(result.current.calls.map((c) => c.id)).toEqual(['new'])
+  })
+
   it('stops loading when there is no Supabase client', async () => {
     mocks.current.client = null
 

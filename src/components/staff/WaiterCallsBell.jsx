@@ -12,7 +12,7 @@ const WaiterCallsBellInner = ({ tenantId }) => {
   const panelId = useId()
   const wrapperRef = useRef(null)
   const [open, setOpen] = useState(false)
-  const { calls, now, resolve } = useWaiterCalls(tenantId)
+  const { calls, now, error, resolve } = useWaiterCalls(tenantId)
   const { resolvingId, message, handleResolve } = useResolveWaiterCall(resolve)
 
   useEffect(() => {
@@ -60,6 +60,11 @@ const WaiterCallsBellInner = ({ tenantId }) => {
           className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] rounded-lg border border-gray-200 bg-white p-4 shadow-lg"
         >
           <p className="text-sm font-semibold text-gray-900">Llamados de mesa</p>
+          {error && (
+            <p role="alert" className="mt-2 text-sm text-red-700">
+              No pudimos cargar los llamados. Se reintentará automáticamente.
+            </p>
+          )}
           <WaiterCallsList calls={calls} now={now} onResolve={handleResolve} resolvingId={resolvingId} />
           <p role="status" className="text-sm text-gray-600">
             {message}

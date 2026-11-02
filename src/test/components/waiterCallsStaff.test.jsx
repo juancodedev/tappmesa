@@ -80,6 +80,17 @@ describe('WaiterCallsPanel (waiter dashboard)', () => {
     expect(screen.getByRole('status')).toHaveTextContent(/ya fue atendido/i)
   })
 
+  it('frees the button and reports an error when resolving throws', async () => {
+    hook.value = { ...hook.value, resolve: vi.fn(async () => { throw new Error('network') }) }
+    const user = userEvent.setup()
+    render(<WaiterCallsPanel tenantId="tenant-1" />)
+
+    await user.click(screen.getByRole('button', { name: /atendido.*mesa 4/i }))
+
+    expect(await screen.findByRole('status')).toHaveTextContent(/no pudimos marcar el llamado/i)
+    expect(screen.getByRole('button', { name: /atendido.*mesa 4/i })).toBeEnabled()
+  })
+
   it('reports a load error', () => {
     hook.value = { ...hook.value, calls: [], error: { message: 'boom' } }
     render(<WaiterCallsPanel tenantId="tenant-1" />)
@@ -114,5 +125,15 @@ describe('WaiterCallsBell (admin header)', () => {
     const { container } = render(<WaiterCallsBell tenantId={null} />)
 
     expect(container).toBeEmptyDOMElement()
+  })
+
+  it('shows a load error inside the bell panel', async () => {
+    hook.value = { ...hook.value, calls: [], error: { message: 'boom' } }
+    const user = userEvent.setup()
+    render(<WaiterCallsBell tenantId="tenant-1" />)
+
+    await user.click(screen.getByRole('button', { name: /llamados de mesa/i }))
+
+    expect(screen.getByRole('alert')).toHaveTextContent(/no pudimos cargar los llamados/i)
   })
 })
