@@ -16,6 +16,7 @@ import ActiveOrdersPanel from './components/ActiveOrdersPanel'
 import CreateOrderModal from './components/CreateOrderModal'
 import CreateReservationModal from './components/CreateReservationModal'
 import { Button } from '../../components/ui/Button'
+import WaiterCallsPanel from '../../components/staff/WaiterCallsPanel'
 
 const WaiterDashboard = () => {
   const { tenant, loading: tenantLoading } = useTenant()
@@ -211,6 +212,9 @@ const WaiterDashboard = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-6">
+        {/* Table calls (call-waiter): above the stats so a new call is seen first */}
+        <WaiterCallsPanel tenantId={tenant?.id} />
+
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-white rounded-lg shadow-sm p-4">

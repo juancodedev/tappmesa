@@ -25,6 +25,7 @@ import { useAuth } from '../hooks/useAuth'
 import { SuperAdminProvider, SuperAdminContext } from '../context/SuperAdminContext'
 import ProtectedRoute, { SuperAdminRoute, TenantAdminRoute } from './ProtectedRoute'
 import TenantSelector from './admin/TenantSelector'
+import WaiterCallsBell from './staff/WaiterCallsBell'
 
 // Importar componentes
 import Dashboard from './admin/Dashboard'
@@ -77,6 +78,8 @@ const SecureAdminAppContent = () => {
 
   // Get SuperAdmin context if available (only for super admins)
   const superAdminContext = useContext(SuperAdminContext)
+  // Tenant whose table calls the header bell shows (call-waiter S8).
+  const callsTenantId = isSuperAdmin ? superAdminContext?.selectedTenantId : user?.tenant_id
 
   // Navegación base para todos los usuarios autenticados
   const baseNavigation = [
@@ -348,6 +351,7 @@ const SecureAdminAppContent = () => {
             </div>
 
             <div className="flex items-center space-x-4">
+              <WaiterCallsBell tenantId={callsTenantId} />
               <div className="text-sm text-primary-900">
                 <div className="font-semibold">{user?.full_name}</div>
                 <div className="text-xs text-primary-700 capitalize">{user?.role?.replace('_', ' ')}</div>

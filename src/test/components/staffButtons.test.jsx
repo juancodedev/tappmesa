@@ -28,6 +28,9 @@ const chain = (t) => {
 vi.mock('../../lib/supabase', () => ({ supabase: { from: (t) => chain(t) } }))
 vi.mock('../../hooks/useTenant', () => ({ useTenant: () => ({ tenant: { id: 't1', name: 'Bistro' }, loading: false }) }))
 vi.mock('../../hooks/useAuth', () => ({ useAuth: () => ({ user: { tenant_id: 't1', role: 'cocina', full_name: 'Chef' }, logout: vi.fn() }) }))
+vi.mock('../../hooks/useWaiterCalls', () => ({
+  useWaiterCalls: () => ({ calls: [], now: 0, loading: false, error: null, resolve: vi.fn() }),
+}))
 vi.mock('../../hooks/useToast', () => ({ useToast: () => ({ success: vi.fn(), error: vi.fn() }) }))
 vi.mock('../../hooks/useConfirm', () => ({ useConfirm: () => vi.fn().mockResolvedValue(false) }))
 

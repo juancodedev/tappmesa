@@ -9,5 +9,16 @@ export const WAITER_CALL_REASONS = [
   { value: 'other', label: 'Otro motivo' },
 ]
 
+// Table numbers are free text ("4", "Terraza 2"): prefix only bare numbers.
+export const tableLabel = (number) => {
+  if (number === null || number === undefined || number === '') return 'Mesa sin número'
+  return /^\d+$/.test(String(number)) ? `Mesa ${number}` : String(number)
+}
+
+export const elapsedLabel = (createdAt, now) => {
+  const minutes = Math.floor((now - new Date(createdAt).getTime()) / 60000)
+  return minutes < 1 ? 'recién' : `hace ${minutes} min`
+}
+
 export const reasonLabel = (value) =>
   WAITER_CALL_REASONS.find((reason) => reason.value === value)?.label || 'Necesito ayuda'

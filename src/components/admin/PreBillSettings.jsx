@@ -12,7 +12,8 @@ import {
   FileText,
   Upload,
   ExternalLink,
-  Building2
+  Building2,
+  BellRing
 } from 'lucide-react'
 import { useToast } from '../../hooks/useToast'
 import { Button } from '../ui/Button'
@@ -30,6 +31,8 @@ const PreBillSettings = () => {
 
   // Survey settings
   const [showSurvey, setShowSurvey] = useState(false)
+  // call-waiter S7: customers can call the waiter from the table (default on)
+  const [waiterCallsEnabled, setWaiterCallsEnabled] = useState(true)
   const [surveyUrl, setSurveyUrl] = useState('')
   const [benefitText, setBenefitText] = useState('')
   const [surveyActive, setSurveyActive] = useState(true)
@@ -74,6 +77,7 @@ const PreBillSettings = () => {
 
       setTipPercentage(tipValue)
       setShowSurvey(surveyValue)
+      setWaiterCallsEnabled(tenantData.waiter_calls_enabled !== false)
 
       // Load survey configuration if exists
       const { data: survey, error } = await supabase
@@ -128,6 +132,7 @@ const PreBillSettings = () => {
         .update({
           tip_percentage: parseFloat(tipPercentage),
           show_survey: showSurvey,
+          waiter_calls_enabled: waiterCallsEnabled,
           updated_at: new Date().toISOString()
         })
         .eq('id', effectiveTenant.id)
@@ -341,6 +346,28 @@ const PreBillSettings = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Waiter calls (call-waiter S7) */}
+        <div className="bg-white rounded-lg shadow-md border border-primary-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
+            <BellRing className="h-5 w-5 mr-2 text-orange-600" aria-hidden="true" />
+            Llamar al mesero
+          </h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Los clientes ven un botón en el menú de la mesa para pedir ayuda o la cuenta. Los garzones y administradores reciben el llamado al instante.
+          </p>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={waiterCallsEnabled}
+              onChange={(e) => setWaiterCallsEnabled(e.target.checked)}
+              className="w-5 h-5 text-orange-600 rounded focus:ring-primary-500"
+            />
+            <span className="text-sm font-medium text-gray-700">
+              Permitir que los clientes llamen al mesero
+            </span>
+          </label>
         </div>
 
         {/* Survey Settings */}
