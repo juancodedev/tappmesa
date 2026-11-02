@@ -15,9 +15,21 @@ export const tableLabel = (number) => {
   return /^\d+$/.test(String(number)) ? `Mesa ${number}` : String(number)
 }
 
-export const elapsedLabel = (createdAt, now) => {
-  const minutes = Math.floor((now - new Date(createdAt).getTime()) / 60000)
-  return minutes < 1 ? 'recién' : `hace ${minutes} min`
+export const waitingSeconds = (createdAt, now) =>
+  Math.max(0, Math.floor((now - new Date(createdAt).getTime()) / 1000))
+
+// Live waiting timer as mm:ss (pending calls expire after 5 minutes).
+export const timerLabel = (seconds) => {
+  const mm = String(Math.floor(seconds / 60)).padStart(2, '0')
+  const ss = String(seconds % 60).padStart(2, '0')
+  return `${mm}:${ss}`
+}
+
+// normal under 2 minutes, warning from 2, urgent from 4 (expiry is at 5).
+export const waitingUrgency = (seconds) => {
+  if (seconds >= 240) return 'urgent'
+  if (seconds >= 120) return 'warning'
+  return 'normal'
 }
 
 export const reasonLabel = (value) =>

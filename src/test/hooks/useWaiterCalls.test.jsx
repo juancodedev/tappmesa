@@ -219,6 +219,28 @@ describe('useWaiterCalls', () => {
     expect(result.current.calls.map((c) => c.id)).toEqual(['new'])
   })
 
+  it('advances the clock every second so staff see a live timer', async () => {
+    vi.useFakeTimers()
+    try {
+      const { result } = renderHook(() => useWaiterCalls('tenant-1'))
+      // Let the initial load (a 0 ms timeout) settle; it also stamps now.
+      await act(async () => {
+        vi.advanceTimersByTime(0)
+      })
+      expect(result.current.loading).toBe(false)
+      const start = result.current.now
+
+      await act(async () => {
+        vi.advanceTimersByTime(1000)
+      })
+
+      expect(result.current.now - start).toBeGreaterThanOrEqual(1000)
+      expect(result.current.now - start).toBeLessThan(2000)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('stops loading when there is no Supabase client', async () => {
     mocks.current.client = null
 

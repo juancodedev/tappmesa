@@ -11,7 +11,7 @@ import { supabase, onSupabaseClientChange } from '../lib/supabase'
 const CALL_COLUMNS = 'id, table_id, reason, status, created_at, expires_at, table:tables(number)'
 
 // Re-render often enough to drop expired calls and refresh elapsed times.
-const CLOCK_TICK_MS = 15 * 1000
+const CLOCK_TICK_MS = 1000
 // Safety net if a Realtime event is missed (socket drop, token refresh).
 const SAFETY_RELOAD_MS = 60 * 1000
 
