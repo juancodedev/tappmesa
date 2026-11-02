@@ -5,6 +5,7 @@ import { createWaiterCallsHandler } from '../../../api/waiter-calls.js'
 // read and cancel their own call through the table-session capability.
 
 const CAP = 'ts_capability-token'
+const CALL_ID = '11111111-2222-4333-8444-555555555555'
 
 const sessionRow = { id: 'ts-1', tenant_id: 'tenant-1', status: 'active', ended_at: null }
 
@@ -279,7 +280,7 @@ describe('POST /api/waiter-calls/:id/cancel', () => {
   })
 
   const cancelReq = (body = { capability: CAP }) =>
-    makeReq({ url: '/api/waiter-calls/call-1/cancel', body })
+    makeReq({ url: `/api/waiter-calls/${CALL_ID}/cancel`, body })
 
   it('cancels only a pending call of the caller session (S2, S10)', async () => {
     supabase.state.updateResult = { data: [pendingCall({ status: 'cancelled' })], error: null }
@@ -292,7 +293,7 @@ describe('POST /api/waiter-calls/:id/cancel', () => {
     const update = supabase.chains.find((c) => c.isUpdate)
     expect(update.updateValues).toMatchObject({ status: 'cancelled' })
     expect(eqArgs(update)).toEqual(
-      expect.arrayContaining(['id=call-1', 'table_session_id=ts-1', 'status=pending']),
+      expect.arrayContaining([`id=${CALL_ID}`, 'table_session_id=ts-1', 'status=pending']),
     )
     // An expired call is not cancellable, so it never starts the cooldown (S6).
     expect(update.gt).toHaveBeenCalledWith('expires_at', expect.any(String))
@@ -306,6 +307,16 @@ describe('POST /api/waiter-calls/:id/cancel', () => {
 
     expect(res.statusCode).toBe(200)
     expect(res.body).toEqual({ cancelled: false })
+  })
+
+  it('answers cancelled false for an id that is not a uuid, without querying', async () => {
+    const res = makeRes()
+
+    await handler(makeReq({ url: '/api/waiter-calls/abc/cancel', body: { capability: CAP } }), res)
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual({ cancelled: false })
+    expect(supabase.chains.some((c) => c.isUpdate)).toBe(false)
   })
 
   it('rejects an unknown capability with 401', async () => {

@@ -18,7 +18,10 @@ const mocks = vi.hoisted(() => {
         chain.values = values
         return chain
       })
-      chain.then = (resolve) => resolve(chain.isUpdate ? state.updateResult : state.listResult)
+      chain.then = (resolve) => {
+        if (!chain.isUpdate && state.listDeferred) return state.listDeferred.then(resolve)
+        return resolve(chain.isUpdate ? state.updateResult : state.listResult)
+      }
       client.chains.push(chain)
       return chain
     })
@@ -75,6 +78,7 @@ describe('useWaiterCalls', () => {
     mocks.listeners.clear()
     mocks.state.listResult = { data: [], error: null }
     mocks.state.updateResult = { data: [{ id: 'c1' }], error: null }
+    mocks.state.listDeferred = null
   })
 
   it('loads the pending, unexpired calls of the tenant oldest first (S8)', async () => {
@@ -169,6 +173,28 @@ describe('useWaiterCalls', () => {
     unmount()
 
     expect(mocks.current.client.removeChannel).toHaveBeenCalledWith(channel)
+  })
+
+  it('ignores a slow load of the previous tenant after switching tenants', async () => {
+    let releaseStale
+    mocks.state.listDeferred = new Promise((resolve) => {
+      releaseStale = () => resolve({ data: [call({ id: 'stale' })], error: null })
+    })
+    const { result, rerender } = renderHook(({ tenant }) => useWaiterCalls(tenant), {
+      initialProps: { tenant: 'tenant-1' },
+    })
+    await waitFor(() => expect(mocks.current.client.from).toHaveBeenCalled())
+
+    mocks.state.listDeferred = null
+    mocks.state.listResult = { data: [call({ id: 'fresh' })], error: null }
+    rerender({ tenant: 'tenant-2' })
+    await waitFor(() => expect(result.current.calls.map((c) => c.id)).toEqual(['fresh']))
+
+    await act(async () => {
+      releaseStale()
+    })
+
+    expect(result.current.calls.map((c) => c.id)).toEqual(['fresh'])
   })
 
   it('does nothing without a tenant', () => {

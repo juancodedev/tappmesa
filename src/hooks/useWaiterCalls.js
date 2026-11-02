@@ -5,7 +5,7 @@
 // Reads and resolutions use the staff claim JWT; RLS scopes them to the
 // tenant and to waiter/admin roles (database/create-waiter-calls.sql).
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase, onSupabaseClientChange } from '../lib/supabase'
 
 const CALL_COLUMNS = 'id, table_id, reason, status, created_at, expires_at, table:tables(number)'
@@ -21,6 +21,10 @@ export function useWaiterCalls(tenantId) {
   const [error, setError] = useState(null)
   const [now, setNow] = useState(() => Date.now())
 
+  // Tenant whose results may still be applied; a slow load of a previous
+  // tenant (or after unmount) is dropped.
+  const activeTenantRef = useRef(tenantId)
+
   const load = useCallback(async () => {
     if (!tenantId || !supabase) return
     const { data, error: loadError } = await supabase
@@ -31,6 +35,7 @@ export function useWaiterCalls(tenantId) {
       .gt('expires_at', new Date().toISOString())
       .order('created_at', { ascending: true })
 
+    if (activeTenantRef.current !== tenantId) return
     if (loadError) {
       setError(loadError)
     } else {
@@ -42,6 +47,7 @@ export function useWaiterCalls(tenantId) {
   }, [tenantId])
 
   useEffect(() => {
+    activeTenantRef.current = tenantId
     if (!tenantId) return undefined
 
     let subscription = null
@@ -75,6 +81,7 @@ export function useWaiterCalls(tenantId) {
     const safety = setInterval(load, SAFETY_RELOAD_MS)
 
     return () => {
+      activeTenantRef.current = null
       stopListening()
       clearTimeout(initialLoad)
       clearInterval(tick)

@@ -39,6 +39,21 @@ describe('setAccessToken', () => {
     expect(mod.supabase.realtime.setAuth).toHaveBeenCalledWith('jwt-1')
   })
 
+  it('handles a rejected Realtime authorization instead of leaving it unhandled', async () => {
+    const { createClient } = await import('@supabase/supabase-js')
+    const pending = Promise.reject(new Error('socket down'))
+    vi.spyOn(pending, 'catch')
+    createClient.mockImplementationOnce((url, key, opts) => ({
+      opts,
+      realtime: { setAuth: vi.fn(() => pending) },
+      removeAllChannels: vi.fn(async () => []),
+    }))
+
+    mod.setAccessToken('jwt-x')
+
+    expect(pending.catch).toHaveBeenCalledWith(expect.any(Function))
+  })
+
   it('does not authorize Realtime when the JWT is cleared', () => {
     mod.setAccessToken(null)
 

@@ -52,7 +52,7 @@ export function setAccessToken(jwt) {
         global: { headers: { Authorization: `Bearer ${jwt}` } }
       })
     : createClient(supabaseUrl, supabaseAnonKey, CLIENT_OPTS)
-  if (jwt) supabase.realtime.setAuth(jwt)
+  if (jwt) Promise.resolve(supabase.realtime.setAuth(jwt)).catch(() => {})
   if (previous && previous !== supabase) {
     Promise.resolve(previous.removeAllChannels?.()).catch(() => {})
   }

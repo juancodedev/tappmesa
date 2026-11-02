@@ -26,6 +26,8 @@ const logger = require('../lib/utils/logger');
 
 const REASONS = ['assistance', 'bill', 'other'];
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 const CALL_COLUMNS =
   'id, tenant_id, table_id, table_session_id, reason, status, created_at, expires_at, resolved_at';
 
@@ -128,6 +130,9 @@ async function cancelCall(supabase, req, res, callId) {
   const session = await findSessionByCapability(supabase, req.body?.capability || null);
   if (!session) {
     return res.status(401).json({ error: 'Capability inválida o sesión cerrada' });
+  }
+  if (!UUID_PATTERN.test(callId)) {
+    return res.status(200).json({ cancelled: false }); // a malformed id never matches (no 22P02 → 500)
   }
 
   const { data, error } = await supabase
