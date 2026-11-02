@@ -95,7 +95,9 @@ CREATE POLICY waiter_calls_staff_select ON public.waiter_calls
 DROP POLICY IF EXISTS waiter_calls_staff_resolve ON public.waiter_calls;
 CREATE POLICY waiter_calls_staff_resolve ON public.waiter_calls
   FOR UPDATE TO authenticated
-  USING (public.app_can_handle_waiter_call(tenant_id) AND status = 'pending')
+  -- An expired-but-still-pending call is not attendable: attending it would
+  -- start the customer's 60-second cooldown after they already waited.
+  USING (public.app_can_handle_waiter_call(tenant_id) AND status = 'pending' AND expires_at > now())
   WITH CHECK (public.app_can_handle_waiter_call(tenant_id) AND status = 'attended');
 
 -- 5. Resolution stamp: resolved_at always set by the server; resolved_by

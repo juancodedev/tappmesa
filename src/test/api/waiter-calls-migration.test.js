@@ -48,6 +48,10 @@ describe('database/create-waiter-calls.sql', () => {
     expect(sql).toMatch(/CREATE POLICY waiter_calls_staff_select ON public\.waiter_calls\s+FOR SELECT TO authenticated/)
     expect(sql).toMatch(/CREATE POLICY waiter_calls_staff_resolve ON public\.waiter_calls\s+FOR UPDATE TO authenticated/)
     expect(sql).toMatch(/WITH CHECK \(public\.app_can_handle_waiter_call\(tenant_id\) AND status = 'attended'\)/)
+    // An expired pending call cannot be attended (no cooldown after an expiry, S6).
+    expect(sql).toMatch(
+      /USING \(public\.app_can_handle_waiter_call\(tenant_id\) AND status = 'pending' AND expires_at > now\(\)\)/
+    )
   })
 
   it('stamps resolution server-side instead of trusting the client', () => {
