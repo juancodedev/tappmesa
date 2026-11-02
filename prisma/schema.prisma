@@ -520,6 +520,7 @@ model admin_users {
   password_reset_tokens password_reset_tokens[]
   user_migration_status user_migration_status[]
 
+  waiter_calls_resolved waiter_calls[]
   @@index([email], map: "idx_admin_users_email")
   @@index([supabase_user_id], map: "idx_admin_users_supabase_id")
   @@index([tenant_id], map: "idx_admin_users_tenant")
@@ -1209,6 +1210,7 @@ model table_sessions {
   tables         tables?     @relation(fields: [table_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   tenants        tenants?    @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  waiter_calls   waiter_calls[]
   @@schema("public")
 }
 
@@ -1254,6 +1256,7 @@ model tables {
   table_statuses       table_statuses?  @relation(fields: [status_id], references: [id], onUpdate: NoAction)
   tenants              tenants?         @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  waiter_calls         waiter_calls[]
   @@unique([tenant_id, number])
   @@unique([tenant_id, unique_code])
   @@schema("public")
@@ -1348,6 +1351,8 @@ model tenants {
   tenant_settings      tenant_settings?
   tenant_subscriptions tenant_subscriptions?
 
+  waiter_calls_enabled Boolean                @default(true)
+  waiter_calls         waiter_calls[]
   @@schema("public")
 }
 
@@ -1437,4 +1442,25 @@ enum one_time_token_type {
   phone_change_token
 
   @@schema("auth")
+}
+
+model waiter_calls {
+  id               String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id        String         @db.Uuid
+  table_id         String         @db.Uuid
+  table_session_id String         @db.Uuid
+  reason           String         @default("assistance")
+  status           String         @default("pending")
+  created_at       DateTime       @default(now()) @db.Timestamptz(6)
+  expires_at       DateTime       @default(dbgenerated("(now() + '00:05:00'::interval)")) @db.Timestamptz(6)
+  resolved_at      DateTime?      @db.Timestamptz(6)
+  resolved_by      String?        @db.Uuid
+  tenants          tenants        @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tables           tables         @relation(fields: [table_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  table_sessions   table_sessions @relation(fields: [table_session_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  admin_users      admin_users?   @relation(fields: [resolved_by], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@index([tenant_id, created_at], map: "waiter_calls_tenant_pending_idx")
+  @@index([table_session_id, created_at(sort: Desc)], map: "waiter_calls_session_created_idx")
+  @@schema("public")
 }
