@@ -283,11 +283,17 @@ const WaiterDashboard = () => {
           tenant={tenant}
           tables={tables}
           selectedTable={selectedTable}
+          activeSessions={activeSessions}
           onClose={() => {
             setShowCreateOrder(false)
             setSelectedTable(null)
           }}
           onSuccess={() => {
+            loadData()
+            setShowCreateOrder(false)
+            setSelectedTable(null)
+          }}
+          onSessionClosed={() => {
             loadData()
             setShowCreateOrder(false)
             setSelectedTable(null)

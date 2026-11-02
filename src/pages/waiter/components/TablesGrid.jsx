@@ -1,14 +1,9 @@
-import { useState } from 'react'
 import { Clock, Users, DollarSign, Edit, XCircle, CheckCircle } from 'lucide-react'
-import { supabase } from '../../../lib/supabase'
-import { useToast } from '../../../hooks/useToast'
-import { useConfirm } from '../../../hooks/useConfirm'
 import { Button } from '../../../components/ui/Button'
+import { useCloseTableSession } from '../hooks/useCloseTableSession'
 
 const TablesGrid = ({ tables, activeSessions, view, onCreateOrder, onRefresh }) => {
-  const confirm = useConfirm()
-  const toast = useToast()
-  const [updatingTable, setUpdatingTable] = useState(null)
+  const { closeSession: handleCloseSession, closingTableId: updatingTable } = useCloseTableSession(onRefresh)
 
   const getTableSession = (tableId) => {
     return activeSessions.find(s => s.table_id === tableId)
@@ -39,41 +34,6 @@ const TablesGrid = ({ tables, activeSessions, view, onCreateOrder, onRefresh }) 
       label: 'Ocupada',
       color: 'bg-yellow-100 text-yellow-800',
       bgColor: 'bg-yellow-50'
-    }
-  }
-
-  const handleCloseSession = async (session) => {
-    if (!await confirm(`¿Cerrar la sesión de la Mesa ${session.table.number}?`, { confirmLabel: 'Cerrar sesión', tone: 'danger' })) {
-      return
-    }
-
-    setUpdatingTable(session.table_id)
-    try {
-      // Cerrar sesión
-      const { error } = await supabase
-        .from('table_sessions')
-        .update({ status: 'closed', ended_at: new Date().toISOString() })
-        .eq('id', session.id)
-
-      if (error) throw error
-
-      // Cambiar estado de la mesa a "disponible" automáticamente
-      const { error: tableError } = await supabase
-        .from('tables')
-        .update({ status: 'available' })
-        .eq('id', session.table_id)
-
-      if (tableError) {
-        // console.error('Error updating table status:', tableError)
-        // No lanzamos error para no bloquear el flujo principal
-      }
-
-      onRefresh()
-    } catch (error) {
-      // console.error('Error closing session:', error)
-      toast.error('Error al cerrar la sesión: ' + error.message)
-    } finally {
-      setUpdatingTable(null)
     }
   }
 
