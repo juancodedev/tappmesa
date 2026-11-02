@@ -180,6 +180,17 @@ describe('Cart optional customer fields', () => {
     expect(cartValue.placeOrder).toHaveBeenCalledWith(expect.objectContaining({ name: 'Ana', phone: '' }))
   })
 
+  it('sends trimmed values, so blank input counts as empty', async () => {
+    const user = userEvent.setup()
+    render(<Cart />)
+
+    await user.type(screen.getByLabelText(/nombre/i), '   ')
+    await user.type(screen.getByLabelText(/teléfono/i), ' 912345678 ')
+    await user.click(screen.getByRole('button', { name: /enviar pedido/i }))
+
+    expect(cartValue.placeOrder).toHaveBeenCalledWith(expect.objectContaining({ name: '', phone: '912345678' }))
+  })
+
   it('omits empty customer data from the confirmation', async () => {
     cartValue = buildCart({
       placeOrder: vi.fn().mockResolvedValue({

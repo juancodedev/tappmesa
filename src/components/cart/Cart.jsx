@@ -70,8 +70,8 @@ const Cart = () => {
 
     setFormError(null)
 
-    // Realizar pedido
-    const result = await placeOrder(customerInfo)
+    // Realizar pedido (blank name or phone are sent as empty)
+    const result = await placeOrder({ ...customerInfo, name: customerInfo.name.trim(), phone })
     
     if (result.success) {
       setOrderResult(result)
