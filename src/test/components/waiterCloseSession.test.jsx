@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 // Waiter "Cerrar sesión": the order modal offers the same action as the
 // list view of TablesGrid (close the table session, free the table).
 
-const db = vi.hoisted(() => ({ updates: [], confirmResult: true }))
+const db = vi.hoisted(() => ({ updates: [], confirmResult: true, sessionError: null, toastError: vi.fn() }))
 
 vi.mock('../../lib/supabase', () => {
   const chain = (table) => {
@@ -17,13 +17,14 @@ vi.mock('../../lib/supabase', () => {
     })
     c.then = (resolve) => {
       if (c.values) db.updates.push({ table, values: c.values, eq: c.eq.mock.calls })
-      return resolve({ data: [], error: null })
+      const error = table === 'table_sessions' && c.values ? db.sessionError : null
+      return resolve({ data: [], error })
     }
     return c
   }
   return { supabase: { from: (t) => chain(t) } }
 })
-vi.mock('../../hooks/useToast', () => ({ useToast: () => ({ success: vi.fn(), error: vi.fn() }) }))
+vi.mock('../../hooks/useToast', () => ({ useToast: () => ({ success: vi.fn(), error: db.toastError }) }))
 vi.mock('../../hooks/useConfirm', () => ({ useConfirm: () => vi.fn(async () => db.confirmResult) }))
 
 import TablesGrid from '../../pages/waiter/components/TablesGrid'
@@ -46,6 +47,8 @@ describe('waiter close table session', () => {
   beforeEach(() => {
     db.updates.length = 0
     db.confirmResult = true
+    db.sessionError = null
+    db.toastError.mockReset()
   })
 
   it('closes the session from the order modal like the list view does', async () => {
@@ -89,6 +92,30 @@ describe('waiter close table session', () => {
 
     expect(db.updates).toEqual([])
     expect(onSessionClosed).not.toHaveBeenCalled()
+  })
+
+  it('reports the error and keeps the table busy when closing the session fails', async () => {
+    db.sessionError = { message: 'permission denied' }
+    const onSessionClosed = vi.fn()
+    const user = userEvent.setup()
+    render(
+      <CreateOrderModal
+        tenant={{ id: 't1' }}
+        tables={[table]}
+        selectedTable={table}
+        activeSessions={[session]}
+        onSessionClosed={onSessionClosed}
+        onClose={vi.fn()}
+        onSuccess={vi.fn()}
+      />
+    )
+
+    await user.click(screen.getByRole('button', { name: /cerrar sesión de mesa 4/i }))
+
+    await waitFor(() => expect(db.toastError).toHaveBeenCalledWith('Error al cerrar la sesión: permission denied'))
+    expect(db.updates.some((u) => u.table === 'tables')).toBe(false)
+    expect(onSessionClosed).not.toHaveBeenCalled()
+    expect(screen.getByRole('button', { name: /cerrar sesión de mesa 4/i })).toBeEnabled()
   })
 
   it('hides the action in the modal when the table has no open session', () => {
