@@ -106,16 +106,26 @@ INSERT INTO tables (id, tenant_id, number, capacity) VALUES
   ('b0000000-0000-4000-8000-0000000000e2', 'b0000000-0000-4000-8000-0000000000e1', 'G1', 4);
 INSERT INTO table_sessions (id, tenant_id, table_id, session_code) VALUES
   ('a0000000-0000-4000-8000-0000000000e3', 'a0000000-0000-4000-8000-0000000000e1', 'a0000000-0000-4000-8000-0000000000e2', 'GATE-A'),
+  ('a0000000-0000-4000-8000-0000000000e4', 'a0000000-0000-4000-8000-0000000000e1', 'a0000000-0000-4000-8000-0000000000e2', 'GATE-A2'),
   ('b0000000-0000-4000-8000-0000000000e3', 'b0000000-0000-4000-8000-0000000000e1', 'b0000000-0000-4000-8000-0000000000e2', 'GATE-B');
 
+-- The "no error raised" failure is raised OUTSIDE the inner block, so the
+-- handler can never swallow it (its message contains p_code).
 CREATE OR REPLACE FUNCTION pg_temp.expect_error(p_sql text, p_code text, p_gate text)
 RETURNS void LANGUAGE plpgsql AS $$
+DECLARE
+  v_raised boolean := false;
 BEGIN
-  EXECUTE p_sql;
-  RAISE EXCEPTION '% FAILED: expected error %', p_gate, p_code;
-EXCEPTION WHEN OTHERS THEN
-  IF position(p_code IN SQLERRM) = 0 THEN
-    RAISE EXCEPTION '% FAILED: expected %, got %', p_gate, p_code, SQLERRM;
+  BEGIN
+    EXECUTE p_sql;
+  EXCEPTION WHEN OTHERS THEN
+    v_raised := true;
+    IF position(p_code IN SQLERRM) = 0 THEN
+      RAISE EXCEPTION '% FAILED: expected %, got %', p_gate, p_code, SQLERRM;
+    END IF;
+  END;
+  IF NOT v_raised THEN
+    RAISE EXCEPTION '% FAILED: expected error %, none raised', p_gate, p_code;
   END IF;
 END $$;
 
@@ -159,13 +169,21 @@ BEGIN
 
   SELECT count(*) INTO v_count FROM waiter_calls WHERE table_session_id IN (sa, sb) AND status = 'pending';
   IF v_count <> 2 THEN RAISE EXCEPTION 'B7_pending_count FAILED: %', v_count; END IF;
+
+  -- Fixture for B8c: a call of tenant A that is past expires_at but still
+  -- 'pending' (no customer request flipped it yet).
+  PERFORM tappmesa_request_waiter_call('a0000000-0000-4000-8000-0000000000e4');
+  UPDATE waiter_calls SET expires_at = now() - interval '1 second'
+   WHERE table_session_id = 'a0000000-0000-4000-8000-0000000000e4' AND status = 'pending';
+  GET DIAGNOSTICS v_count = ROW_COUNT;
+  IF v_count <> 1 THEN RAISE EXCEPTION 'B8c_fixture FAILED: %', v_count; END IF;
   RAISE NOTICE 'PART B1-B7 PASSED';
 END $$;
 
 -- B8 · staff visibility and resolution under claim RLS (S8, S10)
 SET LOCAL ROLE authenticated;
 SELECT set_config('request.jwt.claims',
-  '{"role":"authenticated","app_tenant_id":"a0000000-0000-4000-8000-0000000000e1","app_role":"waiter"}', true);
+  '{"role":"authenticated","app_tenant_id":"a0000000-0000-4000-8000-0000000000e1","app_role":"waiter","app_user_id":"not-a-uuid"}', true);
 DO $$
 DECLARE v_count int;
 BEGIN
@@ -174,7 +192,9 @@ BEGIN
   UPDATE waiter_calls SET status = 'attended' WHERE tenant_id = 'b0000000-0000-4000-8000-0000000000e1';
   GET DIAGNOSTICS v_count = ROW_COUNT;
   IF v_count <> 0 THEN RAISE EXCEPTION 'B8b_cross_tenant_write FAILED'; END IF;
-  -- the expired call of tenant A is not attendable
+  -- the expired-but-pending call of tenant A is visible yet not attendable
+  SELECT count(*) INTO v_count FROM waiter_calls WHERE status = 'pending' AND expires_at <= now();
+  IF v_count <> 1 THEN RAISE EXCEPTION 'B8c_fixture_visible FAILED: %', v_count; END IF;
   UPDATE waiter_calls SET status = 'attended' WHERE status = 'pending' AND expires_at <= now();
   GET DIAGNOSTICS v_count = ROW_COUNT;
   IF v_count <> 0 THEN RAISE EXCEPTION 'B8c_expired_not_attendable FAILED'; END IF;
@@ -182,6 +202,10 @@ BEGIN
   GET DIAGNOSTICS v_count = ROW_COUNT;
   IF v_count <> 1 THEN RAISE EXCEPTION 'B8d_attend FAILED: %', v_count; END IF;
   PERFORM pg_temp.expect_error('UPDATE waiter_calls SET reason = ''other''', 'permission denied', 'B8e_only_status');
+  -- B8f · a malformed app_user_id claim still attends; resolved_by stays NULL
+  IF (SELECT resolved_by FROM waiter_calls WHERE status = 'attended' LIMIT 1) IS NOT NULL THEN
+    RAISE EXCEPTION 'B8f_resolved_by_without_claim FAILED';
+  END IF;
 END $$;
 
 SELECT set_config('request.jwt.claims',

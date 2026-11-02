@@ -57,6 +57,8 @@ describe('database/create-waiter-calls.sql', () => {
   it('stamps resolution server-side instead of trusting the client', () => {
     expect(sql).toMatch(/CREATE TRIGGER waiter_calls_stamp_resolution/)
     expect(sql).toMatch(/NEW\.resolved_by := /)
+    // A malformed app_user_id claim must not make attending fail (no blind ::uuid cast).
+    expect(sql).toMatch(/WHEN v_user ~\* '\^\[0-9a-f\]\{8\}-/)
   })
 
   it('exposes the request function to service_role only (S4-S7)', () => {

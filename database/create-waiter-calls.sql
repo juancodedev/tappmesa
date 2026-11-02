@@ -107,14 +107,17 @@ RETURNS trigger
 LANGUAGE plpgsql
 SET search_path = public
 AS $$
+DECLARE
+  v_user text;
 BEGIN
   IF NEW.status IS DISTINCT FROM OLD.status AND NEW.status <> 'pending' THEN
     NEW.resolved_at := coalesce(NEW.resolved_at, now());
     IF NEW.status = 'attended' THEN
-      NEW.resolved_by := nullif(
-        nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'app_user_id',
-        ''
-      )::uuid;
+      v_user := nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'app_user_id';
+      -- A malformed claim must not block attending the call.
+      NEW.resolved_by := CASE
+        WHEN v_user ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN v_user::uuid
+      END;
     END IF;
   END IF;
   RETURN NEW;
