@@ -54,6 +54,7 @@ function createSessionHandler({ supabase }) {
           email: session.admin.email,
           full_name: session.admin.full_name,
           role: session.admin.role,
+          tenant_id: session.admin.tenant_id,
           last_login: session.admin.last_login
         },
         tenant: session.tenant,

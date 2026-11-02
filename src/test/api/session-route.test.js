@@ -88,6 +88,7 @@ describe('GET /api/auth/session (task 1.4, SEC-002)', () => {
     expect(res.statusCode).toBe(200)
     expect(res.body.admin.id).toBe('admin-uuid-1')
     expect(res.body.admin.role).toBe('tenant_admin')
+    expect(res.body.admin.tenant_id).toBe('tenant-uuid-1')
     expect(res.body.tenant.id).toBe('tenant-uuid-1')
     expect(res.body.sessionToken).toBe('session-token-1')
     expect(res.body.token).toBeTruthy()
