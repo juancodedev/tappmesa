@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Plus, Minus, Search, ShoppingCart, Trash2 } from 'lucide-react'
+import { Plus, Minus, Search, ShoppingCart, Trash2, XCircle } from 'lucide-react'
 import { supabase } from '../../../lib/supabase'
 import Modal from '../../../components/ui/Modal'
 import { useToast } from '../../../hooks/useToast'
 import { Button } from '../../../components/ui/Button'
+import { useCloseTableSession } from '../hooks/useCloseTableSession'
 
-const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess }) => {
+const CreateOrderModal = ({ tenant, tables, selectedTable, activeSessions = [], onClose, onSuccess, onSessionClosed }) => {
   const toast = useToast()
   const [currentStep, setCurrentStep] = useState(selectedTable ? 'menu' : 'table')
   const [selectedTableId, setSelectedTableId] = useState(selectedTable?.id || '')
@@ -16,6 +17,8 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
   const [cart, setCart] = useState([])
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const { closeSession, closingTableId } = useCloseTableSession(onSessionClosed)
+  const openSession = activeSessions.find((s) => s.table_id === selectedTableId)
 
   useEffect(() => {
     if (tenant) {
@@ -260,6 +263,23 @@ const CreateOrderModal = ({ tenant, tables, selectedTable, onClose, onSuccess })
       size="full"
       bodyClassName="flex flex-col"
     >
+      {openSession && (
+        <div className="flex items-center justify-between gap-3 border-b border-gray-200 px-6 py-3">
+          <p className="text-sm text-gray-600">La mesa tiene una sesión abierta.</p>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => closeSession(openSession)}
+            disabled={closingTableId === openSession.table_id}
+            aria-label={`Cerrar sesión de Mesa ${openSession.table?.number ?? ''}`}
+            className="min-h-11 text-red-700 hover:bg-red-50"
+          >
+            <XCircle aria-hidden="true" />
+            Cerrar sesión
+          </Button>
+        </div>
+      )}
+
       {/* Content */}
       <div className="flex-1 overflow-hidden flex">
         {/* Left: Table Selection / Menu */}
