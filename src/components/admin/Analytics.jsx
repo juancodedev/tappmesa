@@ -9,6 +9,7 @@ import PeriodFilter from './analytics/PeriodFilter'
 import KpiGrid from './analytics/KpiGrid'
 import { DailySalesChart, HourlyOrdersChart } from './analytics/AnalyticsCharts'
 import { InProgress, TopProducts, Categories, SalesByTable, LocalsRanking } from './analytics/BreakdownTables'
+import WaiterCallStats from './analytics/WaiterCallStats'
 
 // Reads get_analytics (database/analytics-functions.sql). Tenant admins see
 // their own local; the super admin follows the global tenant selector, where
@@ -111,6 +112,7 @@ const Analytics = () => {
             <Categories categories={data.categories} />
           </div>
           <SalesByTable tables={data.tables} />
+          <WaiterCallStats tenantId={tenantId} range={range} isSuperAdmin={Boolean(isSuperAdmin)} />
         </div>
       )}
     </div>

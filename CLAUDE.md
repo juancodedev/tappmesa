@@ -107,6 +107,7 @@ Serverless functions in `api/auth/`:
 - Customers call the waiter from `TableApp` (`src/components/table/CallWaiterButton.jsx`) through `api/waiter-calls.js` (create, `/current`, `/:id/cancel`), authorized by the table-session capability (`lib/utils/tableSession.js`, shared with `api/orders.js`).
 - Table `waiter_calls` (`database/create-waiter-calls.sql`, gates in `scripts/verify-waiter-calls.sql`): one pending call per table session, 60 s cooldown after cancel/attended, pending calls expire after 5 minutes, per-tenant toggle `tenants.waiter_calls_enabled` (edited in `PreBillSettings`).
 - Staff (`waiter`, `staff`, `tenant_admin`, `super_admin`) read and mark calls attended with their claim JWT via `useWaiterCalls` (Supabase Realtime): `WaiterCallsPanel` on `/waiter`, `WaiterCallsBell` in the admin header. `setAccessToken` also authorizes the Realtime socket (`realtime.setAuth`).
+- Staff lists show a live `mm:ss` waiting timer (`src/utils/waiterCalls.js`). `/admin/analytics` shows attention times (total and per staff user) from the `get_waiter_call_stats` RPC (`database/create-waiter-call-stats.sql`, SECURITY INVOKER, tenant_admin/super_admin); staff names come from `/api/admin/users`.
 
 ### Services Layer
 

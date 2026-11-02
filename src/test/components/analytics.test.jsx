@@ -34,6 +34,14 @@ vi.mock('../../lib/supabase', () => ({
 let auth
 vi.mock('../../hooks/useAuth', () => ({ useAuth: () => auth }))
 
+const waiterCallStats = vi.fn()
+vi.mock('../../components/admin/analytics/WaiterCallStats', () => ({
+  default: (props) => {
+    waiterCallStats(props)
+    return null
+  },
+}))
+
 import Analytics from '../../components/admin/Analytics'
 
 const DAY = 24 * 60 * 60 * 1000
@@ -198,6 +206,26 @@ describe('Analytics (tenant admin)', () => {
     renderAsTenant()
     await screen.findByRole('group', { name: 'Ventas' })
     expect(screen.queryByRole('table', { name: 'Ranking de locales' })).not.toBeInTheDocument()
+  })
+})
+
+describe('Analytics waiter call times', () => {
+  beforeEach(() => waiterCallStats.mockClear())
+
+  it('shows the waiter call times for the same local and period', async () => {
+    renderAsTenant()
+    await screen.findByRole('group', { name: 'Ventas' })
+    const props = waiterCallStats.mock.calls.at(-1)[0]
+    expect(props.tenantId).toBe('t1')
+    expect(props.isSuperAdmin).toBe(false)
+    expect(props.range.from.toISOString()).toBe(lastRange().p_from)
+    expect(props.range.to.toISOString()).toBe(lastRange().p_to)
+  })
+
+  it('passes the super admin selection, null meaning all locals', async () => {
+    renderAsSuperAdmin(null)
+    await screen.findByRole('group', { name: 'Ventas' })
+    expect(waiterCallStats.mock.calls.at(-1)[0]).toMatchObject({ tenantId: null, isSuperAdmin: true })
   })
 })
 

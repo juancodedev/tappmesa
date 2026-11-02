@@ -228,6 +228,13 @@ Rollback: `rollback-fix-clear-insecure-password-trigger.sql`.
 Requiere `secure-data-access.sql` (helpers `app_claim_tenant_id` / `app_is_super_admin`). Es re-ejecutable.
 Rollback: `rollback-create-waiter-calls.sql` (borra todos los llamados).
 
+### Tiempos de atención de llamados (Analíticas):
+```sql
+1. create-waiter-call-stats.sql   -- función get_waiter_call_stats + índice (tenant_id, created_at)
+```
+Requiere `create-waiter-calls.sql`. Es re-ejecutable.
+Rollback: `rollback-create-waiter-call-stats.sql` (no borra llamados).
+
 ---
 
 ## 📊 Scripts de Diagnóstico (No Ejecutar - Solo Consulta)
