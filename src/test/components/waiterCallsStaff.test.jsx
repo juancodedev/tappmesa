@@ -32,9 +32,25 @@ describe('WaiterCallsList', () => {
     expect(items).toHaveLength(2)
     expect(items[0]).toHaveTextContent('Mesa 4')
     expect(items[0]).toHaveTextContent('Pedir la cuenta')
-    expect(items[0]).toHaveTextContent('hace 7 min')
+    expect(items[0]).toHaveTextContent('Esperando 07:00')
     expect(items[1]).toHaveTextContent('Terraza 2')
-    expect(items[1]).toHaveTextContent('recién')
+    expect(items[1]).toHaveTextContent('Esperando 00:20')
+  })
+
+  it('flags how urgent each call is from its waiting time', () => {
+    const now = new Date('2026-11-02T12:00:00Z').getTime()
+    const at = (secondsAgo) => new Date(now - secondsAgo * 1000).toISOString()
+    const waiting = [
+      { id: 'a', reason: 'other', created_at: at(30), table: { number: '1' } },
+      { id: 'b', reason: 'other', created_at: at(150), table: { number: '2' } },
+      { id: 'c', reason: 'other', created_at: at(250), table: { number: '3' } },
+    ]
+    render(<WaiterCallsList calls={waiting} now={now} onResolve={vi.fn()} />)
+
+    const timers = screen.getAllByRole('timer')
+    expect(timers.map((t) => t.textContent)).toEqual(['00:30', '02:30', '04:10'])
+    expect(timers.map((t) => t.dataset.urgency)).toEqual(['normal', 'warning', 'urgent'])
+    expect(timers[0]).toHaveAttribute('datetime', at(30))
   })
 
   it('calls onResolve with the call id from a labelled "Atendido" button (S8)', async () => {

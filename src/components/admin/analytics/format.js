@@ -27,3 +27,11 @@ const dayLabel = new Intl.DateTimeFormat('es-CL', { day: 'numeric', month: 'shor
 export const formatDay = (date) => dayLabel.format(new Date(`${date}T00:00:00Z`))
 
 export const formatHour = (hour) => `${String(hour).padStart(2, '0')}:00`
+
+/** Seconds as "45 s" or "2 min 05 s"; no value -> "—". */
+export const formatDuration = (seconds) => {
+  if (seconds === null || seconds === undefined) return '—'
+  const total = Math.max(0, Math.round(Number(seconds) || 0))
+  if (total < 60) return `${total} s`
+  return `${Math.floor(total / 60)} min ${String(total % 60).padStart(2, '0')} s`
+}

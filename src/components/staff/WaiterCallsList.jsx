@@ -1,6 +1,12 @@
 import { Check, Receipt, BellRing } from 'lucide-react'
 import { Button } from '../ui/Button'
-import { elapsedLabel, reasonLabel, tableLabel } from '../../utils/waiterCalls'
+import { reasonLabel, tableLabel, timerLabel, waitingSeconds, waitingUrgency } from '../../utils/waiterCalls'
+
+const URGENCY_CLASSES = {
+  normal: 'text-gray-700',
+  warning: 'text-amber-700',
+  urgent: 'text-red-700',
+}
 
 // Presentational list of pending waiter calls (call-waiter S8). The caller
 // passes the calls oldest first.
@@ -14,6 +20,8 @@ const WaiterCallsList = ({ calls, now, onResolve, resolvingId = null }) => {
       {calls.map((call) => {
         const table = tableLabel(call.table?.number)
         const ReasonIcon = call.reason === 'bill' ? Receipt : BellRing
+        const seconds = waitingSeconds(call.created_at, now)
+        const urgency = waitingUrgency(seconds)
         return (
           <li key={call.id} className="flex items-center justify-between gap-3 py-3">
             <div className="flex min-w-0 items-start gap-3">
@@ -28,7 +36,15 @@ const WaiterCallsList = ({ calls, now, onResolve, resolvingId = null }) => {
               <div className="min-w-0">
                 <p className="truncate font-semibold text-gray-900">{table}</p>
                 <p className="text-sm text-gray-600">
-                  {reasonLabel(call.reason)} · {elapsedLabel(call.created_at, now)}
+                  {reasonLabel(call.reason)} · Esperando{' '}
+                  <time
+                    role="timer"
+                    dateTime={call.created_at}
+                    data-urgency={urgency}
+                    className={`font-semibold tabular-nums ${URGENCY_CLASSES[urgency]}`}
+                  >
+                    {timerLabel(seconds)}
+                  </time>
                 </p>
               </div>
             </div>
