@@ -54,6 +54,18 @@ describe('setAccessToken', () => {
     expect(pending.catch).toHaveBeenCalledWith(expect.any(Function))
   })
 
+  it('keeps notifying and never throws when a listener fails (login path)', () => {
+    const failing = vi.fn(() => {
+      throw new Error('listener bug')
+    })
+    const healthy = vi.fn()
+    mod.onSupabaseClientChange(failing)
+    mod.onSupabaseClientChange(healthy)
+
+    expect(() => mod.setAccessToken('jwt-4')).not.toThrow()
+    expect(healthy).toHaveBeenCalledWith(mod.supabase)
+  })
+
   it('does not authorize Realtime when the JWT is cleared', () => {
     mod.setAccessToken(null)
 

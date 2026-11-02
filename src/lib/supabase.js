@@ -56,7 +56,14 @@ export function setAccessToken(jwt) {
   if (previous && previous !== supabase) {
     Promise.resolve(previous.removeAllChannels?.()).catch(() => {})
   }
-  clientListeners.forEach((listener) => listener(supabase))
+  // A failing listener must never break the login/refresh path.
+  clientListeners.forEach((listener) => {
+    try {
+      listener(supabase)
+    } catch (error) {
+      console.error('Supabase client listener failed:', error)
+    }
+  })
 }
 
 // API base URL for serverless function calls

@@ -26,7 +26,11 @@ export function useWaiterCalls(tenantId) {
   const activeTenantRef = useRef(tenantId)
 
   const load = useCallback(async () => {
-    if (!tenantId || !supabase) return
+    if (!tenantId) return
+    if (!supabase) {
+      setLoading(false) // no client configured: nothing will ever load
+      return
+    }
     const { data, error: loadError } = await supabase
       .from('waiter_calls')
       .select(CALL_COLUMNS)

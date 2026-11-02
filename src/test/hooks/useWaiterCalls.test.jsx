@@ -197,6 +197,15 @@ describe('useWaiterCalls', () => {
     expect(result.current.calls.map((c) => c.id)).toEqual(['fresh'])
   })
 
+  it('stops loading when there is no Supabase client', async () => {
+    mocks.current.client = null
+
+    const { result } = renderHook(() => useWaiterCalls('tenant-1'))
+
+    await waitFor(() => expect(result.current.loading).toBe(false))
+    expect(result.current.calls).toEqual([])
+  })
+
   it('does nothing without a tenant', () => {
     renderHook(() => useWaiterCalls(null))
 
