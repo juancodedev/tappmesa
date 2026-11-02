@@ -4,6 +4,7 @@ import { createContext, useReducer, useEffect, useCallback } from "react";
 import { authService } from "../lib/supabase";
 import logger from "../utils/logger";
 import { hasStaffPermission } from "../utils/staffRoles";
+import { toAuthUser } from "../utils/authUser";
 
 export const AuthContext = createContext();
 
@@ -77,10 +78,7 @@ export function AuthProvider({ children }) {
       const session = await authService.getCurrentSession();
 
       if (session) {
-        dispatch({ type: authActions.SET_USER, payload: {
-          ...session.admin,
-          tenant: session.tenant
-        }});
+        dispatch({ type: authActions.SET_USER, payload: toAuthUser(session.admin, session.tenant)});
 
         if (session.tenant) {
           await checkTrialStatus(session.tenant.id);
@@ -124,12 +122,9 @@ export function AuthProvider({ children }) {
           logger.error("Error refreshing JWT after register:", refreshErr);
         }
 
-        dispatch({ type: authActions.SET_USER, payload: {
-          ...result.admin,
-          tenant: result.tenant
-        }});
+        dispatch({ type: authActions.SET_USER, payload: toAuthUser(result.admin, result.tenant)});
         dispatch({ type: authActions.SET_TRIAL_INFO, payload: result.trialInfo });
-        return { success: true, user: { ...result.admin, tenant: result.tenant } };
+        return { success: true, user: toAuthUser(result.admin, result.tenant) };
       } else {
         dispatch({ type: authActions.SET_ERROR, payload: result.error });
         return { success: false, error: result.error };
@@ -157,16 +152,13 @@ export function AuthProvider({ children }) {
           logger.error("Error refreshing JWT after login:", refreshErr);
         }
 
-        dispatch({ type: authActions.SET_USER, payload: {
-          ...result.admin,
-          tenant: result.tenant
-        }});
+        dispatch({ type: authActions.SET_USER, payload: toAuthUser(result.admin, result.tenant)});
 
         if (result.tenant) {
           await checkTrialStatus(result.tenant.id);
         }
 
-        return { success: true, user: { ...result.admin, tenant: result.tenant } };
+        return { success: true, user: toAuthUser(result.admin, result.tenant) };
       } else {
         dispatch({ type: authActions.SET_ERROR, payload: result.error });
         return { success: false, error: result.error };

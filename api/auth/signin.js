@@ -137,6 +137,7 @@ module.exports = async function handler(req, res) {
         email: admin.email,
         full_name: admin.full_name,
         role: admin.role,
+        tenant_id: admin.tenant_id,
         last_login: admin.last_login
       },
       tenant: admin.tenant,
