@@ -57,6 +57,14 @@
       "destination": "/api/orders"
     },
     {
+      "source": "/api/waiter-calls/current",
+      "destination": "/api/waiter-calls"
+    },
+    {
+      "source": "/api/waiter-calls/:id/cancel",
+      "destination": "/api/waiter-calls"
+    },
+    {
       "source": "/api/admin/users/:id",
       "destination": "/api/admin/users"
     },

@@ -22,6 +22,7 @@ const { createClient } = require('@supabase/supabase-js');
 const { corsMiddleware } = require('../lib/middleware/cors');
 const { rateLimiter, blacklistMiddleware } = require('../lib/middleware/rateLimit');
 const { resolveSubdomain } = require('../lib/utils/hostResolver');
+const { findSessionByCapability } = require('../lib/utils/tableSession');
 const logger = require('../lib/utils/logger');
 
 const PLACEABLE_STATUSES = ['pending', 'preparing'];
@@ -38,20 +39,6 @@ function foldTemperature(item) {
   const tempNote = item.temperature ? `Temperatura: ${item.temperature}` : '';
   if (!item.notes) return tempNote || null;
   return tempNote ? `${tempNote} | ${item.notes}` : item.notes;
-}
-
-// Capacidad → sesión de mesa (único por capability_token). null = inválida.
-async function findSessionByCapability(supabase, capability) {
-  if (!capability) return null;
-  const { data, error } = await supabase
-    .from('table_sessions')
-    .select('id, tenant_id, status, ended_at')
-    .eq('capability_token', capability)
-    .maybeSingle();
-
-  if (error || !data) return null;
-  if (data.status !== 'active' || data.ended_at) return null;
-  return data;
 }
 
 function isValidItems(items) {
