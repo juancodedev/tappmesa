@@ -59,28 +59,19 @@ const Cart = () => {
   const handlePlaceOrder = async () => {
     if (isEmpty) return
 
-    // Validaciones
-    if (!customerInfo.name.trim()) {
-      setFormError({ field: 'name', message: 'Por favor ingresa tu nombre' })
-      return
-    }
-
-    if (!customerInfo.phone.trim()) {
-      setFormError({ field: 'phone', message: 'Por favor ingresa tu teléfono' })
-      return
-    }
-
-    // Validar formato de teléfono chileno (+56912345678 o 912345678)
+    // Name and phone are optional; a phone, when given, must be a valid
+    // Chilean mobile (+56912345678 or 912345678).
+    const phone = customerInfo.phone.trim()
     const chileanPhoneRegex = /^(\+56)?9\d{8}$/
-    if (!chileanPhoneRegex.test(customerInfo.phone.trim())) {
+    if (phone && !chileanPhoneRegex.test(phone)) {
       setFormError({ field: 'phone', message: 'Ingresa un teléfono chileno válido (ej: +56912345678 o 912345678)' })
       return
     }
 
     setFormError(null)
 
-    // Realizar pedido
-    const result = await placeOrder(customerInfo)
+    // Realizar pedido (blank name or phone are sent as empty)
+    const result = await placeOrder({ ...customerInfo, name: customerInfo.name.trim(), phone })
     
     if (result.success) {
       setOrderResult(result)
@@ -127,8 +118,12 @@ const Cart = () => {
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <h3 className="font-semibold text-blue-900 mb-2">Información del pedido:</h3>
               <div className="space-y-1 text-sm text-blue-800">
-                <p><strong>Cliente:</strong> {orderResult.order.customer_name}</p>
-                <p><strong>Teléfono:</strong> {orderResult.order.customer_phone}</p>
+                {orderResult.order.customer_name && (
+                  <p><strong>Cliente:</strong> {orderResult.order.customer_name}</p>
+                )}
+                {orderResult.order.customer_phone && (
+                  <p><strong>Teléfono:</strong> {orderResult.order.customer_phone}</p>
+                )}
                 {orderResult.order.table_number && (
                   <p><strong>Mesa:</strong> {orderResult.order.table_number}</p>
                 )}
@@ -209,14 +204,13 @@ const Cart = () => {
                   {/* Teléfono - primero para detectar cliente */}
                   <div>
                     <label htmlFor="cart-phone" className="block text-sm font-medium text-gray-700 mb-1">
-                      Número de teléfono <span className="text-red-600" aria-hidden="true">*</span>
+                      Número de teléfono <span className="font-normal text-gray-500">(opcional)</span>
                     </label>
                     <input
                       id="cart-phone"
                       type="tel"
                       inputMode="tel"
                       autoComplete="tel"
-                      required
                       placeholder="Ej: +56912345678"
                       value={customerInfo.phone}
                       onChange={(e) => updateField('phone', e.target.value)}
@@ -249,13 +243,12 @@ const Cart = () => {
                   {/* Nombre */}
                   <div>
                     <label htmlFor="cart-name" className="block text-sm font-medium text-gray-700 mb-1">
-                      Nombre <span className="text-red-600" aria-hidden="true">*</span>
+                      Nombre <span className="font-normal text-gray-500">(opcional)</span>
                     </label>
                     <input
                       id="cart-name"
                       type="text"
                       autoComplete="name"
-                      required
                       placeholder="Tu nombre"
                       value={customerInfo.name}
                       onChange={(e) => updateField('name', e.target.value)}
@@ -331,7 +324,7 @@ const Cart = () => {
               <Button
                 variant="brand"
                 onClick={handlePlaceOrder}
-                disabled={!customerInfo.name || !customerInfo.phone || placingOrder}
+                disabled={placingOrder}
                 className="flex-1 py-3"
               >
                 {placingOrder ? (

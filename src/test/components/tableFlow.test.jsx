@@ -144,6 +144,71 @@ describe('Cart dialog', () => {
   })
 })
 
+describe('Cart optional customer fields', () => {
+  beforeEach(() => {
+    cartValue = buildCart({ placeOrder: vi.fn().mockResolvedValue({ success: false, error: 'x' }) })
+  })
+
+  it('marks name and phone as optional, not required', () => {
+    render(<Cart />)
+
+    for (const label of [/teléfono/i, /nombre/i]) {
+      const input = screen.getByLabelText(label)
+      expect(input).not.toBeRequired()
+      expect(input.labels[0]).toHaveTextContent(/opcional/i)
+    }
+  })
+
+  it('places the order with name and phone empty', async () => {
+    const user = userEvent.setup()
+    render(<Cart />)
+
+    const send = screen.getByRole('button', { name: /enviar pedido/i })
+    expect(send).toBeEnabled()
+    await user.click(send)
+
+    expect(cartValue.placeOrder).toHaveBeenCalledWith(expect.objectContaining({ name: '', phone: '', tableNumber: '4' }))
+  })
+
+  it('places the order with only a name to identify the customer', async () => {
+    const user = userEvent.setup()
+    render(<Cart />)
+
+    await user.type(screen.getByLabelText(/nombre/i), 'Ana')
+    await user.click(screen.getByRole('button', { name: /enviar pedido/i }))
+
+    expect(cartValue.placeOrder).toHaveBeenCalledWith(expect.objectContaining({ name: 'Ana', phone: '' }))
+  })
+
+  it('sends trimmed values, so blank input counts as empty', async () => {
+    const user = userEvent.setup()
+    render(<Cart />)
+
+    await user.type(screen.getByLabelText(/nombre/i), '   ')
+    await user.type(screen.getByLabelText(/teléfono/i), ' 912345678 ')
+    await user.click(screen.getByRole('button', { name: /enviar pedido/i }))
+
+    expect(cartValue.placeOrder).toHaveBeenCalledWith(expect.objectContaining({ name: '', phone: '912345678' }))
+  })
+
+  it('omits empty customer data from the confirmation', async () => {
+    cartValue = buildCart({
+      placeOrder: vi.fn().mockResolvedValue({
+        success: true,
+        order: { order_number: 'A1', estimated_time: 10, customer_name: null, customer_phone: null, table_number: '4', total: 8330 },
+      }),
+    })
+    const user = userEvent.setup()
+    render(<Cart />)
+
+    await user.click(screen.getByRole('button', { name: /enviar pedido/i }))
+
+    expect(await screen.findByText(/tiempo estimado/i)).toBeInTheDocument()
+    expect(screen.queryByText(/cliente:/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/teléfono:/i)).not.toBeInTheDocument()
+  })
+})
+
 describe('Cart customer lookup', () => {
   it('never queries customers from the browser (anon is denied after the RLS lockdown)', async () => {
     supabase.from.mockClear()

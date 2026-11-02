@@ -61,6 +61,21 @@ describe('OrdersManager buttons', () => {
   })
 })
 
+describe('OrdersManager orders without customer data', () => {
+  it('shows "Sin nombre" for an order placed without a name', async () => {
+    const originals = rows.orders.map((o) => o.customer_name)
+    rows.orders.forEach((o) => { o.customer_name = null })
+    try {
+      render(<OrdersManager />)
+      expect((await screen.findAllByText('Sin nombre')).length).toBeGreaterThan(0)
+      await userEvent.click(screen.getAllByRole('button', { name: /ver detalles/i })[0])
+      expect(within(screen.getByRole('dialog')).getByText('Sin nombre')).toBeInTheDocument()
+    } finally {
+      rows.orders.forEach((o, i) => { o.customer_name = originals[i] })
+    }
+  })
+})
+
 describe('ReservationsManager buttons', () => {
   it('uses Button for header and row actions', async () => {
     render(<ReservationsManager />)

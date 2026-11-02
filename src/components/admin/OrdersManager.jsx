@@ -368,7 +368,7 @@ const OrdersManager = () => {
               <div className="p-4 border-b border-gray-100">
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <span className="font-medium text-gray-900">{order.customer_name}</span>
+                    <span className="font-medium text-gray-900">{order.customer_name || 'Sin nombre'}</span>
                   </div>
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <Phone className="w-4 h-4" />
@@ -500,8 +500,10 @@ const OrdersManager = () => {
           <div className="space-y-4">
             <div>
               <h4 className="font-medium text-gray-900 mb-2">Cliente:</h4>
-              <p className="text-gray-600">{selectedOrder.customer_name}</p>
-              <p className="text-gray-600">{selectedOrder.customer_phone}</p>
+              <p className="text-gray-600">{selectedOrder.customer_name || 'Sin nombre'}</p>
+              {selectedOrder.customer_phone && (
+                <p className="text-gray-600">{selectedOrder.customer_phone}</p>
+              )}
               {selectedOrder.table_number && (
                 <p className="text-gray-600">{selectedOrder.table_number}</p>
               )}
