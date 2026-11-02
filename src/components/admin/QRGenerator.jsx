@@ -135,6 +135,23 @@ const QRGenerator = () => {
     setSelectedTable(table)
   }
 
+  // Without a tenant nothing will ever load: show why instead of the skeleton.
+  if (!tenantId) {
+    if (isSuperAdmin) {
+      return (
+        <SuperAdminNoTenantMessage
+          icon={QrCode}
+          message='Utiliza el selector en la barra superior para ver los códigos QR de un tenant específico'
+        />
+      )
+    }
+    return (
+      <div className="p-6">
+        <p className="text-gray-600">Tu usuario no tiene un local asignado, así que no hay códigos QR para mostrar.</p>
+      </div>
+    )
+  }
+
   if (loading) {
     return (
       <div className="p-6">
@@ -147,16 +164,6 @@ const QRGenerator = () => {
           </div>
         </div>
       </div>
-    )
-  }
-
-  // Show message if super admin hasn't selected a tenant
-  if (isSuperAdmin && !tenantId) {
-    return (
-      <SuperAdminNoTenantMessage
-        icon={QrCode}
-        message='Utiliza el selector en la barra superior para ver los códigos QR de un tenant específico'
-      />
     )
   }
 
