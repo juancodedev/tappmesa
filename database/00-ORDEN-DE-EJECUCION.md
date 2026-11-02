@@ -221,6 +221,13 @@ Rollback: `rollback-add-admin-users-phone.sql` (borra los teléfonos guardados).
 ```
 Rollback: `rollback-fix-clear-insecure-password-trigger.sql`.
 
+### Llamar al mesero (call-waiter, entrega 1):
+```sql
+1. create-waiter-calls.sql   -- tabla waiter_calls, tenants.waiter_calls_enabled, RLS por rol, Realtime
+```
+Requiere `secure-data-access.sql` (helpers `app_claim_tenant_id` / `app_is_super_admin`). Es re-ejecutable.
+Rollback: `rollback-create-waiter-calls.sql` (borra todos los llamados).
+
 ---
 
 ## 📊 Scripts de Diagnóstico (No Ejecutar - Solo Consulta)

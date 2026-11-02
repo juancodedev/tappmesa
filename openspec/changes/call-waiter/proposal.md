@@ -1,6 +1,11 @@
 # Proposal: Call Waiter Button (customer table flow)
 
-**Status**: Backlog — spec only, not scheduled. Captured on 2026-10-28 during the table-flow UX pass (`fix/table-flow-ux`). Requires the SDD phases (spec → design → tasks) before any implementation.
+**Status**: Proposal — open questions resolved on 2026-11-02 (see "Decisions"). Captured on 2026-10-28 during the table-flow UX pass (`fix/table-flow-ux`). Requires the SDD phases (spec → design → tasks) before any implementation.
+
+## Delivery Plan
+
+- **Delivery 1 — Waiter calls**: customer button with reasons, tenant toggle, staff list updated via Supabase Realtime on the waiter dashboard and the admin panel.
+- **Delivery 2 — Staff PWA + Web Push**: installable PWA (manifest + service worker) for staff, Web Push notifications sent to every waiter and admin of the tenant when a call is created. No sound alerts.
 
 ## Intent
 
@@ -13,14 +18,16 @@ A customer seated at a table (QR flow, `/:slug/:table`) has no way to request at
 - Customer-facing "Llamar al mesero" button in the table flow (`TableApp`), visible only when a valid table session exists.
 - Request reasons (single choice, optional): `assistance` (default), `bill`, `other`.
 - Server route to create and cancel a request, scoped by the table session capability.
-- Waiter dashboard (`/waiter`, `/garzon`): list of pending requests per table, with an "Attended" action.
+- Waiter dashboard (`/waiter`, `/garzon`) and admin panel: list of pending requests per table, with an "Attended" action.
 - Customer feedback for the request lifecycle: sent → attended, and cancel while pending.
+- Per-tenant setting to enable or disable the feature (Delivery 1).
+- Supabase Realtime updates for the staff request list (Delivery 1).
+- Staff PWA and Web Push notifications to all waiters and admins of the tenant (Delivery 2).
 
 ### Out of Scope
 
-- Push notifications, SMS, or sound alerts on staff devices (follow-up).
-- Realtime transport changes: the first version reuses the waiter dashboard's existing polling.
-- Assigning requests to a specific waiter.
+- SMS or sound alerts on staff devices.
+- Assigning requests or tables to a specific waiter: every waiter and admin of the tenant is notified; the admin directs staff physically. Assignment rules need business discovery first.
 - Analytics on response times.
 
 ## Requirements
@@ -74,12 +81,12 @@ The feature SHALL follow `openspec/changes/fix-critical-security-posture`: no an
 
 The button and its actions SHALL meet the table-flow baseline: 44x44px minimum touch target, visible label (not icon-only), keyboard operable, and an accessible confirmation dialog that closes with Escape.
 
-## Open Questions
+## Decisions (2026-11-02)
 
-1. Should "Pedir la cuenta" be a reason of this request or a separate flow tied to `pre_bills`?
-2. Does the tenant need a setting to disable the feature (for example counter-service cafes)?
-3. Is polling latency (current waiter dashboard interval) acceptable, or does v1 need Supabase Realtime?
-4. Should requests auto-expire if not attended (proposed: 15 minutes)?
+1. "Pedir la cuenta" is the `bill` reason of this request, not a separate `pre_bills` flow: the waiter arrives bringing the bill.
+2. The feature is configurable per tenant (can be disabled, for example in counter-service cafes).
+3. The 30-second polling of the waiter dashboard is too slow and only works with the screen open: Delivery 1 uses Supabase Realtime; Delivery 2 adds Web Push so staff are notified with the app closed. iOS requires the PWA installed on the home screen (iOS 16.4+).
+4. Unattended pending requests expire after 5 minutes (`status = 'expired'`), so the customer can call again.
 
 ## Data Model (draft, to be confirmed in design)
 
