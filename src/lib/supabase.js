@@ -30,14 +30,40 @@ export let supabase = supabaseUrl && supabaseAnonKey
 // cliente anónimo para que las queries del admin viajen con capacidad y las
 // policies RLS (tenant_id = claim) apliquen. Sin JWT (menú público/anónimo)
 // el cliente queda como anon.
+//
+// Realtime does not read `global.headers`: the socket is authorized with
+// `realtime.setAuth(jwt)` so postgres_changes run under the staff claims (RLS)
+// instead of anon. Each call builds a new client, so the previous client's
+// channels are closed and listeners (see onSupabaseClientChange) resubscribe
+// on the new one.
+const clientListeners = new Set()
+
+export function onSupabaseClientChange(listener) {
+  clientListeners.add(listener)
+  return () => clientListeners.delete(listener)
+}
+
 export function setAccessToken(jwt) {
   if (!supabaseUrl || !supabaseAnonKey) return
+  const previous = supabase
   supabase = jwt
     ? createClient(supabaseUrl, supabaseAnonKey, {
         ...CLIENT_OPTS,
         global: { headers: { Authorization: `Bearer ${jwt}` } }
       })
     : createClient(supabaseUrl, supabaseAnonKey, CLIENT_OPTS)
+  if (jwt) Promise.resolve(supabase.realtime.setAuth(jwt)).catch(() => {})
+  if (previous && previous !== supabase) {
+    Promise.resolve(previous.removeAllChannels?.()).catch(() => {})
+  }
+  // A failing listener must never break the login/refresh path.
+  clientListeners.forEach((listener) => {
+    try {
+      listener(supabase)
+    } catch (error) {
+      console.error('Supabase client listener failed:', error)
+    }
+  })
 }
 
 // API base URL for serverless function calls

@@ -4,11 +4,12 @@ import { useTenantUrl } from "../hooks/useTenantHooks";
 import { CartProvider } from "../context/CartContext";
 import MenuLayout from "./layout/MenuLayout";
 import TableOrdersHistory from "./table/TableOrdersHistory";
+import CallWaiterButton from "./table/CallWaiterButton";
 import { AlertTriangle, Receipt, UtensilsCrossed } from 'lucide-react';
 import { Button } from './ui/Button';
 
 const TableApp = () => {
-  const { tenant, table, tableSessionError, loading } = useTenant();
+  const { tenant, table, tableSession, tableSessionError, loading } = useTenant();
   const tenantUrl = useTenantUrl();
   const [activeTab, setActiveTab] = useState('menu'); // 'menu' | 'orders'
 
@@ -48,15 +49,18 @@ const TableApp = () => {
         {/* Header específico de mesa */}
         <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
           <div className="px-4 py-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-lg font-semibold text-gray-900">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <h1 className="truncate text-lg font-semibold text-gray-900">
                   {tenant.name}
                 </h1>
                 <p className="text-sm text-gray-600">
                   {table.number} • {table.location}
                 </p>
               </div>
+              {/* In the sticky header: reachable from both tabs, clear of the
+                  floating cart button and the fixed table bar. */}
+              <CallWaiterButton tenant={tenant} tableSession={tableSession} />
             </div>
           </div>
 

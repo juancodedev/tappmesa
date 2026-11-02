@@ -34,6 +34,9 @@ vi.mock('../../hooks/useAuth', () => ({
     hasPermission: () => true,
   }),
 }))
+vi.mock('../../hooks/useWaiterCalls', () => ({
+  useWaiterCalls: () => ({ calls: [], now: 0, loading: false, error: null, resolve: vi.fn() }),
+}))
 vi.mock('../../hooks/useToast', () => ({ useToast: () => ({ success: vi.fn(), error: vi.fn() }) }))
 vi.mock('../../hooks/useConfirm', () => ({ useConfirm: () => vi.fn().mockResolvedValue(false) }))
 

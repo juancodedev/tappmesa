@@ -102,6 +102,12 @@ Serverless functions in `api/auth/`:
 
 **Security**: Uses bcrypt (12 salt rounds) server-side. Client-side hashing is deprecated. See `SECURE_AUTH_GUIDE.md`.
 
+### Call Waiter (waiter calls)
+
+- Customers call the waiter from `TableApp` (`src/components/table/CallWaiterButton.jsx`) through `api/waiter-calls.js` (create, `/current`, `/:id/cancel`), authorized by the table-session capability (`lib/utils/tableSession.js`, shared with `api/orders.js`).
+- Table `waiter_calls` (`database/create-waiter-calls.sql`, gates in `scripts/verify-waiter-calls.sql`): one pending call per table session, 60 s cooldown after cancel/attended, pending calls expire after 5 minutes, per-tenant toggle `tenants.waiter_calls_enabled` (edited in `PreBillSettings`).
+- Staff (`waiter`, `staff`, `tenant_admin`, `super_admin`) read and mark calls attended with their claim JWT via `useWaiterCalls` (Supabase Realtime): `WaiterCallsPanel` on `/waiter`, `WaiterCallsBell` in the admin header. `setAccessToken` also authorizes the Realtime socket (`realtime.setAuth`).
+
 ### Services Layer
 
 `src/lib/supabase.js` exports:

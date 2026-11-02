@@ -9,6 +9,9 @@ vi.mock('../../hooks/useTenantHooks', () => ({ useTenantUrl: () => '/' }))
 vi.mock('../../context/CartContext', () => ({ CartProvider: ({ children }) => children }))
 vi.mock('../../components/layout/MenuLayout', () => ({ default: () => <p>menu</p> }))
 vi.mock('../../components/table/TableOrdersHistory', () => ({ default: () => null }))
+vi.mock('../../services/api', () => ({
+  api: { get: vi.fn(async () => ({ call: null })), post: vi.fn() },
+}))
 
 import TableApp from '../../components/TableApp'
 
@@ -39,5 +42,23 @@ describe('TableApp table session banner', () => {
     tenantValue = { ...base, tableSession: { capability_token: 'ts_x' }, tableSessionError: null }
     render(<TableApp />)
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+})
+
+describe('TableApp call waiter button (call-waiter S1)', () => {
+  it('offers "Llamar al mesero" on both tabs with a valid session', async () => {
+    tenantValue = { ...base, tableSession: { capability_token: 'ts_x' }, tableSessionError: null }
+    const user = userEvent.setup()
+    render(<TableApp />)
+
+    expect(await screen.findByRole('button', { name: /llamar al mesero/i })).toBeInTheDocument()
+    await user.click(screen.getByRole('tab', { name: /mis pedidos/i }))
+    expect(screen.getByRole('button', { name: /llamar al mesero/i })).toBeInTheDocument()
+  })
+
+  it('hides the button without a table session', () => {
+    tenantValue = { ...base, tableSession: null, tableSessionError: 'Sin sesión' }
+    render(<TableApp />)
+    expect(screen.queryByRole('button', { name: /llamar al mesero/i })).not.toBeInTheDocument()
   })
 })

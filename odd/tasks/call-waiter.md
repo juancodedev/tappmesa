@@ -27,11 +27,11 @@ Assumptions (stated to the user 2026-11-02, not yet confirmed):
 
 | ID | Specs | Route | Status | Commit |
 |----|-------|-------|--------|--------|
-| T1 | S4-S7, S10 | inline | pending | — |
-| T2 | S2, S4-S7, S10 | inline | pending | — |
-| T3 | S9, S10 | inline | pending | — |
-| T4 | S1-S3, S6, S7 | inline | pending | — |
-| T5 | S7-S9 | inline | pending | — |
+| T1 | S4-S7, S10 | inline | done, verified, reviewed | `cae4e5b0`, `44f429b1`, `8836c154` (branch `feature/call-waiter-t1-migration`) |
+| T2 | S2, S4-S7, S10 | inline | done, verified, reviewed | `0986e435`, fix `c6490be9` (branch `feature/call-waiter-t2-api`; fix on t5) |
+| T3 | S9, S10 | inline | done, verified, reviewed | `98c645c0`, fixes `c6490be9`, `19ac8a5f` (branch `feature/call-waiter-t3-realtime`; fixes on t5) |
+| T4 | S1-S3, S6, S7 | inline | done, reviewed | `85e4e24a` (branch `feature/call-waiter-t4-customer`) |
+| T5 | S7-S9 | inline | done, reviewed | `1d6581a7` (branch `feature/call-waiter-t5-staff`) |
 
 - T1: migration `database/create-waiter-calls.sql` + rollback: `waiter_calls` table, `tenants.waiter_calls_enabled`, partial unique index, role-scoped RLS, realtime publication, create/expire DB function; static migration test. Risk: item 1, item 2.
 - T2: `api/waiter-calls.js` (create, read, cancel by capability), shared capability lookup moved to `lib/`, `vercel.json` rewrite, route tests. Risk: item 2.
@@ -50,3 +50,16 @@ Assumptions (stated to the user 2026-11-02, not yet confirmed):
 - L7 (2026-11-02): "si, haz commit y arranca con la entrega 1". Proposal committed `04e4eb6e`; review approved with 3 non-blocking advisories (lines 23-25, 85, 88), resolved as A1-A3.
 - L8: exploration findings — capability `ts_` HMAC token resolved by `findSessionByCapability` (`api/orders.js:44-55`); rate limiter is per IP, so S5 is enforced in the DB; staff client sends JWT only via `global.headers`, so Realtime needs `realtime.setAuth`; RLS has no role filter today; `tenant_admin` cannot open `/waiter`; no scheduler exists, so expiry is lazy (on create/read).
 - Forecast: ~1200 authored changed lines across T1-T5, over the 400-line slice budget.
+- L9: chain strategy chosen by the user: feature-branch-chain.
+- L10 T1: RED (missing migration) → GREEN 10/10 static tests. Runtime probes on Postgres 16 (Docker): anon denied on table and function; repeat returns same call; 8 parallel requests → 1 row; cooldown DETAIL 60 after attended; no cooldown after expiry; disabled → WAITER_CALLS_DISABLED; ended session → SESSION_NOT_ACTIVE; waiter A cannot read/resolve tenant B; kitchen sees 0; staff can only set status=attended; resolved_by stamped from claim; migration re-runnable; rollback clean. Independent verifier: PASS S4-S7, S9, S10, no blockers. Advisory fixed in `44f429b1`: an expired-but-pending call is not attendable (RLS USING `expires_at > now()`); lab gates `scripts/verify-waiter-calls.sql` (FAIL before, PASS after, FAIL after rollback). Advisory for T5: `tenant_claim` on tenants has no role filter (pre-existing).
+- L11 T2: RED (missing route) → GREEN 21 route tests; `findSessionByCapability` moved to `lib/utils/tableSession.js`, orders tests unchanged and green. T3: RED 2/4 (realtime auth) → GREEN; `useWaiterCalls` 8 tests. Suite 559/559, lint clean.
+- L12 T2+T3 independent verifier: PASS S2, S4-S7, S9, S10, no blockers; `/api/orders` differential check identical (201/200/200 valid, 401/200/401 unknown and closed). Advisories fixed in `6cbfa734` with RED→GREEN tests: non-uuid cancel id answers `{cancelled:false}` instead of 500; `realtime.setAuth` rejection is caught; a slow load of a previous tenant is dropped.
+- L13 T4: RED (missing component) → GREEN 9 component tests + 2 TableApp integration tests; button in the sticky header (both tabs, clear of cart and table bar), dialog with reasons, "Mesero en camino" / "Cancelar llamado", aria-live status, 10 s polling while pending, attended/expired messages. Constants in `src/utils/waiterCalls.js` (react-refresh lint rule).
+- L14 T5: RED → GREEN 8 staff component tests + 2 settings tests. `WaiterCallsList` (presentational) used by `WaiterCallsPanel` (waiter dashboard, above stats) and `WaiterCallsBell` (admin header, A4). Toggle "Permitir que los clientes llamen al mesero" in `PreBillSettings`. Two existing header tests now mock `useWaiterCalls`. CLAUDE.md documents the feature. Suite 583/583, lint clean, build OK.
+- Follow-ups (not in scope): `tenant_claim` on `tenants` has no role filter, so any staff role with the table grant could change tenant settings (pre-existing, also affects tip/survey). Prisma models the partial indexes as full indexes (drift on `db pull`). Delivery 2 (staff PWA + Web Push) pending.
+- Deploy order: apply `database/create-waiter-calls.sql` in Supabase BEFORE deploying the frontend; then run `psql -f scripts/verify-waiter-calls.sql` (PART A, prod-safe).
+- L15 (2026-11-02): commit hashes above are after rebasing the chain on the T1 fix `8836c154`.
+- L16 native review (RDD on, user granted each slice): T1 (base `04e4eb6e`, lenses risk/resilience/reliability) approved; T1-fix+T2 (base `44f429b1`, risk/reliability) approved; T3 (base `0986e435`, risk/resilience/reliability, escalated item 3) approved; T4+T5+fixes (base `98c645c0`, readability/reliability/resilience, escalated item 3) approved. All acknowledged.
+- L17 review advisories acted on: lab harness `expect_error` swallowed its own failure and B8c was vacuous (fixed `8836c154`, proven: old migration fails B8d, harness self-test fails when no error is raised); malformed `app_user_id` claim no longer blocks attending (`8836c154`); failing client-change listener no longer breaks `setAccessToken`, hook settles `loading` without a client (`19ac8a5f`).
+- Open follow-ups from the last review (non-blocking): a cancel error is not shown while the call is pending (`CallWaiterButton` renders the message only in the idle branch); `useResolveWaiterCall` keeps `resolvingId` if `resolve` throws; the admin bell hides load errors; Realtime events trigger a full reload each (no debounce).
+- Deploy note (review R3/R4): `PreBillSettings` now saves `waiter_calls_enabled`, so saving pre-bill settings fails until `create-waiter-calls.sql` is applied. Apply the migration first.
